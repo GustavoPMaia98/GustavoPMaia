@@ -1,0 +1,38 @@
+/* =====================================================================
+   Typography — Fraunces (display serif) for headings & brand flourishes,
+   Manrope (sans) for body & UI. A monospace stack handles "terminal"
+   moments (news titlebar, dates, kbd hints).
+   ===================================================================== */
+:root{
+  /* ---- Families ---- */
+  --font-display:'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-body:'Manrope', system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono:ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* ---- Weights ---- */
+  --fw-regular:400;    /* @kind other */
+  --fw-medium:500;     /* @kind other */
+  --fw-semibold:600;   /* @kind other */
+  --fw-bold:700;       /* @kind other */
+  --fw-extrabold:800;  /* @kind other */
+
+  /* ---- Fluid display sizes (clamp: min · preferred · max) ---- */
+  --text-hero:clamp(1.9rem, calc(1.2rem + 3vw), 3rem);     /* h1 / hero name      */
+  --text-brand:clamp(2rem, calc(1.2rem + 4vw), 3.1rem);    /* italic brand mark   */
+  --text-h2:clamp(1.5rem, calc(1rem + 2.2vw), 2.1rem);     /* section headings    */
+
+  /* ---- Static UI sizes ---- */
+  --text-metric:1.55rem;     /* stat numbers          */
+  --text-lead:1.05rem;       /* card titles / lead    */
+  --text-body:1rem;          /* base body (16px)      */
+  --text-sm:.92rem;          /* secondary / nav       */
+  --text-meta:.86rem;        /* meta lines            */
+  --text-chip:.8rem;         /* tags / chips          */
+  --text-eyebrow:.72rem;     /* uppercase labels      */
+
+  /* ---- Rhythm ---- */
+  --leading-body:1.6;
+  --leading-tight:1.15;      /* display headings      */
+  --tracking-eyebrow:.06em;  /* uppercase letterspace */
+  --tracking-tight:-.01em;   /* large headings        */
+}

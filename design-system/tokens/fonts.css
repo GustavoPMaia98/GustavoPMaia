@@ -1,0 +1,8 @@
+/* =====================================================================
+   Fonts — the brand uses two Google-hosted webfonts:
+     · Fraunces  (variable optical-size serif) — display / headings
+     · Manrope   (geometric humanist sans)     — body / UI
+   Loaded from Google Fonts (matching the live site's <link>). No local
+   binaries are shipped; consumers fetch them over the network.
+   ===================================================================== */
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Manrope:wght@400;500;600;700;800&display=swap");

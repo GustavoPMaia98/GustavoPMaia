@@ -1,0 +1,57 @@
+/* =====================================================================
+   Colors — the cosmos palette. A deep navy void, cyan/blue starlight
+   accents, and faint nebula glows (violet · cyan · blue · magenta).
+   Base values + semantic aliases. Light theme overrides live in the
+   html[data-theme="light"] scope.
+   ===================================================================== */
+:root{
+  /* ---- Base surfaces (dark / default) ---- */
+  --bg:#0b1020;              /* deep space navy            */
+  --bg-2:#070c1d;            /* darker void (panels/modals) */
+  --card:rgba(255,255,255,.045);       /* frosted glass card        */
+  --card-hover:rgba(255,255,255,.07);  /* card hover                */
+  --border:rgba(255,255,255,.09);      /* hairline border           */
+  --border-strong:rgba(125,211,252,.45); /* cyan focus/active border */
+
+  /* ---- Text ---- */
+  --text:#e7edf6;            /* primary text (starlight white) */
+  --muted:#9aa4b2;           /* secondary / meta text          */
+
+  /* ---- Accents ---- */
+  --accent:#7dd3fc;          /* cyan — primary accent / links  */
+  --accent-strong:#60a5fa;   /* blue — gradient partner        */
+
+  /* ---- Nebula glow stops (decorative background radials) ---- */
+  --nebula-violet:rgba(124,58,237,.18);
+  --nebula-cyan:rgba(34,211,238,.15);
+  --nebula-blue:rgba(59,130,246,.13);
+  --nebula-magenta:rgba(236,72,153,.08);
+
+  /* ---- Fixed-gradient feature surfaces (tutoring / assistant head) ---- */
+  --grad-cosmic:linear-gradient(135deg,#23276b,#178a98); /* @kind color */
+  --grad-cosmic-soft:linear-gradient(135deg, rgba(43,47,119,.5), rgba(27,154,170,.32)); /* @kind color */
+
+  /* ---- Semantic status ---- */
+  --on-accent:#04203a;       /* text/icons on cyan buttons     */
+  --status-live:#28c840;     /* online dot (green)             */
+  --status-warn:#fbbf24;     /* poster badge / paused (amber)  */
+  --status-danger:#ff5f57;   /* close dot (red)                */
+
+  color-scheme:dark;
+}
+
+/* ---- Light theme ---- */
+html[data-theme="light"]{
+  --bg:#eef2f8;
+  --bg-2:#ffffff;
+  --card:rgba(15,23,42,.045);
+  --card-hover:rgba(15,23,42,.08);
+  --border:rgba(15,23,42,.12);
+  --border-strong:rgba(37,99,168,.5);
+  --text:#1b2330;
+  --muted:#586072;
+  --accent:#2563a8;
+  --accent-strong:#1d4ed8;
+  --on-accent:#ffffff;
+  color-scheme:light;
+}

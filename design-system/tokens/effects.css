@@ -1,0 +1,32 @@
+/* =====================================================================
+   Effects — motion timings, blur, and the signature nebula background.
+   These are the reusable "atmosphere" primitives of the brand.
+   ===================================================================== */
+:root{
+  /* ---- Motion ---- */
+  --ease-out:cubic-bezier(.4,0,.2,1); /* @kind other */
+  --dur-fast:.15s;   /* @kind other */
+  --dur-base:.25s;   /* @kind other */
+  --dur-slow:.6s;    /* @kind other */          /* reveal / timeline entrance */
+
+  /* ---- Glass blur ---- */
+  --blur-nav:12px;     /* @kind other */    /* sticky header              */
+  --blur-overlay:8px;  /* @kind other */    /* search / lightbox scrim    */
+  --blur-soft:4px;     /* @kind other */    /* floating scroll-top button */
+
+  /* ---- Signature nebula field (apply to a full-bleed body/section) ---- */
+  --bg-nebula:
+    radial-gradient(50vw 40vw at 12% 8%, var(--nebula-violet), transparent 45%),
+    radial-gradient(55vw 40vw at 82% 4%, var(--nebula-cyan), transparent 48%),
+    radial-gradient(45vw 35vw at 40% 92%, var(--nebula-blue), transparent 52%),
+    radial-gradient(30vw 22vw at 88% 75%, var(--nebula-magenta), transparent 60%),
+    linear-gradient(180deg, var(--bg-2), var(--bg) 70%); /* @kind color */
+}
+
+/* Optional helper class consumers can drop on a page wrapper to get the
+   full cosmos backdrop without re-declaring the gradient stack. */
+.gpm-cosmos{
+  background:var(--bg-nebula);
+  background-attachment:fixed;
+  color:var(--text);
+}
