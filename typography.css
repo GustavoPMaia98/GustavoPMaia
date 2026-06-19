@@ -1,0 +1,28 @@
+<!-- @dsCard group="Spacing" viewport="700x190" name="Shadows & Glow" subtitle="Soft elevation and the starlit image frame" -->
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body{margin:0;background:var(--bg);font-family:var(--font-body);color:var(--text);padding:28px}
+  .row{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-end}
+  .item{text-align:center}
+  .box{width:110px;height:70px;background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-md)}
+  .s1{box-shadow:var(--shadow)}
+  .s2{box-shadow:var(--shadow-card-hover)}
+  .s3{box-shadow:var(--shadow-glow-cyan)}
+  .s4{box-shadow:var(--glow-frame);border-color:transparent}
+  .name{font-size:.78rem;font-weight:700;margin-top:10px}
+  .val{font-family:var(--font-mono);font-size:.68rem;color:var(--muted);margin-top:1px}
+</style>
+</head>
+<body>
+  <div class="row">
+    <div class="item"><div class="box s1"></div><div class="name">Card</div><div class="val">--shadow</div></div>
+    <div class="item"><div class="box s2"></div><div class="name">Hover</div><div class="val">--shadow-card-hover</div></div>
+    <div class="item"><div class="box s3"></div><div class="name">Button glow</div><div class="val">--shadow-glow-cyan</div></div>
+    <div class="item"><div class="box s4"></div><div class="name">Starlit frame</div><div class="val">--glow-frame</div></div>
+  </div>
+</body>
+</html>

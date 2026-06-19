@@ -1,0 +1,42 @@
+<!-- @dsCard group="Components" viewport="700x440" name="Feedback" subtitle="News window and timeline entries" -->
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../../styles.css">
+<style>
+  body{margin:0;background:var(--bg-nebula);background-attachment:fixed;font-family:var(--font-body);color:var(--text);padding:26px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  @media(max-width:680px){.grid{grid-template-columns:1fr}}
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+  const { NewsWindow, NewsItem, TimelineItem } = window.GPMAstrobiologyDesignSystem_e8cc9f;
+  function Demo(){
+    return (
+      <div className="grid">
+        <NewsWindow title="~/updates" action={<a href="#" style={{color:'var(--accent)',textDecoration:'none'}}>LinkedIn ↗</a>}>
+          <NewsItem date="Oct 2025">Oral talk at <em>AbGradE’25</em> and a poster at <em>EANA 2025</em> — <strong>Poster Award</strong>.</NewsItem>
+          <NewsItem date="Jul 2025">Oral presentation at <em>BEACON 2025</em> (Reykjavik).</NewsItem>
+          <NewsItem date="Feb 2025" last>New paper in <em>Applied Sciences</em>.</NewsItem>
+        </NewsWindow>
+        <div>
+          <TimelineItem title="NASA Goddard — Astrobiology Lab" meta="Nov 2024 · Research stay">
+            HPLC–MS of extraterrestrial organics.
+          </TimelineItem>
+          <TimelineItem title="Visiting Scientist · MNHN — IMPMC" meta="Jan 2025 — present" />
+          <TimelineItem title="FCT Doctoral Grant 2023.01099.BD" meta="2023" last />
+        </div>
+      </div>
+    );
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(<Demo/>);
+</script>
+</body>
+</html>

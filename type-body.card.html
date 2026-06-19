@@ -1,0 +1,25 @@
+<!-- @dsCard group="Colors" viewport="700x180" name="Accents" subtitle="Cyan & blue starlight — the gradient pair" -->
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body{margin:0;background:var(--bg);font-family:var(--font-body);color:var(--text);padding:22px}
+  .row{display:flex;gap:14px;flex-wrap:wrap}
+  .sw{flex:1;min-width:120px;border-radius:var(--radius-md);overflow:hidden;border:1px solid var(--border)}
+  .chip{height:64px}
+  .meta{padding:9px 11px;background:var(--card)}
+  .name{font-weight:700;font-size:.86rem}
+  .hex{font-family:var(--font-mono);font-size:.74rem;color:var(--muted);margin-top:2px}
+  .grad{height:64px;background:linear-gradient(90deg,var(--accent),var(--accent-strong))}
+</style>
+</head>
+<body>
+  <div class="row">
+    <div class="sw"><div class="chip" style="background:var(--accent)"></div><div class="meta"><div class="name">Accent · cyan</div><div class="hex">#7dd3fc · --accent</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--accent-strong)"></div><div class="meta"><div class="name">Accent strong · blue</div><div class="hex">#60a5fa · --accent-strong</div></div></div>
+    <div class="sw"><div class="grad"></div><div class="meta"><div class="name">Button gradient</div><div class="hex">cyan → blue, 90°</div></div></div>
+  </div>
+</body>
+</html>

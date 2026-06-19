@@ -1,0 +1,26 @@
+<!-- @dsCard group="Colors" viewport="700x150" name="Text & Border" subtitle="Starlight white, muted grey, hairline borders" -->
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body{margin:0;background:var(--bg);font-family:var(--font-body);color:var(--text);padding:22px}
+  .row{display:flex;gap:14px;flex-wrap:wrap;align-items:stretch}
+  .box{flex:1;min-width:140px;border-radius:var(--radius-md);padding:14px;border:1px solid var(--border);background:var(--card)}
+  .name{font-weight:700;font-size:.86rem}
+  .hex{font-family:var(--font-mono);font-size:.74rem;color:var(--muted);margin-top:3px}
+  .sample-text{color:var(--text);font-size:1.1rem;font-weight:600}
+  .sample-muted{color:var(--muted);font-size:1.1rem}
+  .border-demo{height:34px;border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:8px}
+  .border-demo.strong{border-color:var(--border-strong)}
+</style>
+</head>
+<body>
+  <div class="row">
+    <div class="box"><div class="sample-text">Starlight white</div><div class="hex">#e7edf6 · --text</div></div>
+    <div class="box"><div class="sample-muted">Muted grey</div><div class="hex">#9aa4b2 · --muted</div></div>
+    <div class="box"><div class="border-demo"></div><div class="border-demo strong"></div><div class="hex">--border / --border-strong</div></div>
+  </div>
+</body>
+</html>

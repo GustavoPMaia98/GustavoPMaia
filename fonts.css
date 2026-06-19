@@ -1,0 +1,28 @@
+<!-- @dsCard group="Spacing" viewport="700x170" name="Corner Radii" subtitle="18 · 12 · 10 · pill" -->
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body{margin:0;background:var(--bg);font-family:var(--font-body);color:var(--text);padding:24px}
+  .row{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-end}
+  .item{text-align:center}
+  .box{width:84px;height:64px;background:var(--card);border:1px solid var(--border-strong)}
+  .lg{border-radius:var(--radius-lg)}
+  .md{border-radius:var(--radius-md)}
+  .sm{border-radius:var(--radius-sm)}
+  .pill{border-radius:var(--radius-pill);width:108px}
+  .name{font-size:.8rem;font-weight:700;margin-top:8px}
+  .val{font-family:var(--font-mono);font-size:.7rem;color:var(--muted);margin-top:1px}
+</style>
+</head>
+<body>
+  <div class="row">
+    <div class="item"><div class="box lg"></div><div class="name">Large</div><div class="val">18px</div></div>
+    <div class="item"><div class="box md"></div><div class="name">Medium</div><div class="val">12px</div></div>
+    <div class="item"><div class="box sm"></div><div class="name">Small</div><div class="val">10px</div></div>
+    <div class="item"><div class="box pill"></div><div class="name">Pill</div><div class="val">999px</div></div>
+  </div>
+</body>
+</html>
