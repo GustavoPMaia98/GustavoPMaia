@@ -1011,6 +1011,78 @@
     document.querySelectorAll("[data-carousel]").forEach(wireCarousel);
   }
 
+  // ============================================================
+  //  HIGHLIGHT DETAIL MODAL — click a highlight → pop-up detail
+  // ============================================================
+  function setupHighlightModal() {
+    const modal = document.getElementById("hlModal");
+    const dataEl = document.getElementById("hl-detail-data");
+    if (!modal || !dataEl || modal.__wired) return;
+    modal.__wired = true;
+
+    let DATA = {};
+    try { DATA = JSON.parse(dataEl.textContent); } catch (e) { return; }
+
+    const lang = () => (document.documentElement.getAttribute("lang") === "pt" ? "pt" : "en");
+    const pick = v => (v && typeof v === "object") ? (v[lang()] || v.en) : v;
+
+    const elIcon = document.getElementById("hlModalIcon");
+    const elEyebrow = document.getElementById("hlModalEyebrow");
+    const elTitle = document.getElementById("hlModalTitle");
+    const elTag = document.getElementById("hlModalTag");
+    const elBody = document.getElementById("hlModalBody");
+    const elPoints = document.getElementById("hlModalPoints");
+    let lastFocus = null;
+
+    function fill(id) {
+      const d = DATA[id];
+      if (!d) return;
+      if (elIcon) elIcon.setAttribute("data-lucide", d.icon || "sparkles");
+      elEyebrow.textContent = pick(d.eyebrow) || "";
+      elTitle.textContent = pick(d.title) || "";
+      elTag.textContent = pick(d.tag) || "";
+      elBody.innerHTML = "";
+      (pick(d.body) || []).forEach(p => {
+        const para = document.createElement("p");
+        para.textContent = p;
+        elBody.appendChild(para);
+      });
+      elPoints.innerHTML = "";
+      (pick(d.points) || []).forEach(pt => {
+        const li = document.createElement("li");
+        li.textContent = pt;
+        elPoints.appendChild(li);
+      });
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+    }
+
+    function open(id) {
+      lastFocus = document.activeElement;
+      fill(id);
+      modal.hidden = false;
+      document.body.classList.add("hl-modal-open");
+      const closeBtn = modal.querySelector(".hl-modal-close");
+      if (closeBtn) setTimeout(() => closeBtn.focus(), 30);
+    }
+    function close() {
+      modal.hidden = true;
+      document.body.classList.remove("hl-modal-open");
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+
+    document.querySelectorAll(".hl-card[data-hl]").forEach(card => {
+      card.addEventListener("click", e => {
+        // a real drag on the carousel suppresses the click already; just open
+        e.preventDefault();
+        open(card.getAttribute("data-hl"));
+      });
+    });
+    modal.querySelectorAll("[data-hl-close]").forEach(b => b.addEventListener("click", close));
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape" && !modal.hidden) { e.preventDefault(); close(); }
+    });
+  }
+
   function init() {
     initStarfield();
     initNav();
@@ -1023,6 +1095,7 @@
     setupLazyImages();
     setupTreePan();
     setupCarousels();
+    setupHighlightModal();
     setupThemeToggle();
     setupLangToggle();
     setupScrollProgress();

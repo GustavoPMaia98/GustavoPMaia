@@ -1,7 +1,7 @@
 <!-- HIGHLIGHTS -->
 <section class="section" id="highlights">
   <h2>Highlights</h2>
-  <p class="section-note" data-pt="As questões centrais que orientam a minha investigação atual.">The central questions driving my current research.</p>
+  <p class="section-note" data-pt="As questões centrais que orientam a minha investigação atual. Clique num destaque para ler mais.">The central questions driving my current research. Click a highlight to read more.</p>
 
   <div class="highlights reveal" aria-label="Research highlights">
     <div class="hl-carousel" data-carousel>
@@ -13,33 +13,33 @@
         <div class="hl-track" data-carousel-track>
 
           <article class="hl-slide">
-            <a class="hl-card" href="#research">
+            <button class="hl-card" type="button" data-hl="asteroid-gardening">
               <span class="hl-visual hl-visual--a">
                 <span class="hl-glyph"><i data-lucide="orbit"></i></span>
-                <span class="hl-tag">Impact shock chemistry</span>
+                <span class="hl-tag" data-pt="Química de impacto">Impact shock chemistry</span>
               </span>
               <span class="hl-info">
-                <span class="hl-eyebrow">Research Highlight · 01</span>
-                <span class="hl-title">Asteroid Gardening and its Effect on Organic Matter</span>
-                <span class="hl-text">Impact “gardening” continually reworks the surfaces of asteroids and small bodies. I study how these shock events transform — and potentially destroy or create — organic matter, reshaping how we read the extraterrestrial organic record carried to the early Earth.</span>
-                <span class="hl-cta">Explore the research <span aria-hidden="true">→</span></span>
+                <span class="hl-eyebrow" data-pt="Destaque de Investigação · 01">Research Highlight · 01</span>
+                <span class="hl-title" data-pt="Jardinagem de Asteroides e o seu Efeito na Matéria Orgânica">Asteroid Gardening and its Effect on Organic Matter</span>
+                <span class="hl-text" data-pt="A “jardinagem” por impactos remodela continuamente as superfícies de asteroides e de pequenos corpos. Estudo como estes eventos de choque transformam — e potencialmente destroem ou criam — matéria orgânica, redesenhando a forma como lemos o registo orgânico extraterrestre transportado para a Terra primitiva.">Impact “gardening” continually reworks the surfaces of asteroids and small bodies. I study how these shock events transform — and potentially destroy or create — organic matter, reshaping how we read the extraterrestrial organic record carried to the early Earth.</span>
+                <span class="hl-cta" data-pt="Ler mais →">Read more →</span>
               </span>
-            </a>
+            </button>
           </article>
 
           <article class="hl-slide">
-            <a class="hl-card" href="#research">
+            <button class="hl-card" type="button" data-hl="ribonucleosides">
               <span class="hl-visual hl-visual--b">
                 <span class="hl-glyph"><i data-lucide="atom"></i></span>
-                <span class="hl-tag">Prebiotic chemistry</span>
+                <span class="hl-tag" data-pt="Química prebiótica">Prebiotic chemistry</span>
               </span>
               <span class="hl-info">
-                <span class="hl-eyebrow">Research Highlight · 02</span>
-                <span class="hl-title">Extraterrestrial Ribonucleosides: Possibility or Myth?</span>
-                <span class="hl-text">Ribonucleosides are core building blocks of RNA. Could they form — and survive — beyond Earth? Using mechanochemistry and shock-driven synthesis, I test whether these molecules are a genuine astrochemical possibility or a tempting myth.</span>
-                <span class="hl-cta">Explore the research <span aria-hidden="true">→</span></span>
+                <span class="hl-eyebrow" data-pt="Destaque de Investigação · 02">Research Highlight · 02</span>
+                <span class="hl-title" data-pt="Ribonucleósidos Extraterrestres: Possibilidade ou Mito?">Extraterrestrial Ribonucleosides: Possibility or Myth?</span>
+                <span class="hl-text" data-pt="Os ribonucleósidos são blocos de construção centrais do RNA. Poderão formar-se — e sobreviver — para além da Terra? Recorrendo à mecanoquímica e à síntese induzida por choque, testo se estas moléculas são uma possibilidade astroquímica genuína ou um mito tentador.">Ribonucleosides are core building blocks of RNA. Could they form — and survive — beyond Earth? Using mechanochemistry and shock-driven synthesis, I test whether these molecules are a genuine astrochemical possibility or a tempting myth.</span>
+                <span class="hl-cta" data-pt="Ler mais →">Read more →</span>
               </span>
-            </a>
+            </button>
           </article>
 
         </div>
@@ -51,5 +51,74 @@
     </div>
 
     <div class="hl-pager" data-carousel-pager aria-label="Choose a highlight"></div>
+  </div>
+
+  <!-- Detailed highlight content (EN + PT), read by the modal -->
+  <script type="application/json" id="hl-detail-data">
+  {
+    "asteroid-gardening": {
+      "icon": "orbit",
+      "tag": { "en": "Impact shock chemistry", "pt": "Química de impacto" },
+      "eyebrow": { "en": "Research Highlight · 01", "pt": "Destaque de Investigação · 01" },
+      "title": { "en": "Asteroid Gardening and its Effect on Organic Matter", "pt": "Jardinagem de Asteroides e o seu Efeito na Matéria Orgânica" },
+      "body": {
+        "en": [
+          "“Gardening” is the slow, relentless churning of an airless body's surface by meteorite and micrometeorite impacts. On asteroids and comets it buries, exhumes, mixes and — crucially — shock-heats the uppermost regolith over billions of years.",
+          "Every impact delivers a brief pulse of extreme pressure and temperature. That pulse can break apart organic molecules, weld them into more refractory material, or drive entirely new reactions. So the organics we eventually measure in a meteorite or a returned sample are not pristine — they are the survivors of a long history of impact processing.",
+          "My work asks how much of the extraterrestrial organic record is primary chemistry versus the fingerprint of gardening. Reproducing shock conditions in the laboratory lets us calibrate what impacts add, erase and transform — sharpening how we interpret samples from missions such as Hayabusa2 (Ryugu) and OSIRIS-REx (Bennu)."
+        ],
+        "pt": [
+          "A “jardinagem” é a agitação lenta e implacável da superfície de um corpo sem atmosfera, provocada por impactos de meteoritos e micrometeoritos. Em asteroides e cometas, soterra, expõe, mistura e — sobretudo — aquece por choque o regolito mais superficial ao longo de milhares de milhões de anos.",
+          "Cada impacto liberta um breve pulso de pressão e temperatura extremas. Esse pulso pode fragmentar moléculas orgânicas, fundi-las em material mais refratário ou desencadear reações inteiramente novas. Assim, os compostos orgânicos que medimos num meteorito ou numa amostra recolhida não são intactos — são os sobreviventes de uma longa história de processamento por impactos.",
+          "A minha investigação procura perceber quanto do registo orgânico extraterrestre é química primária e quanto é a marca da jardinagem. Reproduzir as condições de choque em laboratório permite calibrar o que os impactos acrescentam, apagam e transformam — afinando a forma como interpretamos amostras de missões como a Hayabusa2 (Ryugu) e a OSIRIS-REx (Bennu)."
+        ]
+      },
+      "points": {
+        "en": ["Impact gardening reworks regolith over billions of years", "Shock pulses can destroy, preserve or create organics", "Calibrates the reading of returned samples (Ryugu, Bennu)"],
+        "pt": ["A jardinagem remodela o regolito ao longo de milhares de milhões de anos", "Os pulsos de choque podem destruir, preservar ou criar compostos orgânicos", "Calibra a leitura de amostras recolhidas (Ryugu, Bennu)"]
+      }
+    },
+    "ribonucleosides": {
+      "icon": "atom",
+      "tag": { "en": "Prebiotic chemistry", "pt": "Química prebiótica" },
+      "eyebrow": { "en": "Research Highlight · 02", "pt": "Destaque de Investigação · 02" },
+      "title": { "en": "Extraterrestrial Ribonucleosides: Possibility or Myth?", "pt": "Ribonucleósidos Extraterrestres: Possibilidade ou Mito?" },
+      "body": {
+        "en": [
+          "Ribonucleosides — a nucleobase joined to a ribose sugar — are the building blocks one step below RNA. Meteorites are known to carry nucleobases and sugars separately, but whether the assembled ribonucleoside can form and endure in space is far less certain.",
+          "I test this with mechanochemistry: using ball-milling to drive solvent-free reactions between nucleosides and the inorganic minerals found in meteorites, alongside shock-driven synthesis that mimics impact energy. These are the kinds of energy sources actually available on parent bodies and the early Earth — no beaker of warm water required.",
+          "The goal is a clear verdict. If ribonucleosides assemble and survive under realistic astrochemical conditions, they become a genuine candidate for delivery to a young planet. If they do not, the “extraterrestrial ribonucleoside” is a myth we can finally set aside — either answer sharpens the origin-of-life story."
+        ],
+        "pt": [
+          "Os ribonucleósidos — uma nucleobase ligada a um açúcar (ribose) — são os blocos de construção um passo abaixo do RNA. Sabe-se que os meteoritos transportam nucleobases e açúcares separadamente, mas é muito menos certo se o ribonucleósido já montado se consegue formar e perdurar no espaço.",
+          "Testo isto com mecanoquímica: recorrendo à moagem de bolas (ball-milling) para promover reações sem solvente entre nucleósidos e os minerais inorgânicos presentes nos meteoritos, a par de síntese induzida por choque que imita a energia dos impactos. São as fontes de energia efetivamente disponíveis nos corpos progenitores e na Terra primitiva — sem necessidade de um copo de água morna.",
+          "O objetivo é um veredicto claro. Se os ribonucleósidos se montam e sobrevivem em condições astroquímicas realistas, tornam-se candidatos genuínos à entrega num planeta jovem. Se não, o “ribonucleósido extraterrestre” é um mito que podemos finalmente arrumar — qualquer das respostas torna mais nítida a história da origem da vida."
+        ]
+      },
+      "points": {
+        "en": ["Meteorites carry nucleobases and sugars — but assembled ribonucleosides?", "Tested via mechanochemistry and shock-driven synthesis", "A clear yes/no sharpens origin-of-life models"],
+        "pt": ["Os meteoritos transportam nucleobases e açúcares — mas ribonucleósidos montados?", "Testado por mecanoquímica e síntese induzida por choque", "Um sim/não claro torna mais nítidos os modelos da origem da vida"]
+      }
+    }
+  }
+  </script>
+
+  <!-- Highlight detail modal -->
+  <div class="hl-modal" id="hlModal" role="dialog" aria-modal="true" aria-labelledby="hlModalTitle" hidden>
+    <div class="hl-modal-backdrop" data-hl-close></div>
+    <div class="hl-modal-card" role="document">
+      <button class="hl-modal-close" type="button" aria-label="Close" data-hl-close>&times;</button>
+      <div class="hl-modal-head">
+        <span class="hl-modal-glyph"><i data-lucide="orbit" id="hlModalIcon"></i></span>
+        <div>
+          <span class="hl-modal-eyebrow" id="hlModalEyebrow"></span>
+          <h3 class="hl-modal-title" id="hlModalTitle"></h3>
+          <span class="hl-modal-tag" id="hlModalTag"></span>
+        </div>
+      </div>
+      <div class="hl-modal-body" id="hlModalBody"></div>
+      <ul class="hl-modal-points" id="hlModalPoints"></ul>
+      <a class="hl-modal-link" id="hlModalLink" href="#research" data-pt="Ver a investigação em curso →">See the ongoing research →</a>
+    </div>
   </div>
 </section>

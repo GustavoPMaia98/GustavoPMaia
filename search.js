@@ -18,11 +18,82 @@
 
   // Friendly labels for the section badges
   const LABELS = {
-    about: "About", news: "News", education: "Education", experience: "Experience",
+    about: "About", highlights: "Highlights", news: "News", education: "Education", experience: "Experience",
     presentations: "Presentations", funding: "Funding", publications: "Publications",
-    tree: "Academic tree", map: "Map", tutoring: "Tutoring"
+    awards: "Awards", tree: "Academic tree", map: "Map", tutoring: "Tutoring"
   };
   const labelFor = id => LABELS[id] || (id ? id.charAt(0).toUpperCase() + id.slice(1) : "Section");
+
+  const lang = () => (document.documentElement.getAttribute("lang") === "pt" ? "pt" : "en");
+
+  // ---- Ask-a-question knowledge base ------------------------------------
+  // Curated answers to the scientific topics this site is about. Lets a
+  // visitor type a real question ("what is asteroid gardening?") and get a
+  // concise answer right inside the search palette.
+  const KB = [
+    { keys: ["asteroid gardening", "impact gardening", "gardening", "jardinagem"],
+      term: { en: "Asteroid gardening", pt: "Jardinagem de asteroides" },
+      a: { en: "The slow churning of an airless body's surface by meteorite and micrometeorite impacts. Over billions of years it buries, exhumes, mixes and shock-heats the regolith — processing any organic matter present, so what we measure today is the survivor of a long impact history.",
+           pt: "A agitação lenta da superfície de um corpo sem atmosfera por impactos de meteoritos e micrometeoritos. Ao longo de milhares de milhões de anos, soterra, expõe, mistura e aquece por choque o regolito — processando a matéria orgânica presente, pelo que o que medimos hoje é o sobrevivente de uma longa história de impactos." } },
+    { keys: ["astrobiology", "astrobiologia"],
+      term: { en: "Astrobiology", pt: "Astrobiologia" },
+      a: { en: "The science of life's origin, evolution and distribution in the universe — bringing together chemistry, biology, geology and astronomy to ask how life began and whether it could exist elsewhere.",
+           pt: "A ciência da origem, evolução e distribuição da vida no universo — reunindo química, biologia, geologia e astronomia para perguntar como a vida começou e se poderá existir noutros locais." } },
+    { keys: ["mechanochemistry", "mechanochemical", "ball milling", "ball-milling", "mecanoquimica", "mecanoquímica"],
+      term: { en: "Mechanochemistry", pt: "Mecanoquímica" },
+      a: { en: "Chemistry driven by mechanical force rather than heat or solvent — for example grinding solids together in a ball mill. It mimics energy sources available on planetary surfaces and is central to my work on solvent-free prebiotic synthesis.",
+           pt: "Química impulsionada por força mecânica em vez de calor ou solvente — por exemplo, moendo sólidos num moinho de bolas. Imita as fontes de energia disponíveis em superfícies planetárias e é central no meu trabalho de síntese prebiótica sem solvente." } },
+    { keys: ["prebiotic", "prebiotic chemistry", "prebiótica", "prebiotica"],
+      term: { en: "Prebiotic chemistry", pt: "Química prebiótica" },
+      a: { en: "The chemistry that could have produced the building blocks of life — amino acids, sugars, nucleobases — before biology itself existed, under conditions plausible on the early Earth or in space.",
+           pt: "A química que poderá ter produzido os blocos de construção da vida — aminoácidos, açúcares, nucleobases — antes de a própria biologia existir, em condições plausíveis na Terra primitiva ou no espaço." } },
+    { keys: ["ribonucleoside", "ribonucleosides", "ribonucleósidos", "ribonucleosidos", "nucleoside"],
+      term: { en: "Ribonucleosides", pt: "Ribonucleósidos" },
+      a: { en: "A nucleobase joined to a ribose sugar — the building block one step below RNA. Whether assembled ribonucleosides can form and survive in space is an open question I test with mechanochemistry and shock synthesis.",
+           pt: "Uma nucleobase ligada a um açúcar (ribose) — o bloco de construção um passo abaixo do RNA. Se os ribonucleósidos já montados se conseguem formar e sobreviver no espaço é uma questão em aberto que testo com mecanoquímica e síntese por choque." } },
+    { keys: ["origin of life", "origin-of-life", "abiogenesis", "origem da vida"],
+      term: { en: "Origin of life", pt: "Origem da vida" },
+      a: { en: "The transition from non-living chemistry to the first self-sustaining, replicating systems. My research probes one piece of it: how life's molecular building blocks could assemble from simple ingredients and energy.",
+           pt: "A transição da química não-viva para os primeiros sistemas auto-sustentáveis e capazes de se replicar. A minha investigação aborda uma parte: como os blocos moleculares da vida se poderão montar a partir de ingredientes simples e energia." } },
+    { keys: ["shock synthesis", "shock-driven", "impact synthesis", "síntese por choque", "sintese por choque"],
+      term: { en: "Shock-driven synthesis", pt: "Síntese induzida por choque" },
+      a: { en: "Using the brief, intense pulse of pressure and temperature from an impact to drive chemical reactions — a way to reproduce, in the lab, the chemistry that comet and meteorite impacts could trigger.",
+           pt: "Usar o breve e intenso pulso de pressão e temperatura de um impacto para promover reações químicas — uma forma de reproduzir, em laboratório, a química que os impactos de cometas e meteoritos poderiam desencadear." } },
+    { keys: ["regolith", "regolito"],
+      term: { en: "Regolith", pt: "Regolito" },
+      a: { en: "The loose layer of dust and broken rock covering the surface of an asteroid, moon or planet — the material that impact gardening continually reworks.",
+           pt: "A camada solta de poeira e rocha fragmentada que cobre a superfície de um asteroide, lua ou planeta — o material que a jardinagem por impactos remodela continuamente." } },
+    { keys: ["meteorite", "meteorites", "meteorito", "meteoritos", "carbonaceous"],
+      term: { en: "Meteorites & organics", pt: "Meteoritos e compostos orgânicos" },
+      a: { en: "Carbon-rich (carbonaceous) meteorites carry amino acids, sugars and nucleobases formed in space. Studying them — and returned samples from Ryugu and Bennu — links laboratory chemistry to real extraterrestrial material.",
+           pt: "Os meteoritos ricos em carbono (carbonáceos) transportam aminoácidos, açúcares e nucleobases formados no espaço. Estudá-los — e às amostras recolhidas de Ryugu e Bennu — liga a química de laboratório a material extraterrestre real." } },
+    { keys: ["rna world", "rna", "mundo do rna"],
+      term: { en: "RNA world", pt: "Mundo do RNA" },
+      a: { en: "The hypothesis that early life relied on RNA both to store information and to catalyse reactions, before DNA and proteins took over. It makes the prebiotic formation of RNA's building blocks a key question.",
+           pt: "A hipótese de que a vida primitiva dependeu do RNA tanto para armazenar informação como para catalisar reações, antes de o DNA e as proteínas assumirem esse papel. Torna a formação prebiótica dos blocos do RNA uma questão central." } },
+    { keys: ["hplc", "mass spectrometry", "hplc-ms", "espetrometria de massa", "espectrometria"],
+      term: { en: "HPLC–MS", pt: "HPLC–MS" },
+      a: { en: "High-performance liquid chromatography coupled to mass spectrometry — the analytical workhorse for separating and identifying trace organic molecules in meteoritic and laboratory samples.",
+           pt: "Cromatografia líquida de alta eficiência acoplada a espetrometria de massa — a principal técnica analítica para separar e identificar moléculas orgânicas vestigiais em amostras meteoríticas e de laboratório." } }
+  ];
+
+  const STOP = new Set(["what","is","are","the","a","an","of","to","do","does","how","why","tell","me","about","explain","define","que","o","e","é","sao","são","como","porque","o-que-é","qual","sobre","me","diz","explica"]);
+
+  function answerFor(query) {
+    const q = " " + query.toLowerCase().replace(/[¿?¡!.,;:]/g, " ").replace(/\s+/g, " ") + " ";
+    let best = null, bestScore = 0;
+    for (const item of KB) {
+      let s = 0;
+      for (const k of item.keys) {
+        if (q.indexOf(" " + k + " ") !== -1 || q.indexOf(k) !== -1) s += k.split(" ").length * 3;
+      }
+      // loose word overlap with the canonical term
+      const words = query.toLowerCase().split(/\s+/).filter(w => w.length > 2 && !STOP.has(w));
+      for (const w of words) for (const k of item.keys) if (k.indexOf(w) !== -1) s += 1;
+      if (s > bestScore) { bestScore = s; best = item; }
+    }
+    return bestScore >= 3 ? best : null;
+  }
 
   let index = [];   // { id, label, title, text, el }
   let current = []; // current result entries (for keyboard nav)
@@ -85,11 +156,18 @@
     active = -1;
     if (query.length < 2) {
       current = [];
-      hint.textContent = "Type to search across the site — research, publications, experience, and more.";
+      hint.textContent = lang() === "pt"
+        ? "Pesquise no site ou faça uma pergunta científica — ex.: “o que é jardinagem de asteroides?”"
+        : "Search the site, or ask a science question — e.g. “what is asteroid gardening?”";
       hint.style.display = "";
       return;
     }
     const terms = query.split(/\s+/).filter(Boolean);
+
+    // Ask-a-question answer card (shown above navigational results)
+    const ans = answerFor(query);
+    if (ans) renderAnswer(ans);
+
     const seen = new Set();
     current = index
       .map(e => ({ e, s: score(e, terms) }))
@@ -100,8 +178,11 @@
       .map(x => x.e);
 
     if (!current.length) {
-      hint.textContent = "No matches found. Try another word.";
-      hint.style.display = "";
+      hint.textContent = ans
+        ? (lang() === "pt" ? "Sem outras correspondências no site." : "No other matches on the site.")
+        : (lang() === "pt" ? "Sem resultados. Tente outra palavra." : "No matches found. Try another word.");
+      hint.style.display = ans ? "none" : "";
+      if (ans) hint.style.display = "";
       return;
     }
     hint.style.display = "none";
@@ -121,6 +202,27 @@
       li.appendChild(btn);
       results.appendChild(li);
     });
+  }
+
+  function renderAnswer(item) {
+    const li = document.createElement("li");
+    li.className = "search-answer-li";
+    const card = document.createElement("div");
+    card.className = "search-answer";
+    const head = document.createElement("div");
+    head.className = "sa-head";
+    head.innerHTML = '<span class="sa-badge">' + (lang() === "pt" ? "Resposta" : "Answer") + '</span>';
+    const term = document.createElement("span");
+    term.className = "sa-term";
+    term.textContent = (item.term[lang()] || item.term.en);
+    head.appendChild(term);
+    const body = document.createElement("p");
+    body.className = "sa-body";
+    body.textContent = (item.a[lang()] || item.a.en);
+    card.appendChild(head);
+    card.appendChild(body);
+    li.appendChild(card);
+    results.appendChild(li);
   }
 
   function go(entry) {
