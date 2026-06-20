@@ -2,13 +2,13 @@
 <section class="section" id="news">
   <h2>News</h2>
   <div class="news reveal" aria-label="Latest news">
-    <div class="news-carousel" data-news-carousel>
-      <button class="news-arrow news-arrow--prev" type="button" aria-label="Previous update">
+    <div class="news-carousel" data-carousel>
+      <button class="news-arrow news-arrow--prev" type="button" aria-label="Previous update" data-carousel-prev>
         <i data-lucide="chevron-left"></i>
       </button>
 
-      <div class="news-viewport">
-        <div class="news-track" data-news-track>
+      <div class="news-viewport" data-carousel-viewport>
+        <div class="news-track" data-carousel-track>
 
           <article class="news-slide">
             <a class="news-card" href="https://www.linkedin.com/feed/update/urn:li:activity:7463711729630351360/" target="_blank" rel="noopener noreferrer">
@@ -118,12 +118,12 @@
         </div>
       </div>
 
-      <button class="news-arrow news-arrow--next" type="button" aria-label="Next update">
+      <button class="news-arrow news-arrow--next" type="button" aria-label="Next update" data-carousel-next>
         <i data-lucide="chevron-right"></i>
       </button>
     </div>
 
-    <div class="news-pager" data-news-pager aria-label="Choose an update"></div>
+    <div class="news-pager" data-carousel-pager aria-label="Choose an update"></div>
     <a class="news-more" href="https://www.linkedin.com/in/gustavopinhomaia" target="_blank" rel="noopener noreferrer">More updates on LinkedIn ↗</a>
   </div>
 </section>

@@ -575,7 +575,7 @@
 
     // Capture phase so it fires even though accordions stop click propagation.
     document.addEventListener("click", e => {
-      const img = e.target.closest(".expand-gallery img, .avatar-img");
+      const img = e.target.closest(".expand-gallery img, .avatar-img, .award-cert img");
       if (!img || !img.getAttribute("src")) return;
       e.preventDefault();
       e.stopPropagation();
@@ -595,6 +595,7 @@
   // ============================================================
   const I18N = {
     nav_news:{en:"News",pt:"Novidades"}, nav_education:{en:"Education",pt:"Educação"},
+    nav_highlights:{en:"Highlights",pt:"Destaques"}, nav_awards:{en:"Awards",pt:"Prémios"},
     nav_experience:{en:"Experience",pt:"Experiência"}, nav_presentations:{en:"Presentations",pt:"Apresentações"},
     nav_funding:{en:"Funding",pt:"Financiamento"}, nav_publications:{en:"Publications",pt:"Publicações"},
     nav_tree:{en:"Tree",pt:"Árvore"}, nav_map:{en:"Map",pt:"Mapa"}, nav_tutoring:{en:"Tutoring",pt:"Explicações"},
@@ -609,14 +610,15 @@
   const HEADINGS = {
     "Education":"Educação", "Experience":"Experiência", "Presentations":"Apresentações",
     "Funding":"Financiamento", "Publications":"Publicações", "Academic Tree":"Árvore Académica",
-    "News":"Novidades", "Where I have been":"Por onde andei"
+    "News":"Novidades", "Where I have been":"Por onde andei",
+    "Highlights":"Destaques", "Awards":"Prémios"
   };
 
   // Section heading icons (Lucide)
   function injectHeadingIcons() {
-    const ICONS = { news:"newspaper", education:"graduation-cap", experience:"briefcase",
+    const ICONS = { highlights:"sparkles", news:"newspaper", education:"graduation-cap", experience:"briefcase",
       presentations:"presentation", funding:"banknote", publications:"book-open",
-      tree:"git-fork", map:"map-pin", tutoring:"flask-conical" };
+      awards:"award", tree:"git-fork", map:"map-pin", tutoring:"flask-conical" };
     document.querySelectorAll(".section > h2").forEach(h => {
       if (h.querySelector(".h2-label")) return;
       const sec = h.closest("section"); const id = sec ? sec.id : "";
@@ -922,17 +924,20 @@
   }
 
   // ============================================================
-  //  NEWS CAROUSEL — clickable cards, arrows, dots, drag/swipe
+  //  CAROUSEL — generic; clickable cards, arrows, dots, drag/swipe.
+  //  Works for any [data-carousel] (news, highlights, …).
   // ============================================================
-  function setupNewsCarousel() {
-    const root = document.querySelector("[data-news-carousel]");
+  function wireCarousel(root) {
     if (!root || root.__wired) return;
-    const track = root.querySelector("[data-news-track]");
+    const track = root.querySelector("[data-carousel-track]");
+    if (!track) return;
     const slides = Array.from(track.children);
-    const pager = root.parentElement.querySelector("[data-news-pager]");
-    const prev = root.querySelector(".news-arrow--prev");
-    const next = root.querySelector(".news-arrow--next");
     if (!slides.length) return;
+    const vp = root.querySelector("[data-carousel-viewport]");
+    const prev = root.querySelector("[data-carousel-prev]");
+    const next = root.querySelector("[data-carousel-next]");
+    const pager = root.querySelector("[data-carousel-pager]") ||
+      (root.parentElement && root.parentElement.querySelector("[data-carousel-pager]"));
     root.__wired = true;
 
     let i = 0;
@@ -940,15 +945,18 @@
     const clamp = x => (x + n) % n;
 
     // build dots
-    pager.innerHTML = "";
-    const dots = slides.map((_, idx) => {
-      const b = document.createElement("button");
-      b.type = "button";
-      b.setAttribute("aria-label", "Update " + (idx + 1));
-      b.addEventListener("click", () => go(idx));
-      pager.appendChild(b);
-      return b;
-    });
+    let dots = [];
+    if (pager) {
+      pager.innerHTML = "";
+      dots = slides.map((_, idx) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.setAttribute("aria-label", "Slide " + (idx + 1));
+        b.addEventListener("click", () => go(idx));
+        pager.appendChild(b);
+        return b;
+      });
+    }
 
     function render(animate) {
       track.classList.toggle("no-anim", !animate);
@@ -958,8 +966,8 @@
     function go(idx) { i = clamp(idx); render(true); }
     function step(d) { go(i + d); }
 
-    prev.addEventListener("click", () => step(-1));
-    next.addEventListener("click", () => step(1));
+    if (prev) prev.addEventListener("click", () => step(-1));
+    if (next) next.addEventListener("click", () => step(1));
 
     // keyboard when carousel has focus
     root.setAttribute("tabindex", "0");
@@ -970,7 +978,6 @@
 
     // drag / swipe
     let down = false, moved = false, x0 = 0;
-    const vp = root.querySelector(".news-viewport");
     vp.addEventListener("pointerdown", e => {
       down = true; moved = false; x0 = e.clientX;
       track.classList.add("no-anim");
@@ -1000,6 +1007,10 @@
     if (window.lucide && lucide.createIcons) lucide.createIcons();
   }
 
+  function setupCarousels() {
+    document.querySelectorAll("[data-carousel]").forEach(wireCarousel);
+  }
+
   function init() {
     initStarfield();
     initNav();
@@ -1011,7 +1022,7 @@
     injectHeadingIcons();
     setupLazyImages();
     setupTreePan();
-    setupNewsCarousel();
+    setupCarousels();
     setupThemeToggle();
     setupLangToggle();
     setupScrollProgress();
