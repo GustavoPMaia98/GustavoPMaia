@@ -200,12 +200,12 @@ section[id]{scroll-margin-top:calc(var(--nav-h) + 16px)}
 
 .hero-body p{margin:0 0 16px;max-width:60ch;color:#d6deea}
 
-.hero-tags{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:16px}
+.hero-tags{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:16px}
 .hero-tags span{
   text-align:center;
-  font-size:.72rem;font-weight:600;color:var(--accent);
+  font-size:.92rem;font-weight:600;color:var(--accent);
   background:rgba(125,211,252,.12);border:1px solid rgba(125,211,252,.22);
-  padding:4px 10px;border-radius:999px;
+  padding:9px 18px;border-radius:999px;
 }
 
 /* ================= SOCIAL LINKS ================= */
@@ -772,7 +772,7 @@ html[data-theme="light"] .icon-btn:hover{ background:rgba(15,23,42,.05); }
 
 /* Metrics as a compact horizontal strip above the keywords */
 .metrics--strip{
-  display:flex; flex-wrap:wrap; justify-content:flex-start; gap:12px 20px; margin:0 0 16px;
+  display:inline-flex; width:fit-content; max-width:100%; flex-wrap:wrap; justify-content:flex-start; gap:12px 20px; margin:0 0 16px;
   padding:13px 22px; border-radius:14px;
   background:rgba(125,211,252,.05); border:1px solid var(--border);
 }
