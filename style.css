@@ -219,9 +219,9 @@ section[id]{scroll-margin-top:calc(var(--nav-h) + 16px)}
 }
 .social-links a:hover{background:var(--card-hover);border-color:var(--border-strong);text-decoration:none}
 /* icon-only profile buttons — square, symbol centred */
-.social-links a.icon-link{width:36px;height:36px;padding:0;border-radius:9px;gap:0}
+.social-links a.icon-link{width:42px;height:42px;padding:0;border-radius:10px;gap:0}
 .social-links a.icon-link img,
-.social-links a.icon-link svg{width:18px;height:18px}
+.social-links a.icon-link svg{width:22px;height:22px}
 .social-links .btn{grid-column:auto}
 .cta-pill{
   background:linear-gradient(135deg,#2b2f77,#1b9aaa) !important;
@@ -772,7 +772,7 @@ html[data-theme="light"] .icon-btn:hover{ background:rgba(15,23,42,.05); }
 
 /* Metrics as a compact horizontal strip above the keywords */
 .metrics--strip{
-  display:flex; flex-wrap:wrap; justify-content:space-between; gap:14px 26px; margin:0 0 16px;
+  display:flex; flex-wrap:wrap; justify-content:flex-start; gap:12px 20px; margin:0 0 16px;
   padding:13px 22px; border-radius:14px;
   background:rgba(125,211,252,.05); border:1px solid var(--border);
 }
