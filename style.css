@@ -748,56 +748,62 @@ html[data-theme="light"] .icon-btn:hover{ background:rgba(15,23,42,.05); }
 .h2-ico{ flex:none; width:22px; height:22px; color:var(--accent); margin-right:10px; }
 
 /* ---- News window ---- */
-.news-window{
-  border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden;
-  background:var(--card); box-shadow:var(--shadow);
-}
-.news-titlebar{
-  display:flex; align-items:center; gap:10px; padding:10px 14px;
-  background:rgba(255,255,255,.05); border-bottom:1px solid var(--border);
-}
-.news-dots{ display:inline-flex; gap:6px; }
-.news-dots i{ width:11px; height:11px; border-radius:50%; background:#ff5f57; display:block; }
-.news-dots i:nth-child(2){ background:#febc2e; }
-.news-dots i:nth-child(3){ background:#28c840; }
-.news-title{ font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.85rem; color:var(--muted); }
-.news-linkedin{ margin-left:auto; font-size:.82rem; font-weight:600; }
-.news-body{ padding:6px 16px 14px; }
-
-/* ---- News carousel ---- */
-.news-carousel{ position:relative; display:flex; align-items:center; padding:6px 8px 0; }
-.news-viewport{ overflow:hidden; flex:1 1 auto; min-width:0; border-radius:var(--radius-md); }
-.news-track{ display:flex; transition:transform .45s cubic-bezier(.22,.61,.36,1); will-change:transform; }
+/* ---- News carousel — frameless, floating in space ---- */
+.news{ position:relative; }
+.news-carousel{ position:relative; display:flex; align-items:center; gap:6px; padding:0; }
+/* generous vertical padding lets the card's drop-shadow breathe so it reads as suspended */
+.news-viewport{ overflow:hidden; flex:1 1 auto; min-width:0; padding:42px 4px; }
+.news-track{ display:flex; transition:transform .5s cubic-bezier(.22,.61,.36,1); will-change:transform; }
 .news-track.no-anim{ transition:none; }
-.news-slide{ flex:0 0 100%; min-width:100%; padding:12px; box-sizing:border-box; }
+.news-slide{ flex:0 0 100%; min-width:100%; padding:0 16px; box-sizing:border-box; display:flex; }
 
+/* every card is the SAME size regardless of image type or text length */
 .news-card{
-  display:grid; grid-template-columns:minmax(0,40%) 1fr; gap:0; align-items:stretch;
+  display:grid; grid-template-columns:42% 1fr; gap:0; align-items:stretch;
+  width:100%; height:340px;
   text-decoration:none; color:inherit;
-  background:rgba(255,255,255,.03); border:1px solid var(--border); border-radius:var(--radius-md);
-  overflow:hidden; min-height:236px;
-  transition:border-color .2s, background .2s, box-shadow .2s;
+  border-radius:24px; overflow:hidden;
+  background:linear-gradient(165deg, rgba(255,255,255,.075), rgba(255,255,255,.02));
+  backdrop-filter:blur(18px) saturate(125%);
+  -webkit-backdrop-filter:blur(18px) saturate(125%);
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:
+    0 44px 80px -32px rgba(0,0,0,.85),
+    0 16px 34px -18px rgba(0,0,0,.6),
+    inset 0 1px 0 rgba(255,255,255,.10);
+  transition:transform .3s ease, box-shadow .3s ease, border-color .25s ease;
 }
 a.news-card{ cursor:pointer; }
-a.news-card:hover{ border-color:var(--border-strong); background:var(--card-hover); box-shadow:0 16px 34px rgba(0,0,0,.38); text-decoration:none; }
+a.news-card:hover{
+  transform:translateY(-6px);
+  border-color:rgba(125,211,252,.40);
+  box-shadow:
+    0 60px 100px -34px rgba(0,0,0,.9),
+    0 20px 44px -16px rgba(0,0,0,.65),
+    0 0 0 1px rgba(125,211,252,.18),
+    inset 0 1px 0 rgba(255,255,255,.12);
+}
 a.news-card:hover .news-cta{ gap:9px; color:var(--text); }
-a.news-card:hover .news-media--photo img{ transform:scale(1.05); }
+a.news-card:hover .news-media--photo img{ transform:scale(1.06); }
 
-.news-media{ position:relative; overflow:hidden; min-height:180px; }
+.news-media{ position:relative; overflow:hidden; height:100%; }
 .news-media img{ display:block; width:100%; height:100%; }
 .news-media--photo img{ object-fit:cover; transition:transform .5s ease; }
-.news-media--photo::after{ content:""; position:absolute; inset:0; background:linear-gradient(90deg,transparent 70%,rgba(11,16,32,.55)); pointer-events:none; }
-.news-media--logo{ background:linear-gradient(160deg,#f4f7fb,#dbe5f3); display:flex; align-items:center; justify-content:center; padding:24px; }
-.news-media--logo img{ width:auto; height:auto; max-width:80%; max-height:76%; object-fit:contain; }
+.news-media--photo::after{ content:""; position:absolute; inset:0; background:linear-gradient(90deg,transparent 64%,rgba(11,16,32,.55)); pointer-events:none; }
+.news-media--logo{ background:linear-gradient(160deg,#f4f7fb,#dbe5f3); display:flex; align-items:center; justify-content:center; padding:26px; }
+.news-media--logo img{ width:auto; height:auto; max-width:82%; max-height:74%; object-fit:contain; }
 
-.news-info{ display:flex; flex-direction:column; gap:13px; padding:24px 26px; justify-content:center; }
+.news-info{ display:flex; flex-direction:column; gap:14px; padding:28px 30px; justify-content:center; min-width:0; }
 .news-date-chip{
   align-self:flex-start; font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
   font-size:.72rem; font-weight:700; letter-spacing:.04em; color:var(--accent);
   background:rgba(125,211,252,.12); border:1px solid rgba(125,211,252,.22);
   padding:4px 11px; border-radius:999px;
 }
-.news-text{ font-size:1.02rem; line-height:1.56; color:var(--text); }
+.news-text{
+  font-size:1.02rem; line-height:1.55; color:var(--text);
+  display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical; overflow:hidden;
+}
 .news-text em{ color:#cdd6e4; font-style:italic; }
 .news-cta{
   display:inline-flex; align-items:center; gap:6px; margin-top:2px;
@@ -805,17 +811,18 @@ a.news-card:hover .news-media--photo img{ transform:scale(1.05); }
 }
 
 .news-arrow{
-  flex:0 0 auto; width:42px; height:42px; margin:0 4px;
+  flex:0 0 auto; width:44px; height:44px; margin:0 2px;
   display:flex; align-items:center; justify-content:center;
-  background:var(--card); border:1px solid var(--border); border-radius:50%;
-  color:var(--text); cursor:pointer; transition:background .2s, border-color .2s, transform .15s;
+  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); border-radius:50%;
+  color:var(--text); cursor:pointer; backdrop-filter:blur(8px);
+  transition:background .2s, border-color .2s, transform .15s;
   z-index:2;
 }
-.news-arrow:hover{ background:var(--card-hover); border-color:var(--border-strong); }
+.news-arrow:hover{ background:rgba(125,211,252,.16); border-color:rgba(125,211,252,.4); }
 .news-arrow:active{ transform:scale(.9); }
 .news-arrow i{ width:20px; height:20px; }
 
-.news-pager{ display:flex; justify-content:center; gap:8px; padding:10px 0 16px; flex-wrap:wrap; }
+.news-pager{ display:flex; justify-content:center; gap:8px; padding:4px 0 6px; flex-wrap:wrap; }
 .news-pager button{
   width:9px; height:9px; padding:0; border:0; border-radius:50%; cursor:pointer;
   background:rgba(255,255,255,.22); transition:background .2s, transform .2s, width .25s;
@@ -823,16 +830,24 @@ a.news-card:hover .news-media--photo img{ transform:scale(1.05); }
 .news-pager button:hover{ background:rgba(125,211,252,.5); }
 .news-pager button.active{ background:var(--accent); width:24px; border-radius:5px; }
 
+.news-more{
+  display:block; text-align:center; margin-top:12px;
+  font-size:.84rem; font-weight:600; color:var(--muted);
+  text-decoration:none; transition:color .2s;
+}
+.news-more:hover{ color:var(--accent); }
+
 @media (max-width:720px){
-  .news-card{ grid-template-columns:1fr; min-height:0; }
-  .news-media{ aspect-ratio:16/9; min-height:0; }
-  .news-info{ padding:16px 18px 20px; }
-  .news-arrow{ width:36px; height:36px; }
-  .news-arrow--prev{ margin-left:0; }
-  .news-arrow--next{ margin-right:0; }
+  .news-viewport{ padding:30px 2px; }
+  .news-slide{ padding:0 8px; }
+  .news-card{ grid-template-columns:1fr; grid-template-rows:172px 1fr; height:440px; }
+  .news-info{ padding:18px 20px 22px; gap:11px; }
+  .news-text{ -webkit-line-clamp:6; }
+  .news-arrow{ width:38px; height:38px; }
 }
 @media (prefers-reduced-motion: reduce){
   .news-track{ transition:none; }
+  .news-card{ transition:none; }
   .news-media--photo img{ transition:none; }
 }
 
