@@ -461,18 +461,34 @@ a:focus-visible,button:focus-visible,.timeline-card[role="button"]:focus-visible
   .hero{padding:14px;margin-bottom:32px}
   .hero-card{align-items:center;text-align:center;padding:22px 18px;gap:18px}
   .hero-top{flex-direction:column;align-items:center;gap:18px}
-  .avatar-wrapper{width:min(220px,60vw)}
+  .avatar-wrapper{width:min(220px,60vw);margin-inline:auto}
   .avatar-img{flex:none;height:auto;aspect-ratio:23/24;min-height:0}
   .hero-name-row{flex-direction:column;align-items:center;justify-content:center}
+  .hero-intro{display:flex;flex-direction:column;align-items:center}
+  .hero-intro h1{text-align:center}
+  .role{text-align:center}
   .hero-actions{align-items:center}
   .hero-actions .affiliations-block{align-items:center;width:100%}
-  .hero-intro p{margin-left:auto;margin-right:auto}
+  /* long bio reads better left-aligned even though the photo + title are centred */
+  .hero-intro p{margin-left:auto;margin-right:auto;text-align:left;max-width:60ch}
   .metrics--strip{grid-template-columns:repeat(2,1fr)}
   .affiliations{grid-template-columns:1fr}
   .metrics--strip .metric:nth-child(3){border-left:0}
   .metrics--strip .metric:nth-child(odd){border-left:0}
   .hero-tags,.social-links,.affiliations{justify-content:center}
   .affiliations{margin-left:0}
+  /* affiliations: no hover on touch, so show name beside a static logo */
+  .affiliations a{
+    flex-direction:row;height:auto;padding:14px 18px;gap:16px;
+    background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.01));
+    border-color:var(--border);
+  }
+  .affiliations a > .aff-chip{animation:none;width:60px;height:60px}
+  .affiliations a:hover > .aff-chip{transform:none}
+  .affiliations a > .aff-cap{
+    position:static;transform:none;left:auto;top:auto;
+    opacity:1;text-align:left;
+  }
   .timeline{padding-left:22px}
   .timeline-card{padding:14px 40px 14px 18px}
   .timeline-item.publication .timeline-header img{width:60px;height:60px}
