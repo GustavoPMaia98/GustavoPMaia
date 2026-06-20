@@ -179,8 +179,8 @@ section[id]{scroll-margin-top:calc(var(--nav-h) + 16px)}
 }
 .affiliations a > .aff-chip{
   display:flex;align-items:center;justify-content:center;
-  width:clamp(54px, 3vw + 42px, 64px);height:clamp(54px, 3vw + 42px, 64px);
-  padding:6px;border-radius:14px;
+  width:clamp(48px, 3vw + 36px, 54px);height:clamp(48px, 3vw + 36px, 54px);
+  padding:6px;border-radius:13px;
   background:#fbfdff;
   border:1px solid rgba(255,255,255,.85);
   box-shadow:0 8px 18px rgba(2,8,23,.5), inset 0 0 0 1px rgba(15,23,42,.06);
@@ -209,8 +209,11 @@ section[id]{scroll-margin-top:calc(var(--nav-h) + 16px)}
 }
 
 /* ================= SOCIAL LINKS ================= */
+/* Bottom band: social/profile logos on the left, institutional logos on the right */
+.hero-actions{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.hero-actions > .affiliations{align-items:flex-end}
 /* compact row: text CV + icon-only profile buttons + Cientifica pill */
-.social-links{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.social-links{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
 .social-links a{
   display:inline-flex;align-items:center;justify-content:center;gap:7px;
   padding:7px 12px;border-radius:9px;
@@ -219,9 +222,10 @@ section[id]{scroll-margin-top:calc(var(--nav-h) + 16px)}
 }
 .social-links a:hover{background:var(--card-hover);border-color:var(--border-strong);text-decoration:none}
 /* icon-only profile buttons — square, symbol centred */
-.social-links a.icon-link{width:42px;height:42px;padding:0;border-radius:10px;gap:0}
+.social-links a.icon-link{width:46px;height:46px;padding:0;border-radius:11px;gap:0;background:rgba(255,255,255,.07);border-color:var(--border-strong)}
+.social-links a.icon-link:hover{background:rgba(125,211,252,.14);border-color:var(--accent)}
 .social-links a.icon-link img,
-.social-links a.icon-link svg{width:22px;height:22px}
+.social-links a.icon-link svg{width:26px;height:26px}
 .social-links .btn{grid-column:auto}
 .cta-pill{
   background:linear-gradient(135deg,#2b2f77,#1b9aaa) !important;
@@ -429,7 +433,7 @@ a:focus-visible,button:focus-visible,.timeline-card[role="button"]:focus-visible
   .avatar-wrapper{width:min(220px,60vw)}
   .avatar-img{flex:none;height:auto;aspect-ratio:23/24;min-height:0}
   .hero-name-row{flex-direction:column;align-items:center;justify-content:center}
-  .hero-name-row > .affiliations{margin-left:0}
+  .hero-actions{justify-content:center}
   .hero-body p{margin-left:auto;margin-right:auto}
   .hero-tags,.social-links,.affiliations{justify-content:center}
   .affiliations{margin-left:0}
