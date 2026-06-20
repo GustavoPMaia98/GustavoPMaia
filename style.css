@@ -162,9 +162,10 @@ section[id]{scroll-margin-top:calc(var(--nav-h) + 16px)}
 .hero-body h1{font-size:clamp(1.9rem, 1.2rem + 3vw, 3rem);margin:0 0 6px}
 .role{color:var(--accent);font-weight:600;margin-bottom:12px}
 
-/* Name on its own line; affiliation logos sit BELOW the name */
-.hero-name-row{display:flex;flex-direction:column;align-items:flex-start;gap:14px;margin:0 0 14px}
+/* Name on the left; affiliation logos sit to the RIGHT, filling the row */
+.hero-name-row{display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:24px;margin:0 0 14px;flex-wrap:wrap}
 .hero-name-row h1{margin:0}
+.hero-name-row > .affiliations{margin-left:auto}
 
 /* Affiliation logos (CQE · NASA · IMPMC). The source logos carry dark ink and
    busy lock-ups that disappear on a dark tile, so each sits on a clean white
@@ -199,7 +200,7 @@ section[id]{scroll-margin-top:calc(var(--nav-h) + 16px)}
 
 .hero-body p{margin:0 0 16px;max-width:60ch;color:#d6deea}
 
-.hero-tags{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;max-width:360px}
+.hero-tags{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:16px}
 .hero-tags span{
   text-align:center;
   font-size:.72rem;font-weight:600;color:var(--accent);
@@ -209,7 +210,7 @@ section[id]{scroll-margin-top:calc(var(--nav-h) + 16px)}
 
 /* ================= SOCIAL LINKS ================= */
 /* compact row: text CV + icon-only profile buttons + Cientifica pill */
-.social-links{display:flex;flex-wrap:wrap;align-items:center;gap:8px;max-width:380px}
+.social-links{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
 .social-links a{
   display:inline-flex;align-items:center;justify-content:center;gap:7px;
   padding:7px 12px;border-radius:9px;
@@ -427,10 +428,10 @@ a:focus-visible,button:focus-visible,.timeline-card[role="button"]:focus-visible
   .hero-card{flex-direction:column;align-items:center;text-align:center;padding:22px 18px;gap:18px}
   .avatar-wrapper{width:min(220px,60vw)}
   .avatar-img{flex:none;height:auto;aspect-ratio:23/24;min-height:0}
-  .hero-name-row{align-items:center}
+  .hero-name-row{flex-direction:column;align-items:center;justify-content:center}
+  .hero-name-row > .affiliations{margin-left:0}
   .hero-body p{margin-left:auto;margin-right:auto}
   .hero-tags,.social-links,.affiliations{justify-content:center}
-  .hero-name-row{justify-content:center}
   .affiliations{margin-left:0}
   .timeline{padding-left:22px}
   .timeline-card{padding:14px 40px 14px 18px}
@@ -771,8 +772,8 @@ html[data-theme="light"] .icon-btn:hover{ background:rgba(15,23,42,.05); }
 
 /* Metrics as a compact horizontal strip above the keywords */
 .metrics--strip{
-  display:flex; flex-wrap:wrap; gap:14px 26px; margin:0 0 16px;
-  padding:13px 18px; border-radius:14px;
+  display:flex; flex-wrap:wrap; justify-content:space-between; gap:14px 26px; margin:0 0 16px;
+  padding:13px 22px; border-radius:14px;
   background:rgba(125,211,252,.05); border:1px solid var(--border);
 }
 .metrics--strip .metric-num{ font-size:1.5rem; }
