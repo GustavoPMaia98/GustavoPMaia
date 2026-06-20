@@ -791,6 +791,7 @@ a.news-card:hover .news-media--photo img{ transform:scale(1.06); }
 .news-media--photo img{ object-fit:cover; transition:transform .5s ease; }
 .news-media--photo::after{ content:""; position:absolute; inset:0; background:linear-gradient(90deg,transparent 64%,rgba(11,16,32,.55)); pointer-events:none; }
 .news-media--logo{ background:linear-gradient(160deg,#f4f7fb,#dbe5f3); display:flex; align-items:center; justify-content:center; padding:26px; }
+.news-media--logo-dark{ background:linear-gradient(160deg,#11182e,#0a0f1f); }
 .news-media--logo img{ width:auto; height:auto; max-width:82%; max-height:74%; object-fit:contain; }
 
 .news-info{ display:flex; flex-direction:column; gap:14px; padding:28px 30px; justify-content:center; min-width:0; }
