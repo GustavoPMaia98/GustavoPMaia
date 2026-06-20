@@ -890,6 +890,116 @@
     });
   }
 
+  // ============================================================
+  //  ACADEMIC TREE — click-and-drag to pan the wide canvas
+  // ============================================================
+  function setupTreePan() {
+    const wrap = document.querySelector(".at-wrap");
+    if (!wrap || wrap.__panWired) return;
+    wrap.__panWired = true;
+
+    let down = false, moved = false, startX = 0, startLeft = 0;
+    wrap.classList.add("at-grab");
+
+    wrap.addEventListener("pointerdown", e => {
+      // ignore drags that begin on a link/button so clicks still work
+      if (e.target.closest("a, button")) return;
+      down = true; moved = false;
+      startX = e.clientX; startLeft = wrap.scrollLeft;
+      wrap.classList.add("at-grabbing");
+    });
+    wrap.addEventListener("pointermove", e => {
+      if (!down) return;
+      const dx = e.clientX - startX;
+      if (Math.abs(dx) > 3) moved = true;
+      wrap.scrollLeft = startLeft - dx;
+    });
+    const end = () => { down = false; wrap.classList.remove("at-grabbing"); };
+    wrap.addEventListener("pointerup", end);
+    wrap.addEventListener("pointerleave", end);
+    // swallow the click that follows a real drag so links don't fire
+    wrap.addEventListener("click", e => { if (moved) { e.preventDefault(); e.stopPropagation(); } }, true);
+  }
+
+  // ============================================================
+  //  NEWS CAROUSEL — clickable cards, arrows, dots, drag/swipe
+  // ============================================================
+  function setupNewsCarousel() {
+    const root = document.querySelector("[data-news-carousel]");
+    if (!root || root.__wired) return;
+    const track = root.querySelector("[data-news-track]");
+    const slides = Array.from(track.children);
+    const pager = root.parentElement.querySelector("[data-news-pager]");
+    const prev = root.querySelector(".news-arrow--prev");
+    const next = root.querySelector(".news-arrow--next");
+    if (!slides.length) return;
+    root.__wired = true;
+
+    let i = 0;
+    const n = slides.length;
+    const clamp = x => (x + n) % n;
+
+    // build dots
+    pager.innerHTML = "";
+    const dots = slides.map((_, idx) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.setAttribute("aria-label", "Update " + (idx + 1));
+      b.addEventListener("click", () => go(idx));
+      pager.appendChild(b);
+      return b;
+    });
+
+    function render(animate) {
+      track.classList.toggle("no-anim", !animate);
+      track.style.transform = "translateX(" + (-i * 100) + "%)";
+      dots.forEach((d, idx) => d.classList.toggle("active", idx === i));
+    }
+    function go(idx) { i = clamp(idx); render(true); }
+    function step(d) { go(i + d); }
+
+    prev.addEventListener("click", () => step(-1));
+    next.addEventListener("click", () => step(1));
+
+    // keyboard when carousel has focus
+    root.setAttribute("tabindex", "0");
+    root.addEventListener("keydown", e => {
+      if (e.key === "ArrowLeft") { e.preventDefault(); step(-1); }
+      else if (e.key === "ArrowRight") { e.preventDefault(); step(1); }
+    });
+
+    // drag / swipe
+    let down = false, moved = false, x0 = 0;
+    const vp = root.querySelector(".news-viewport");
+    vp.addEventListener("pointerdown", e => {
+      down = true; moved = false; x0 = e.clientX;
+      track.classList.add("no-anim");
+    });
+    vp.addEventListener("pointermove", e => {
+      if (!down) return;
+      const dx = e.clientX - x0;
+      if (Math.abs(dx) > 4) moved = true;
+      track.style.transform = "translateX(calc(" + (-i * 100) + "% + " + dx + "px))";
+    });
+    function release(e) {
+      if (!down) return;
+      down = false;
+      const dx = (e.clientX || x0) - x0;
+      const threshold = vp.clientWidth * 0.18;
+      if (dx <= -threshold) step(1);
+      else if (dx >= threshold) step(-1);
+      else render(true);
+    }
+    vp.addEventListener("pointerup", release);
+    vp.addEventListener("pointercancel", release);
+    vp.addEventListener("pointerleave", release);
+    // suppress the click after a real drag so cards don't open
+    vp.addEventListener("click", e => { if (moved) { e.preventDefault(); e.stopPropagation(); } }, true);
+
+    render(false);
+    if (window.lucide && lucide.createIcons) lucide.createIcons();
+  }
+
   function init() {
     initStarfield();
     initNav();
@@ -900,6 +1010,8 @@
     setupLightbox();
     injectHeadingIcons();
     setupLazyImages();
+    setupTreePan();
+    setupNewsCarousel();
     setupThemeToggle();
     setupLangToggle();
     setupScrollProgress();
