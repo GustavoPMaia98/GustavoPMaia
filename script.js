@@ -1014,6 +1014,27 @@
   // ============================================================
   //  HIGHLIGHT DETAIL MODAL — click a highlight → pop-up detail
   // ============================================================
+  // Navigate to the Publications section and open the paper matching a DOI
+  function openPublication(doi) {
+    if (!doi) return;
+    const norm = String(doi).replace(/^https?:\/\/(dx\.)?doi\.org\//i, "").trim().toLowerCase();
+    let target = null;
+    document.querySelectorAll('.timeline-item.publication a[href*="doi.org/"]').forEach(a => {
+      const m = a.getAttribute("href").match(/doi\.org\/(.+)$/i);
+      if (m && decodeURIComponent(m[1]).trim().toLowerCase() === norm) target = a.closest(".timeline-item");
+    });
+    const sec = document.getElementById("publications");
+    if (sec) window.scrollTo({ top: sec.getBoundingClientRect().top + window.scrollY - 76, behavior: "smooth" });
+    if (target) {
+      document.querySelectorAll(".timeline-item.open").forEach(it => { if (it !== target) closeTimelineItem(it); });
+      setTimeout(() => {
+        openTimelineItem(target);
+        target.classList.add("pub-flash");
+        setTimeout(() => target.classList.remove("pub-flash"), 1600);
+      }, 520);
+    }
+  }
+
   function setupHighlightModal() {
     const modal = document.getElementById("hlModal");
     const dataEl = document.getElementById("hl-detail-data");
@@ -1032,11 +1053,24 @@
     const elTag = document.getElementById("hlModalTag");
     const elBody = document.getElementById("hlModalBody");
     const elPoints = document.getElementById("hlModalPoints");
+    const elResults = document.getElementById("hlModalResults");
     let lastFocus = null;
 
     function fill(id) {
       const d = DATA[id];
       if (!d) return;
+      // banner photo (kept visible when the highlight has one)
+      const banner = document.getElementById("hlModalBanner");
+      const img = document.getElementById("hlModalImg");
+      if (banner && img) {
+        if (d.image) {
+          img.src = d.image;
+          img.style.objectPosition = d.imagePos || "center center";
+          banner.hidden = false;
+        } else {
+          banner.hidden = true;
+        }
+      }
       if (elIcon) elIcon.setAttribute("data-lucide", d.icon || "sparkles");
       elEyebrow.textContent = pick(d.eyebrow) || "";
       elTitle.textContent = pick(d.title) || "";
@@ -1053,6 +1087,36 @@
         li.textContent = pt;
         elPoints.appendChild(li);
       });
+      // when the highlight has paper results, drop the redundant key-points list
+      elPoints.hidden = !!(d.papers && d.papers.length);
+      // Key results from the papers (optional)
+      if (elResults) {
+        elResults.innerHTML = "";
+        if (d.papers && d.papers.length) {
+          const h = document.createElement("h4");
+          h.className = "hl-results-title";
+          h.textContent = pick(d.resultsTitle) || "Key results";
+          elResults.appendChild(h);
+          d.papers.forEach(p => {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "hl-paper-link-btn";
+            const t = document.createElement("span");
+            t.className = "hl-paper-link-title";
+            t.textContent = pick(p.title) || "";
+            const arrow = document.createElement("span");
+            arrow.className = "hl-paper-link-arrow";
+            arrow.setAttribute("aria-hidden", "true");
+            arrow.textContent = "\u2192";
+            btn.appendChild(t); btn.appendChild(arrow);
+            btn.addEventListener("click", () => { close(); openPublication(p.doi); });
+            elResults.appendChild(btn);
+          });
+          elResults.hidden = false;
+        } else {
+          elResults.hidden = true;
+        }
+      }
       if (window.lucide && lucide.createIcons) lucide.createIcons();
     }
 
