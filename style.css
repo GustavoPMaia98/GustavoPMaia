@@ -871,7 +871,9 @@ a.news-card:hover .news-media--photo img{ transform:scale(1.06); }
 
 .news-media{ position:relative; overflow:hidden; height:100%; }
 .news-media img{ display:block; width:100%; height:100%; }
-.news-media--photo img{ object-fit:cover; transition:transform .5s ease; }
+.news-media--photo img{ object-fit:cover; object-position:center; transition:transform .5s ease; }
+/* Mare Viva photo: subject + NASA logo sit on the left, so pin the crop left */
+.news-media--left img{ object-position:22% center; }
 .news-media--photo::after{ content:""; position:absolute; inset:0; background:linear-gradient(90deg,transparent 64%,rgba(11,16,32,.55)); pointer-events:none; }
 .news-media--logo{ background:#ffffff; display:flex; align-items:center; justify-content:center; padding:26px; }
 .news-media--logo-dark{ background:#1d1d1b; }
