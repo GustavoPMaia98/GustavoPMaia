@@ -339,13 +339,19 @@
     if (!btn || btn.dataset.wired) return;
     btn.dataset.wired = "1";
 
-    // Pointer-based: not meaningful on touch-only devices — hide there.
-    if (window.matchMedia("(hover: none)").matches) { btn.style.display = "none"; return; }
-
     const KEY = "gpm-autoscroll";
-    const ZONE = 0.24;       // top/bottom 24% of the viewport are active bands
-    const FULL_TRAVERSE_S = 6; // seconds to glide the whole page at full intensity
-    let enabled = false, pointerInside = false, y = 0, raf = 0;
+    const ZONE = 0.24;          // desktop: top/bottom 24% bands are active
+    const FULL_TRAVERSE_S = 6;  // seconds to glide the whole page at full intensity
+    // Touch devices have no mouse — drive the scroll by tilting the phone instead.
+    const isTouch = window.matchMedia("(hover: none)").matches ||
+                    ("ontouchstart" in window && !window.matchMedia("(hover: hover)").matches);
+    const mode = isTouch ? "tilt" : "pointer";
+
+    let enabled = false, raf = 0;
+    // pointer state
+    let pointerInside = false, y = 0;
+    // tilt state
+    let baseline = null, beta = 0;
 
     // edge hint bars (show which way the page will move)
     const top = document.createElement("div");
@@ -356,49 +362,72 @@
     bottom.innerHTML = '<span aria-hidden="true">▼</span>';
     document.body.append(top, bottom);
 
+    // describe the gesture appropriately per device
+    btn.setAttribute("data-tip", mode === "tilt"
+      ? "Tilt the phone forward to go down, back to go up"
+      : "Glide the page by moving the mouse to a screen edge");
+
     const onMove = (e) => { y = e.clientY; pointerInside = true; };
     const onLeave = () => { pointerInside = false; top.classList.remove("active"); bottom.classList.remove("active"); };
+    const onOrient = (e) => {
+      if (e.beta == null) return;
+      beta = e.beta;
+      if (baseline == null) baseline = e.beta; // first reading becomes the neutral hold
+    };
+
+    function scrollStep(dir, intensity) {
+      const eased = Math.pow(Math.min(intensity, 1), 1.6);
+      const range = Math.max(
+        document.documentElement.scrollHeight,
+        document.body.scrollHeight
+      ) - window.innerHeight;
+      const peakPerFrame = range / (FULL_TRAVERSE_S * 60); // assumes ~60fps
+      const delta = dir * Math.max(peakPerFrame, 6) * eased;
+      // write scrollTop directly (instant, bypasses the page's CSS smooth-scroll)
+      document.documentElement.scrollTop += delta;
+      document.body.scrollTop += delta;
+    }
 
     function loop() {
       raf = requestAnimationFrame(loop);
-      const vh = window.innerHeight;
       let dir = 0, intensity = 0;
-      if (pointerInside) {
-        const band = vh * ZONE;
-        if (y < band)            { dir = -1; intensity = (band - y) / band; }
-        else if (y > vh - band)  { dir = 1;  intensity = (y - (vh - band)) / band; }
+      if (mode === "pointer") {
+        const vh = window.innerHeight, band = vh * ZONE;
+        if (pointerInside) {
+          if (y < band)           { dir = -1; intensity = (band - y) / band; }
+          else if (y > vh - band) { dir = 1;  intensity = (y - (vh - band)) / band; }
+        }
+      } else if (baseline != null) {
+        // beta is front-to-back tilt. Tilting the top edge away (forward) lowers
+        // beta → scroll down; leaning it toward you raises beta → scroll up.
+        const delta = beta - baseline, DEAD = 5, RANGE = 26;
+        if (delta < -DEAD)      { dir = 1;  intensity = (-delta - DEAD) / (RANGE - DEAD); }
+        else if (delta > DEAD)  { dir = -1; intensity = (delta - DEAD) / (RANGE - DEAD); }
       }
       top.classList.toggle("active", dir === -1);
       bottom.classList.toggle("active", dir === 1);
-      if (dir !== 0) {
-        const eased = Math.pow(Math.min(intensity, 1), 1.6);
-        // time-based: at full intensity, traverse the whole page in ~FULL_TRAVERSE_S.
-        const range = Math.max(
-          document.documentElement.scrollHeight,
-          document.body.scrollHeight
-        ) - window.innerHeight;
-        const peakPerFrame = range / (FULL_TRAVERSE_S * 60); // assumes ~60fps
-        const delta = dir * Math.max(peakPerFrame, 6) * eased;
-        // write scrollTop directly (instant, bypasses the page's CSS smooth-scroll).
-        // Assign to both possible scrollers; the non-scrolling one is a harmless no-op.
-        document.documentElement.scrollTop += delta;
-        document.body.scrollTop += delta;
-      }
+      if (dir !== 0) scrollStep(dir, intensity);
     }
 
     function start() {
-      window.addEventListener("mousemove", onMove, { passive: true });
-      document.addEventListener("mouseleave", onLeave);
-      window.addEventListener("blur", onLeave);
+      if (mode === "pointer") {
+        window.addEventListener("mousemove", onMove, { passive: true });
+        document.addEventListener("mouseleave", onLeave);
+        window.addEventListener("blur", onLeave);
+      } else {
+        baseline = null; // recalibrate neutral each time it's turned on
+        window.addEventListener("deviceorientation", onOrient);
+      }
       if (!raf) raf = requestAnimationFrame(loop);
     }
     function stop() {
       window.removeEventListener("mousemove", onMove);
       document.removeEventListener("mouseleave", onLeave);
       window.removeEventListener("blur", onLeave);
+      window.removeEventListener("deviceorientation", onOrient);
       cancelAnimationFrame(raf); raf = 0;
       top.classList.remove("active"); bottom.classList.remove("active");
-      pointerInside = false;
+      pointerInside = false; baseline = null;
     }
 
     function apply(on, persist) {
@@ -412,13 +441,37 @@
       if (persist) { try { localStorage.setItem(KEY, on ? "1" : "0"); } catch (_) {} }
     }
 
-    btn.addEventListener("click", () => apply(!enabled, true));
-    // Esc turns it off quickly
+    // iOS 13+ needs explicit permission for motion, granted from a user gesture.
+    async function ensureTiltPermission() {
+      try {
+        if (typeof DeviceOrientationEvent !== "undefined" &&
+            typeof DeviceOrientationEvent.requestPermission === "function") {
+          const res = await DeviceOrientationEvent.requestPermission();
+          return res === "granted";
+        }
+      } catch (_) { return false; }
+      return true; // other platforms: no explicit permission needed
+    }
+
+    btn.addEventListener("click", async () => {
+      if (enabled) { apply(false, true); return; }
+      if (mode === "tilt") {
+        const ok = await ensureTiltPermission();
+        if (!ok) return; // permission denied — stay off
+      }
+      apply(true, true);
+    });
+    // Esc turns it off quickly (desktop)
     document.addEventListener("keydown", (e) => { if (e.key === "Escape" && enabled) apply(false, true); });
 
-    let saved = "0";
-    try { saved = localStorage.getItem(KEY) || "0"; } catch (_) {}
-    apply(saved === "1", false);
+    // Auto-restore only on desktop; tilt needs a fresh tap (iOS permission gesture).
+    if (mode === "pointer") {
+      let saved = "0";
+      try { saved = localStorage.getItem(KEY) || "0"; } catch (_) {}
+      apply(saved === "1", false);
+    } else {
+      apply(false, false);
+    }
   }
 
   // ============================================================
