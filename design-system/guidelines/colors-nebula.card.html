@@ -1,0 +1,26 @@
+<!-- @dsCard group="Colors" viewport="700x160" name="Nebula Field" subtitle="The signature background — violet · cyan · blue · magenta" -->
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body{margin:0;padding:0;font-family:var(--font-body);color:var(--text)}
+  .field{height:160px;background:var(--bg-nebula);position:relative;display:flex;align-items:flex-end;padding:16px;box-sizing:border-box}
+  .label{font-family:var(--font-mono);font-size:.74rem;color:var(--muted);background:rgba(7,12,29,.55);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 10px;backdrop-filter:blur(4px)}
+  .stops{display:flex;gap:7px;position:absolute;top:16px;left:16px}
+  .stop{width:26px;height:26px;border-radius:50%;border:1px solid rgba(255,255,255,.2)}
+</style>
+</head>
+<body>
+  <div class="field">
+    <div class="stops">
+      <span class="stop" style="background:rgba(124,58,237,.9)" title="violet"></span>
+      <span class="stop" style="background:rgba(34,211,238,.9)" title="cyan"></span>
+      <span class="stop" style="background:rgba(59,130,246,.9)" title="blue"></span>
+      <span class="stop" style="background:rgba(236,72,153,.9)" title="magenta"></span>
+    </div>
+    <span class="label">--bg-nebula · fixed radial stack over navy</span>
+  </div>
+</body>
+</html>
