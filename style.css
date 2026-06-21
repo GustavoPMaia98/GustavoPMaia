@@ -267,57 +267,26 @@ section[id]{scroll-margin-top:calc(var(--nav-h) + 16px)}
 }
 
 /* ================= TIMELINE — "planets floating in space" ================= */
-.timeline{position:relative;padding-left:46px}
-/* faint constellation trail linking the planets (touch of the star-thread idea) */
-.timeline::before{
-  content:"";position:absolute;left:17px;top:14px;bottom:14px;width:1px;
-  background:repeating-linear-gradient(180deg, rgba(125,211,252,.35) 0 2px, transparent 2px 9px);
-  opacity:.5;
-}
+/* ================= TIMELINE — floating cards ================= */
+.timeline{position:relative;padding-left:0}
 .timeline-item{
-  position:relative;margin-bottom:38px;
+  position:relative;margin-bottom:22px;
   opacity:0;transform:translateY(22px);
   transition:opacity .6s ease, transform .6s ease;
 }
 .timeline-item.visible{opacity:1;transform:none}
-/* the planet: a little sphere with a lit side, soft atmosphere glow */
-.timeline-item::before{
-  content:"";position:absolute;left:-29px;top:24px;
-  width:22px;height:22px;border-radius:50%;
-  background:
-    radial-gradient(circle at 32% 30%, #ffffff 0%, var(--accent) 32%, var(--accent-strong) 70%, #2b4a8a 100%);
-  box-shadow:
-    0 0 0 1px rgba(125,211,252,.25),
-    0 0 14px 2px rgba(125,211,252,.45),
-    inset -2px -2px 5px rgba(4,10,28,.55);
-  z-index:2;
-  animation:planetBob 5s ease-in-out infinite;
-}
-/* the orbit ring around each planet */
-.timeline-item::after{
-  content:"";position:absolute;left:-37px;top:16px;
-  width:38px;height:38px;border-radius:50%;
-  border:1px solid rgba(125,211,252,.30);
-  transform:rotate(-22deg) scaleY(.46);
-  z-index:1;pointer-events:none;
-  animation:planetBob 5s ease-in-out infinite;
-}
-/* per-planet colour + size variety so they read as different worlds */
-.timeline-item:nth-child(4n+2)::before{ background:radial-gradient(circle at 32% 30%, #fff 0%, #f6c177 30%, #d98a3d 70%, #5e3416 100%); box-shadow:0 0 0 1px rgba(246,193,119,.25),0 0 14px 2px rgba(217,138,61,.4),inset -2px -2px 5px rgba(40,18,4,.55); }
-.timeline-item:nth-child(4n+2)::after{ border-color:rgba(246,193,119,.30); }
-.timeline-item:nth-child(4n+3)::before{ background:radial-gradient(circle at 32% 30%, #fff 0%, #67e8c3 30%, #2bb89a 70%, #135043 100%); box-shadow:0 0 0 1px rgba(103,232,195,.25),0 0 14px 2px rgba(43,184,154,.4),inset -2px -2px 5px rgba(4,28,22,.55); }
-.timeline-item:nth-child(4n+3)::after{ border-color:rgba(103,232,195,.30); }
-.timeline-item:nth-child(4n+4)::before{ background:radial-gradient(circle at 32% 30%, #fff 0%, #c4b5fd 30%, #8b5cf6 70%, #3a2173 100%); box-shadow:0 0 0 1px rgba(196,181,253,.25),0 0 14px 2px rgba(139,92,246,.4),inset -2px -2px 5px rgba(18,8,40,.55); }
-.timeline-item:nth-child(4n+4)::after{ border-color:rgba(196,181,253,.30); }
-.timeline-item:nth-child(odd)::before{ animation-delay:-2.3s; }
-.timeline-item:nth-child(3n)::after{ animation-delay:-1.4s; transform:rotate(20deg) scaleY(.5); }
-@keyframes planetBob{ 0%,100%{ translate:0 0 } 50%{ translate:0 -6px } }
+/* each entry gently floats in place; translate is independent of hover transform */
 .timeline-card{
   background:var(--card);border:1px solid var(--border);
   border-radius:var(--radius-md);padding:16px 44px 16px 22px;
   position:relative;transition:border-color .25s, background .25s, transform .25s, box-shadow .25s;
-  box-shadow:0 14px 34px rgba(2,8,23,.45);
+  box-shadow:0 14px 34px rgba(2,8,23,.4);
+  animation:cardFloat 6s ease-in-out infinite;
 }
+.timeline-item:nth-child(2n) > .timeline-card{ animation-duration:7s; animation-delay:-1.6s; }
+.timeline-item:nth-child(3n) > .timeline-card{ animation-duration:6.5s; animation-delay:-3.1s; }
+.timeline-item:nth-child(4n) > .timeline-card{ animation-duration:7.4s; animation-delay:-2.2s; }
+@keyframes cardFloat{ 0%,100%{ translate:0 0 } 50%{ translate:0 -7px } }
 .timeline-item.has-expand .timeline-card{cursor:pointer}
 .timeline-item.has-expand .timeline-card:hover{border-color:var(--border-strong);background:var(--card-hover)}
 /* brief highlight when a paper is opened from a highlight link */
@@ -519,10 +488,7 @@ a:focus-visible,button:focus-visible,.timeline-card[role="button"]:focus-visible
     position:static;transform:none;left:auto;top:auto;
     opacity:1;text-align:left;
   }
-  .timeline{padding-left:40px}
-  .timeline::before{left:15px}
-  .timeline-item::before{left:-27px;width:20px;height:20px}
-  .timeline-item::after{left:-34px;width:34px;height:34px}
+  .timeline{padding-left:0}
   .timeline-card{padding:14px 40px 14px 18px}
   .timeline-item.publication .timeline-header img{width:60px;height:60px}
   .equip-grid{grid-template-columns:1fr 1fr}
@@ -541,7 +507,7 @@ a:focus-visible,button:focus-visible,.timeline-card[role="button"]:focus-visible
 @media (prefers-reduced-motion: reduce){
   html{scroll-behavior:auto}
   .timeline-item,.reveal{opacity:1;transform:none;transition:none}
-  .timeline-item::before,.timeline-item::after{animation:none}
+  .timeline-card{animation:none}
   .scroll-top-btn{transition:none}
   .timeline-expand{transition:max-height .01s linear, padding .01s linear}
 }
