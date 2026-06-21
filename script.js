@@ -344,7 +344,7 @@
 
     const KEY = "gpm-autoscroll";
     const ZONE = 0.24;       // top/bottom 24% of the viewport are active bands
-    const FULL_TRAVERSE_S = 13; // seconds to glide the whole page at full intensity
+    const FULL_TRAVERSE_S = 6; // seconds to glide the whole page at full intensity
     let enabled = false, pointerInside = false, y = 0, raf = 0;
 
     // edge hint bars (show which way the page will move)
@@ -1094,6 +1094,36 @@
     vp.addEventListener("pointerleave", release);
     // suppress the click after a real drag so cards don't open
     vp.addEventListener("click", e => { if (moved) { e.preventDefault(); e.stopPropagation(); } }, true);
+
+    // ---- autoplay: advance every few seconds, pause on interaction ----
+    const DELAY = parseInt(root.getAttribute("data-autoplay") || "6000", 10);
+    let timer = null;
+    const canAuto = n > 1 && DELAY > 0 && !prefersReduced;
+    function startAuto() {
+      if (!canAuto || timer) return;
+      timer = setInterval(() => step(1), DELAY);
+    }
+    function stopAuto() { if (timer) { clearInterval(timer); timer = null; } }
+    function restartAuto() { stopAuto(); startAuto(); }
+    if (canAuto) {
+      // pause while the user is hovering, focused, or dragging; resume after
+      root.addEventListener("pointerenter", stopAuto);
+      root.addEventListener("pointerleave", startAuto);
+      root.addEventListener("focusin", stopAuto);
+      root.addEventListener("focusout", startAuto);
+      vp.addEventListener("pointerdown", stopAuto);
+      vp.addEventListener("pointerup", restartAuto);
+      // any manual nav resets the timer so it doesn't jump right after a click
+      [prev, next].forEach(b => b && b.addEventListener("click", restartAuto));
+      dots.forEach(d => d.addEventListener("click", restartAuto));
+      // pause when the carousel scrolls out of view, resume when back
+      if ("IntersectionObserver" in window) {
+        new IntersectionObserver(es => es.forEach(en => en.isIntersecting ? startAuto() : stopAuto()),
+          { threshold: 0.25 }).observe(root);
+      } else {
+        startAuto();
+      }
+    }
 
     render(false);
     if (window.lucide && lucide.createIcons) lucide.createIcons();
