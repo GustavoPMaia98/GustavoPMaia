@@ -820,8 +820,10 @@ html[data-theme="light"] .icon-btn:hover{ background:rgba(15,23,42,.05); }
 .nav-tools{ display:flex; align-items:center; gap:8px; }
 .icon-btn{
   display:inline-flex; align-items:center; justify-content:center;
-  width:38px; height:38px; border:1px solid var(--border); border-radius:10px;
+  width:auto; min-width:38px; height:38px; padding:0 9px;
+  border:1px solid var(--border); border-radius:10px;
   background:transparent; color:var(--text); cursor:pointer; font-weight:700; font-size:.82rem;
+  white-space:nowrap; overflow:hidden;
   transition:background .2s, border-color .2s;
 }
 .icon-btn:hover{ background:rgba(255,255,255,.06); border-color:var(--border-strong); }
@@ -854,34 +856,23 @@ html[data-theme="light"] .icon-btn:hover{ background:rgba(15,23,42,.05); }
 .tool-pill.is-active svg{ color:var(--accent); }
 .tool-pill.is-active .tool-pill-state{ background:var(--accent); color:#06121f; }
 
-/* ---- Custom tooltips for nav tools: slide out BESIDE the control ---- */
-.nav-tools [data-tip]{ position:relative; }
-.nav-tools [data-tip]::after{
+/* ---- Nav tool labels: expand INLINE to the right on hover, nudging neighbours ---- */
+.nav-tools .icon-btn[data-tip]::after{
   content:attr(data-tip);
-  position:absolute; top:50%; right:calc(100% + 12px);
-  transform:translateY(-50%) translateX(7px);
-  width:max-content; max-width:min(60vw, 280px);
-  padding:7px 13px; border-radius:999px;
-  background:rgba(10,16,30,.97); color:var(--text);
-  border:1px solid var(--border-strong);
-  box-shadow:0 10px 24px rgba(2,8,23,.5);
-  font-size:.78rem; font-weight:600; line-height:1.2; text-align:left;
-  white-space:nowrap; letter-spacing:0; text-transform:none;
-  font-family:var(--font-body);
-  opacity:0; pointer-events:none;
-  transition:opacity .18s ease, transform .2s ease; z-index:60;
+  display:inline-block; max-width:0; opacity:0; overflow:hidden;
+  white-space:nowrap; vertical-align:middle; margin-left:0;
+  font-size:.8rem; font-weight:600; line-height:1; letter-spacing:0; text-transform:none;
+  transition:max-width .3s ease, opacity .22s ease, margin-left .3s ease;
 }
-.nav-tools [data-tip]::before{
-  content:""; position:absolute; top:50%; right:calc(100% + 6px);
-  transform:translateY(-50%);
-  border:6px solid transparent; border-left-color:var(--border-strong);
-  opacity:0; transition:opacity .18s ease; z-index:61;
+.nav-tools .icon-btn[data-tip]:hover,
+.nav-tools .icon-btn[data-tip]:focus-visible{
+  background:rgba(125,211,252,.12); border-color:var(--accent); color:var(--accent);
 }
-.nav-tools [data-tip]:hover::after,
-.nav-tools [data-tip]:focus-visible::after{ opacity:1; transform:translateY(-50%) translateX(0); }
-.nav-tools [data-tip]:hover::before,
-.nav-tools [data-tip]:focus-visible::before{ opacity:1; }
-@media (hover: none){ .nav-tools [data-tip]::after, .nav-tools [data-tip]::before{ display:none; } }
+.nav-tools .icon-btn[data-tip]:hover::after,
+.nav-tools .icon-btn[data-tip]:focus-visible::after{
+  max-width:200px; opacity:1; margin-left:8px;
+}
+@media (hover: none){ .nav-tools .icon-btn[data-tip]::after{ display:none; } }
 
 /* ---- Hands-free scroll edge hint bars ---- */
 .autoscroll-edge{

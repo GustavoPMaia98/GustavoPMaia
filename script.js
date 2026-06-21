@@ -341,7 +341,7 @@
 
     const KEY = "gpm-autoscroll";
     const ZONE = 0.24;          // desktop: top/bottom 24% bands are active
-    const FULL_TRAVERSE_S = 6;  // seconds to glide the whole page at full intensity
+    const FULL_TRAVERSE_S = 4; // seconds to glide the whole page at full intensity
     // Touch devices have no mouse — drive the scroll by tilting the phone instead.
     const isTouch = window.matchMedia("(hover: none)").matches ||
                     ("ontouchstart" in window && !window.matchMedia("(hover: hover)").matches);
@@ -367,6 +367,14 @@
       ? "Tilt the phone forward to go down, back to go up"
       : "Glide the page by moving the mouse to a screen edge");
 
+    // testable speed: change live from the console, e.g. handsFreeSpeed(4)
+    let traverse = FULL_TRAVERSE_S;
+    window.handsFreeSpeed = (sec) => {
+      const v = parseFloat(sec);
+      if (v > 0) { traverse = v; console.log("[hands-free] full traverse =", v, "s"); }
+      return traverse;
+    };
+
     const onMove = (e) => { y = e.clientY; pointerInside = true; };
     const onLeave = () => { pointerInside = false; top.classList.remove("active"); bottom.classList.remove("active"); };
     const onOrient = (e) => {
@@ -375,21 +383,18 @@
       if (baseline == null) baseline = e.beta; // first reading becomes the neutral hold
     };
 
-    function scrollStep(dir, intensity) {
-      const eased = Math.pow(Math.min(intensity, 1), 1.6);
-      const range = Math.max(
-        document.documentElement.scrollHeight,
-        document.body.scrollHeight
-      ) - window.innerHeight;
-      const peakPerFrame = range / (FULL_TRAVERSE_S * 60); // assumes ~60fps
-      const delta = dir * Math.max(peakPerFrame, 6) * eased;
-      // write scrollTop directly (instant, bypasses the page's CSS smooth-scroll)
-      document.documentElement.scrollTop += delta;
-      document.body.scrollTop += delta;
-    }
+    // Time-based scroll: move a constant px-per-SECOND so the speed is uniform
+    // regardless of frame rate. A fractional accumulator avoids integer stutter.
+    let lastT = 0, acc = 0;
+    const curScroll = () => Math.max(document.documentElement.scrollTop, document.body.scrollTop);
+    const setScroll = (px) => { document.documentElement.scrollTop = px; document.body.scrollTop = px; };
 
-    function loop() {
+    function loop(t) {
       raf = requestAnimationFrame(loop);
+      if (!lastT) { lastT = t; acc = curScroll(); }
+      let dt = (t - lastT) / 1000; lastT = t;
+      if (dt > 0.1) dt = 0.1; // clamp hitches / tab switches so it never lurches
+
       let dir = 0, intensity = 0;
       if (mode === "pointer") {
         const vh = window.innerHeight, band = vh * ZONE;
@@ -400,13 +405,27 @@
       } else if (baseline != null) {
         // beta is front-to-back tilt. Tilting the top edge away (forward) lowers
         // beta → scroll down; leaning it toward you raises beta → scroll up.
-        const delta = beta - baseline, DEAD = 5, RANGE = 26;
-        if (delta < -DEAD)      { dir = 1;  intensity = (-delta - DEAD) / (RANGE - DEAD); }
-        else if (delta > DEAD)  { dir = -1; intensity = (delta - DEAD) / (RANGE - DEAD); }
+        const d = beta - baseline, DEAD = 5, RANGE = 26;
+        if (d < -DEAD)      { dir = 1;  intensity = (-d - DEAD) / (RANGE - DEAD); }
+        else if (d > DEAD)  { dir = -1; intensity = (d - DEAD) / (RANGE - DEAD); }
       }
       top.classList.toggle("active", dir === -1);
       bottom.classList.toggle("active", dir === 1);
-      if (dir !== 0) scrollStep(dir, intensity);
+
+      // resync if the user scrolled manually (don't fight our own sub-pixel rounding)
+      const cur = curScroll();
+      if (Math.abs(cur - acc) > 2) acc = cur;
+
+      if (dir !== 0) {
+        const range = Math.max(
+          document.documentElement.scrollHeight,
+          document.body.scrollHeight
+        ) - window.innerHeight;
+        const eased = Math.pow(Math.min(intensity, 1), 1.6);
+        const speed = (range / Math.max(traverse, 0.2)) * eased; // px per SECOND
+        acc = Math.max(0, Math.min(acc + dir * speed * dt, range));
+        setScroll(acc);
+      }
     }
 
     function start() {
@@ -418,14 +437,14 @@
         baseline = null; // recalibrate neutral each time it's turned on
         window.addEventListener("deviceorientation", onOrient);
       }
-      if (!raf) raf = requestAnimationFrame(loop);
+      if (!raf) { lastT = 0; raf = requestAnimationFrame(loop); }
     }
     function stop() {
       window.removeEventListener("mousemove", onMove);
       document.removeEventListener("mouseleave", onLeave);
       window.removeEventListener("blur", onLeave);
       window.removeEventListener("deviceorientation", onOrient);
-      cancelAnimationFrame(raf); raf = 0;
+      cancelAnimationFrame(raf); raf = 0; lastT = 0;
       top.classList.remove("active"); bottom.classList.remove("active");
       pointerInside = false; baseline = null;
     }
