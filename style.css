@@ -890,24 +890,43 @@ html[data-theme="light"] .icon-btn:hover{ background:rgba(15,23,42,.05); }
    inside the sticky nav, so opening it grows the header and pushes the page
    down instead of floating over the hero. */
 .nav-sections-row{
-  display:grid; grid-template-rows:0fr;
+  display:none;
   background:rgba(8,12,24,.5);
-  border-top:0 solid var(--border);
+  border-top:1px solid var(--border);
 }
-.nav-sections-row.open{ grid-template-rows:1fr; border-top-width:1px; }
-.nav-sections-clip{ overflow:hidden; min-height:0; }
+.nav-sections-row.open{ display:block; }
+.nav-sections-clip{ overflow:visible; }
 .nav-sections-inner{
-  max-width:var(--max-width); margin:0 auto; padding:9px 20px;
-  display:flex; flex-wrap:wrap; gap:4px; justify-content:flex-end;
+  max-width:var(--max-width); margin:0 auto; padding:10px 20px;
+  display:flex; flex-wrap:wrap; gap:6px; justify-content:flex-end;
 }
-.nav-sections-inner a{
-  padding:7px 12px; border-radius:9px; color:var(--muted);
-  font-weight:600; font-size:.9rem; white-space:nowrap;
-  transition:color .2s, background .2s;
+.nav-sec-ico{
+  position:relative;
+  display:inline-flex; align-items:center; justify-content:center;
+  width:40px; height:40px; border-radius:10px;
+  color:var(--muted); border:1px solid transparent;
+  transition:color .2s, background .2s, border-color .2s;
 }
-.nav-sections-inner a:hover{ color:var(--accent); background:rgba(125,211,252,.1); text-decoration:none; }
+.nav-sec-ico i{ width:19px; height:19px; }
+.nav-sec-ico:hover{
+  color:var(--accent); background:rgba(125,211,252,.1);
+  border-color:var(--accent); text-decoration:none;
+}
+/* Name tooltip — drops below the icon, same reveal feel as the toolbar tips. */
+.nav-sec-ico::after{
+  content:attr(data-tip);
+  position:absolute; top:calc(100% + 7px); left:50%; transform:translateX(-50%) translateY(-3px);
+  padding:4px 9px; border-radius:7px; white-space:nowrap;
+  background:rgba(8,12,24,.96); border:1px solid var(--border); color:var(--text);
+  font-size:.74rem; font-weight:600; letter-spacing:.01em;
+  opacity:0; pointer-events:none; z-index:60;
+  transition:opacity .18s ease, transform .18s ease;
+}
+.nav-sec-ico:hover::after,
+.nav-sec-ico:focus-visible::after{ opacity:1; transform:translateX(-50%) translateY(0); }
 html[data-theme="light"] .nav-sections-row{ background:rgba(255,255,255,.6); }
-html[data-theme="light"] .nav-sections-inner a{ color:#3f4757; }
+html[data-theme="light"] .nav-sec-ico{ color:#3f4757; }
+html[data-theme="light"] .nav-sec-ico::after{ background:#fff; color:#1f2733; }
 /* Desktop: the button IS the nav, so hide the old inline section titles. */
 @media (min-width:821px){ .nav-links{ display:none; } }
 /* Mobile keeps the hamburger + dropdown; the section button/row are desktop-only. */

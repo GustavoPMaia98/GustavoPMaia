@@ -222,6 +222,7 @@
     const sectionsRow = document.getElementById("navSectionsRow");
     if (jump && sectionsRow && !jump.dataset.wired) {
       jump.dataset.wired = "1";
+      if (window.lucide && lucide.createIcons) try { lucide.createIcons(); } catch(e){}
       const jbtn = jump.querySelector(".nav-jump-btn");
       let closeT = null;
       const setOpen = (open) => {
