@@ -860,53 +860,58 @@ html[data-theme="light"] .icon-btn:hover{ background:rgba(15,23,42,.05); }
 .tool-pill.is-active .tool-pill-state{ background:var(--accent); color:#06121f; }
 
 /* ---- Nav tool labels: expand INLINE to the right on hover, nudging neighbours ---- */
-.nav-tools .icon-btn[data-tip]::after{
+/* Tool labels reveal to the LEFT of the icon (::before, not ::after). */
+.nav-tools .icon-btn[data-tip]::before{
   content:attr(data-tip);
   display:inline-block; max-width:0; opacity:0; overflow:hidden;
-  white-space:nowrap; vertical-align:middle; margin-left:0;
+  white-space:nowrap; vertical-align:middle; margin-right:0;
   font-size:.8rem; font-weight:600; line-height:1; letter-spacing:0; text-transform:none;
-  transition:max-width .3s ease, opacity .22s ease, margin-left .3s ease;
+  transition:max-width .3s ease, opacity .22s ease, margin-right .3s ease;
 }
 .nav-tools .icon-btn[data-tip]:hover,
 .nav-tools .icon-btn[data-tip]:focus-visible{
   background:rgba(125,211,252,.12); border-color:var(--accent); color:var(--accent);
 }
-.nav-tools .icon-btn[data-tip]:hover::after,
-.nav-tools .icon-btn[data-tip]:focus-visible::after{
-  max-width:200px; opacity:1; margin-left:8px;
+.nav-tools .icon-btn[data-tip]:hover::before,
+.nav-tools .icon-btn[data-tip]:focus-visible::before{
+  max-width:200px; opacity:1; margin-right:8px;
 }
-@media (hover: none){ .nav-tools .icon-btn[data-tip]::after{ display:none; } }
+@media (hover: none){ .nav-tools .icon-btn[data-tip]::before{ display:none; } }
 
 /* ---- Section-jump button: replaces the inline titles; opens to the LEFT ---- */
 .nav-jump{ position:relative; display:inline-flex; align-items:center; }
-.nav-jump-list{
-  position:absolute; right:100%; top:50%; transform:translateY(-50%);
-  display:inline-flex; align-items:center; justify-content:flex-end; gap:2px;
-  max-width:0; opacity:0; margin-right:0;
-  overflow:hidden; white-space:nowrap;
-  background:rgba(8,12,24,.92); border-radius:10px; z-index:5;
-  transition:max-width .3s ease, opacity .22s ease, margin-right .3s ease;
-}
-.nav-jump-list a{
-  padding:6px 8px; border-radius:8px; color:var(--muted);
-  font-weight:600; font-size:.82rem; white-space:nowrap;
-  transition:color .2s, background .2s;
-}
-.nav-jump-list a:hover{ color:var(--accent); background:rgba(125,211,252,.1); text-decoration:none; }
-.nav-jump:hover .nav-jump-btn,
-.nav-jump:focus-within .nav-jump-btn,
-.nav-jump.is-open .nav-jump-btn{
+.nav-jump.is-open .nav-jump-btn,
+.nav-jump .nav-jump-btn:hover,
+.nav-jump .nav-jump-btn:focus-visible{
   background:rgba(125,211,252,.12); border-color:var(--accent); color:var(--accent);
 }
-.nav-jump:hover .nav-jump-list,
-.nav-jump:focus-within .nav-jump-list,
-.nav-jump.is-open .nav-jump-list{
-  max-width:min(52vw, 560px); opacity:1; margin-right:8px; overflow-x:auto;
+
+/* Section menu = an expanding SECOND ROW in the header. It lives in normal flow
+   inside the sticky nav, so opening it grows the header and pushes the page
+   down instead of floating over the hero. */
+.nav-sections-row{
+  display:grid; grid-template-rows:0fr;
+  background:rgba(8,12,24,.5);
+  border-top:0 solid var(--border);
 }
+.nav-sections-row.open{ grid-template-rows:1fr; border-top-width:1px; }
+.nav-sections-clip{ overflow:hidden; min-height:0; }
+.nav-sections-inner{
+  max-width:var(--max-width); margin:0 auto; padding:9px 20px;
+  display:flex; flex-wrap:wrap; gap:4px; justify-content:flex-end;
+}
+.nav-sections-inner a{
+  padding:7px 12px; border-radius:9px; color:var(--muted);
+  font-weight:600; font-size:.9rem; white-space:nowrap;
+  transition:color .2s, background .2s;
+}
+.nav-sections-inner a:hover{ color:var(--accent); background:rgba(125,211,252,.1); text-decoration:none; }
+html[data-theme="light"] .nav-sections-row{ background:rgba(255,255,255,.6); }
+html[data-theme="light"] .nav-sections-inner a{ color:#3f4757; }
 /* Desktop: the button IS the nav, so hide the old inline section titles. */
 @media (min-width:821px){ .nav-links{ display:none; } }
-/* Mobile keeps the hamburger + dropdown; the jump button is desktop-only. */
-@media (max-width:820px){ .nav-jump{ display:none; } }
+/* Mobile keeps the hamburger + dropdown; the section button/row are desktop-only. */
+@media (max-width:820px){ .nav-jump, .nav-sections-row{ display:none; } }
 
 /* ---- Hands-free scroll edge hint bars ---- */
 .autoscroll-edge{

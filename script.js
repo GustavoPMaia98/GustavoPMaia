@@ -23,6 +23,7 @@
   let rippleWired = false;
   let lightboxWired = false;
   let progressWired = false;
+  let shortcutsWired = false;
   let langWired = false;
   let mapWired = false;
   let mapLangUpdate = null;   // set once the map legend exists; called by applyLang
@@ -214,28 +215,48 @@
       }));
     }
 
-    // Section-jump button (desktop): tap toggles the left-opening menu.
+    // Section button (desktop): hover (or click) opens an expanding header row
+    // that pushes the page down — it never floats over the hero. It closes as
+    // soon as the pointer leaves both the button and the row.
     const jump = document.getElementById("navJump");
-    if (jump && !jump.dataset.wired) {
+    const sectionsRow = document.getElementById("navSectionsRow");
+    if (jump && sectionsRow && !jump.dataset.wired) {
       jump.dataset.wired = "1";
       const jbtn = jump.querySelector(".nav-jump-btn");
+      let closeT = null;
+      const setOpen = (open) => {
+        clearTimeout(closeT);
+        jump.classList.toggle("is-open", open);
+        sectionsRow.classList.toggle("open", open);
+        jbtn.setAttribute("aria-expanded", open ? "true" : "false");
+      };
+      const scheduleClose = () => {
+        clearTimeout(closeT);
+        closeT = setTimeout(() => {
+          if (!jump.matches(":hover") && !sectionsRow.matches(":hover")) setOpen(false);
+        }, 140);
+      };
+      // Hover to reveal, leave to hide.
+      jump.addEventListener("mouseenter", () => setOpen(true));
+      jump.addEventListener("mouseleave", scheduleClose);
+      sectionsRow.addEventListener("mouseenter", () => setOpen(true));
+      sectionsRow.addEventListener("mouseleave", scheduleClose);
+      // Click/tap still toggles (touch + keyboard 'S' route through here).
       jbtn.addEventListener("click", (e) => {
         e.stopPropagation();
-        const open = jump.classList.toggle("is-open");
-        jbtn.setAttribute("aria-expanded", open ? "true" : "false");
+        setOpen(!sectionsRow.classList.contains("open"));
       });
-      jump.querySelectorAll(".nav-jump-list a").forEach(a =>
+      sectionsRow.querySelectorAll("a").forEach(a =>
         a.addEventListener("click", (e) => {
           const href = a.getAttribute("href") || "";
           if (href.charAt(0) === "#") { e.preventDefault(); slideToHash(href); }
-          jump.classList.remove("is-open");
-          jbtn.setAttribute("aria-expanded", "false");
+          setOpen(false);
         }));
       document.addEventListener("click", (e) => {
-        if (!jump.contains(e.target)) {
-          jump.classList.remove("is-open");
-          jbtn.setAttribute("aria-expanded", "false");
-        }
+        if (!jump.contains(e.target) && !sectionsRow.contains(e.target)) setOpen(false);
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && sectionsRow.classList.contains("open")) setOpen(false);
       });
     }
 
@@ -426,7 +447,7 @@
     // describe the gesture appropriately per device
     btn.setAttribute("data-tip", mode === "tilt"
       ? "Tilt the phone forward to go down, back to go up"
-      : "Glide the page by moving the mouse to a screen edge");
+      : "Glide the page by moving the mouse to a screen edge  ·  H");
 
     // testable speed: change live from the console, e.g. handsFreeSpeed(4)
     let traverse = FULL_TRAVERSE_S;
@@ -1427,6 +1448,31 @@
     });
   }
 
+  // ============================================================
+  //  KEYBOARD SHORTCUTS for the toolbar (single keys, no modifier).
+  //  Search keeps its own "/" and ⌘K (wired in search.js).
+  //    S — sections menu   T — theme   L — language   H — hands-free
+  // ============================================================
+  function setupShortcuts() {
+    if (shortcutsWired) return;
+    shortcutsWired = true;
+    const map = {
+      s: "navJump", t: "themeToggle", l: "langToggle", h: "autoScrollToggle"
+    };
+    document.addEventListener("keydown", (e) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;          // leave browser combos alone
+      const t = e.target;
+      if (/^(input|textarea|select)$/i.test(t.tagName || "") || t.isContentEditable) return;
+      const id = map[(e.key || "").toLowerCase()];
+      if (!id) return;
+      const el = document.getElementById(id);
+      if (!el) return;
+      e.preventDefault();
+      // the sections control is a wrapper — click its button
+      (id === "navJump" ? el.querySelector(".nav-jump-btn") : el).click();
+    });
+  }
+
   function init() {
     initStarfield();
     initNav();
@@ -1443,6 +1489,7 @@
     setupHighlightModal();
     setupThemeToggle();
     setupLangToggle();
+    setupShortcuts();
     setupScrollProgress();
     buildPublicationFilter();
     buildPresentationFilter();
