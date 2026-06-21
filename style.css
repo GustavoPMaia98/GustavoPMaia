@@ -22,6 +22,9 @@
 *{box-sizing:border-box}
 
 html{ scroll-behavior:smooth; }
+/* Hands-free mode drives scrollTop per-frame; smooth scrolling fights it and
+   makes the glide stutter (worst where the speed changes, e.g. near the end). */
+html.autoscroll-on{ scroll-behavior:auto; }
 
 body{
   margin:0;
@@ -873,6 +876,32 @@ html[data-theme="light"] .icon-btn:hover{ background:rgba(15,23,42,.05); }
   max-width:200px; opacity:1; margin-left:8px;
 }
 @media (hover: none){ .nav-tools .icon-btn[data-tip]::after{ display:none; } }
+
+/* ---- Section-jump button: same inline-expand movement as the tool buttons ---- */
+.nav-jump{ display:inline-flex; align-items:center; min-width:0; }
+.nav-jump-list{
+  display:inline-flex; align-items:center; gap:2px;
+  max-width:0; opacity:0; margin-left:0;
+  overflow:hidden; white-space:nowrap; vertical-align:middle;
+  transition:max-width .3s ease, opacity .22s ease, margin-left .3s ease;
+}
+.nav-jump-list a{
+  padding:6px 9px; border-radius:8px; color:var(--muted);
+  font-weight:600; font-size:.82rem; white-space:nowrap;
+  transition:color .2s, background .2s;
+}
+.nav-jump-list a:hover{ color:var(--accent); background:rgba(125,211,252,.1); text-decoration:none; }
+.nav-jump:hover .nav-jump-btn,
+.nav-jump:focus-within .nav-jump-btn{
+  background:rgba(125,211,252,.12); border-color:var(--accent); color:var(--accent);
+}
+.nav-jump:hover .nav-jump-list,
+.nav-jump:focus-within .nav-jump-list{
+  max-width:min(60vw, 640px); opacity:1; margin-left:6px; overflow-x:auto;
+}
+/* Desktop already shows every section in the nav row — keep this for that view;
+   the inline reveal is a hover affordance, so hide it where there's no pointer. */
+@media (hover: none){ .nav-jump{ display:none; } }
 
 /* ---- Hands-free scroll edge hint bars ---- */
 .autoscroll-edge{

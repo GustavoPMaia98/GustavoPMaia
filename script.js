@@ -422,7 +422,15 @@
           document.body.scrollHeight
         ) - window.innerHeight;
         const eased = Math.pow(Math.min(intensity, 1), 1.6);
-        const speed = (range / Math.max(traverse, 0.2)) * eased; // px per SECOND
+        // Velocity gradient: glide faster the closer we get to the end of travel
+        // in the current direction (bottom when going down, top when going up).
+        // progress 0 at the start edge → 1 at the destination edge.
+        const progress = range > 0
+          ? (dir === 1 ? acc / range : 1 - acc / range)
+          : 0;
+        const GRADIENT_MAX = 2.6; // top speed near the end = 2.6× the start speed
+        const gradient = 1 + Math.min(Math.max(progress, 0), 1) * (GRADIENT_MAX - 1);
+        const speed = (range / Math.max(traverse, 0.2)) * eased * gradient * 0.3; // px per SECOND
         acc = Math.max(0, Math.min(acc + dir * speed * dt, range));
         setScroll(acc);
       }
@@ -456,6 +464,7 @@
       const state = btn.querySelector(".tool-pill-state");
       if (state) state.textContent = on ? "On" : "Off";
       document.body.classList.toggle("autoscroll-on", on);
+      document.documentElement.classList.toggle("autoscroll-on", on);
       if (on) start(); else stop();
       if (persist) { try { localStorage.setItem(KEY, on ? "1" : "0"); } catch (_) {} }
     }
