@@ -344,7 +344,7 @@
 
     const KEY = "gpm-autoscroll";
     const ZONE = 0.24;       // top/bottom 24% of the viewport are active bands
-    const MAX_SPEED = 46;    // px per frame at the very edge
+    const FULL_TRAVERSE_S = 13; // seconds to glide the whole page at full intensity
     let enabled = false, pointerInside = false, y = 0, raf = 0;
 
     // edge hint bars (show which way the page will move)
@@ -372,7 +372,13 @@
       bottom.classList.toggle("active", dir === 1);
       if (dir !== 0) {
         const eased = Math.pow(Math.min(intensity, 1), 1.6);
-        const delta = dir * MAX_SPEED * eased;
+        // time-based: at full intensity, traverse the whole page in ~FULL_TRAVERSE_S.
+        const range = Math.max(
+          document.documentElement.scrollHeight,
+          document.body.scrollHeight
+        ) - window.innerHeight;
+        const peakPerFrame = range / (FULL_TRAVERSE_S * 60); // assumes ~60fps
+        const delta = dir * Math.max(peakPerFrame, 6) * eased;
         // write scrollTop directly (instant, bypasses the page's CSS smooth-scroll).
         // Assign to both possible scrollers; the non-scrolling one is a harmless no-op.
         document.documentElement.scrollTop += delta;
