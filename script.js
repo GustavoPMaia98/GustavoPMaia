@@ -330,6 +330,90 @@
   }
 
   // ============================================================
+  //  HANDS-FREE (NO-SCROLL) MODE
+  //  Move the mouse to the top/bottom of the screen to glide the
+  //  page up/down — no scroll wheel needed. Toggleable + persisted.
+  // ============================================================
+  function setupAutoScroll() {
+    const btn = document.getElementById("autoScrollToggle");
+    if (!btn || btn.dataset.wired) return;
+    btn.dataset.wired = "1";
+
+    // Pointer-based: not meaningful on touch-only devices — hide there.
+    if (window.matchMedia("(hover: none)").matches) { btn.style.display = "none"; return; }
+
+    const KEY = "gpm-autoscroll";
+    const ZONE = 0.24;       // top/bottom 24% of the viewport are active bands
+    const MAX_SPEED = 24;    // px per frame at the very edge
+    let enabled = false, pointerInside = false, y = 0, raf = 0;
+
+    // edge hint bars (show which way the page will move)
+    const top = document.createElement("div");
+    const bottom = document.createElement("div");
+    top.className = "autoscroll-edge autoscroll-edge--top";
+    bottom.className = "autoscroll-edge autoscroll-edge--bottom";
+    top.innerHTML = '<span aria-hidden="true">▲</span>';
+    bottom.innerHTML = '<span aria-hidden="true">▼</span>';
+    document.body.append(top, bottom);
+
+    const onMove = (e) => { y = e.clientY; pointerInside = true; };
+    const onLeave = () => { pointerInside = false; top.classList.remove("active"); bottom.classList.remove("active"); };
+
+    function loop() {
+      raf = requestAnimationFrame(loop);
+      const vh = window.innerHeight;
+      let dir = 0, intensity = 0;
+      if (pointerInside) {
+        const band = vh * ZONE;
+        if (y < band)            { dir = -1; intensity = (band - y) / band; }
+        else if (y > vh - band)  { dir = 1;  intensity = (y - (vh - band)) / band; }
+      }
+      top.classList.toggle("active", dir === -1);
+      bottom.classList.toggle("active", dir === 1);
+      if (dir !== 0) {
+        const eased = Math.pow(Math.min(intensity, 1), 1.6);
+        const delta = dir * MAX_SPEED * eased;
+        // write scrollTop directly (instant, bypasses the page's CSS smooth-scroll).
+        // Assign to both possible scrollers; the non-scrolling one is a harmless no-op.
+        document.documentElement.scrollTop += delta;
+        document.body.scrollTop += delta;
+      }
+    }
+
+    function start() {
+      window.addEventListener("mousemove", onMove, { passive: true });
+      document.addEventListener("mouseleave", onLeave);
+      window.addEventListener("blur", onLeave);
+      if (!raf) raf = requestAnimationFrame(loop);
+    }
+    function stop() {
+      window.removeEventListener("mousemove", onMove);
+      document.removeEventListener("mouseleave", onLeave);
+      window.removeEventListener("blur", onLeave);
+      cancelAnimationFrame(raf); raf = 0;
+      top.classList.remove("active"); bottom.classList.remove("active");
+      pointerInside = false;
+    }
+
+    function apply(on, persist) {
+      enabled = on;
+      btn.classList.toggle("is-active", on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+      document.body.classList.toggle("autoscroll-on", on);
+      if (on) start(); else stop();
+      if (persist) { try { localStorage.setItem(KEY, on ? "1" : "0"); } catch (_) {} }
+    }
+
+    btn.addEventListener("click", () => apply(!enabled, true));
+    // Esc turns it off quickly
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && enabled) apply(false, true); });
+
+    let saved = "0";
+    try { saved = localStorage.getItem(KEY) || "0"; } catch (_) {}
+    apply(saved === "1", false);
+  }
+
+  // ============================================================
   //  PUBLICATIONS — auto-sync from ORCID (journal articles only)
   // ============================================================
   let publicationsLoaded = false;
@@ -1153,6 +1237,7 @@
     observeReveals(document);
     wireAccordions();
     setupScrollTopButton();
+    setupAutoScroll();
     setupButtonRipple();
     setupLightbox();
     injectHeadingIcons();
