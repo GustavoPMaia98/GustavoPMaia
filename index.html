@@ -107,15 +107,18 @@
       </nav>
 
       <div class="nav-tools">
-        <button class="icon-btn" id="searchToggle" type="button" aria-label="Search the site" title="Search ( / or Ctrl/⌘ K )">
+        <button class="icon-btn" id="searchToggle" type="button" aria-label="Search the site" data-tip="Search  ·  / or ⌘K">
           <i data-lucide="search"></i>
         </button>
-        <button class="icon-btn" id="langToggle" type="button" aria-label="Switch language">PT</button>
-        <button class="icon-btn" id="autoScrollToggle" type="button" aria-pressed="false" aria-label="Hands-free scroll" title="Hands-free scroll — move the mouse to the top or bottom of the screen to glide up or down">
-          <i data-lucide="chevrons-up-down"></i>
-        </button>
-        <button class="icon-btn" id="themeToggle" type="button" aria-label="Switch theme">
+        <button class="icon-btn" id="langToggle" type="button" aria-label="Switch language" data-tip="Português / English">PT</button>
+        <button class="icon-btn" id="themeToggle" type="button" aria-label="Switch theme" data-tip="Light / dark theme">
           <i data-lucide="moon"></i>
+        </button>
+        <span class="nav-sep" aria-hidden="true"></span>
+        <button class="tool-pill" id="autoScrollToggle" type="button" aria-pressed="false" aria-label="Hands-free scroll" data-tip="Move the mouse to the top or bottom edge to glide the page — no scrolling. Esc to stop.">
+          <i data-lucide="mouse-pointer-2"></i>
+          <span class="tool-pill-label">Hands-free</span>
+          <span class="tool-pill-state" aria-hidden="true">Off</span>
         </button>
         <button class="nav-toggle" id="navToggle" type="button"
                 aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">

@@ -344,7 +344,7 @@
 
     const KEY = "gpm-autoscroll";
     const ZONE = 0.24;       // top/bottom 24% of the viewport are active bands
-    const MAX_SPEED = 24;    // px per frame at the very edge
+    const MAX_SPEED = 46;    // px per frame at the very edge
     let enabled = false, pointerInside = false, y = 0, raf = 0;
 
     // edge hint bars (show which way the page will move)
@@ -399,6 +399,8 @@
       enabled = on;
       btn.classList.toggle("is-active", on);
       btn.setAttribute("aria-pressed", on ? "true" : "false");
+      const state = btn.querySelector(".tool-pill-state");
+      if (state) state.textContent = on ? "On" : "Off";
       document.body.classList.toggle("autoscroll-on", on);
       if (on) start(); else stop();
       if (persist) { try { localStorage.setItem(KEY, on ? "1" : "0"); } catch (_) {} }

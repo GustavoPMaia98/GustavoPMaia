@@ -281,12 +281,12 @@ section[id]{scroll-margin-top:calc(var(--nav-h) + 16px)}
   border-radius:var(--radius-md);padding:16px 44px 16px 22px;
   position:relative;transition:border-color .25s, background .25s, transform .25s, box-shadow .25s;
   box-shadow:0 14px 34px rgba(2,8,23,.4);
-  animation:cardFloat 6s ease-in-out infinite;
+  animation:cardFloat 5s ease-in-out infinite;
 }
-.timeline-item:nth-child(2n) > .timeline-card{ animation-duration:7s; animation-delay:-1.6s; }
-.timeline-item:nth-child(3n) > .timeline-card{ animation-duration:6.5s; animation-delay:-3.1s; }
-.timeline-item:nth-child(4n) > .timeline-card{ animation-duration:7.4s; animation-delay:-2.2s; }
-@keyframes cardFloat{ 0%,100%{ translate:0 0 } 50%{ translate:0 -7px } }
+.timeline-item:nth-child(2n) > .timeline-card{ animation-duration:5.8s; animation-delay:-1.6s; }
+.timeline-item:nth-child(3n) > .timeline-card{ animation-duration:5.4s; animation-delay:-3.1s; }
+.timeline-item:nth-child(4n) > .timeline-card{ animation-duration:6.2s; animation-delay:-2.2s; }
+@keyframes cardFloat{ 0%,100%{ translate:0 0 } 50%{ translate:0 -14px } }
 .timeline-item.has-expand .timeline-card{cursor:pointer}
 .timeline-item.has-expand .timeline-card:hover{border-color:var(--border-strong);background:var(--card-hover)}
 /* brief highlight when a paper is opened from a highlight link */
@@ -454,6 +454,10 @@ a:focus-visible,button:focus-visible,.timeline-card[role="button"]:focus-visible
   }
   .nav-links.open{opacity:1;transform:none;pointer-events:auto}
   .nav-links a{padding:13px 12px;font-size:1rem}
+  /* compact the hands-free pill on small screens */
+  .tool-pill-label{ display:none; }
+  .tool-pill{ padding:0 11px; gap:7px; }
+  .nav-sep{ display:none; }
 }
 
 @media (max-width:760px){
@@ -821,9 +825,59 @@ html[data-theme="light"] .icon-btn:hover{ background:rgba(15,23,42,.05); }
 }
 .icon-btn:hover{ background:rgba(255,255,255,.06); border-color:var(--border-strong); }
 .icon-btn svg{ width:18px; height:18px; }
-/* active state for the hands-free scroll toggle */
-.icon-btn.is-active{ background:rgba(125,211,252,.16); border-color:var(--accent); color:var(--accent); }
-.icon-btn.is-active svg{ color:var(--accent); }
+
+/* subtle divider between passive tools and the hands-free control */
+.nav-sep{ width:1px; height:22px; background:var(--border-strong); margin:0 2px; opacity:.7; }
+
+/* ---- Hands-free pill: icon + label + On/Off state ---- */
+.tool-pill{
+  display:inline-flex; align-items:center; gap:8px;
+  height:38px; padding:0 13px; border-radius:999px;
+  border:1px solid var(--border); background:rgba(255,255,255,.04);
+  color:var(--text); cursor:pointer; font-weight:600; font-size:.85rem;
+  font-family:var(--font-body); white-space:nowrap;
+  transition:background .2s, border-color .2s, color .2s, box-shadow .2s;
+}
+.tool-pill svg{ width:17px; height:17px; }
+.tool-pill-state{
+  font-size:.7rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+  padding:2px 7px; border-radius:999px;
+  background:rgba(255,255,255,.07); color:var(--muted);
+  transition:background .2s, color .2s;
+}
+.tool-pill:hover{ background:rgba(255,255,255,.07); border-color:var(--border-strong); }
+.tool-pill.is-active{
+  background:rgba(125,211,252,.14); border-color:var(--accent); color:var(--accent);
+  box-shadow:0 0 0 1px rgba(125,211,252,.25), 0 0 18px rgba(125,211,252,.18);
+}
+.tool-pill.is-active svg{ color:var(--accent); }
+.tool-pill.is-active .tool-pill-state{ background:var(--accent); color:#06121f; }
+
+/* ---- Custom tooltips for nav tools (fit the dark canvas) ---- */
+.nav-tools [data-tip]{ position:relative; }
+.nav-tools [data-tip]::after{
+  content:attr(data-tip);
+  position:absolute; top:calc(100% + 10px); right:0;
+  width:max-content; max-width:240px;
+  padding:8px 11px; border-radius:9px;
+  background:rgba(10,16,30,.97); color:var(--text);
+  border:1px solid var(--border-strong);
+  box-shadow:0 12px 28px rgba(2,8,23,.55);
+  font-size:.78rem; font-weight:500; line-height:1.35; text-align:left;
+  white-space:normal; letter-spacing:0; text-transform:none;
+  opacity:0; transform:translateY(-4px); pointer-events:none;
+  transition:opacity .18s ease, transform .18s ease; z-index:60;
+}
+.nav-tools [data-tip]::before{
+  content:""; position:absolute; top:calc(100% + 4px); right:16px;
+  border:6px solid transparent; border-bottom-color:var(--border-strong);
+  opacity:0; transition:opacity .18s ease; z-index:60;
+}
+.nav-tools [data-tip]:hover::after,
+.nav-tools [data-tip]:focus-visible::after{ opacity:1; transform:translateY(0); }
+.nav-tools [data-tip]:hover::before,
+.nav-tools [data-tip]:focus-visible::before{ opacity:1; }
+@media (hover: none){ .nav-tools [data-tip]::after, .nav-tools [data-tip]::before{ display:none; } }
 
 /* ---- Hands-free scroll edge hint bars ---- */
 .autoscroll-edge{
@@ -865,7 +919,9 @@ body.autoscroll-on .autoscroll-edge.active{ opacity:.85; }
 .metrics--strip .metric-link:hover{ transform:translateY(-2px); }
 
 /* ---- Section heading icons ---- */
-.section > h2{ display:flex; align-items:center; }
+.section > h2{ display:flex; align-items:center; margin-bottom:26px; }
+.section > h2 + .section-note{ margin-top:-18px; }
+.timeline{ margin-top:6px; }
 .h2-ico{ flex:none; width:22px; height:22px; color:var(--accent); margin-right:10px; }
 
 /* ---- News window ---- */
