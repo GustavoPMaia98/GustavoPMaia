@@ -479,6 +479,7 @@ a:focus-visible,button:focus-visible,.timeline-card[role="button"]:focus-visible
   .metrics--strip .metric:nth-child(3){border-left:0}
   .metrics--strip .metric:nth-child(odd){border-left:0}
   .hero-tags,.social-links,.affiliations{justify-content:center}
+  .social-links{flex-wrap:wrap}
   .affiliations{margin-left:0}
   /* affiliations: no hover on touch, so show name beside a static logo */
   .affiliations a{
