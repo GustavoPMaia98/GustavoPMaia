@@ -184,6 +184,18 @@
     const toggle = document.getElementById("navToggle");
     const links = document.getElementById("navLinks");
 
+    // Smooth-slide to a #section, accounting for the fixed nav. Uses an explicit
+    // "smooth" so it still slides while hands-free mode has CSS smooth disabled.
+    const slideToHash = (hash) => {
+      if (!hash || hash.charAt(0) !== "#") return;
+      const target = document.getElementById(hash.slice(1));
+      if (!target) return;
+      const navH = parseInt(getComputedStyle(document.documentElement)
+        .getPropertyValue("--nav-h"), 10) || 60;
+      const top = target.getBoundingClientRect().top + window.scrollY - navH - 12;
+      window.scrollTo({ top: Math.max(0, top), behavior: prefersReduced ? "auto" : "smooth" });
+    };
+
     if (toggle && links && !navToggleWired) {
       navToggleWired = true;
       toggle.addEventListener("click", () => {
@@ -192,12 +204,39 @@
         toggle.setAttribute("aria-expanded", open ? "true" : "false");
         toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
       });
-      links.querySelectorAll("a").forEach(a => a.addEventListener("click", () => {
+      links.querySelectorAll("a").forEach(a => a.addEventListener("click", (e) => {
+        const href = a.getAttribute("href") || "";
+        if (href.charAt(0) === "#") { e.preventDefault(); slideToHash(href); }
         links.classList.remove("open");
         toggle.classList.remove("open");
         toggle.setAttribute("aria-expanded", "false");
         toggle.setAttribute("aria-label", "Open menu");
       }));
+    }
+
+    // Section-jump button (desktop): tap toggles the left-opening menu.
+    const jump = document.getElementById("navJump");
+    if (jump && !jump.dataset.wired) {
+      jump.dataset.wired = "1";
+      const jbtn = jump.querySelector(".nav-jump-btn");
+      jbtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const open = jump.classList.toggle("is-open");
+        jbtn.setAttribute("aria-expanded", open ? "true" : "false");
+      });
+      jump.querySelectorAll(".nav-jump-list a").forEach(a =>
+        a.addEventListener("click", (e) => {
+          const href = a.getAttribute("href") || "";
+          if (href.charAt(0) === "#") { e.preventDefault(); slideToHash(href); }
+          jump.classList.remove("is-open");
+          jbtn.setAttribute("aria-expanded", "false");
+        }));
+      document.addEventListener("click", (e) => {
+        if (!jump.contains(e.target)) {
+          jump.classList.remove("is-open");
+          jbtn.setAttribute("aria-expanded", "false");
+        }
+      });
     }
 
     // Scrollspy: only set up once, and only when the target sections exist
@@ -246,6 +285,24 @@
     expand.classList.add("open");
     item.classList.add("open");
     card.setAttribute("aria-expanded", "true");
+    // Once the panel has expanded, bring the whole entry into view: center it
+    // when it fits, otherwise pin its top just below the nav so the text reads
+    // from the start without the user having to scroll.
+    const centerDelay = prefersReduced ? 30 : 480; // wait out the max-height transition
+    setTimeout(() => {
+      if (!item.classList.contains("open")) return;
+      const navH = parseInt(getComputedStyle(document.documentElement)
+        .getPropertyValue("--nav-h"), 10) || 60;
+      const vh = window.innerHeight;
+      const rect = item.getBoundingClientRect();
+      const itemTop = rect.top + window.scrollY;
+      const fits = rect.height <= vh - navH - 32;
+      let target = fits
+        ? itemTop - (vh - rect.height) / 2          // center vertically
+        : itemTop - navH - 16;                       // pin near the top
+      target = Math.max(0, target);
+      window.scrollTo({ top: target, behavior: prefersReduced ? "auto" : "smooth" });
+    }, centerDelay);
     // Begin watching only after the open transition, so the panel has real
     // height (observing a 0-height element would fire an immediate close).
     if (item.closest(AUTO_CLOSE_SECTIONS)) {
@@ -350,6 +407,10 @@
     let enabled = false, raf = 0;
     // pointer state
     let pointerInside = false, y = 0;
+    // armed = false right after a click-to-section / slide-up: the page just
+    // jumped, so we wait for the pointer to leave the active band and come back
+    // before gliding again. overNav = pointer is over the top toolbar (no scroll).
+    let armed = true, overNav = false;
     // tilt state
     let baseline = null, beta = 0;
 
@@ -375,13 +436,23 @@
       return traverse;
     };
 
-    const onMove = (e) => { y = e.clientY; pointerInside = true; };
+    const onMove = (e) => {
+      y = e.clientY; pointerInside = true;
+      overNav = !!(e.target && e.target.closest && e.target.closest(".nav"));
+    };
     const onLeave = () => { pointerInside = false; top.classList.remove("active"); bottom.classList.remove("active"); };
     const onOrient = (e) => {
       if (e.beta == null) return;
       beta = e.beta;
       if (baseline == null) baseline = e.beta; // first reading becomes the neutral hold
     };
+
+    // Clicking a section link or the slide-up button jumps the page; disarm so
+    // hands-free won't immediately scroll the pointer's current band.
+    document.addEventListener("click", (e) => {
+      if (!enabled || !e.target.closest) return;
+      if (e.target.closest('a[href^="#"], #scrollTopBtn, .nav-jump-list a, .nav-links a')) armed = false;
+    }, true);
 
     // Time-based scroll: move a constant px-per-SECOND so the speed is uniform
     // regardless of frame rate. A fractional accumulator avoids integer stutter.
@@ -398,9 +469,14 @@
       let dir = 0, intensity = 0;
       if (mode === "pointer") {
         const vh = window.innerHeight, band = vh * ZONE;
-        if (pointerInside) {
-          if (y < band)           { dir = -1; intensity = (band - y) / band; }
-          else if (y > vh - band) { dir = 1;  intensity = (y - (vh - band)) / band; }
+        const inTop = pointerInside && y < band;
+        const inBottom = pointerInside && y > vh - band;
+        // Re-arm only once the pointer reaches the neutral middle zone.
+        if (!inTop && !inBottom) armed = true;
+        // Scroll only when armed and not hovering the top toolbar.
+        if (armed && !overNav) {
+          if (inTop)         { dir = -1; intensity = (band - y) / band; }
+          else if (inBottom) { dir = 1;  intensity = (y - (vh - band)) / band; }
         }
       } else if (baseline != null) {
         // beta is front-to-back tilt. Tilting the top edge away (forward) lowers
@@ -445,6 +521,7 @@
         baseline = null; // recalibrate neutral each time it's turned on
         window.addEventListener("deviceorientation", onOrient);
       }
+      armed = false; // wait for the pointer to settle in the neutral zone first
       if (!raf) { lastT = 0; raf = requestAnimationFrame(loop); }
     }
     function stop() {
