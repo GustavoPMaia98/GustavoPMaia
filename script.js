@@ -219,45 +219,32 @@
     // that pushes the page down — it never floats over the hero. It closes as
     // soon as the pointer leaves both the button and the row.
     const jump = document.getElementById("navJump");
-    const sectionsRow = document.getElementById("navSectionsRow");
-    if (jump && sectionsRow && !jump.dataset.wired) {
+    if (jump && !jump.dataset.wired) {
       jump.dataset.wired = "1";
       if (window.lucide && lucide.createIcons) try { lucide.createIcons(); } catch(e){}
       const jbtn = jump.querySelector(".nav-jump-btn");
-      let closeT = null;
+      const strip = jump.querySelector(".nav-sec-strip");
       const setOpen = (open) => {
-        clearTimeout(closeT);
         jump.classList.toggle("is-open", open);
-        sectionsRow.classList.toggle("open", open);
         jbtn.setAttribute("aria-expanded", open ? "true" : "false");
       };
-      const scheduleClose = () => {
-        clearTimeout(closeT);
-        closeT = setTimeout(() => {
-          if (!jump.matches(":hover") && !sectionsRow.matches(":hover")) setOpen(false);
-        }, 140);
-      };
-      // Hover to reveal, leave to hide.
-      jump.addEventListener("mouseenter", () => setOpen(true));
-      jump.addEventListener("mouseleave", scheduleClose);
-      sectionsRow.addEventListener("mouseenter", () => setOpen(true));
-      sectionsRow.addEventListener("mouseleave", scheduleClose);
-      // Click/tap still toggles (touch + keyboard 'S' route through here).
+      // CSS already reveals the strip on hover; the button toggles it for
+      // touch + the keyboard 'S' shortcut.
       jbtn.addEventListener("click", (e) => {
         e.stopPropagation();
-        setOpen(!sectionsRow.classList.contains("open"));
+        setOpen(!jump.classList.contains("is-open"));
       });
-      sectionsRow.querySelectorAll("a").forEach(a =>
+      strip.querySelectorAll("a").forEach(a =>
         a.addEventListener("click", (e) => {
           const href = a.getAttribute("href") || "";
           if (href.charAt(0) === "#") { e.preventDefault(); slideToHash(href); }
           setOpen(false);
         }));
       document.addEventListener("click", (e) => {
-        if (!jump.contains(e.target) && !sectionsRow.contains(e.target)) setOpen(false);
+        if (!jump.contains(e.target)) setOpen(false);
       });
       document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && sectionsRow.classList.contains("open")) setOpen(false);
+        if (e.key === "Escape" && jump.classList.contains("is-open")) setOpen(false);
       });
     }
 

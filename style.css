@@ -886,28 +886,27 @@ html[data-theme="light"] .icon-btn:hover{ background:rgba(15,23,42,.05); }
   background:rgba(125,211,252,.12); border-color:var(--accent); color:var(--accent);
 }
 
-/* Section menu = an expanding SECOND ROW in the header. It lives in normal flow
-   inside the sticky nav, so opening it grows the header and pushes the page
-   down instead of floating over the hero. */
-.nav-sections-row{
-  display:none;
-  background:rgba(8,12,24,.5);
-  border-top:1px solid var(--border);
+/* Section icons live inline in the toolbar and expand to the LEFT of the
+   button on hover. Compact icons keep the strip clear of the logo. */
+.nav-sec-strip{
+  display:inline-flex; align-items:center; gap:2px;
+  max-width:0; opacity:0; margin-right:0; overflow:visible;
+  white-space:nowrap; pointer-events:none;
+  transition:max-width .32s ease, opacity .22s ease, margin-right .32s ease;
 }
-.nav-sections-row.open{ display:block; }
-.nav-sections-clip{ overflow:visible; }
-.nav-sections-inner{
-  max-width:var(--max-width); margin:0 auto; padding:10px 20px;
-  display:flex; flex-wrap:wrap; gap:6px; justify-content:flex-end;
+.nav-jump:hover .nav-sec-strip,
+.nav-jump:focus-within .nav-sec-strip,
+.nav-jump.is-open .nav-sec-strip{
+  max-width:430px; opacity:1; margin-right:4px; pointer-events:auto;
 }
 .nav-sec-ico{
-  position:relative;
+  position:relative; flex:none;
   display:inline-flex; align-items:center; justify-content:center;
-  width:40px; height:40px; border-radius:10px;
+  width:36px; height:36px; border-radius:9px;
   color:var(--muted); border:1px solid transparent;
   transition:color .2s, background .2s, border-color .2s;
 }
-.nav-sec-ico i{ width:19px; height:19px; }
+.nav-sec-ico i{ width:18px; height:18px; }
 .nav-sec-ico:hover{
   color:var(--accent); background:rgba(125,211,252,.1);
   border-color:var(--accent); text-decoration:none;
@@ -918,15 +917,18 @@ html[data-theme="light"] .icon-btn:hover{ background:rgba(15,23,42,.05); }
   position:absolute; top:calc(100% + 7px); left:50%; transform:translateX(-50%) translateY(-3px);
   padding:4px 9px; border-radius:7px; white-space:nowrap;
   background:rgba(8,12,24,.96); border:1px solid var(--border); color:var(--text);
-  font-size:.74rem; font-weight:600; letter-spacing:.01em;
+  font-size:.72rem; font-weight:600; letter-spacing:.01em;
   opacity:0; pointer-events:none; z-index:60;
   transition:opacity .18s ease, transform .18s ease;
 }
 .nav-sec-ico:hover::after,
 .nav-sec-ico:focus-visible::after{ opacity:1; transform:translateX(-50%) translateY(0); }
-html[data-theme="light"] .nav-sections-row{ background:rgba(255,255,255,.6); }
 html[data-theme="light"] .nav-sec-ico{ color:#3f4757; }
 html[data-theme="light"] .nav-sec-ico::after{ background:#fff; color:#1f2733; }
+/* Desktop: the button IS the nav, so hide the old inline section titles. */
+@media (min-width:821px){ .nav-links{ display:none; } }
+/* Mobile keeps the hamburger + dropdown; the section strip is desktop-only. */
+@media (max-width:820px){ .nav-jump{ display:none; } }
 /* Desktop: the button IS the nav, so hide the old inline section titles. */
 @media (min-width:821px){ .nav-links{ display:none; } }
 /* Mobile keeps the hamburger + dropdown; the section button/row are desktop-only. */
