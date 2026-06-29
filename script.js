@@ -578,13 +578,48 @@
     // Esc turns it off quickly (desktop)
     document.addEventListener("keydown", (e) => { if (e.key === "Escape" && enabled) apply(false, true); });
 
-    // Auto-restore only on desktop; tilt needs a fresh tap (iOS permission gesture).
-    if (mode === "pointer") {
-      let saved = "0";
-      try { saved = localStorage.getItem(KEY) || "0"; } catch (_) {}
-      apply(saved === "1", false);
-    } else {
-      apply(false, false);
+    // Auto-activate on first visit (desktop pointer + mobile tilt); respect an explicit opt-out.
+    {
+      let saved = null;
+      try { saved = localStorage.getItem(KEY); } catch (_) {}
+      const firstVisit = (saved === null);
+      const on = firstVisit ? true : (saved === "1");
+      apply(on, false);
+      if (firstVisit && on) showOffHint();
+    }
+
+    // First-visit balloon pointing at the toggle: tells the user how to turn it off.
+    function showOffHint() {
+      try { if (localStorage.getItem(KEY + "-hint") === "1") return; } catch (_) {}
+      try { localStorage.setItem(KEY + "-hint", "1"); } catch (_) {}
+      const tip = document.createElement("div");
+      tip.className = "hf-hint";
+      tip.setAttribute("role", "status");
+      tip.textContent = (document.documentElement.getAttribute("lang") === "pt")
+        ? "Pode desativar aqui." : "You can turn it off here.";
+      tip.style.cssText =
+        "position:fixed;z-index:1300;max-width:200px;padding:9px 13px;border-radius:12px;" +
+        "background:linear-gradient(135deg,var(--accent-strong,#60a5fa),var(--accent,#7dd3fc));" +
+        "color:#04203a;font-family:var(--font-body,system-ui),sans-serif;font-size:.84rem;font-weight:600;" +
+        "line-height:1.35;box-shadow:0 12px 30px rgba(0,0,0,.4);opacity:0;transform:translateY(-6px);" +
+        "transition:opacity .3s ease,transform .3s ease;pointer-events:none;";
+      const arrow = document.createElement("span");
+      arrow.style.cssText =
+        "position:absolute;bottom:100%;right:22px;border:7px solid transparent;border-bottom-color:var(--accent-strong,#60a5fa);";
+      tip.appendChild(arrow);
+      document.body.appendChild(tip);
+      const place = () => {
+        const r = btn.getBoundingClientRect();
+        tip.style.top = (r.bottom + 10) + "px";
+        tip.style.right = Math.max(10, window.innerWidth - r.right) + "px";
+      };
+      place();
+      requestAnimationFrame(() => { tip.style.opacity = "1"; tip.style.transform = "translateY(0)"; });
+      window.addEventListener("resize", place, { passive: true });
+      setTimeout(() => {
+        tip.style.opacity = "0"; tip.style.transform = "translateY(-6px)";
+        setTimeout(() => { window.removeEventListener("resize", place); tip.remove(); }, 350);
+      }, 5000);
     }
   }
 
