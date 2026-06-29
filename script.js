@@ -276,7 +276,7 @@
   //  In Education & Experience, once an item is opened, if its revealed
   //  panel scrolls fully out of the viewport it collapses automatically.
   // ============================================================
-  const AUTO_CLOSE_SECTIONS = "#education, #experience, #publications";
+  const AUTO_CLOSE_SECTIONS = "#education, #experience, #publications, #courses";
   const exitObserver = new IntersectionObserver(entries => {
     entries.forEach(e => {
       if (!e.isIntersecting && e.target.classList.contains("open")) {
