@@ -20,7 +20,7 @@
   const LABELS = {
     about: "About", highlights: "Highlights", news: "News", education: "Education", experience: "Experience",
     presentations: "Presentations", funding: "Funding", publications: "Publications",
-    awards: "Awards", tree: "Academic tree", map: "Map", tutoring: "Tutoring"
+    awards: "Awards", tree: "Academic tree", map: "Map", tutoring: "Tutoring", courses: "Courses & Formations"
   };
   const labelFor = id => LABELS[id] || (id ? id.charAt(0).toUpperCase() + id.slice(1) : "Section");
 
