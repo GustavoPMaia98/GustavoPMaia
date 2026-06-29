@@ -428,8 +428,8 @@
     const bottom = document.createElement("div");
     top.className = "autoscroll-edge autoscroll-edge--top";
     bottom.className = "autoscroll-edge autoscroll-edge--bottom";
-    top.innerHTML = '<span aria-hidden="true">▲</span>';
-    bottom.innerHTML = '<span aria-hidden="true">▼</span>';
+    top.innerHTML = "";
+    bottom.innerHTML = "";
     document.body.append(top, bottom);
 
     // describe the gesture appropriately per device
@@ -585,41 +585,71 @@
       const firstVisit = (saved === null);
       const on = firstVisit ? true : (saved === "1");
       apply(on, false);
-      if (firstVisit && on) showOffHint();
+      // Whenever hands-free is active, surface the balloon once per browsing
+      // session (so it reliably appears each fresh visit, not only ever-once).
+      if (on) showOffHint();
     }
 
-    // First-visit balloon pointing at the toggle: tells the user how to turn it off.
+    // Balloon pointing at the toggle: reminds the user they can turn it off.
+    // Stays ~10s, or until the user clicks its × close button.
     function showOffHint() {
-      try { if (localStorage.getItem(KEY + "-hint") === "1") return; } catch (_) {}
-      try { localStorage.setItem(KEY + "-hint", "1"); } catch (_) {}
+      try { if (sessionStorage.getItem(KEY + "-hint") === "1") return; } catch (_) {}
+      try { sessionStorage.setItem(KEY + "-hint", "1"); } catch (_) {}
+      const pt = (document.documentElement.getAttribute("lang") === "pt");
       const tip = document.createElement("div");
       tip.className = "hf-hint";
       tip.setAttribute("role", "status");
-      tip.textContent = (document.documentElement.getAttribute("lang") === "pt")
-        ? "Pode desativar aqui." : "You can turn it off here.";
       tip.style.cssText =
-        "position:fixed;z-index:1300;max-width:200px;padding:9px 13px;border-radius:12px;" +
+        "position:fixed;z-index:1300;max-width:236px;padding:10px 12px 10px 14px;border-radius:12px;" +
+        "display:flex;align-items:flex-start;gap:8px;" +
         "background:linear-gradient(135deg,var(--accent-strong,#60a5fa),var(--accent,#7dd3fc));" +
         "color:#04203a;font-family:var(--font-body,system-ui),sans-serif;font-size:.84rem;font-weight:600;" +
         "line-height:1.35;box-shadow:0 12px 30px rgba(0,0,0,.4);opacity:0;transform:translateY(-6px);" +
-        "transition:opacity .3s ease,transform .3s ease;pointer-events:none;";
+        "transition:opacity .3s ease,transform .3s ease;pointer-events:auto;";
+
+      const msg = document.createElement("span");
+      msg.textContent = pt
+        ? "Deslocação automática ativada — clique neste botão para a desativar."
+        : "Hands-free scroll is on — click this button to turn it off.";
+
+      const close = document.createElement("button");
+      close.type = "button";
+      close.setAttribute("aria-label", pt ? "Fechar" : "Dismiss");
+      close.textContent = "×";
+      close.style.cssText =
+        "flex:0 0 auto;margin:-1px -2px 0 0;width:20px;height:20px;line-height:18px;text-align:center;" +
+        "border:0;border-radius:50%;background:rgba(4,32,58,.16);color:#04203a;" +
+        "font-size:15px;font-weight:700;cursor:pointer;padding:0;transition:background .2s ease;";
+      close.addEventListener("mouseenter", () => { close.style.background = "rgba(4,32,58,.30)"; });
+      close.addEventListener("mouseleave", () => { close.style.background = "rgba(4,32,58,.16)"; });
+
       const arrow = document.createElement("span");
       arrow.style.cssText =
         "position:absolute;bottom:100%;right:22px;border:7px solid transparent;border-bottom-color:var(--accent-strong,#60a5fa);";
-      tip.appendChild(arrow);
+
+      tip.append(arrow, msg, close);
       document.body.appendChild(tip);
+
       const place = () => {
         const r = btn.getBoundingClientRect();
         tip.style.top = (r.bottom + 10) + "px";
         tip.style.right = Math.max(10, window.innerWidth - r.right) + "px";
       };
       place();
-      requestAnimationFrame(() => { tip.style.opacity = "1"; tip.style.transform = "translateY(0)"; });
+      requestAnimationFrame(() => { tip.style.opacity = "1"; tip.style.transform = "translateY(0)"; place(); });
+      // re-place after icons hydrate / layout settles so it stays under the button
+      setTimeout(place, 250); setTimeout(place, 700);
       window.addEventListener("resize", place, { passive: true });
-      setTimeout(() => {
+
+      let dismissed = false;
+      const dismiss = () => {
+        if (dismissed) return; dismissed = true;
+        clearTimeout(autoT);
         tip.style.opacity = "0"; tip.style.transform = "translateY(-6px)";
         setTimeout(() => { window.removeEventListener("resize", place); tip.remove(); }, 350);
-      }, 5000);
+      };
+      close.addEventListener("click", dismiss);
+      const autoT = setTimeout(dismiss, 10000);
     }
   }
 
@@ -905,7 +935,7 @@
     "Education":"Educação", "Experience":"Experiência", "Presentations":"Apresentações",
     "Funding":"Financiamento", "Publications":"Publicações", "Academic Tree":"Árvore Académica",
     "News":"Novidades", "Where I have been":"Por onde andei",
-    "Highlights":"Destaques", "Awards":"Prémios", "Courses & Formations":"Cursos e Formações"
+    "Current Work Interests":"Interesses de Trabalho Atuais", "Awards":"Prémios", "Courses & Formations":"Cursos e Formações"
   };
 
   // Section heading icons (Lucide)

@@ -18,7 +18,7 @@
 
   // Friendly labels for the section badges
   const LABELS = {
-    about: "About", highlights: "Highlights", news: "News", education: "Education", experience: "Experience",
+    about: "About", highlights: "Current Work Interests", news: "News", education: "Education", experience: "Experience",
     presentations: "Presentations", funding: "Funding", publications: "Publications",
     awards: "Awards", tree: "Academic tree", map: "Map", tutoring: "Tutoring", courses: "Courses & Formations"
   };
