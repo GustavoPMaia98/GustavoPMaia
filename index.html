@@ -286,7 +286,7 @@
       return "";
     }
     async function loadSections() {
-      const sections = ['highlights','news','education','experience','presentations','funding','publications','awards','tree','map','tutoring'];
+      const sections = ['highlights','news','education','experience','courses','presentations','funding','publications','awards','tree','map','tutoring'];
       const c = document.getElementById('mainContent');
       const results = await Promise.all(sections.map(fetchSection));
       c.insertAdjacentHTML('beforeend', results.join(''));
