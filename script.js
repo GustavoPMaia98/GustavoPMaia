@@ -1502,6 +1502,92 @@
   }
 
   // ============================================================
+  //  TECHNIQUE DETAIL MODAL — click a technique card → pop-up detail
+  // ============================================================
+  function setupTechModal() {
+    const modal = document.getElementById("techModal");
+    const dataEl = document.getElementById("tech-detail-data");
+    if (!modal || !dataEl || modal.__wired) return;
+    modal.__wired = true;
+
+    let DATA = {};
+    try { DATA = JSON.parse(dataEl.textContent); } catch (e) { return; }
+    const lang = () => (document.documentElement.getAttribute("data-lang") === "pt" ? "pt" : "en");
+    const pick = v => (v && typeof v === "object") ? (v[lang()] || v.en) : v;
+
+    const elIcon = document.getElementById("techModalIcon");
+    const elEyebrow = document.getElementById("techModalEyebrow");
+    const elTitle = document.getElementById("techModalTitle");
+    const elTag = document.getElementById("techModalTag");
+    const elBody = document.getElementById("techModalBody");
+    const elPoints = document.getElementById("techModalPoints");
+    let lastFocus = null;
+
+    function fill(id) {
+      const d = DATA[id];
+      if (!d) return;
+      if (elIcon) elIcon.setAttribute("data-lucide", d.icon || "test-tubes");
+      elEyebrow.textContent = pick(d.eyebrow) || "";
+      elTitle.textContent = pick(d.title) || "";
+      elTag.textContent = pick(d.tag) || "";
+      elTag.hidden = !pick(d.tag);
+      elBody.innerHTML = "";
+      (pick(d.body) || []).forEach(p => {
+        const para = document.createElement("p");
+        para.innerHTML = p;
+        elBody.appendChild(para);
+      });
+      elPoints.innerHTML = "";
+      (pick(d.points) || []).forEach(pt => {
+        const li = document.createElement("li");
+        li.innerHTML = pt;
+        elPoints.appendChild(li);
+      });
+      elPoints.hidden = !(pick(d.points) || []).length;
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+    }
+
+    function open(id) {
+      lastFocus = document.activeElement;
+      fill(id);
+      modal.hidden = false;
+      document.body.classList.add("hl-modal-open");
+      const closeBtn = modal.querySelector(".hl-modal-close");
+      if (closeBtn) setTimeout(() => closeBtn.focus(), 30);
+    }
+    function close() {
+      modal.hidden = true;
+      document.body.classList.remove("hl-modal-open");
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+
+    document.querySelectorAll(".tech-card[data-tech]").forEach(card => {
+      // inject the "Learn more" affordance chip
+      const info = card.querySelector(".tech-info") || card;
+      if (!card.querySelector(".tech-learn")) {
+        const chip = document.createElement("span");
+        chip.className = "tech-learn";
+        chip.setAttribute("data-pt", 'Saber mais <i data-lucide="arrow-up-right"></i>');
+        chip.innerHTML = 'Learn more <i data-lucide="arrow-up-right"></i>';
+        info.appendChild(chip);
+      }
+      card.addEventListener("click", e => {
+        // ignore the click synthesised at the end of a carousel drag
+        if (card.closest("[data-carousel]")?.classList.contains("is-dragging")) return;
+        e.preventDefault();
+        open(card.getAttribute("data-tech"));
+      });
+      card.addEventListener("keydown", e => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(card.getAttribute("data-tech")); }
+      });
+    });
+    modal.querySelectorAll("[data-tech-close]").forEach(b => b.addEventListener("click", close));
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape" && !modal.hidden) { e.preventDefault(); close(); }
+    });
+  }
+
+  // ============================================================
   //  KEYBOARD SHORTCUTS for the toolbar (single keys, no modifier).
   //  Search keeps its own "/" and ⌘K (wired in search.js).
   //    S — sections menu   T — theme   L — language   H — hands-free
@@ -1540,6 +1626,7 @@
     setupTreePan();
     setupCarousels();
     setupHighlightModal();
+    setupTechModal();
     setupThemeToggle();
     setupLangToggle();
     setupShortcuts();

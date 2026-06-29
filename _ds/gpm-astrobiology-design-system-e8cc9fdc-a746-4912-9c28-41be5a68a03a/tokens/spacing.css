@@ -1,0 +1,34 @@
+/* =====================================================================
+   Spacing, radii, shadows & layout rails.
+   ===================================================================== */
+:root{
+  /* ---- Corner radii ---- */
+  --radius-lg:18px;          /* hero / news window / modals  */
+  --radius-md:12px;          /* timeline & content cards     */
+  --radius-sm:10px;          /* buttons-as-tiles / inputs    */
+  --radius-pill:999px;       /* pills, tags, FAB, CTAs       */
+
+  /* ---- Spacing scale (used for gaps & padding) ---- */
+  --space-1:4px;
+  --space-2:8px;
+  --space-3:12px;
+  --space-4:16px;
+  --space-5:20px;
+  --space-6:26px;
+  --space-8:40px;
+  --space-section:clamp(40px, 6vw, 64px);  /* gap between sections */
+
+  /* ---- Layout rails ---- */
+  --max-width:1120px;        /* content column           */
+  --nav-h:60px;              /* sticky header height      */
+
+  /* ---- Shadows ---- */
+  --shadow:0 10px 30px rgba(0,0,0,.6);            /* default elevated card */
+  --shadow-card-hover:0 8px 22px rgba(0,0,0,.26); /* content card hover    */
+  --shadow-glow-cyan:0 8px 22px rgba(96,165,250,.35); /* button hover glow */
+  --shadow-modal:0 30px 80px rgba(0,0,0,.55);     /* search / dialog       */
+  --shadow-panel:0 24px 64px rgba(0,0,0,.55);     /* floating panels       */
+
+  /* ---- Image "starlit" frame glow (galleries) ---- */
+  --glow-frame:0 0 0 1px rgba(125,211,252,.22), 0 6px 20px rgba(0,0,0,.40), 0 0 18px rgba(125,211,252,.18);
+}

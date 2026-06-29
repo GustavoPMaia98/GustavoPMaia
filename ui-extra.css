@@ -275,6 +275,23 @@ html[data-theme="light"] #tutoring .keywords span{
   border-radius:16px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,.5);
   transition:border-color .25s ease, box-shadow .3s ease, transform .3s ease;
 }
+.tech-card[data-tech]{ cursor:pointer; }
+.tech-card[data-tech]:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+/* “Learn more” affordance — sits in the info column, brightens on hover */
+.tech-learn{
+  position:absolute; right:14px; bottom:12px; z-index:3;
+  display:inline-flex; align-items:center; gap:6px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:.66rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+  padding:5px 10px; border-radius:999px; color:var(--accent);
+  background:rgba(125,211,252,.10); border:1px solid rgba(125,211,252,.28);
+  opacity:.55; transition:opacity .25s ease, background .25s ease, transform .25s ease;
+  pointer-events:none;
+}
+.tech-learn i{ width:13px; height:13px; }
+.tech-card[data-tech]{ position:relative; }
+.tech-card[data-tech]:hover .tech-learn,
+.tech-card[data-tech]:focus-visible .tech-learn{ opacity:1; background:rgba(125,211,252,.2); transform:translateY(-1px); }
 .tech-card:hover{ transform:translateY(-4px); border-color:var(--border-strong); box-shadow:0 16px 40px rgba(0,0,0,.6); }
 
 .tech-visual{
