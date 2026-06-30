@@ -332,9 +332,11 @@
   </div>
 </div>
 
+<!-- TECHNIQUES + SOFTWARE (side by side) -->
+<div class="tech-duo">
 <!-- TECHNIQUES & EQUIPMENT CAROUSEL -->
-<div class="tech-block reveal" aria-label="Techniques and equipment">
-  <h3 class="sub-h" data-pt="Técnicas, Equipamento e Competências">Techniques, Equipment &amp; Skills</h3>
+<div class="tech-block reveal" id="techniques" aria-label="Techniques and equipment">
+  <h3 class="sub-h"><i class="h2-ico" data-lucide="microscope"></i><span data-pt="Técnicas, Equipamento e Competências">Techniques, Equipment &amp; Skills</span></h3>
   <p class="section-note" data-pt="Os métodos analíticos e de síntese que utilizei ao longo da minha investigação e formação.">The analytical and synthetic methods I have used across my research and education.</p>
 
   <div class="tech-carousel" data-carousel data-autoplay="6000">
@@ -470,13 +472,37 @@
         </article>
 
         <article class="tech-slide">
-          <div class="tech-card" data-tech="dft" role="button" tabindex="0">
+          <div class="tech-card" data-tech="ab-initio" role="button" tabindex="0">
             <div class="tech-visual"><img class="tech-photo" src="images/techniques/dft.jpg" alt="" loading="lazy" onerror="this.closest('.tech-visual').classList.add('no-img'); this.remove();"><span class="tech-glyph"><i data-lucide="cpu"></i></span><a class="tech-credit" href="https://commons.wikimedia.org/wiki/File:Oak_Ridge_-_Kraken_(Cray_XT5).JPG" target="_blank" rel="noopener noreferrer">Oak Ridge National Laboratory · Public domain</a></div>
             <div class="tech-info">
               <span class="tech-eyebrow" data-pt="Competência · 10">Skill · 10</span>
-              <span class="tech-acr">DFT</span>
-              <span class="tech-full" data-pt="Teoria do Funcional da Densidade">Density Functional Theory</span>
+              <span class="tech-acr">Ab Initio</span>
+              <span class="tech-full" data-pt="Métodos quânticos de primeiros princípios">First-principles quantum methods</span>
               <p class="tech-desc" data-pt="Modela mecanismos e energias de reação computacionalmente.">Models reaction mechanisms and energetics computationally.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="tech-slide">
+          <div class="tech-card" data-tech="python" role="button" tabindex="0">
+            <div class="tech-visual tech-visual--contain tech-visual--logo"><img class="tech-product" src="images/techniques/python.jpg" alt="Python" loading="lazy"></div>
+            <div class="tech-info">
+              <span class="tech-eyebrow" data-pt="Competência · 11">Skill · 11</span>
+              <span class="tech-acr">Python</span>
+              <span class="tech-full" data-pt="Programação científica e análise de dados">Scientific programming &amp; data analysis</span>
+              <p class="tech-desc" data-pt="Automatiza o tratamento de dados, cálculos e gráficos da investigação.">Automates data processing, calculations and figures for research.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="tech-slide">
+          <div class="tech-card" data-tech="r" role="button" tabindex="0">
+            <div class="tech-visual tech-visual--contain tech-visual--logo"><img class="tech-product" src="images/techniques/r.jpg" alt="R" loading="lazy"></div>
+            <div class="tech-info">
+              <span class="tech-eyebrow" data-pt="Competência · 12">Skill · 12</span>
+              <span class="tech-acr">R</span>
+              <span class="tech-full" data-pt="Estatística e análise de dados">Statistics &amp; data analysis</span>
+              <p class="tech-desc" data-pt="Análise estatística e visualização de conjuntos de dados experimentais.">Statistical analysis and visualisation of experimental datasets.</p>
             </div>
           </div>
         </article>
@@ -492,6 +518,163 @@
   <div class="tech-pager" data-carousel-pager aria-label="Choose a technique"></div>
 </div>
 
+<!-- SOFTWARE CAROUSEL (parallel to Techniques) -->
+<div class="tech-block reveal" id="software" aria-label="Software">
+  <h3 class="sub-h"><i class="h2-ico" data-lucide="app-window"></i><span data-pt="Software">Software</span></h3>
+  <p class="section-note" data-pt="Os programas de aquisição, análise e desenho que utilizo na investigação e na conceção.">The acquisition, analysis and design programs I use across research and engineering.</p>
+
+  <div class="tech-carousel" data-carousel data-autoplay="0">
+    <button class="tech-arrow tech-arrow--prev" type="button" aria-label="Previous software" data-carousel-prev>
+      <i data-lucide="chevron-left"></i>
+    </button>
+
+    <div class="tech-viewport" data-carousel-viewport>
+      <div class="tech-track" data-carousel-track>
+
+        <article class="tech-slide">
+          <div class="tech-card" data-tech="office365" role="button" tabindex="0">
+            <div class="tech-visual no-img"><span class="tech-glyph"><i data-lucide="file-text"></i></span></div>
+            <div class="tech-info">
+              <span class="tech-eyebrow">Software · 01</span>
+              <span class="tech-acr">Office 365</span>
+              <span class="tech-full" data-pt="Word, PowerPoint e Excel">Word, PowerPoint &amp; Excel</span>
+              <p class="tech-desc" data-pt="Escrita de artigos, apresentações e organização e análise de dados.">Writing papers, building presentations and organising &amp; analysing data.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="tech-slide">
+          <div class="tech-card" data-tech="chemdraw" role="button" tabindex="0">
+            <div class="tech-visual no-img"><span class="tech-glyph"><i data-lucide="hexagon"></i></span></div>
+            <div class="tech-info">
+              <span class="tech-eyebrow">Software · 02</span>
+              <span class="tech-acr">ChemDraw</span>
+              <span class="tech-full" data-pt="Desenho de estruturas químicas">Chemical structure drawing</span>
+              <p class="tech-desc" data-pt="Desenha moléculas, mecanismos e esquemas de reação para publicação.">Draws molecules, mechanisms and reaction schemes for publication.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="tech-slide">
+          <div class="tech-card" data-tech="chemcraft" role="button" tabindex="0">
+            <div class="tech-visual no-img"><span class="tech-glyph"><i data-lucide="atom"></i></span></div>
+            <div class="tech-info">
+              <span class="tech-eyebrow">Software · 03</span>
+              <span class="tech-acr">Chemcraft</span>
+              <span class="tech-full" data-pt="Visualização de química quântica">Quantum-chemistry visualization</span>
+              <p class="tech-desc" data-pt="Visualiza geometrias, orbitais e vibrações de cálculos quânticos.">Visualises geometries, orbitals and vibrations from quantum calculations.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="tech-slide">
+          <div class="tech-card" data-tech="topspin" role="button" tabindex="0">
+            <div class="tech-visual no-img"><span class="tech-glyph"><i data-lucide="magnet"></i></span></div>
+            <div class="tech-info">
+              <span class="tech-eyebrow">Software · 04</span>
+              <span class="tech-acr">TopSpin</span>
+              <span class="tech-full" data-pt="Aquisição e processamento de RMN (Bruker)">Bruker NMR acquisition &amp; processing</span>
+              <p class="tech-desc" data-pt="Realiza e processa experiências de RMN 1D e 2D.">Runs and processes 1D and 2D NMR experiments.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="tech-slide">
+          <div class="tech-card" data-tech="openlab" role="button" tabindex="0">
+            <div class="tech-visual no-img"><span class="tech-glyph"><i data-lucide="activity"></i></span></div>
+            <div class="tech-info">
+              <span class="tech-eyebrow">Software · 05</span>
+              <span class="tech-acr">OpenLab</span>
+              <span class="tech-full" data-pt="Sistema de dados de cromatografia (Agilent)">Agilent chromatography data system</span>
+              <p class="tech-desc" data-pt="Controla instrumentos de LC/GC e integra cromatogramas.">Controls LC/GC instruments and integrates chromatograms.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="tech-slide">
+          <div class="tech-card" data-tech="masslynx" role="button" tabindex="0">
+            <div class="tech-visual no-img"><span class="tech-glyph"><i data-lucide="radar"></i></span></div>
+            <div class="tech-info">
+              <span class="tech-eyebrow">Software · 06</span>
+              <span class="tech-acr">MassLynx &amp; TargetLynx</span>
+              <span class="tech-full" data-pt="Controlo e quantificação de MS (Waters)">Waters MS control &amp; quantification</span>
+              <p class="tech-desc" data-pt="Adquire dados de espetrometria de massa e quantifica compostos-alvo.">Acquires mass-spectrometry data and quantifies target compounds.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="tech-slide">
+          <div class="tech-card" data-tech="mestrenova" role="button" tabindex="0">
+            <div class="tech-visual no-img"><span class="tech-glyph"><i data-lucide="waves"></i></span></div>
+            <div class="tech-info">
+              <span class="tech-eyebrow">Software · 07</span>
+              <span class="tech-acr">MestReNova</span>
+              <span class="tech-full" data-pt="Processamento de dados de RMN (Mnova)">NMR data processing (Mnova)</span>
+              <p class="tech-desc" data-pt="Processa, analisa e apresenta espetros de RMN.">Processes, analyses and presents NMR spectra.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="tech-slide">
+          <div class="tech-card" data-tech="multisim" role="button" tabindex="0">
+            <div class="tech-visual no-img"><span class="tech-glyph"><i data-lucide="circuit-board"></i></span></div>
+            <div class="tech-info">
+              <span class="tech-eyebrow">Software · 08</span>
+              <span class="tech-acr">Multisim</span>
+              <span class="tech-full" data-pt="Simulação de circuitos eletrónicos">Electronic circuit simulation</span>
+              <p class="tech-desc" data-pt="Projeta e simula circuitos analógicos e digitais.">Designs and simulates analogue and digital circuits.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="tech-slide">
+          <div class="tech-card" data-tech="solidworks" role="button" tabindex="0">
+            <div class="tech-visual no-img"><span class="tech-glyph"><i data-lucide="box"></i></span></div>
+            <div class="tech-info">
+              <span class="tech-eyebrow">Software · 09</span>
+              <span class="tech-acr">SOLIDWORKS</span>
+              <span class="tech-full" data-pt="Modelação CAD 3D">3D CAD modelling</span>
+              <p class="tech-desc" data-pt="Modela peças, conjuntos e equipamento de laboratório personalizado.">Models parts, assemblies and custom lab hardware.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="tech-slide">
+          <div class="tech-card" data-tech="matlab" role="button" tabindex="0">
+            <div class="tech-visual no-img"><span class="tech-glyph"><i data-lucide="grid-2x2"></i></span></div>
+            <div class="tech-info">
+              <span class="tech-eyebrow">Software · 10</span>
+              <span class="tech-acr">MATLAB</span>
+              <span class="tech-full" data-pt="Computação numérica e análise">Numerical computing &amp; analysis</span>
+              <p class="tech-desc" data-pt="Cálculo matricial, análise de dados e gráficos científicos.">Matrix computation, data analysis and scientific plotting.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="tech-slide">
+          <div class="tech-card" data-tech="acdlabs" role="button" tabindex="0">
+            <div class="tech-visual no-img"><span class="tech-glyph"><i data-lucide="flask-round"></i></span></div>
+            <div class="tech-info">
+              <span class="tech-eyebrow">Software · 11</span>
+              <span class="tech-acr">ACD/Labs</span>
+              <span class="tech-full" data-pt="Processamento e previsão espetral">Spectral processing &amp; prediction</span>
+              <p class="tech-desc" data-pt="Processa espetros de RMN, MS e IV e prevê propriedades.">Processes NMR, MS and IR spectra and predicts properties.</p>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+    <button class="tech-arrow tech-arrow--next" type="button" aria-label="Next software" data-carousel-next>
+      <i data-lucide="chevron-right"></i>
+    </button>
+  </div>
+
+  <div class="tech-pager" data-carousel-pager aria-label="Choose a software"></div>
+</div>
+</div>
+
 <!-- Technique detail content (EN + PT), read by the technique modal -->
 <script type="application/json" id="tech-detail-data">
 {
@@ -500,13 +683,10 @@
     "eyebrow": { "en": "Technique · 01", "pt": "Técnica · 01" },
     "title": { "en": "Chromatography & Mass Spectrometry", "pt": "Cromatografia & Espetrometria de Massa" },
     "tag": { "en": "Separation + detection", "pt": "Separação + deteção" },
-    "body": {
-      "en": ["Chromatography separates a complex mixture into its individual compounds by carrying it through a column that holds each one back by a different amount. Mass spectrometry (MS) then weighs the molecules of each compound to identify them.", "Coupled together — LC–MS and GC–MS — they are the main readout of my experiments: after a mechanochemical or shock reaction, they reveal which molecules survived, which broke down, and what new species appeared."],
-      "pt": ["A cromatografia separa uma mistura complexa nos seus compostos individuais, fazendo-a passar por uma coluna que retém cada um de forma diferente. A espetrometria de massa (EM) pesa depois as moléculas de cada composto para os identificar.", "Acopladas — LC–MS e GC–MS — são a principal leitura das minhas experiências: após uma reação mecanoquímica ou de choque, revelam que moléculas sobreviveram, quais se decompuseram e que novas espécies surgiram."]
-    },
+    "body": { "en": [], "pt": [] },
     "points": {
-      "en": ["LC–MS / GC–MS — separation coupled to mass identification", "HPLC–UV — high-resolution liquid separation with UV detection", "GC–FID — gas separation with flame-ionization quantification"],
-      "pt": ["LC–MS / GC–MS — separação acoplada a identificação por massa", "HPLC–UV — separação líquida de alta resolução com deteção UV", "GC–FID — separação gasosa com quantificação por ionização de chama"]
+      "en": ["<b>LC–MS</b> — Liquid Chromatography–Mass Spectrometry: separates dissolved molecules and weighs each one to identify it.", "<b>GC–MS</b> — Gas Chromatography–Mass Spectrometry: separates volatile molecules and identifies them by mass.", "<b>HPLC–UV</b> — High-Performance Liquid Chromatography with UV detection: high-resolution liquid separation read by UV absorbance.", "<b>GC–FID</b> — Gas Chromatography–Flame Ionization Detection: gas separation with sensitive flame-ionization quantification."],
+      "pt": ["<b>LC–MS</b> — Cromatografia Líquida–Espetrometria de Massa: separa moléculas dissolvidas e pesa cada uma para a identificar.", "<b>GC–MS</b> — Cromatografia Gasosa–Espetrometria de Massa: separa moléculas voláteis e identifica-as por massa.", "<b>HPLC–UV</b> — Cromatografia Líquida de Alta Eficiência com deteção UV: separação líquida de alta resolução lida por absorvância UV.", "<b>GC–FID</b> — Cromatografia Gasosa–Ionização de Chama: separação gasosa com quantificação sensível por ionização de chama."]
     }
   },
   "nmr": {
@@ -621,18 +801,200 @@
       "pt": ["Constrói e transforma moléculas-alvo", "Reações de redução e otimização de condições", "Fornece os materiais de partida puros para as experiências"]
     }
   },
-  "dft": {
+  "ab-initio": {
     "icon": "cpu",
     "eyebrow": { "en": "Skill · 10", "pt": "Competência · 10" },
-    "title": { "en": "Density Functional Theory (DFT)", "pt": "Teoria do Funcional da Densidade (DFT)" },
+    "title": { "en": "Ab Initio Methods", "pt": "Métodos Ab Initio" },
     "tag": { "en": "Quantum modelling", "pt": "Modelação quântica" },
     "body": {
-      "en": ["DFT is a quantum-mechanical computer method that calculates the energy and structure of molecules from first principles. It lets me map the pathway a reaction follows and the energy barriers along it.", "I use DFT to explain experimental results — for instance, how a metal ion and water together open the ribose ring of a ribonucleoside during mechanochemical degradation."],
-      "pt": ["A DFT é um método computacional de mecânica quântica que calcula a energia e a estrutura das moléculas a partir de princípios fundamentais. Permite-me mapear o percurso que uma reação segue e as barreiras energéticas ao longo dele.", "Uso a DFT para explicar resultados experimentais — por exemplo, como um ião metálico e a água, em conjunto, abrem o anel da ribose de um ribonucleósido durante a degradação mecanoquímica."]
+      "en": ["Ab initio methods are quantum-chemistry calculations that solve the equations of electronic structure from first principles — using only fundamental physical constants, with no empirical parameters. They predict the energy and structure of molecules and the pathway a reaction follows, including the energy barriers along it.", "I use them to explain experimental results — for instance, how a metal ion and water together open the ribose ring of a ribonucleoside during mechanochemical degradation."],
+      "pt": ["Os métodos ab initio são cálculos de química quântica que resolvem as equações da estrutura eletrónica a partir de princípios fundamentais — usando apenas constantes físicas, sem parâmetros empíricos. Preveem a energia e a estrutura das moléculas e o percurso que uma reação segue, incluindo as barreiras energéticas ao longo dele.", "Uso-os para explicar resultados experimentais — por exemplo, como um ião metálico e a água, em conjunto, abrem o anel da ribose de um ribonucleósido durante a degradação mecanoquímica."]
     },
     "points": {
-      "en": ["Computes molecular energies and structures", "Maps reaction mechanisms and energy barriers", "Explains the chemistry seen in the lab"],
-      "pt": ["Calcula energias e estruturas moleculares", "Mapeia mecanismos de reação e barreiras energéticas", "Explica a química observada no laboratório"]
+      "en": ["Computes molecular energies and structures from first principles", "Maps reaction mechanisms and energy barriers", "Explains the chemistry seen in the lab"],
+      "pt": ["Calcula energias e estruturas moleculares a partir de princípios fundamentais", "Mapeia mecanismos de reação e barreiras energéticas", "Explica a química observada no laboratório"]
+    }
+  },
+  "python": {
+    "icon": "code",
+    "eyebrow": { "en": "Skill · 11", "pt": "Competência · 11" },
+    "title": { "en": "Python", "pt": "Python" },
+    "tag": { "en": "Programming & data", "pt": "Programação e dados" },
+    "body": {
+      "en": ["A general-purpose programming language I use to automate data handling, run calculations and generate figures — tying the output of instruments and computational chemistry into reproducible analysis."],
+      "pt": ["Uma linguagem de programação de uso geral que utilizo para automatizar o tratamento de dados, realizar cálculos e gerar gráficos — ligando os resultados dos instrumentos e da química computacional numa análise reprodutível."]
+    },
+    "points": {
+      "en": ["Automates repetitive data processing", "Plots and analyses experimental results"],
+      "pt": ["Automatiza o tratamento repetitivo de dados", "Representa e analisa resultados experimentais"]
+    }
+  },
+  "r": {
+    "icon": "sigma",
+    "eyebrow": { "en": "Skill · 12", "pt": "Competência · 12" },
+    "title": { "en": "R", "pt": "R" },
+    "tag": { "en": "Statistics", "pt": "Estatística" },
+    "body": {
+      "en": ["A language and environment for statistical computing and graphics, which I use for the statistical analysis and visualisation of experimental datasets."],
+      "pt": ["Uma linguagem e ambiente para computação estatística e gráficos, que utilizo para a análise estatística e visualização de conjuntos de dados experimentais."]
+    },
+    "points": {
+      "en": ["Statistical analysis of datasets", "Publication-quality data visualisation"],
+      "pt": ["Análise estatística de conjuntos de dados", "Visualização de dados com qualidade de publicação"]
+    }
+  },
+  "office365": {
+    "icon": "file-text",
+    "eyebrow": { "en": "Software · 01", "pt": "Software · 01" },
+    "title": { "en": "Microsoft Office 365", "pt": "Microsoft Office 365" },
+    "tag": { "en": "Productivity suite", "pt": "Produtividade" },
+    "body": {
+      "en": ["The Microsoft 365 suite — Word, PowerPoint and Excel — used for writing manuscripts and reports, building presentations, and organising and analysing data in spreadsheets."],
+      "pt": ["O conjunto Microsoft 365 — Word, PowerPoint e Excel — usado para escrever artigos e relatórios, criar apresentações e organizar e analisar dados em folhas de cálculo."]
+    },
+    "points": {
+      "en": ["Word, PowerPoint and Excel", "Writing, presentations and data tables"],
+      "pt": ["Word, PowerPoint e Excel", "Escrita, apresentações e tabelas de dados"]
+    }
+  },
+  "chemdraw": {
+    "icon": "hexagon",
+    "eyebrow": { "en": "Software · 02", "pt": "Software · 02" },
+    "title": { "en": "ChemDraw", "pt": "ChemDraw" },
+    "tag": { "en": "Structure drawing", "pt": "Desenho de estruturas" },
+    "body": {
+      "en": ["The standard tool for drawing chemical structures and reaction schemes. I use it to prepare publication-ready molecules, mechanisms and figures."],
+      "pt": ["A ferramenta padrão para desenhar estruturas químicas e esquemas de reação. Uso-a para preparar moléculas, mecanismos e figuras prontos para publicação."]
+    },
+    "points": {
+      "en": ["Draws molecules and reaction schemes", "Publication-quality chemical figures"],
+      "pt": ["Desenha moléculas e esquemas de reação", "Figuras químicas com qualidade de publicação"]
+    }
+  },
+  "chemcraft": {
+    "icon": "atom",
+    "eyebrow": { "en": "Software · 03", "pt": "Software · 03" },
+    "title": { "en": "Chemcraft", "pt": "Chemcraft" },
+    "tag": { "en": "Computational chemistry", "pt": "Química computacional" },
+    "body": {
+      "en": ["A graphical program for visualising the output of quantum-chemistry calculations (Gaussian, ORCA and others) — showing optimised geometries, vibrational modes and molecular orbitals."],
+      "pt": ["Um programa gráfico para visualizar os resultados de cálculos de química quântica (Gaussian, ORCA e outros) — mostrando geometrias otimizadas, modos vibracionais e orbitais moleculares."]
+    },
+    "points": {
+      "en": ["Visualises quantum-chemistry outputs", "Geometries, orbitals and vibrations"],
+      "pt": ["Visualiza resultados de química quântica", "Geometrias, orbitais e vibrações"]
+    }
+  },
+  "topspin": {
+    "icon": "magnet",
+    "eyebrow": { "en": "Software · 04", "pt": "Software · 04" },
+    "title": { "en": "Bruker TopSpin", "pt": "Bruker TopSpin" },
+    "tag": { "en": "NMR software", "pt": "Software de RMN" },
+    "body": {
+      "en": ["Bruker's standard software for acquiring and processing NMR spectra. I use it to run experiments on the spectrometer and to process and analyse the resulting 1D and 2D data."],
+      "pt": ["O software padrão da Bruker para adquirir e processar espetros de RMN. Uso-o para realizar experiências no espetrómetro e para processar e analisar os dados 1D e 2D resultantes."]
+    },
+    "points": {
+      "en": ["Acquires and processes NMR spectra", "Handles 1D and 2D experiments"],
+      "pt": ["Adquire e processa espetros de RMN", "Trata experiências 1D e 2D"]
+    }
+  },
+  "openlab": {
+    "icon": "activity",
+    "eyebrow": { "en": "Software · 05", "pt": "Software · 05" },
+    "title": { "en": "Agilent OpenLab", "pt": "Agilent OpenLab" },
+    "tag": { "en": "Chromatography data", "pt": "Dados de cromatografia" },
+    "body": {
+      "en": ["Agilent's chromatography data system (CDS) for controlling LC and GC instruments and acquiring, integrating and reporting chromatographic data."],
+      "pt": ["O sistema de dados cromatográficos (CDS) da Agilent para controlar instrumentos de LC e GC e adquirir, integrar e reportar dados cromatográficos."]
+    },
+    "points": {
+      "en": ["Controls LC and GC instruments", "Integrates and reports chromatograms"],
+      "pt": ["Controla instrumentos de LC e GC", "Integra e reporta cromatogramas"]
+    }
+  },
+  "masslynx": {
+    "icon": "radar",
+    "eyebrow": { "en": "Software · 06", "pt": "Software · 06" },
+    "title": { "en": "MassLynx & TargetLynx", "pt": "MassLynx e TargetLynx" },
+    "tag": { "en": "Mass spectrometry", "pt": "Espetrometria de massa" },
+    "body": {
+      "en": ["Waters' mass-spectrometry software: MassLynx controls the instrument and acquires data, while the TargetLynx application manager automates targeted quantification and reporting."],
+      "pt": ["O software de espetrometria de massa da Waters: o MassLynx controla o instrumento e adquire dados, enquanto o gestor de aplicações TargetLynx automatiza a quantificação dirigida e os relatórios."]
+    },
+    "points": {
+      "en": ["MassLynx — instrument control & acquisition", "TargetLynx — targeted quantification"],
+      "pt": ["MassLynx — controlo e aquisição", "TargetLynx — quantificação dirigida"]
+    }
+  },
+  "mestrenova": {
+    "icon": "waves",
+    "eyebrow": { "en": "Software · 07", "pt": "Software · 07" },
+    "title": { "en": "MestReNova (Mnova)", "pt": "MestReNova (Mnova)" },
+    "tag": { "en": "NMR processing", "pt": "Processamento de RMN" },
+    "body": {
+      "en": ["Mestrelab's MestReNova (Mnova) is a multi-platform analytical-data processor, used mainly to process, analyse and present NMR spectra on a laptop, away from the spectrometer."],
+      "pt": ["O MestReNova (Mnova) da Mestrelab é um processador de dados analíticos multiplataforma, usado sobretudo para processar, analisar e apresentar espetros de RMN num portátil, fora do espetrómetro."]
+    },
+    "points": {
+      "en": ["Processes and presents NMR spectra", "Works independently of the instrument"],
+      "pt": ["Processa e apresenta espetros de RMN", "Funciona independentemente do instrumento"]
+    }
+  },
+  "multisim": {
+    "icon": "circuit-board",
+    "eyebrow": { "en": "Software · 08", "pt": "Software · 08" },
+    "title": { "en": "NI Multisim", "pt": "NI Multisim" },
+    "tag": { "en": "Circuit simulation", "pt": "Simulação de circuitos" },
+    "body": {
+      "en": ["National Instruments Multisim is an electronic schematic-capture and SPICE simulation environment, used to design and test analogue and digital circuits before building them."],
+      "pt": ["O Multisim da National Instruments é um ambiente de captura de esquemas eletrónicos e simulação SPICE, usado para projetar e testar circuitos analógicos e digitais antes de os construir."]
+    },
+    "points": {
+      "en": ["Designs and simulates electronic circuits", "SPICE analysis of analogue & digital"],
+      "pt": ["Projeta e simula circuitos eletrónicos", "Análise SPICE de analógico e digital"]
+    }
+  },
+  "solidworks": {
+    "icon": "box",
+    "eyebrow": { "en": "Software · 09", "pt": "Software · 09" },
+    "title": { "en": "SOLIDWORKS", "pt": "SOLIDWORKS" },
+    "tag": { "en": "3D CAD", "pt": "CAD 3D" },
+    "body": {
+      "en": ["Dassault Systèmes' SOLIDWORKS is a 3D computer-aided design (CAD) package, used to model parts and assemblies and to design custom lab components and apparatus."],
+      "pt": ["O SOLIDWORKS da Dassault Systèmes é um pacote de desenho assistido por computador (CAD) 3D, usado para modelar peças e conjuntos e para projetar componentes e aparelhos de laboratório personalizados."]
+    },
+    "points": {
+      "en": ["3D modelling of parts and assemblies", "Designing custom lab hardware"],
+      "pt": ["Modelação 3D de peças e conjuntos", "Conceção de equipamento de laboratório"]
+    }
+  },
+  "matlab": {
+    "icon": "grid-2x2",
+    "eyebrow": { "en": "Software · 10", "pt": "Software · 10" },
+    "title": { "en": "MATLAB", "pt": "MATLAB" },
+    "tag": { "en": "Numerical computing", "pt": "Computação numérica" },
+    "body": {
+      "en": ["MathWorks' MATLAB is a numerical-computing environment for matrix calculations, data analysis, algorithm development and visualisation of scientific data."],
+      "pt": ["O MATLAB da MathWorks é um ambiente de computação numérica para cálculos matriciais, análise de dados, desenvolvimento de algoritmos e visualização de dados científicos."]
+    },
+    "points": {
+      "en": ["Matrix computation and data analysis", "Algorithms and scientific plotting"],
+      "pt": ["Cálculo matricial e análise de dados", "Algoritmos e gráficos científicos"]
+    }
+  },
+  "acdlabs": {
+    "icon": "flask-round",
+    "eyebrow": { "en": "Software · 11", "pt": "Software · 11" },
+    "title": { "en": "ACD/Labs", "pt": "ACD/Labs" },
+    "tag": { "en": "Spectral analysis", "pt": "Análise espetral" },
+    "body": {
+      "en": ["ACD/Labs (Advanced Chemistry Development) provides software for processing and interpreting analytical spectra — NMR, MS, IR and chromatography — and for predicting molecular properties."],
+      "pt": ["A ACD/Labs (Advanced Chemistry Development) fornece software para processar e interpretar espetros analíticos — RMN, MS, IV e cromatografia — e para prever propriedades moleculares."]
+    },
+    "points": {
+      "en": ["Processes NMR, MS, IR and LC/GC data", "Predicts spectra and properties"],
+      "pt": ["Processa dados de RMN, MS, IV e LC/GC", "Prevê espetros e propriedades"]
     }
   }
 }

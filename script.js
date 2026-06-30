@@ -226,15 +226,15 @@
       const strip = jump.querySelector(".nav-sec-strip");
       const setOpen = (open) => {
         jump.classList.toggle("is-open", open);
-        jbtn.setAttribute("aria-expanded", open ? "true" : "false");
+        if (jbtn) jbtn.setAttribute("aria-expanded", open ? "true" : "false");
       };
-      // CSS already reveals the strip on hover; the button toggles it for
-      // touch + the keyboard 'S' shortcut.
-      jbtn.addEventListener("click", (e) => {
+      // The section icons are always visible now; the button (if present)
+      // simply toggles a highlight state for touch + the keyboard 'S' shortcut.
+      if (jbtn) jbtn.addEventListener("click", (e) => {
         e.stopPropagation();
         setOpen(!jump.classList.contains("is-open"));
       });
-      strip.querySelectorAll("a").forEach(a =>
+      if (strip) strip.querySelectorAll("a").forEach(a =>
         a.addEventListener("click", (e) => {
           const href = a.getAttribute("href") || "";
           if (href.charAt(0) === "#") { e.preventDefault(); slideToHash(href); }
@@ -591,7 +591,7 @@
     }
 
     // Balloon pointing at the toggle: reminds the user they can turn it off.
-    // Stays ~10s, or until the user clicks its × close button.
+    // Stays ~3s, or until the user clicks its × close button.
     function showOffHint() {
       try { if (sessionStorage.getItem(KEY + "-hint") === "1") return; } catch (_) {}
       try { sessionStorage.setItem(KEY + "-hint", "1"); } catch (_) {}
@@ -649,7 +649,7 @@
         setTimeout(() => { window.removeEventListener("resize", place); tip.remove(); }, 350);
       };
       close.addEventListener("click", dismiss);
-      const autoT = setTimeout(dismiss, 10000);
+      const autoT = setTimeout(dismiss, 3000);
     }
   }
 
@@ -1287,7 +1287,11 @@
       track.style.transform = "translateX(" + (-i * 100) + "%)";
       dots.forEach((d, idx) => d.classList.toggle("active", idx === i));
     }
-    function go(idx) { i = clamp(idx); render(true); }
+    function go(idx, silent) {
+      i = clamp(idx); render(true);
+      if (!silent) root.dispatchEvent(new CustomEvent("carousel:go", { detail: { index: i } }));
+    }
+    root.__carouselGoTo = (idx) => go(idx, true);
     function step(d) { go(i + d); }
 
     if (prev) prev.addEventListener("click", () => step(-1));
@@ -1363,6 +1367,16 @@
 
   function setupCarousels() {
     document.querySelectorAll("[data-carousel]").forEach(wireCarousel);
+    // Coordinate paired carousels inside a .tech-duo so they move together.
+    document.querySelectorAll(".tech-duo").forEach(duo => {
+      const cars = Array.from(duo.querySelectorAll("[data-carousel]"));
+      if (cars.length < 2) return;
+      cars.forEach(src => src.addEventListener("carousel:go", e => {
+        cars.forEach(other => {
+          if (other !== src && other.__carouselGoTo) other.__carouselGoTo(e.detail.index);
+        });
+      }));
+    });
   }
 
   // ============================================================
@@ -1607,8 +1621,13 @@
       const el = document.getElementById(id);
       if (!el) return;
       e.preventDefault();
-      // the sections control is a wrapper — click its button
-      (id === "navJump" ? el.querySelector(".nav-jump-btn") : el).click();
+      if (id === "navJump") {
+        // The section icons are always visible; 'S' focuses the first one.
+        const ico = el.querySelector(".nav-sec-ico");
+        if (ico && ico.focus) ico.focus();
+      } else {
+        el.click();
+      }
     });
   }
 
