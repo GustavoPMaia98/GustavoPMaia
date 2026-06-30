@@ -127,7 +127,15 @@
         <button class="icon-btn" id="searchToggle" type="button" aria-label="Search the site" data-tip="Search  ·  / or ⌘K">
           <i data-lucide="search"></i>
         </button>
-        <button class="icon-btn" id="langToggle" type="button" aria-label="Switch language" data-tip="Português / English  ·  L">PT</button>
+        <div class="lang-menu" id="langMenu">
+          <button class="icon-btn" id="langToggle" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Language" data-tip="Language  ·  L"><i data-lucide="globe"></i></button>
+          <div class="lang-pop" id="langPop" role="menu" aria-label="Choose language" hidden>
+            <button class="lang-opt" type="button" role="menuitemradio" data-lang="en"><span class="lang-flag" aria-hidden="true">🇬🇧</span><span class="lang-name">English</span></button>
+            <button class="lang-opt" type="button" role="menuitemradio" data-lang="pt"><span class="lang-flag" aria-hidden="true">🇵🇹</span><span class="lang-name">Português</span></button>
+            <button class="lang-opt" type="button" role="menuitemradio" data-lang="fr"><span class="lang-flag" aria-hidden="true">🇫🇷</span><span class="lang-name">Français</span></button>
+            <button class="lang-opt" type="button" role="menuitemradio" data-lang="ja"><span class="lang-flag" aria-hidden="true">🇯🇵</span><span class="lang-name">日本語</span></button>
+          </div>
+        </div>
         <button class="icon-btn" id="themeToggle" type="button" aria-label="Switch theme" data-tip="Light / dark theme  ·  T">
           <i data-lucide="moon"></i>
         </button>
@@ -304,6 +312,7 @@
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', loadSections);
     else loadSections();
   </script>
+  <script src="i18n/translations.js"></script>
   <script src="script.js"></script>
 
   <!-- Site search (command palette) -->

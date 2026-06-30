@@ -377,10 +377,42 @@ html[data-theme="light"] .tech-pager button{ background:rgba(15,23,42,.18); }
   filter:drop-shadow(0 10px 22px rgba(0,0,0,.5));
 }
 .tech-visual--contain::after{ background:radial-gradient(120% 90% at 60% 12%, rgba(125,211,252,.10), transparent 60%); }
-/* brand/software logos on white tiles (JPGs with white backgrounds) */
-.tech-visual--logo{ background:#fff; }
-.tech-visual--logo::after{ content:none; }
-.tech-visual--logo .tech-product{ padding:30px; filter:none; }
+/* Software/brand logos — adapted to the site style: instead of a stark
+   full-bleed white tile, each mark floats as a rounded white plaque on the
+   cosmic gradient (matching the LC–MS "product in space" card) with the cyan
+   glow + a soft drop shadow. Keeps dark-on-white wordmarks legible. */
+.tech-visual--logo{ background:linear-gradient(150deg,#14366b 0%,#0c1d44 55%,#0a1330 100%); }
+/* ---- Language menu (globe + flag/name dropdown) ---- */
+.lang-menu{ position:relative; display:inline-flex; }
+.lang-pop{
+  position:absolute; top:calc(100% + 8px); right:0; z-index:60;
+  min-width:188px; padding:6px; display:flex; flex-direction:column; gap:2px;
+  background:var(--card, rgba(255,255,255,.05)); border:1px solid var(--border, rgba(255,255,255,.12));
+  border-radius:14px; box-shadow:0 18px 44px rgba(0,0,0,.6);
+  backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+}
+/* invisible bridge so the pointer can cross the gap without closing the menu */
+.lang-pop::before{ content:""; position:absolute; left:0; right:0; top:-10px; height:10px; }
+.lang-pop[hidden]{ display:none; }
+.lang-opt{
+  display:flex; align-items:center; gap:11px; width:100%;
+  padding:9px 12px; border:0; border-radius:9px; cursor:pointer;
+  background:transparent; color:var(--text); font:inherit; font-size:.92rem; text-align:left;
+  transition:background .18s ease;
+}
+.lang-opt:hover{ background:rgba(125,211,252,.12); }
+.lang-opt.active{ background:rgba(125,211,252,.16); }
+.lang-flag{ font-size:1.15rem; line-height:1; width:1.4em; text-align:center; }
+.lang-opt.active .lang-name{ color:var(--accent); font-weight:600; }
+
+.tech-visual--logo .tech-product{
+  position:static; inset:auto;
+  width:auto; height:auto; max-width:76%; max-height:70%;
+  padding:14px 18px; box-sizing:border-box;
+  background:#fff; border-radius:16px;
+  box-shadow:0 14px 32px rgba(0,0,0,.5);
+  filter:none;
+}
 .tech-visual--contain .tech-glyph{ display:none; }
 .tech-visual:has(.tech-photo)::after{ background:linear-gradient(150deg, rgba(7,12,29,.32), rgba(7,12,29,.66)); }
 .tech-visual:has(.tech-photo) .tech-glyph{ display:none; }

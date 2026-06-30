@@ -961,34 +961,67 @@
   }
 
   // Language
+  function trLookup(lang, enHtml) {
+    if (lang === "en") return enHtml;
+    var key = String(enHtml).replace(/\s+/g, " ").trim();
+    var d = (window.TR && window.TR[lang]) || null;
+    return (d && d[key] != null) ? d[key] : enHtml;
+  }
   function applyLang() {
     const lang = currentLang;
     document.querySelectorAll("[data-i18n]").forEach(el => {
       const t = I18N[el.getAttribute("data-i18n")];
-      if (t && t[lang]) el.textContent = t[lang];
+      if (t) el.textContent = (lang === "en") ? t.en : (t[lang] || trLookup(lang, t.en));
     });
     document.querySelectorAll(".h2-label").forEach(s => {
       if (!s.dataset.en) s.dataset.en = s.textContent.trim();
-      s.textContent = (lang === "pt" && HEADINGS[s.dataset.en]) ? HEADINGS[s.dataset.en] : s.dataset.en;
+      const en = s.dataset.en;
+      s.textContent = (lang === "pt" && HEADINGS[en]) ? HEADINGS[en] : trLookup(lang, en);
     });
     document.querySelectorAll("[data-pt]").forEach(el => {
       if (el.dataset.enHtml === undefined) el.dataset.enHtml = el.innerHTML;
-      el.innerHTML = (lang === "pt") ? el.dataset.pt : el.dataset.enHtml;
+      el.innerHTML = (lang === "pt") ? el.dataset.pt : trLookup(lang, el.dataset.enHtml);
     });
-    const lb = document.getElementById("langToggle");
-    if (lb) lb.textContent = lang === "en" ? "PT" : "EN";
     document.documentElement.setAttribute("lang", lang);
+    document.documentElement.setAttribute("data-lang", lang);
+    document.querySelectorAll("#langPop .lang-opt").forEach(b => {
+      const on = b.dataset.lang === lang;
+      b.classList.toggle("active", on);
+      b.setAttribute("aria-checked", on ? "true" : "false");
+    });
+    document.querySelectorAll("[data-i18n-filter]").forEach(b => {
+      const key = b.getAttribute("data-i18n-filter");
+      const en = { all: "All", oral: "Oral", poster: "Poster" }[key];
+      const pt = { all: "Todos", oral: "Oral", poster: "Póster" }[key];
+      if (en) b.textContent = (lang === "pt") ? pt : trLookup(lang, en);
+    });
     if (typeof mapLangUpdate === "function") mapLangUpdate(lang);
   }
   function setupLangToggle() {
     const btn = document.getElementById("langToggle");
-    if (btn && !langWired) {
+    const pop = document.getElementById("langPop");
+    if (btn && pop && !langWired) {
       langWired = true;
-      btn.addEventListener("click", () => {
-        currentLang = currentLang === "en" ? "pt" : "en";
-        try { localStorage.setItem("lang", currentLang); } catch(e){}
-        applyLang();
+      const open = o => { pop.hidden = !o; btn.setAttribute("aria-expanded", o ? "true" : "false"); };
+      btn.addEventListener("click", e => { e.stopPropagation(); open(pop.hidden); });
+      // Open automatically on hover; close shortly after the pointer leaves.
+      const menu = document.getElementById("langMenu");
+      let hideT = null;
+      if (menu && window.matchMedia && window.matchMedia("(hover: hover)").matches) {
+        const cancelHide = () => { if (hideT) { clearTimeout(hideT); hideT = null; } };
+        menu.addEventListener("pointerenter", () => { cancelHide(); open(true); });
+        menu.addEventListener("pointerleave", () => { cancelHide(); hideT = setTimeout(() => open(false), 260); });
+      }
+      pop.querySelectorAll(".lang-opt").forEach(b => {
+        b.addEventListener("click", () => {
+          currentLang = b.dataset.lang;
+          try { localStorage.setItem("lang", currentLang); } catch (e) {}
+          applyLang();
+          open(false);
+        });
       });
+      document.addEventListener("click", e => { if (!e.target.closest("#langMenu")) open(false); });
+      document.addEventListener("keydown", e => { if (e.key === "Escape") open(false); });
     }
     applyLang();
   }
@@ -1052,7 +1085,8 @@
       });
       return b;
     };
-    const all = mk(currentLang === "pt" ? "Todos" : "All", "all");
+    const all = mk(currentLang === "pt" ? "Todos" : (window.TR && (currentLang==="fr"||currentLang==="ja") ? (window.TR[currentLang]["All"]||"All") : "All"), "all");
+    all.dataset.i18nFilter = "all";
     all.classList.add("active");
     wrap.appendChild(all);
     sorted.forEach(y => wrap.appendChild(mk(y, y)));
@@ -1081,7 +1115,7 @@
     wrap.innerHTML = "";
     const mk = key => {
       const b = document.createElement("button");
-      b.type = "button"; b.textContent = label(key); b.dataset.val = key;
+      b.type = "button"; b.textContent = label(key); b.dataset.val = key; b.dataset.i18nFilter = key;
       b.addEventListener("click", () => {
         wrap.querySelectorAll("button").forEach(x => x.classList.remove("active"));
         b.classList.add("active");
@@ -1175,9 +1209,11 @@
     fit();
 
     // Legend (text follows the current language; updated live on language toggle)
-    const legendText = lang => lang === "pt"
-      ? ['Estudos (ESPE · UBI · Técnico)', 'Laboratórios e investigação', 'Comunicações orais e painéis']
-      : ['Studies (ESPE · UBI · Técnico)', 'Laboratories &amp; research', 'Oral &amp; poster presentations'];
+    const legendText = lang => {
+      if (lang === "pt") return ['Estudos (ESPE · UBI · Técnico)', 'Laboratórios e investigação', 'Comunicações orais e painéis'];
+      return ['Studies (ESPE · UBI · Técnico)', 'Laboratories &amp; research', 'Oral &amp; poster presentations']
+        .map(s => trLookup(lang, s.replace(/&amp;/g, '&')));
+    };
     const legendHTML = lang => {
       const t = legendText(lang);
       return '<span class="dot" style="background:' + EDU  + '"></span>' + t[0] + '<br>' +
@@ -1412,8 +1448,8 @@
     let DATA = {};
     try { DATA = JSON.parse(dataEl.textContent); } catch (e) { return; }
 
-    const lang = () => (document.documentElement.getAttribute("lang") === "pt" ? "pt" : "en");
-    const pick = v => (v && typeof v === "object") ? (v[lang()] || v.en) : v;
+    const lang = () => document.documentElement.getAttribute("lang") || "en";
+    const pick = v => (v && typeof v === "object") ? (v[lang()] || trLookup(lang(), v.en)) : v;
 
     const elIcon = document.getElementById("hlModalIcon");
     const elEyebrow = document.getElementById("hlModalEyebrow");
@@ -1526,8 +1562,8 @@
 
     let DATA = {};
     try { DATA = JSON.parse(dataEl.textContent); } catch (e) { return; }
-    const lang = () => (document.documentElement.getAttribute("data-lang") === "pt" ? "pt" : "en");
-    const pick = v => (v && typeof v === "object") ? (v[lang()] || v.en) : v;
+    const lang = () => document.documentElement.getAttribute("data-lang") || "en";
+    const pick = v => (v && typeof v === "object") ? (v[lang()] || trLookup(lang(), v.en)) : v;
 
     const elIcon = document.getElementById("techModalIcon");
     const elEyebrow = document.getElementById("techModalEyebrow");
