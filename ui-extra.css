@@ -274,8 +274,15 @@ html[data-theme="light"] #tutoring .keywords span{
   line-height:1.2; margin:0 0 6px; color:var(--text);
   display:flex; align-items:center;
 }
+/* merged, centered header above both carousels */
+.tech-duo-head{ text-align:center; margin-top:clamp(28px,5vw,48px); }
+.sub-h--center{ justify-content:center; }
+.section-note--center{ text-align:center; max-width:60ch; margin-left:auto; margin-right:auto; }
+.tech-duo-head + .tech-duo{ margin-top:clamp(14px,2vw,22px); }
 
 .tech-carousel{ position:relative; display:flex; align-items:center; gap:8px; }
+/* arrows removed — navigation via dots, drag and coordinated autoplay */
+.tech-arrow{ display:none !important; }
 .tech-viewport{ overflow:hidden; flex:1 1 auto; min-width:0; padding:22px 4px; }
 .tech-track{ display:flex; transition:transform .55s cubic-bezier(.22,.61,.36,1); will-change:transform; }
 .tech-track.no-anim{ transition:none; }
