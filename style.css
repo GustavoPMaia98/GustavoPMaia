@@ -351,6 +351,12 @@ section[id]{scroll-margin-top:calc(var(--nav-h) + 16px)}
     0 0 26px rgba(125,211,252,.32);
   transform:translateY(-2px);
 }
+/* Presentation title slides are 16:9 — show them whole, never cropped */
+#presentations .expand-gallery img{
+  aspect-ratio:16 / 9;
+  object-fit:contain;
+  background:#070c1d;
+}
 
 /* ================= EQUIPMENT ================= */
 .equip-title{margin:20px 0 4px;font-size:1.05rem;color:var(--accent)}
