@@ -1,0 +1,102 @@
+[
+  {
+    "date": "2026-01-15",
+    "dateChip": "2026",
+    "href": "https://www.linkedin.com/feed/update/urn:li:activity:7463711729630351360/",
+    "media": { "kind": "photo", "src": "images/tecnico.png", "alt": "Instituto Superior Técnico façade" },
+    "text": {
+      "en": "Recognised among the <em>“Excellent Teachers 2024/2025”</em> at Instituto Superior Técnico (Universidade de Lisboa), for teaching in the General Chemistry laboratories.",
+      "pt": "Reconhecido entre os <em>“Excellent Teachers 2024/2025” (Professores de Excelência 2024/2025)</em> no Instituto Superior Técnico (Universidade de Lisboa), pelo ensino nos laboratórios de Química Geral."
+    },
+    "cta": { "en": "Announcement", "pt": "Anúncio" }
+  },
+  {
+    "date": "2025-10-01",
+    "dateChip": "Oct 2025",
+    "href": "https://www.linkedin.com/feed/update/urn:li:activity:7387925539669561344/",
+    "media": { "kind": "logo", "src": "images/logos/EANA.png", "alt": "European Astrobiology Network Association" },
+    "text": {
+      "en": "A busy month in astrobiology: an oral talk at <em>AbGradE’25</em> and a poster at <em>EANA 2025</em> (Lisbon) — which earned the <strong>EANA 2025 Poster Award</strong> — plus an oral presentation at the <em>“Small Bodies Day”</em> Symposium (IPGP, Paris).",
+      "pt": "Um mês intenso em astrobiologia: uma comunicação oral no <em>AbGradE’25</em> e um póster na <em>EANA 2025</em> (Lisboa) — que recebeu o <strong>EANA 2025 Poster Award (Prémio de Póster da EANA 2025)</strong> — além de uma comunicação oral no Simpósio <em>“Small Bodies Day” (Dia dos Pequenos Corpos)</em> (IPGP, Paris)."
+    },
+    "cta": { "en": "Post", "pt": "Publicação" }
+  },
+  {
+    "date": "2025-09-01",
+    "dateChip": "Sep 2025",
+    "href": "https://mare-viva.pt/destaque/o-percurso-improvavel-de-gustavo-maia-levou-o-de-ovar-ate-a-nasa/",
+    "media": { "kind": "photo", "src": "images/nasa2.png", "alt": "Gustavo Maia at NASA Goddard Space Flight Center", "align": "left" },
+    "text": {
+      "en": "Featured in <em>Maré Viva</em> (Jornal Regional de Espinho): <em>“O percurso improvável de Gustavo Maia levou-o de Ovar até à NASA”</em> — a profile tracing the path from Ovar and the Escola Profissional de Espinho, through world robotics competitions, to a NASA laboratory.",
+      "pt": "Destaque no <em>Maré Viva</em> (Jornal Regional de Espinho): <em>“O percurso improvável de Gustavo Maia levou-o de Ovar até à NASA”</em> — um perfil que traça o caminho desde Ovar e a Escola Profissional de Espinho, passando por competições mundiais de robótica, até a um laboratório da NASA."
+    },
+    "cta": { "en": "Read", "pt": "Ler" }
+  },
+  {
+    "date": "2025-07-01",
+    "dateChip": "Jul 2025",
+    "media": { "kind": "logo", "src": "images/logos/BEACON.png", "alt": "BEACON 2025" },
+    "text": {
+      "en": "Oral presentation at <em>BEACON 2025</em> (Harpa, Reykjavik) on mechanochemical events and the exogenous delivery of organic matter.",
+      "pt": "Comunicação oral na <em>BEACON 2025</em> (Harpa, Reiquiavique) sobre eventos mecanoquímicos e a entrega exógena de matéria orgânica."
+    }
+  },
+  {
+    "date": "2025-02-01",
+    "dateChip": "Feb 2025",
+    "href": "https://doi.org/10.3390/app15031363",
+    "media": { "kind": "logo", "src": "images/logos/applied_sciences.png", "alt": "Applied Sciences journal" },
+    "text": {
+      "en": "New paper out in <em>Applied Sciences</em>: <strong>Mechanochemical Reactivity of Ribonucleosides Mediated by Inorganic Species</strong>.",
+      "pt": "Novo artigo na <em>Applied Sciences</em>: <strong>Mechanochemical Reactivity of Ribonucleosides Mediated by Inorganic Species (Reatividade Mecanoquímica de Ribonucleósidos Mediada por Espécies Inorgânicas)</strong>."
+    },
+    "cta": { "en": "Read the paper", "pt": "Ler o artigo" }
+  },
+  {
+    "date": "2025-01-01",
+    "dateChip": "Jan 2025",
+    "media": { "kind": "logo-dark", "src": "images/logos/mnhn.png", "alt": "Muséum national d'Histoire naturelle (MNHN)" },
+    "text": {
+      "en": "Started as Visiting Scientist at <em>MNHN — IMPMC</em> (Paris), working with Prof. Laurent Remusat.",
+      "pt": "Iniciei funções como Cientista Visitante no <em>MNHN — IMPMC</em> (Paris), em colaboração com o Prof. Laurent Remusat."
+    }
+  },
+  {
+    "date": "2024-12-01",
+    "dateChip": "Dec 2024",
+    "href": "https://www.linkedin.com/in/gustavopinhomaia",
+    "media": { "kind": "photo", "src": "images/nasa1.png", "alt": "NASA Goddard Astrobiology Analytical Laboratory" },
+    "text": {
+      "en": "Interviewed by <em>Praça Pública</em>: “Gustavo Maia aprofunda investigação no Laboratório Analítico de Astrobiologia da NASA”.",
+      "pt": "Entrevistado pela <em>Praça Pública</em>: “Gustavo Maia aprofunda investigação no Laboratório Analítico de Astrobiologia da NASA”."
+    },
+    "cta": { "en": "Profile", "pt": "Perfil" }
+  },
+  {
+    "date": "2024-11-15",
+    "dateChip": "Nov 2024",
+    "media": { "kind": "photo", "src": "images/nasa1.png", "alt": "HPLC–MS analysis of extraterrestrial organics" },
+    "text": {
+      "en": "Research stay at the <em>NASA Goddard Astrobiology Analytical Laboratory</em> (HPLC–MS of extraterrestrial organics).",
+      "pt": "Estadia de investigação no <em>NASA Goddard Astrobiology Analytical Laboratory (Laboratório Analítico de Astrobiologia do NASA Goddard)</em> (HPLC–MS de compostos orgânicos extraterrestres)."
+    }
+  },
+  {
+    "date": "2024-11-01",
+    "dateChip": "Nov 2024",
+    "media": { "kind": "logo", "src": "images/logos/ist.png", "alt": "Instituto Superior Técnico" },
+    "text": {
+      "en": "Interviewed by <em>Diferencial</em>, the IST student journal: “Portanto, a Vida foi criada a partir de surras.”",
+      "pt": "Entrevistado pelo <em>Diferencial</em>, o jornal de estudantes do IST: “Portanto, a Vida foi criada a partir de surras.”"
+    }
+  },
+  {
+    "date": "2023-06-01",
+    "dateChip": "2023",
+    "media": { "kind": "logo", "src": "images/logos/FCT-logo.png", "alt": "FCT — Fundação para a Ciência e a Tecnologia" },
+    "text": {
+      "en": "Awarded an <em>FCT doctoral grant</em> (2023.01099.BD) for “Mechanochemical energy and prebiotic synthesis”.",
+      "pt": "Bolsa de doutoramento da <em>FCT</em> (2023.01099.BD) para “Mechanochemical energy and prebiotic synthesis (Energia mecanoquímica e síntese prebiótica)”."
+    }
+  }
+]
