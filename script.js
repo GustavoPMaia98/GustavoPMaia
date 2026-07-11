@@ -226,15 +226,15 @@
       const strip = jump.querySelector(".nav-sec-strip");
       const setOpen = (open) => {
         jump.classList.toggle("is-open", open);
-        jbtn.setAttribute("aria-expanded", open ? "true" : "false");
+        if (jbtn) jbtn.setAttribute("aria-expanded", open ? "true" : "false");
       };
-      // CSS already reveals the strip on hover; the button toggles it for
-      // touch + the keyboard 'S' shortcut.
-      jbtn.addEventListener("click", (e) => {
+      // The section icons are always visible now; the button (if present)
+      // simply toggles a highlight state for touch + the keyboard 'S' shortcut.
+      if (jbtn) jbtn.addEventListener("click", (e) => {
         e.stopPropagation();
         setOpen(!jump.classList.contains("is-open"));
       });
-      strip.querySelectorAll("a").forEach(a =>
+      if (strip) strip.querySelectorAll("a").forEach(a =>
         a.addEventListener("click", (e) => {
           const href = a.getAttribute("href") || "";
           if (href.charAt(0) === "#") { e.preventDefault(); slideToHash(href); }
@@ -276,7 +276,7 @@
   //  In Education & Experience, once an item is opened, if its revealed
   //  panel scrolls fully out of the viewport it collapses automatically.
   // ============================================================
-  const AUTO_CLOSE_SECTIONS = "#education, #experience, #publications";
+  const AUTO_CLOSE_SECTIONS = "#education, #experience, #publications, #courses";
   const exitObserver = new IntersectionObserver(entries => {
     entries.forEach(e => {
       if (!e.isIntersecting && e.target.classList.contains("open")) {
@@ -428,8 +428,8 @@
     const bottom = document.createElement("div");
     top.className = "autoscroll-edge autoscroll-edge--top";
     bottom.className = "autoscroll-edge autoscroll-edge--bottom";
-    top.innerHTML = '<span aria-hidden="true">▲</span>';
-    bottom.innerHTML = '<span aria-hidden="true">▼</span>';
+    top.innerHTML = "";
+    bottom.innerHTML = "";
     document.body.append(top, bottom);
 
     // describe the gesture appropriately per device
@@ -578,13 +578,78 @@
     // Esc turns it off quickly (desktop)
     document.addEventListener("keydown", (e) => { if (e.key === "Escape" && enabled) apply(false, true); });
 
-    // Auto-restore only on desktop; tilt needs a fresh tap (iOS permission gesture).
-    if (mode === "pointer") {
-      let saved = "0";
-      try { saved = localStorage.getItem(KEY) || "0"; } catch (_) {}
-      apply(saved === "1", false);
-    } else {
-      apply(false, false);
+    // Auto-activate on first visit (desktop pointer + mobile tilt); respect an explicit opt-out.
+    {
+      let saved = null;
+      try { saved = localStorage.getItem(KEY); } catch (_) {}
+      const firstVisit = (saved === null);
+      const on = firstVisit ? true : (saved === "1");
+      apply(on, false);
+      // Whenever hands-free is active, surface the balloon once per browsing
+      // session (so it reliably appears each fresh visit, not only ever-once).
+      if (on) showOffHint();
+    }
+
+    // Balloon pointing at the toggle: reminds the user they can turn it off.
+    // Stays ~3s, or until the user clicks its × close button.
+    function showOffHint() {
+      try { if (sessionStorage.getItem(KEY + "-hint") === "1") return; } catch (_) {}
+      try { sessionStorage.setItem(KEY + "-hint", "1"); } catch (_) {}
+      const pt = (document.documentElement.getAttribute("lang") === "pt");
+      const tip = document.createElement("div");
+      tip.className = "hf-hint";
+      tip.setAttribute("role", "status");
+      tip.style.cssText =
+        "position:fixed;z-index:1300;max-width:236px;padding:10px 12px 10px 14px;border-radius:12px;" +
+        "display:flex;align-items:flex-start;gap:8px;" +
+        "background:linear-gradient(135deg,var(--accent-strong,#60a5fa),var(--accent,#7dd3fc));" +
+        "color:#04203a;font-family:var(--font-body,system-ui),sans-serif;font-size:.84rem;font-weight:600;" +
+        "line-height:1.35;box-shadow:0 12px 30px rgba(0,0,0,.4);opacity:0;transform:translateY(-6px);" +
+        "transition:opacity .3s ease,transform .3s ease;pointer-events:auto;";
+
+      const msg = document.createElement("span");
+      msg.textContent = pt
+        ? "Deslocação automática ativada — clique neste botão para a desativar."
+        : "Hands-free scroll is on — click this button to turn it off.";
+
+      const close = document.createElement("button");
+      close.type = "button";
+      close.setAttribute("aria-label", pt ? "Fechar" : "Dismiss");
+      close.textContent = "×";
+      close.style.cssText =
+        "flex:0 0 auto;margin:-1px -2px 0 0;width:20px;height:20px;line-height:18px;text-align:center;" +
+        "border:0;border-radius:50%;background:rgba(4,32,58,.16);color:#04203a;" +
+        "font-size:15px;font-weight:700;cursor:pointer;padding:0;transition:background .2s ease;";
+      close.addEventListener("mouseenter", () => { close.style.background = "rgba(4,32,58,.30)"; });
+      close.addEventListener("mouseleave", () => { close.style.background = "rgba(4,32,58,.16)"; });
+
+      const arrow = document.createElement("span");
+      arrow.style.cssText =
+        "position:absolute;bottom:100%;right:22px;border:7px solid transparent;border-bottom-color:var(--accent-strong,#60a5fa);";
+
+      tip.append(arrow, msg, close);
+      document.body.appendChild(tip);
+
+      const place = () => {
+        const r = btn.getBoundingClientRect();
+        tip.style.top = (r.bottom + 10) + "px";
+        tip.style.right = Math.max(10, window.innerWidth - r.right) + "px";
+      };
+      place();
+      requestAnimationFrame(() => { tip.style.opacity = "1"; tip.style.transform = "translateY(0)"; place(); });
+      // re-place after icons hydrate / layout settles so it stays under the button
+      setTimeout(place, 250); setTimeout(place, 700);
+      window.addEventListener("resize", place, { passive: true });
+
+      let dismissed = false;
+      const dismiss = () => {
+        if (dismissed) return; dismissed = true;
+        clearTimeout(autoT);
+        tip.style.opacity = "0"; tip.style.transform = "translateY(-6px)";
+        setTimeout(() => { window.removeEventListener("resize", place); tip.remove(); }, 350);
+      };
+      close.addEventListener("click", dismiss);
+      const autoT = setTimeout(dismiss, 3000);
     }
   }
 
@@ -857,7 +922,7 @@
     nav_highlights:{en:"Highlights",pt:"Destaques"}, nav_awards:{en:"Awards",pt:"Prémios"},
     nav_experience:{en:"Experience",pt:"Experiência"}, nav_presentations:{en:"Presentations",pt:"Apresentações"},
     nav_funding:{en:"Funding",pt:"Financiamento"}, nav_publications:{en:"Publications",pt:"Publicações"},
-    nav_tree:{en:"Tree",pt:"Árvore"}, nav_map:{en:"Map",pt:"Mapa"}, nav_tutoring:{en:"Tutoring",pt:"Explicações"},
+    nav_tree:{en:"Tree",pt:"Árvore"}, nav_map:{en:"Map",pt:"Mapa"}, nav_tutoring:{en:"Tutoring",pt:"Explicações"}, nav_courses:{en:"Courses",pt:"Cursos"},
     role:{en:"PhD Researcher in Chemistry · Astrobiology",pt:"Investigador de Doutoramento em Química · Astrobiologia"},
     bio:{en:"My research explores the origins and evolution of life in the universe, using chemistry to uncover the processes that may have led to life's emergence. A key focus is mechanochemistry — chemical reactions driven by mechanical forces. I investigate how mechanical energy, from parent-body formation, asteroid gardening, or meteorite impacts, could have promoted the synthesis and transformation of organic molecules on the early Earth and other planetary bodies, revealing alternative pathways for prebiotic chemistry under extreme and extraterrestrial environments.",
          pt:"A minha investigação explora as origens e a evolução da vida no universo, usando a química para desvendar os processos que poderão ter conduzido ao surgimento da vida. Um foco central é a mecanoquímica — reações químicas impulsionadas por forças mecânicas. Investigo como a energia mecânica, da formação de corpos progenitores, do asteroid gardening ou de impactos de meteoritos, poderá ter promovido a síntese e a transformação de moléculas orgânicas na Terra primitiva e noutros corpos planetários, revelando vias alternativas para a química prebiótica em ambientes extremos e extraterrestres."},
@@ -870,12 +935,12 @@
     "Education":"Educação", "Experience":"Experiência", "Presentations":"Apresentações",
     "Funding":"Financiamento", "Publications":"Publicações", "Academic Tree":"Árvore Académica",
     "News":"Novidades", "Where I have been":"Por onde andei",
-    "Highlights":"Destaques", "Awards":"Prémios"
+    "Current Work Interests":"Interesses de Trabalho Atuais", "Awards":"Prémios", "Courses & Formations":"Cursos e Formações"
   };
 
   // Section heading icons (Lucide)
   function injectHeadingIcons() {
-    const ICONS = { highlights:"sparkles", news:"newspaper", education:"graduation-cap", experience:"briefcase",
+    const ICONS = { highlights:"sparkles", news:"newspaper", education:"graduation-cap", experience:"briefcase", courses:"book-marked",
       presentations:"presentation", funding:"banknote", publications:"book-open",
       awards:"award", tree:"git-fork", map:"map-pin", tutoring:"flask-conical" };
     document.querySelectorAll(".section > h2").forEach(h => {
@@ -896,34 +961,67 @@
   }
 
   // Language
+  function trLookup(lang, enHtml) {
+    if (lang === "en") return enHtml;
+    var key = String(enHtml).replace(/\s+/g, " ").trim();
+    var d = (window.TR && window.TR[lang]) || null;
+    return (d && d[key] != null) ? d[key] : enHtml;
+  }
   function applyLang() {
     const lang = currentLang;
     document.querySelectorAll("[data-i18n]").forEach(el => {
       const t = I18N[el.getAttribute("data-i18n")];
-      if (t && t[lang]) el.textContent = t[lang];
+      if (t) el.textContent = (lang === "en") ? t.en : (t[lang] || trLookup(lang, t.en));
     });
     document.querySelectorAll(".h2-label").forEach(s => {
       if (!s.dataset.en) s.dataset.en = s.textContent.trim();
-      s.textContent = (lang === "pt" && HEADINGS[s.dataset.en]) ? HEADINGS[s.dataset.en] : s.dataset.en;
+      const en = s.dataset.en;
+      s.textContent = (lang === "pt" && HEADINGS[en]) ? HEADINGS[en] : trLookup(lang, en);
     });
     document.querySelectorAll("[data-pt]").forEach(el => {
       if (el.dataset.enHtml === undefined) el.dataset.enHtml = el.innerHTML;
-      el.innerHTML = (lang === "pt") ? el.dataset.pt : el.dataset.enHtml;
+      el.innerHTML = (lang === "pt") ? el.dataset.pt : trLookup(lang, el.dataset.enHtml);
     });
-    const lb = document.getElementById("langToggle");
-    if (lb) lb.textContent = lang === "en" ? "PT" : "EN";
     document.documentElement.setAttribute("lang", lang);
+    document.documentElement.setAttribute("data-lang", lang);
+    document.querySelectorAll("#langPop .lang-opt").forEach(b => {
+      const on = b.dataset.lang === lang;
+      b.classList.toggle("active", on);
+      b.setAttribute("aria-checked", on ? "true" : "false");
+    });
+    document.querySelectorAll("[data-i18n-filter]").forEach(b => {
+      const key = b.getAttribute("data-i18n-filter");
+      const en = { all: "All", oral: "Oral", poster: "Poster" }[key];
+      const pt = { all: "Todos", oral: "Oral", poster: "Póster" }[key];
+      if (en) b.textContent = (lang === "pt") ? pt : trLookup(lang, en);
+    });
     if (typeof mapLangUpdate === "function") mapLangUpdate(lang);
   }
   function setupLangToggle() {
     const btn = document.getElementById("langToggle");
-    if (btn && !langWired) {
+    const pop = document.getElementById("langPop");
+    if (btn && pop && !langWired) {
       langWired = true;
-      btn.addEventListener("click", () => {
-        currentLang = currentLang === "en" ? "pt" : "en";
-        try { localStorage.setItem("lang", currentLang); } catch(e){}
-        applyLang();
+      const open = o => { pop.hidden = !o; btn.setAttribute("aria-expanded", o ? "true" : "false"); };
+      btn.addEventListener("click", e => { e.stopPropagation(); open(pop.hidden); });
+      // Open automatically on hover; close shortly after the pointer leaves.
+      const menu = document.getElementById("langMenu");
+      let hideT = null;
+      if (menu && window.matchMedia && window.matchMedia("(hover: hover)").matches) {
+        const cancelHide = () => { if (hideT) { clearTimeout(hideT); hideT = null; } };
+        menu.addEventListener("pointerenter", () => { cancelHide(); open(true); });
+        menu.addEventListener("pointerleave", () => { cancelHide(); hideT = setTimeout(() => open(false), 260); });
+      }
+      pop.querySelectorAll(".lang-opt").forEach(b => {
+        b.addEventListener("click", () => {
+          currentLang = b.dataset.lang;
+          try { localStorage.setItem("lang", currentLang); } catch (e) {}
+          applyLang();
+          open(false);
+        });
       });
+      document.addEventListener("click", e => { if (!e.target.closest("#langMenu")) open(false); });
+      document.addEventListener("keydown", e => { if (e.key === "Escape") open(false); });
     }
     applyLang();
   }
@@ -987,7 +1085,8 @@
       });
       return b;
     };
-    const all = mk(currentLang === "pt" ? "Todos" : "All", "all");
+    const all = mk(currentLang === "pt" ? "Todos" : (window.TR && (currentLang==="fr"||currentLang==="ja") ? (window.TR[currentLang]["All"]||"All") : "All"), "all");
+    all.dataset.i18nFilter = "all";
     all.classList.add("active");
     wrap.appendChild(all);
     sorted.forEach(y => wrap.appendChild(mk(y, y)));
@@ -1016,7 +1115,7 @@
     wrap.innerHTML = "";
     const mk = key => {
       const b = document.createElement("button");
-      b.type = "button"; b.textContent = label(key); b.dataset.val = key;
+      b.type = "button"; b.textContent = label(key); b.dataset.val = key; b.dataset.i18nFilter = key;
       b.addEventListener("click", () => {
         wrap.querySelectorAll("button").forEach(x => x.classList.remove("active"));
         b.classList.add("active");
@@ -1110,9 +1209,11 @@
     fit();
 
     // Legend (text follows the current language; updated live on language toggle)
-    const legendText = lang => lang === "pt"
-      ? ['Estudos (ESPE · UBI · Técnico)', 'Laboratórios e investigação', 'Comunicações orais e painéis']
-      : ['Studies (ESPE · UBI · Técnico)', 'Laboratories &amp; research', 'Oral &amp; poster presentations'];
+    const legendText = lang => {
+      if (lang === "pt") return ['Estudos (ESPE · UBI · Técnico)', 'Laboratórios e investigação', 'Comunicações orais e painéis'];
+      return ['Studies (ESPE · UBI · Técnico)', 'Laboratories &amp; research', 'Oral &amp; poster presentations']
+        .map(s => trLookup(lang, s.replace(/&amp;/g, '&')));
+    };
     const legendHTML = lang => {
       const t = legendText(lang);
       return '<span class="dot" style="background:' + EDU  + '"></span>' + t[0] + '<br>' +
@@ -1222,7 +1323,11 @@
       track.style.transform = "translateX(" + (-i * 100) + "%)";
       dots.forEach((d, idx) => d.classList.toggle("active", idx === i));
     }
-    function go(idx) { i = clamp(idx); render(true); }
+    function go(idx, silent) {
+      i = clamp(idx); render(true);
+      if (!silent) root.dispatchEvent(new CustomEvent("carousel:go", { detail: { index: i } }));
+    }
+    root.__carouselGoTo = (idx) => go(idx, true);
     function step(d) { go(i + d); }
 
     if (prev) prev.addEventListener("click", () => step(-1));
@@ -1298,108 +1403,16 @@
 
   function setupCarousels() {
     document.querySelectorAll("[data-carousel]").forEach(wireCarousel);
-  }
-
-  // ============================================================
-  //  NEWS — built from data/news.json on every load, sorted newest-first.
-  //  Optionally merges a LinkedIn→RSS JSON feed if data-news-feed is set.
-  //  (LinkedIn has no public API and blocks direct browser fetches, so a live
-  //   feed requires a third-party RSS bridge URL; without one, news.json is used.)
-  // ============================================================
-  const esc = (s) => String(s == null ? "" : s)
-    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-
-  function newsSlideHTML(it) {
-    const m = it.media || {};
-    let mediaCls = "news-media";
-    if (m.kind === "logo") mediaCls += " news-media--logo";
-    else if (m.kind === "logo-dark") mediaCls += " news-media--logo news-media--logo-dark";
-    else { mediaCls += " news-media--photo"; if (m.align === "left") mediaCls += " news-media--left"; }
-    const media = m.src
-      ? `<span class="${mediaCls}"><img src="${esc(m.src)}" alt="${esc(m.alt)}" loading="lazy"></span>`
-      : "";
-
-    const en = (it.text && it.text.en) || "";
-    const pt = (it.text && it.text.pt) || en;
-    const textEl = `<span class="news-text" data-pt="${esc(pt)}">${en}</span>`;
-
-    let ctaEl = "";
-    if (it.href && it.cta) {
-      const cEn = it.cta.en || "Read", cPt = it.cta.pt || cEn;
-      ctaEl = `<span class="news-cta" data-pt="${esc(cPt)} <span aria-hidden=&quot;true&quot;>↗</span>">${esc(cEn)} <span aria-hidden="true">↗</span></span>`;
-    }
-
-    const info = `<span class="news-info"><span class="news-date-chip">${esc(it.dateChip || "")}</span>${textEl}${ctaEl}</span>`;
-
-    const card = it.href
-      ? `<a class="news-card" href="${esc(it.href)}" target="_blank" rel="noopener noreferrer">${media}${info}</a>`
-      : `<div class="news-card news-card--static">${media}${info}</div>`;
-
-    return `<article class="news-slide">${card}</article>`;
-  }
-
-  // Best-effort mapping of an rss.app-style JSON feed item into our news shape.
-  function feedItemToNews(fi) {
-    const iso = fi.date_published || fi.published || fi.pubDate || fi.date;
-    const d = iso ? new Date(iso) : null;
-    if (!d || isNaN(d.getTime())) return null;
-    const raw = fi.content_text || fi.summary || fi.title || "";
-    const text = String(raw).replace(/\s+/g, " ").trim().slice(0, 320);
-    const chip = d.toLocaleDateString("en", { month: "short", year: "numeric" });
-    const img = fi.image || (fi.attachments && fi.attachments[0] && fi.attachments[0].url);
-    return {
-      date: d.toISOString().slice(0, 10),
-      dateChip: chip,
-      href: fi.url || fi.external_url || fi.link,
-      media: img ? { kind: "photo", src: img, alt: fi.title || "LinkedIn update" }
-                 : { kind: "logo", src: "images/logos/EANA.png", alt: "Update" },
-      text: { en: text, pt: text },
-      cta: { en: "Post", pt: "Publicação" }
-    };
-  }
-
-  async function renderNews() {
-    const carousel = document.querySelector('#news [data-carousel]');
-    const track = carousel && carousel.querySelector("[data-carousel-track]");
-    if (!carousel || !track || track.children.length) return; // already built
-
-    const src = carousel.getAttribute("data-news-src") || "data/news.json";
-    const feedUrl = (carousel.getAttribute("data-news-feed") || "").trim();
-
-    let items = [];
-    // Local curated news (always tried; no-store so updates show on every open).
-    try {
-      const r = await fetch(src, { cache: "no-store" });
-      if (r.ok) { const j = await r.json(); if (Array.isArray(j)) items = j.slice(); }
-    } catch (e) { /* offline / missing → fall through */ }
-
-    // Optional live LinkedIn feed (via an RSS→JSON bridge). Silently ignored on failure.
-    if (feedUrl) {
-      try {
-        const r = await fetch(feedUrl, { cache: "no-store" });
-        if (r.ok) {
-          const j = await r.json();
-          const arr = Array.isArray(j) ? j : (j.items || j.entries || []);
-          arr.map(feedItemToNews).filter(Boolean).forEach(n => items.push(n));
-        }
-      } catch (e) { /* bridge down → keep local news */ }
-    }
-
-    if (!items.length) return; // leave the static markup / empty state alone
-
-    // Chronological, newest first. Undated items sink to the bottom.
-    items.sort((a, b) => {
-      const ta = Date.parse(a.date) || 0, tb = Date.parse(b.date) || 0;
-      return tb - ta;
+    // Coordinate paired carousels inside a .tech-duo so they move together.
+    document.querySelectorAll(".tech-duo").forEach(duo => {
+      const cars = Array.from(duo.querySelectorAll("[data-carousel]"));
+      if (cars.length < 2) return;
+      cars.forEach(src => src.addEventListener("carousel:go", e => {
+        cars.forEach(other => {
+          if (other !== src && other.__carouselGoTo) other.__carouselGoTo(e.detail.index);
+        });
+      }));
     });
-
-    track.innerHTML = items.map(newsSlideHTML).join("");
-
-    // Re-run the passes that depend on this freshly-built markup.
-    if (window.lucide && lucide.createIcons) { try { lucide.createIcons(); } catch (e) {} }
-    if (typeof setupLazyImages === "function") setupLazyImages();
-    wireCarousel(carousel);
-    applyLang();
   }
 
   // ============================================================
@@ -1435,8 +1448,8 @@
     let DATA = {};
     try { DATA = JSON.parse(dataEl.textContent); } catch (e) { return; }
 
-    const lang = () => (document.documentElement.getAttribute("lang") === "pt" ? "pt" : "en");
-    const pick = v => (v && typeof v === "object") ? (v[lang()] || v.en) : v;
+    const lang = () => document.documentElement.getAttribute("lang") || "en";
+    const pick = v => (v && typeof v === "object") ? (v[lang()] || trLookup(lang(), v.en)) : v;
 
     const elIcon = document.getElementById("hlModalIcon");
     const elEyebrow = document.getElementById("hlModalEyebrow");
@@ -1539,6 +1552,92 @@
   }
 
   // ============================================================
+  //  TECHNIQUE DETAIL MODAL — click a technique card → pop-up detail
+  // ============================================================
+  function setupTechModal() {
+    const modal = document.getElementById("techModal");
+    const dataEl = document.getElementById("tech-detail-data");
+    if (!modal || !dataEl || modal.__wired) return;
+    modal.__wired = true;
+
+    let DATA = {};
+    try { DATA = JSON.parse(dataEl.textContent); } catch (e) { return; }
+    const lang = () => document.documentElement.getAttribute("data-lang") || "en";
+    const pick = v => (v && typeof v === "object") ? (v[lang()] || trLookup(lang(), v.en)) : v;
+
+    const elIcon = document.getElementById("techModalIcon");
+    const elEyebrow = document.getElementById("techModalEyebrow");
+    const elTitle = document.getElementById("techModalTitle");
+    const elTag = document.getElementById("techModalTag");
+    const elBody = document.getElementById("techModalBody");
+    const elPoints = document.getElementById("techModalPoints");
+    let lastFocus = null;
+
+    function fill(id) {
+      const d = DATA[id];
+      if (!d) return;
+      if (elIcon) elIcon.setAttribute("data-lucide", d.icon || "test-tubes");
+      elEyebrow.textContent = pick(d.eyebrow) || "";
+      elTitle.textContent = pick(d.title) || "";
+      elTag.textContent = pick(d.tag) || "";
+      elTag.hidden = !pick(d.tag);
+      elBody.innerHTML = "";
+      (pick(d.body) || []).forEach(p => {
+        const para = document.createElement("p");
+        para.innerHTML = p;
+        elBody.appendChild(para);
+      });
+      elPoints.innerHTML = "";
+      (pick(d.points) || []).forEach(pt => {
+        const li = document.createElement("li");
+        li.innerHTML = pt;
+        elPoints.appendChild(li);
+      });
+      elPoints.hidden = !(pick(d.points) || []).length;
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+    }
+
+    function open(id) {
+      lastFocus = document.activeElement;
+      fill(id);
+      modal.hidden = false;
+      document.body.classList.add("hl-modal-open");
+      const closeBtn = modal.querySelector(".hl-modal-close");
+      if (closeBtn) setTimeout(() => closeBtn.focus(), 30);
+    }
+    function close() {
+      modal.hidden = true;
+      document.body.classList.remove("hl-modal-open");
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+
+    document.querySelectorAll(".tech-card[data-tech]").forEach(card => {
+      // inject the "Learn more" affordance chip
+      const info = card.querySelector(".tech-info") || card;
+      if (!card.querySelector(".tech-learn")) {
+        const chip = document.createElement("span");
+        chip.className = "tech-learn";
+        chip.setAttribute("data-pt", 'Saber mais <i data-lucide="arrow-up-right"></i>');
+        chip.innerHTML = 'Learn more <i data-lucide="arrow-up-right"></i>';
+        info.appendChild(chip);
+      }
+      card.addEventListener("click", e => {
+        // ignore the click synthesised at the end of a carousel drag
+        if (card.closest("[data-carousel]")?.classList.contains("is-dragging")) return;
+        e.preventDefault();
+        open(card.getAttribute("data-tech"));
+      });
+      card.addEventListener("keydown", e => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(card.getAttribute("data-tech")); }
+      });
+    });
+    modal.querySelectorAll("[data-tech-close]").forEach(b => b.addEventListener("click", close));
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape" && !modal.hidden) { e.preventDefault(); close(); }
+    });
+  }
+
+  // ============================================================
   //  KEYBOARD SHORTCUTS for the toolbar (single keys, no modifier).
   //  Search keeps its own "/" and ⌘K (wired in search.js).
   //    S — sections menu   T — theme   L — language   H — hands-free
@@ -1558,8 +1657,13 @@
       const el = document.getElementById(id);
       if (!el) return;
       e.preventDefault();
-      // the sections control is a wrapper — click its button
-      (id === "navJump" ? el.querySelector(".nav-jump-btn") : el).click();
+      if (id === "navJump") {
+        // The section icons are always visible; 'S' focuses the first one.
+        const ico = el.querySelector(".nav-sec-ico");
+        if (ico && ico.focus) ico.focus();
+      } else {
+        el.click();
+      }
     });
   }
 
@@ -1576,8 +1680,8 @@
     setupLazyImages();
     setupTreePan();
     setupCarousels();
-    renderNews();
     setupHighlightModal();
+    setupTechModal();
     setupThemeToggle();
     setupLangToggle();
     setupShortcuts();
