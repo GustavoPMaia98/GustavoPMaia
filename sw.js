@@ -1,6 +1,6 @@
 /* Service worker: app-shell caching + offline fallback.
    Network-first for HTML (so content stays fresh), cache-first for static assets. */
-const CACHE = "gpm-v54";
+const CACHE = "gpm-v53";
 const CORE = [
   "./", "index.html", "style.css", "ui-extra.css", "script.js", "search.js",
   "favicon.svg", "manifest.webmanifest", "cv.pdf",
@@ -32,10 +32,8 @@ self.addEventListener("fetch", e => {
 
   const isHTML = req.mode === "navigate" || url.pathname.endsWith("/") || url.pathname.endsWith(".html");
   // CSS/JS change often — keep them fresh (network-first) so an update never
-  // leaves the page styled by a stale cached stylesheet/script. news.json is
-  // network-first too so News auto-updates on every visit.
-  const isNews = url.pathname.endsWith("news.json");
-  const isFresh = isHTML || isNews || url.pathname.endsWith(".css") || url.pathname.endsWith(".js");
+  // leaves the page styled by a stale cached stylesheet/script.
+  const isFresh = isHTML || url.pathname.endsWith(".css") || url.pathname.endsWith(".js");
   if (isFresh) {
     e.respondWith(
       fetch(req)

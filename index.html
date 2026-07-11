@@ -97,6 +97,7 @@
       <nav class="nav-links" id="navLinks" aria-label="Primary">
         <a href="#education" data-i18n="nav_education">Education</a>
         <a href="#experience" data-i18n="nav_experience">Experience</a>
+        <a href="#courses" data-i18n="nav_courses">Courses</a>
         <a href="#presentations" data-i18n="nav_presentations">Presentations</a>
         <a href="#funding" data-i18n="nav_funding">Funding</a>
         <a href="#publications" data-i18n="nav_publications">Publications</a>
@@ -111,6 +112,9 @@
           <span class="nav-sec-strip" id="navSecStrip">
             <a href="#education" class="nav-sec-ico" data-tip="Education" aria-label="Education"><i data-lucide="graduation-cap"></i></a>
             <a href="#experience" class="nav-sec-ico" data-tip="Experience" aria-label="Experience"><i data-lucide="briefcase"></i></a>
+            <a href="#techniques" class="nav-sec-ico" data-tip="Techniques" aria-label="Techniques"><i data-lucide="microscope"></i></a>
+            <a href="#software" class="nav-sec-ico" data-tip="Software" aria-label="Software"><i data-lucide="app-window"></i></a>
+            <a href="#courses" class="nav-sec-ico" data-tip="Courses" aria-label="Courses"><i data-lucide="book-marked"></i></a>
             <a href="#presentations" class="nav-sec-ico" data-tip="Presentations" aria-label="Presentations"><i data-lucide="presentation"></i></a>
             <a href="#funding" class="nav-sec-ico" data-tip="Funding" aria-label="Funding"><i data-lucide="banknote"></i></a>
             <a href="#publications" class="nav-sec-ico" data-tip="Publications" aria-label="Publications"><i data-lucide="book-open"></i></a>
@@ -119,14 +123,19 @@
             <a href="#map" class="nav-sec-ico" data-tip="Map" aria-label="Map"><i data-lucide="map-pin"></i></a>
             <a href="#tutoring" class="nav-sec-ico" data-tip="Tutoring" aria-label="Tutoring"><i data-lucide="flask-conical"></i></a>
           </span>
-          <button class="icon-btn nav-jump-btn" type="button" aria-label="Jump to a section (S)" aria-expanded="false" title="Sections · S">
-            <i data-lucide="list"></i>
-          </button>
         </div>
         <button class="icon-btn" id="searchToggle" type="button" aria-label="Search the site" data-tip="Search  ·  / or ⌘K">
           <i data-lucide="search"></i>
         </button>
-        <button class="icon-btn" id="langToggle" type="button" aria-label="Switch language" data-tip="Português / English  ·  L">PT</button>
+        <div class="lang-menu" id="langMenu">
+          <button class="icon-btn" id="langToggle" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Language" data-tip="Language  ·  L"><i data-lucide="globe"></i></button>
+          <div class="lang-pop" id="langPop" role="menu" aria-label="Choose language" hidden>
+            <button class="lang-opt" type="button" role="menuitemradio" data-lang="en"><span class="lang-flag" aria-hidden="true">🇬🇧</span><span class="lang-name">English</span></button>
+            <button class="lang-opt" type="button" role="menuitemradio" data-lang="pt"><span class="lang-flag" aria-hidden="true">🇵🇹</span><span class="lang-name">Português</span></button>
+            <button class="lang-opt" type="button" role="menuitemradio" data-lang="fr"><span class="lang-flag" aria-hidden="true">🇫🇷</span><span class="lang-name">Français</span></button>
+            <button class="lang-opt" type="button" role="menuitemradio" data-lang="ja"><span class="lang-flag" aria-hidden="true">🇯🇵</span><span class="lang-name">日本語</span></button>
+          </div>
+        </div>
         <button class="icon-btn" id="themeToggle" type="button" aria-label="Switch theme" data-tip="Light / dark theme  ·  T">
           <i data-lucide="moon"></i>
         </button>
@@ -286,7 +295,7 @@
       return "";
     }
     async function loadSections() {
-      const sections = ['highlights','news','education','experience','presentations','funding','publications','awards','tree','map','tutoring'];
+      const sections = ['highlights','news','education','experience','courses','presentations','funding','publications','awards','tree','map','tutoring'];
       const c = document.getElementById('mainContent');
       const results = await Promise.all(sections.map(fetchSection));
       c.insertAdjacentHTML('beforeend', results.join(''));
@@ -303,6 +312,7 @@
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', loadSections);
     else loadSections();
   </script>
+  <script src="i18n/translations.js"></script>
   <script src="script.js"></script>
 
   <!-- Site search (command palette) -->
