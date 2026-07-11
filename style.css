@@ -164,7 +164,7 @@ section[id]{scroll-margin-top:calc(var(--nav-h) + 16px)}
   display:flex;align-items:center;justify-content:center;
   font-weight:800;font-size:32px;color:#03131e;
 }
-.avatar-credit{margin-top:.4em;font-size:.72rem;color:#cdd6e4;font-style:italic;text-align:center;align-self:stretch;width:100%}
+.avatar-credit{margin-top:.4em;font-size:.72rem;color:#cdd6e4;font-style:italic;text-align:center}
 .hero-intro{flex:1 1 auto;min-width:0}
 .hero-intro h1{font-size:clamp(1.9rem, 1.2rem + 3vw, 3rem);margin:0 0 6px}
 .role{color:var(--accent);font-weight:600;margin-bottom:12px}
@@ -350,12 +350,6 @@ section[id]{scroll-margin-top:calc(var(--nav-h) + 16px)}
     0 8px 26px rgba(0,0,0,.50),
     0 0 26px rgba(125,211,252,.32);
   transform:translateY(-2px);
-}
-/* Presentation title slides are 16:9 — show them whole, never cropped */
-#presentations .expand-gallery img{
-  aspect-ratio:16 / 9;
-  object-fit:contain;
-  background:#070c1d;
 }
 
 /* ================= EQUIPMENT ================= */
@@ -892,11 +886,18 @@ html[data-theme="light"] .icon-btn:hover{ background:rgba(15,23,42,.05); }
   background:rgba(125,211,252,.12); border-color:var(--accent); color:var(--accent);
 }
 
-/* Section icons live inline in the toolbar, always visible as the primary
-   desktop nav. Compact icons keep the strip clear of the logo. */
+/* Section icons live inline in the toolbar and expand to the LEFT of the
+   button on hover. Compact icons keep the strip clear of the logo. */
 .nav-sec-strip{
   display:inline-flex; align-items:center; gap:2px;
-  overflow:visible; white-space:nowrap;
+  max-width:0; opacity:0; margin-right:0; overflow:visible;
+  white-space:nowrap; pointer-events:none;
+  transition:max-width .32s ease, opacity .22s ease, margin-right .32s ease;
+}
+.nav-jump:hover .nav-sec-strip,
+.nav-jump:focus-within .nav-sec-strip,
+.nav-jump.is-open .nav-sec-strip{
+  max-width:430px; opacity:1; margin-right:4px; pointer-events:auto;
 }
 .nav-sec-ico{
   position:relative; flex:none;
