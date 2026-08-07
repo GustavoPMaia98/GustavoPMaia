@@ -683,6 +683,8 @@
       catch (err2) {
         console.warn("Could not load publications automatically:", err2);
         setStatus("Live sync unavailable right now — the publications listed above are current.");
+        buildPublicationFilter();
+        decoratePublications();
         return;
       }
     }
@@ -712,7 +714,37 @@
     observeReveals(container);
     wireAccordions();
     buildPublicationFilter();
+    decoratePublications();
     updateMetrics();
+  }
+
+  // Add a blue year badge to every publication and order the whole list
+  // (static + ORCID-synced) newest-first, matching the site's accent pills.
+  function decoratePublications() {
+    const wrap = document.querySelector('#publications .timeline');
+    if (!wrap) return;
+    // Drop preprints entirely — journal versions only, even if a preprint has a DOI.
+    wrap.querySelectorAll('.timeline-item.publication').forEach(it => {
+      if (isPreprintItem(it)) it.remove();
+    });
+    const items = Array.from(wrap.querySelectorAll('.timeline-item.publication'));
+    items.forEach(it => {
+      const meta = it.querySelector('.meta');
+      let year = '';
+      if (meta) { const m = meta.textContent.match(/\b(?:19|20)\d{2}\b/); if (m) year = m[0]; }
+      it.dataset.year = year || '0';
+      const strong = it.querySelector('.timeline-header strong');
+      if (strong && year && !it.querySelector('.pub-year')) {
+        const badge = document.createElement('span');
+        badge.className = 'pub-year';
+        badge.textContent = year;
+        strong.insertAdjacentElement('afterend', badge);
+      }
+    });
+    const anchor = wrap.querySelector('#pub-status') || wrap.querySelector('#pub-list');
+    items
+      .sort((a, b) => (parseInt(b.dataset.year, 10) || 0) - (parseInt(a.dataset.year, 10) || 0))
+      .forEach(it => wrap.insertBefore(it, anchor));
   }
 
   async function fetchOrcidWorks() {

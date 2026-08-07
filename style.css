@@ -884,17 +884,19 @@ html[data-theme="light"] .icon-btn:hover{ background:rgba(15,23,42,.05); }
 }
 @media (hover: none){ .nav-tools .icon-btn[data-tip]::before{ display:none; } }
 
-/* ---- Search & theme: match the section-icon buttons (no inline slide, name drops below) ---- */
+/* ---- Search, language & theme: match the section-icon buttons (no inline slide, name drops below) ---- */
 /* Kill the inline expanding label so neighbours never shift. */
 #searchToggle[data-tip]::before,
+#langToggle[data-tip]::before,
 #themeToggle[data-tip]::before{
   content:none; display:none; max-width:0; margin-right:0;
 }
-#searchToggle, #themeToggle{
+#searchToggle, #langToggle, #themeToggle{
   position:relative; width:38px; min-width:38px; padding:0;
 }
 /* Name tooltip — drops below the icon, same reveal feel as the section buttons. */
 #searchToggle[data-tip]::after,
+#langToggle[data-tip]::after,
 #themeToggle[data-tip]::after{
   content:attr(data-tip);
   position:absolute; top:calc(100% + 7px); left:50%;
@@ -909,14 +911,18 @@ html[data-theme="light"] .icon-btn:hover{ background:rgba(15,23,42,.05); }
 }
 #searchToggle[data-tip]:hover::after,
 #searchToggle[data-tip]:focus-visible::after,
+#langToggle[data-tip]:hover::after,
+#langToggle[data-tip]:focus-visible::after,
 #themeToggle[data-tip]:hover::after,
 #themeToggle[data-tip]:focus-visible::after{
   opacity:1; transform:translateX(-50%) translateY(0);
 }
 html[data-theme="light"] #searchToggle[data-tip]::after,
+html[data-theme="light"] #langToggle[data-tip]::after,
 html[data-theme="light"] #themeToggle[data-tip]::after{ background:#fff; color:#1f2733; }
 @media (hover: none){
   #searchToggle[data-tip]::after,
+  #langToggle[data-tip]::after,
   #themeToggle[data-tip]::after{ display:none; }
 }
 
@@ -1352,6 +1358,17 @@ body.hl-modal-open{ overflow:hidden; }
 .sa-body{ margin:0; font-size:.95rem; line-height:1.6; color:var(--text); }
 
 /* ---- Publication filter ---- */
+.pub-year{
+  display:inline-block; margin-left:10px; vertical-align:middle;
+  font-family:var(--font-body); font-weight:700; font-size:.8rem;
+  letter-spacing:.02em; color:var(--accent);
+  border:1px solid rgba(125,211,252,.35);
+  background:rgba(125,211,252,.10);
+  padding:2px 9px; border-radius:999px;
+}
+html[data-theme="light"] .pub-year{
+  color:var(--accent-strong); border-color:rgba(96,165,250,.4); background:rgba(96,165,250,.12);
+}
 .pub-filter{ display:flex; flex-wrap:wrap; gap:8px; margin:0 0 18px; }
 .pub-filter button{
   border:1px solid var(--border); background:rgba(255,255,255,.04); color:var(--muted);
