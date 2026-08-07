@@ -884,6 +884,42 @@ html[data-theme="light"] .icon-btn:hover{ background:rgba(15,23,42,.05); }
 }
 @media (hover: none){ .nav-tools .icon-btn[data-tip]::before{ display:none; } }
 
+/* ---- Search & theme: match the section-icon buttons (no inline slide, name drops below) ---- */
+/* Kill the inline expanding label so neighbours never shift. */
+#searchToggle[data-tip]::before,
+#themeToggle[data-tip]::before{
+  content:none; display:none; max-width:0; margin-right:0;
+}
+#searchToggle, #themeToggle{
+  position:relative; width:38px; min-width:38px; padding:0;
+}
+/* Name tooltip — drops below the icon, same reveal feel as the section buttons. */
+#searchToggle[data-tip]::after,
+#themeToggle[data-tip]::after{
+  content:attr(data-tip);
+  position:absolute; top:calc(100% + 7px); left:50%;
+  transform:translateX(-50%) translateY(-3px);
+  padding:4px 9px; border-radius:7px; white-space:nowrap;
+  font-size:.72rem; font-weight:600; letter-spacing:0; text-transform:none;
+  color:var(--text); background:var(--bg-2);
+  border:1px solid var(--border-strong);
+  box-shadow:0 8px 20px rgba(0,0,0,.5);
+  opacity:0; pointer-events:none; z-index:60;
+  transition:opacity .18s ease, transform .18s ease;
+}
+#searchToggle[data-tip]:hover::after,
+#searchToggle[data-tip]:focus-visible::after,
+#themeToggle[data-tip]:hover::after,
+#themeToggle[data-tip]:focus-visible::after{
+  opacity:1; transform:translateX(-50%) translateY(0);
+}
+html[data-theme="light"] #searchToggle[data-tip]::after,
+html[data-theme="light"] #themeToggle[data-tip]::after{ background:#fff; color:#1f2733; }
+@media (hover: none){
+  #searchToggle[data-tip]::after,
+  #themeToggle[data-tip]::after{ display:none; }
+}
+
 /* ---- Section-jump button: replaces the inline titles; opens to the LEFT ---- */
 .nav-jump{ position:relative; display:inline-flex; align-items:center; }
 .nav-jump.is-open .nav-jump-btn,

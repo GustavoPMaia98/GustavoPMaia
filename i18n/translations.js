@@ -487,6 +487,7 @@ window.TR.ja = {
   "Tutoring": "指導",
 
   // ---- Hero ----
+  "Gustavo Pinho Maia": "グスタヴォ・ピニョ・マイア",
   "PhD Researcher in Chemistry · Astrobiology": "化学・アストロバイオロジー（astrobiology）博士課程研究者",
   "My research explores the origins and evolution of life in the universe, using chemistry to uncover the processes that may have led to life's emergence. A key focus is mechanochemistry — chemical reactions driven by mechanical forces. I investigate how mechanical energy, from parent-body formation, asteroid gardening, or meteorite impacts, could have promoted the synthesis and transformation of organic molecules on the early Earth and other planetary bodies, revealing alternative pathways for prebiotic chemistry under extreme and extraterrestrial environments.": "私の研究は、化学を用いて生命の出現につながった可能性のある過程を解明し、宇宙における生命の起源と進化を探究するものです。中心となるのはメカノケミストリー（mechanochemistry）——機械的な力によって駆動される化学反応です。母天体の形成、小惑星表面の撹拌（asteroid gardening）、あるいは隕石衝突に由来する機械的エネルギーが、初期地球やその他の惑星天体において有機分子の合成と変換をいかに促進し得たかを調べ、極限環境・地球外環境における前生物化学（prebiotic chemistry）の新たな経路を明らかにしています。",
   "Talks & posters": "口頭発表・ポスター",
