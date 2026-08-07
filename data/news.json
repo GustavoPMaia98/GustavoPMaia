@@ -3,10 +3,10 @@
     "date": "2026-08-01",
     "dateChip": "Aug 2026",
     "href": "https://www.linkedin.com/feed/update/urn:li:activity:7490678147051479041/",
-    "media": { "kind": "photo", "src": "uploads/Mechanochemistry of extraterrestrial bodies Bridging exogenous delivery with prebiotic chemistry.png", "alt": "Effect of asteroid gardening on the exogenous delivery of extraterrestrial organic matter" },
+    "media": { "kind": "logo", "src": "images/logos/epsl.png", "alt": "Earth and Planetary Science Letters" },
     "text": {
-      "en": "New paper published in <em>Earth and Planetary Science Letters</em>: <strong>Effect of asteroid gardening on the exogenous delivery of extraterrestrial organic matter</strong> — showing how repeated micrometeorite impacts (space gardening) both transform and protect extraterrestrial organic matter.",
-      "pt": "Novo artigo publicado na <em>Earth and Planetary Science Letters</em>: <strong>Effect of asteroid gardening on the exogenous delivery of extraterrestrial organic matter (Efeito da jardinagem de asteroides na entrega exógena de matéria orgânica extraterrestre)</strong> — mostrando como impactos repetidos de micrometeoritos (jardinagem espacial) transformam e protegem a matéria orgânica extraterrestre."
+      "en": "New paper published in <em>Earth and Planetary Science Letters</em>: <strong>Effect of asteroid gardening on the exogenous delivery of extraterrestrial organic matter</strong> — showing how repeated micrometeorite impacts (asteroid gardening) both transform and protect extraterrestrial organic matter.",
+      "pt": "Novo artigo publicado na <em>Earth and Planetary Science Letters</em>: <strong>Effect of asteroid gardening on the exogenous delivery of extraterrestrial organic matter (Efeito da jardinagem de asteroides na entrega exógena de matéria orgânica extraterrestre)</strong> — mostrando como impactos repetidos de micrometeoritos (asteroid gardening) transformam e protegem a matéria orgânica extraterrestre."
     },
     "cta": { "en": "Post", "pt": "Publicação" }
   },
