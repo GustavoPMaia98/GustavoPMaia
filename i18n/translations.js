@@ -429,6 +429,10 @@ window.TR.fr = {
 
   // ---- Presentations ----
   "Oral and poster communications at national and international astrobiology and chemistry meetings. Click to expand.": "Communications orales et posters lors de congrès nationaux et internationaux d'astrobiologie et de chimie. Cliquez pour développer.",
+  "Effect of Mechanochemistry on Organic Matter: Implications for Impact Gardening on Asteroid Surfaces": "Effet de la mécanochimie sur la matière organique : implications pour le remaniement de surface par impacts (impact gardening) des astéroïdes",
+  "Oral talk · Maia, Remusat, Amano, Viennet, Dworkin, McLain &amp; da Silva": "Communication orale · Maia, Remusat, Amano, Viennet, Dworkin, McLain &amp; da Silva",
+  "Oral talk at the 88th Meeting of the Meteoritical Society (MetSoc 2026, Frankfurt), in the Organics &amp; Ices session. Ball-milling and grinding of hexamethylenetetramine (HMT) with Na-montmorillonite serve as an analogue for the repeated impacts of asteroid gardening. High-energy milling disrupts the clay structure and drives HMT into a diverse suite of new organics — pyrazine, triazine/triazinane derivatives, and oxygen-bearing nitrogen species — even without liquid water, while gentler grinding intercalates HMT-like molecules into the clay interlayers, protecting them. Impact events thus both transform and preserve extraterrestrial organic matter.": "Communication orale à la 88ᵉ Réunion de la Meteoritical Society (MetSoc 2026, Francfort), session Organics &amp; Ices. Le broyage par impact et le broyage doux d'hexaméthylènetétramine (HMT) avec de la montmorillonite sodique servent d'analogue aux impacts répétés du remaniement de surface des astéroïdes (asteroid gardening). Le broyage à haute énergie désorganise la structure de l'argile et transforme la HMT en une variété de nouvelles espèces organiques — pyrazine, dérivés de triazine/triazinane et espèces azotées oxygénées — même en l'absence d'eau liquide, tandis qu'un broyage plus doux intercale des molécules de type HMT entre les feuillets de l'argile, les protégeant. Les événements d'impact transforment et préservent ainsi la matière organique extraterrestre.",
+  "Abstract ↗": "Résumé ↗",
   "The effect of mechanochemistry on the formation of extraterrestrial organic matter": "L'effet de la mécanochimie sur la formation de la matière organique extraterrestre",
   "Oral": "Orale",
   "Oral talk · Maia, Dworkin, da Silva &amp; Remusat": "Communication orale · Maia, Dworkin, da Silva &amp; Remusat",
@@ -897,6 +901,10 @@ window.TR.ja = {
 
   // ---- Presentations ----
   "Oral and poster communications at national and international astrobiology and chemistry meetings. Click to expand.": "国内外のアストロバイオロジー・化学の学会での口頭発表とポスター発表です。クリックで展開します。",
+  "Effect of Mechanochemistry on Organic Matter: Implications for Impact Gardening on Asteroid Surfaces": "有機物に対するメカノケミストリーの影響：小惑星表面のインパクト・ガーデニングへの示唆",
+  "Oral talk · Maia, Remusat, Amano, Viennet, Dworkin, McLain &amp; da Silva": "口頭発表 · Maia, Remusat, Amano, Viennet, Dworkin, McLain &amp; da Silva",
+  "Oral talk at the 88th Meeting of the Meteoritical Society (MetSoc 2026, Frankfurt), in the Organics &amp; Ices session. Ball-milling and grinding of hexamethylenetetramine (HMT) with Na-montmorillonite serve as an analogue for the repeated impacts of asteroid gardening. High-energy milling disrupts the clay structure and drives HMT into a diverse suite of new organics — pyrazine, triazine/triazinane derivatives, and oxygen-bearing nitrogen species — even without liquid water, while gentler grinding intercalates HMT-like molecules into the clay interlayers, protecting them. Impact events thus both transform and preserve extraterrestrial organic matter.": "第88回メテオリティカル・ソサエティ大会（MetSoc 2026、フランクフルト）のOrganics &amp; Icesセッションでの口頭発表。ヘキサメチレンテトラミン（HMT）とナトリウム型モンモリロナイトのボールミル粉砕と磨砕は、小惑星のインパクト・ガーデニングにおける繰り返しの衝突の類似モデルとなる。高エネルギーの粉砕は粘土構造を破壊し、液体の水がなくてもHMTを多様な新規有機物（ピラジン、トリアジン／トリアジナン誘導体、酸素を含む窒素化学種）へと変化させる一方、より穏やかな磨砕はHMT様分子を粘土層間に取り込み保護する。したがって衝突イベントは地球外有機物を変化させると同時に保存する。",
+  "Abstract ↗": "要旨 ↗",
   "The effect of mechanochemistry on the formation of extraterrestrial organic matter": "地球外有機物の形成に対するメカノケミストリーの影響",
   "Oral": "口頭",
   "Oral talk · Maia, Dworkin, da Silva &amp; Remusat": "口頭発表 · Maia, Dworkin, da Silva &amp; Remusat",
