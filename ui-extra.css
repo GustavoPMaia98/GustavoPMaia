@@ -280,6 +280,32 @@ html[data-theme="light"] #tutoring .keywords span{
 .section-note--center{ text-align:center; max-width:60ch; margin-left:auto; margin-right:auto; }
 .tech-duo-head + .tech-duo{ margin-top:clamp(14px,2vw,22px); }
 
+/* ---- Techniques / Software as parallel name lists ---- */
+.tech-list-head{
+  font-family:var(--font-sans,"Manrope",system-ui,sans-serif);
+  font-size:.72rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--accent,#7dd3fc); margin:0 0 14px; padding-bottom:10px;
+  border-bottom:1px solid rgba(125,211,252,.22);
+}
+.tech-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px; }
+.tech-list .tech-name{
+  display:flex; align-items:center; gap:10px; width:100%; text-align:left; cursor:pointer;
+  font:inherit; font-size:.98rem; color:var(--text,#e7edf6);
+  background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.09);
+  border-radius:10px; padding:11px 14px;
+  transition:background .18s ease, border-color .18s ease, transform .18s ease;
+}
+.tech-list .tech-name::before{
+  content:""; flex:0 0 auto; width:6px; height:6px; border-radius:999px;
+  background:var(--accent,#7dd3fc); box-shadow:0 0 8px rgba(125,211,252,.7);
+}
+.tech-list .tech-name:hover,
+.tech-list .tech-name:focus-visible{
+  background:rgba(255,255,255,.07); border-color:rgba(125,211,252,.45);
+  transform:translateY(-1px); outline:none;
+}
+@media (prefers-reduced-motion:reduce){ .tech-list .tech-name{ transition:none; } .tech-list .tech-name:hover{ transform:none; } }
+
 .tech-carousel{ position:relative; display:flex; align-items:center; gap:8px; }
 /* arrows restored — but only on the OUTER edge of the duo:
    the left (prev) arrow on Techniques, the right (next) arrow on Software.
