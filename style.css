@@ -412,6 +412,12 @@ section[id]{scroll-margin-top:calc(var(--nav-h) + 16px)}
 .btn:hover{filter:brightness(1.06);text-decoration:none}
 .btn:active{transform:translateY(1px)}
 .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,.4);color:#fff}
+.btn--cv{
+  background:#fff; color:#1f2937; font-weight:700;
+  padding:9px 18px 9px 14px;
+}
+.btn--cv .cv-mark{ display:block; flex:0 0 auto; }
+.btn--cv:hover{ background:#fff; }
 
 /* ================= FOOTER ================= */
 .footer{
@@ -1414,6 +1420,8 @@ html[data-theme="light"] .equip-tasks{ color:var(--muted); }
   box-shadow:0 4px 14px rgba(0,0,0,.45); backdrop-filter:blur(6px);
 }
 .map-legend .dot{ display:inline-block; width:12px; height:12px; border-radius:50%; margin-right:7px; vertical-align:-1px; }
+.map-pin{ background:none; border:0; }
+.map-pin svg{ display:block; filter:drop-shadow(0 3px 5px rgba(0,0,0,.5)); }
 .map-reset{
   background:rgba(11,16,32,.9); border:1px solid rgba(255,255,255,.22); color:#e7edf6;
   width:34px; height:34px; border-radius:8px; cursor:pointer; font-size:1.1rem; line-height:1;

@@ -1198,6 +1198,7 @@
     const EDU  = "#34d399";  // studies / education
     const LAB  = "#22d3ee";  // laboratories / research
     const PRES = "#fbbf24";  // oral / poster presentations
+    const COU  = "#a78bfa";  // courses / training schools
 
     const education = [
       { n:"Instituto Superior Técnico, Lisbon", c:[38.7369,-9.1366], d:"MSc in Chemistry (2020–2022) · PhD in Chemistry / Astrobiology (2023–present)" },
@@ -1216,6 +1217,10 @@
       { n:"Reykjavik, Iceland", c:[64.1466,-21.9426], d:"BEACON 2025 (oral)" },
       { n:"Covilhã, Portugal", c:[40.2784,-7.5046], d:"XV CICS-UBI Symposium 2020 (poster)" }
     ];
+    const courses = [
+      { n:"Marseille, France", c:[43.2965,5.3698], d:"Origins Institute Summer School 2026 — Building the Hard Rocky Planets (Institut Origines · IPGP)" },
+      { n:"Le Teich, France", c:[44.6367,-1.0203], d:"RED Astrobiology Introductory Course 2025 (in person)" }
+    ];
 
     const map = L.map(el, { scrollWheelZoom: true });
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -1223,18 +1228,25 @@
     }).addTo(map);
 
     const all = [];
+    const pinIcon = color => L.divIcon({
+      className: "map-pin",
+      html: '<svg width="26" height="36" viewBox="0 0 26 36" xmlns="http://www.w3.org/2000/svg">'
+          + '<path d="M13 35C13 35 24 21.5 24 13A11 11 0 1 0 2 13C2 21.5 13 35 13 35Z" fill="' + color + '" stroke="#0b1020" stroke-width="1.6"/>'
+          + '<circle cx="13" cy="13" r="4.2" fill="#0b1020"/></svg>',
+      iconSize:[26,36], iconAnchor:[13,35], tooltipAnchor:[0,-30]
+    });
     const tip = (n, label, color, d) =>
       '<strong>' + n + '</strong><br><span style="color:' + color + ';font-weight:600">' + label + '</span><br>' + d;
-    const place = (arr, opts, label, color) => arr.forEach(p => {
-      L.circleMarker(p.c, opts).addTo(map)
-        .bindTooltip(tip(p.n, label, color, p.d), { direction:"top", offset:[0,-4], opacity:0.97 });
+    const place = (arr, color, label) => arr.forEach(p => {
+      L.marker(p.c, { icon: pinIcon(color) }).addTo(map)
+        .bindTooltip(tip(p.n, label, color, p.d), { direction:"top", opacity:0.97 });
       all.push(p.c);
     });
 
-    // Largest first (drawn underneath) so overlapping cities show as nested coloured rings
-    place(education, { radius:15, color:EDU,  weight:3,   fillColor:EDU,  fillOpacity:.12 }, "Studies", EDU);
-    place(pres,      { radius:11, color:PRES, weight:3,   fillColor:PRES, fillOpacity:.14 }, "Presentations", PRES);
-    place(labs,      { radius:6.5,color:"#0b1020", weight:1.5, fillColor:LAB, fillOpacity:.96 }, "Laboratory / research", LAB);
+    place(education, EDU,  "Studies");
+    place(pres,      PRES, "Presentations");
+    place(courses,   COU,  "Courses / training");
+    place(labs,      LAB,  "Laboratory / research");
 
     const defaultBounds = L.latLngBounds(all).pad(0.15);
     const fit = () => map.fitBounds(defaultBounds);
@@ -1242,15 +1254,16 @@
 
     // Legend (text follows the current language; updated live on language toggle)
     const legendText = lang => {
-      if (lang === "pt") return ['Estudos (ESPE · UBI · Técnico)', 'Laboratórios e investigação', 'Comunicações orais e painéis'];
-      return ['Studies (ESPE · UBI · Técnico)', 'Laboratories &amp; research', 'Oral &amp; poster presentations']
+      if (lang === "pt") return ['Estudos (ESPE · UBI · Técnico)', 'Laboratórios e investigação', 'Comunicações orais e painéis', 'Cursos e escolas de formação'];
+      return ['Studies (ESPE · UBI · Técnico)', 'Laboratories &amp; research', 'Oral &amp; poster presentations', 'Courses &amp; training schools']
         .map(s => trLookup(lang, s.replace(/&amp;/g, '&')));
     };
     const legendHTML = lang => {
       const t = legendText(lang);
       return '<span class="dot" style="background:' + EDU  + '"></span>' + t[0] + '<br>' +
              '<span class="dot" style="background:' + LAB  + '"></span>' + t[1] + '<br>' +
-             '<span class="dot" style="background:' + PRES + '"></span>' + t[2];
+             '<span class="dot" style="background:' + PRES + '"></span>' + t[2] + '<br>' +
+             '<span class="dot" style="background:' + COU  + '"></span>' + t[3];
     };
     const legend = L.control({ position: "bottomleft" });
     legend.onAdd = function () {
