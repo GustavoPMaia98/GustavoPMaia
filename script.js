@@ -1643,10 +1643,10 @@
       if (lastFocus && lastFocus.focus) lastFocus.focus();
     }
 
-    document.querySelectorAll(".tech-card[data-tech]").forEach(card => {
-      // inject the "Learn more" affordance chip
-      const info = card.querySelector(".tech-info") || card;
-      if (!card.querySelector(".tech-learn")) {
+    document.querySelectorAll(".tech-card[data-tech], .tech-name[data-tech]").forEach(card => {
+      // inject the "Learn more" affordance chip (carousel cards only, not the name lists)
+      const info = card.querySelector(".tech-info");
+      if (info && !card.querySelector(".tech-learn")) {
         const chip = document.createElement("span");
         chip.className = "tech-learn";
         chip.setAttribute("data-pt", 'Saber mais <i data-lucide="arrow-up-right"></i>');
