@@ -22,9 +22,30 @@
     presentations: "Presentations", funding: "Funding", publications: "Publications",
     awards: "Awards", tree: "Academic tree", map: "Map", tutoring: "Tutoring", courses: "Courses & Formations"
   };
-  const labelFor = id => LABELS[id] || (id ? id.charAt(0).toUpperCase() + id.slice(1) : "Section");
+  const labelFor = id => {
+    if (id === "about") return ui("about");
+    const h = id && document.querySelector("#" + id + " .h2-label");
+    if (h && h.textContent.trim()) return h.textContent.trim();
+    return LABELS[id] || (id ? id.charAt(0).toUpperCase() + id.slice(1) : "Section");
+  };
 
-  const lang = () => (document.documentElement.getAttribute("lang") === "pt" ? "pt" : "en");
+  const lang = () => { const l = document.documentElement.getAttribute("lang"); return (l === "pt" || l === "fr" || l === "ja") ? l : "en"; };
+  // Interface text of the search palette in the four site languages
+  const UI = {
+    hint: { en: "Search the site, or ask a science question — e.g. “what is asteroid gardening?”",
+            pt: "Pesquise no site ou faça uma pergunta científica — ex.: “o que é jardinagem de asteroides?”",
+            fr: "Recherchez sur le site ou posez une question scientifique — p. ex. « qu'est-ce que l'asteroid gardening ? »",
+            ja: "サイト内を検索、または科学の質問をどうぞ（例：「小惑星表面の撹拌とは？」）" },
+    noOther: { en: "No other matches on the site.", pt: "Sem outras correspondências no site.",
+               fr: "Aucun autre résultat sur le site.", ja: "サイト内に他の一致はありません。" },
+    none: { en: "No matches found. Try another word.", pt: "Sem resultados. Tente outra palavra.",
+            fr: "Aucun résultat. Essayez un autre mot.", ja: "一致する結果がありません。別の言葉をお試しください。" },
+    answer: { en: "Answer", pt: "Resposta", fr: "Réponse", ja: "回答" },
+    placeholder: { en: "Search the site, or ask a science question…", pt: "Pesquise no site ou faça uma pergunta científica…",
+                   fr: "Rechercher sur le site ou poser une question scientifique…", ja: "サイト内検索、または科学の質問…" },
+    about: { en: "About", pt: "Sobre", fr: "À propos", ja: "概要" }
+  };
+  const ui = k => UI[k][lang()] || UI[k].en;
 
   // ---- Ask-a-question knowledge base ------------------------------------
   // Curated answers to the scientific topics this site is about. Lets a
@@ -173,7 +194,367 @@
     "RNA world, chirality/homochirality, carbonaceous chondrites, returned samples from Ryugu (Hayabusa2) and Bennu " +
     "(OSIRIS-REx), comets, micrometeorites, regolith, space weathering, mineral catalysis, panspermia, habitability and biosignatures.";
 
-  const STOP = new Set(["what","is","are","the","a","an","of","to","do","does","how","why","tell","me","about","explain","define","que","o","e","é","sao","são","como","porque","o-que-é","qual","sobre","me","diz","explica"]);
+  const STOP = new Set(["what","is","are","the","a","an","of","to","do","does","how","why","tell","me","about","explain","define","que","o","e","é","sao","são","como","porque","o-que-é","qual","sobre","me","diz","explica","qu'est-ce","que","qu'est","est","le","la","les","des","du","de","c'est","quoi","comment","pourquoi"]);
+
+  // ---- French / Japanese answers (keyed by the English term) ----
+  const KB_I18N = {
+    "Asteroid gardening": {
+      "fr": [
+        "Remaniement de la surface des astéroïdes (asteroid gardening)",
+        "Le brassage lent de la surface d'un corps sans atmosphère par les impacts de météorites et de micrométéorites. Sur des milliards d'années, il enfouit, exhume, mélange et chauffe par choc le régolithe — transformant la matière organique présente, si bien que ce que l'on mesure aujourd'hui est le survivant d'une longue histoire d'impacts."
+      ],
+      "ja": [
+        "小惑星表面の撹拌（asteroid gardening）",
+        "大気のない天体の表面が、隕石や微小隕石の衝突によってゆっくりと掘り返される現象。数十億年にわたってレゴリスを埋没させ、掘り出し、混ぜ合わせ、衝撃で加熱し、そこに含まれる有機物を変化させます。そのため、今日私たちが測定しているのは、長い衝突の歴史を生き延びたものなのです。"
+      ]
+    },
+    "Astrobiology": {
+      "fr": [
+        "Astrobiologie",
+        "La science de l'origine, de l'évolution et de la distribution de la vie dans l'univers — réunissant chimie, biologie, géologie et astronomie pour comprendre comment la vie est apparue et si elle pourrait exister ailleurs."
+      ],
+      "ja": [
+        "アストロバイオロジー（宇宙生物学）",
+        "宇宙における生命の起源・進化・分布を探る科学。化学、生物学、地質学、天文学を結びつけ、生命がどのように始まったのか、そして地球以外にも存在し得るのかを問います。"
+      ]
+    },
+    "Mechanochemistry": {
+      "fr": [
+        "Mécanochimie",
+        "Une chimie entraînée par la force mécanique plutôt que par la chaleur ou un solvant — par exemple en broyant des solides dans un broyeur à billes. Elle reproduit des sources d'énergie disponibles à la surface des planètes et est au cœur de mes travaux sur la synthèse prébiotique sans solvant."
+      ],
+      "ja": [
+        "メカノケミストリー（mechanochemistry）",
+        "熱や溶媒ではなく機械的な力によって駆動される化学。例えばボールミルで固体どうしをすりつぶします。惑星表面で利用可能なエネルギー源を再現するもので、無溶媒での前生物的合成に関する私の研究の中心です。"
+      ]
+    },
+    "Prebiotic chemistry": {
+      "fr": [
+        "Chimie prébiotique",
+        "La chimie qui aurait pu produire les briques du vivant — acides aminés, sucres, nucléobases — avant l'existence de la biologie elle-même, dans des conditions plausibles sur la Terre primitive ou dans l'espace."
+      ],
+      "ja": [
+        "前生物化学（prebiotic chemistry）",
+        "生物そのものが存在する以前に、初期地球や宇宙でもっともらしい条件のもと、生命の構成要素（アミノ酸、糖、核酸塩基）を生み出し得た化学。"
+      ]
+    },
+    "Ribonucleosides": {
+      "fr": [
+        "Ribonucléosides",
+        "Une nucléobase liée à un sucre, le ribose — la brique située juste en dessous de l'ARN. Savoir si des ribonucléosides déjà assemblés peuvent se former et survivre dans l'espace est une question ouverte que j'étudie par mécanochimie et synthèse par choc."
+      ],
+      "ja": [
+        "リボヌクレオシド",
+        "核酸塩基がリボース糖に結合したもので、RNAの一段下の構成単位です。組み上がったリボヌクレオシドが宇宙で生成し生き残れるかは未解決の問題であり、私はメカノケミストリーと衝撃合成で検証しています。"
+      ]
+    },
+    "Origin of life": {
+      "fr": [
+        "Origine de la vie",
+        "Le passage d'une chimie non vivante aux premiers systèmes autonomes capables de se répliquer. Mes recherches en explorent une partie : comment les briques moléculaires du vivant ont pu s'assembler à partir d'ingrédients simples et d'énergie."
+      ],
+      "ja": [
+        "生命の起源",
+        "非生命的な化学から、自己維持し複製する最初のシステムへの移行。私の研究はその一部、すなわち生命の分子的構成要素が単純な材料とエネルギーからいかに組み上がり得たかを探っています。"
+      ]
+    },
+    "Shock-driven synthesis": {
+      "fr": [
+        "Synthèse induite par choc",
+        "Utiliser la brève et intense impulsion de pression et de température d'un impact pour déclencher des réactions chimiques — une façon de reproduire en laboratoire la chimie que les impacts de comètes et de météorites pourraient provoquer."
+      ],
+      "ja": [
+        "衝撃駆動合成",
+        "衝突による短く強烈な圧力・温度のパルスを利用して化学反応を駆動する手法。彗星や隕石の衝突が引き起こし得る化学を、実験室で再現する方法です。"
+      ]
+    },
+    "Regolith": {
+      "fr": [
+        "Régolithe",
+        "La couche meuble de poussière et de roches fragmentées qui recouvre la surface d'un astéroïde, d'une lune ou d'une planète — le matériau que le remaniement par impacts retravaille sans cesse."
+      ],
+      "ja": [
+        "レゴリス",
+        "小惑星、衛星、惑星の表面を覆う、塵と砕けた岩石からなる緩い層。衝突による撹拌で絶えず作り変えられる物質です。"
+      ]
+    },
+    "Meteorites & organics": {
+      "fr": [
+        "Météorites & matière organique",
+        "Les météorites riches en carbone (carbonées) contiennent des acides aminés, des sucres et des nucléobases formés dans l'espace. Les étudier — ainsi que les échantillons rapportés de Ryugu et Bennu — relie la chimie de laboratoire à de la vraie matière extraterrestre."
+      ],
+      "ja": [
+        "隕石と有機物",
+        "炭素に富む（炭素質）隕石には、宇宙で生成したアミノ酸、糖、核酸塩基が含まれています。それらや、リュウグウとベンヌから持ち帰られた試料を調べることで、実験室の化学と実際の地球外物質が結びつきます。"
+      ]
+    },
+    "RNA world": {
+      "fr": [
+        "Monde à ARN",
+        "L'hypothèse selon laquelle la vie primitive reposait sur l'ARN à la fois pour stocker l'information et catalyser des réactions, avant que l'ADN et les protéines ne prennent le relais. Elle fait de la formation prébiotique des briques de l'ARN une question clé."
+      ],
+      "ja": [
+        "RNAワールド",
+        "初期の生命は、DNAとタンパク質が役割を担う以前、情報の保存と反応の触媒の両方をRNAに頼っていたとする仮説。これにより、RNAの構成要素の前生物的な生成が重要な問いとなります。"
+      ]
+    },
+    "HPLC–MS / LC–MS": {
+      "fr": [
+        "HPLC–MS / LC–MS",
+        "La chromatographie liquide haute performance couplée à la spectrométrie de masse — l'outil analytique de référence pour séparer et identifier des traces de molécules organiques dans des échantillons météoritiques et de laboratoire. La chromatographie sépare le mélange ; le spectromètre de masse pèse chaque molécule pour l'identifier."
+      ],
+      "ja": [
+        "HPLC–MS / LC–MS",
+        "高速液体クロマトグラフィーと質量分析を組み合わせた手法で、隕石試料や実験試料中の微量有機分子を分離・同定するための主力分析法です。クロマトグラフィーが混合物を分け、質量分析計が各分子の質量を測って同定します。"
+      ]
+    },
+    "Chromatography": {
+      "fr": [
+        "Chromatographie",
+        "Une famille de techniques qui séparent un mélange en le faisant traverser une colonne retenant chaque composé plus ou moins longtemps. La chromatographie en phase gazeuse (GC) traite les molécules volatiles, la chromatographie liquide (LC) les molécules dissoutes ; toutes deux peuvent être couplées à une détection par spectrométrie de masse ou par ionisation de flamme."
+      ],
+      "ja": [
+        "クロマトグラフィー",
+        "混合物をカラムに通し、化合物ごとに異なる度合いで保持させることで分離する一連の手法。ガスクロマトグラフィー（GC）は揮発性分子を、液体クロマトグラフィー（LC）は溶解した分子を扱い、どちらも質量分析や水素炎イオン化検出と組み合わせられます。"
+      ]
+    },
+    "NMR spectroscopy": {
+      "fr": [
+        "Spectroscopie RMN",
+        "La résonance magnétique nucléaire place un échantillon dans un champ magnétique intense et lit les signaux radiofréquence émis par ses noyaux atomiques. Comme chaque noyau renseigne sur son environnement chimique, le spectre cartographie la façon dont les atomes sont liés — ce qui permet de confirmer l'identité et la pureté d'une molécule."
+      ],
+      "ja": [
+        "NMR分光法",
+        "核磁気共鳴は、試料を強い磁場の中に置き、原子核から発せられるラジオ波信号を読み取ります。各原子核がその化学的環境を反映するため、スペクトルは原子どうしのつながりを示す地図となり、分子の同定と純度の確認に用いられます。"
+      ]
+    },
+    "X-ray diffraction (XRD)": {
+      "fr": [
+        "Diffraction des rayons X (DRX)",
+        "Les rayons X diffusés par le réseau atomique ordonné d'un solide produisent un motif de pics qui sert d'empreinte de sa structure cristalline — identifiant le minéral ou la phase cristalline présente et si le broyage l'a modifiée."
+      ],
+      "ja": [
+        "X線回折（XRD）",
+        "固体の規則正しい原子格子で散乱されたX線は、結晶構造の指紋となるピークのパターンを生みます。どの鉱物・結晶相が存在するか、また粉砕によって変化したかを特定できます。"
+      ]
+    },
+    "FTIR spectroscopy": {
+      "fr": [
+        "Spectroscopie IRTF",
+        "La spectroscopie infrarouge à transformée de Fourier mesure les longueurs d'onde infrarouges absorbées par un échantillon. Les liaisons chimiques vibrent à des fréquences caractéristiques, de sorte que le spectre révèle les groupes fonctionnels présents (C=O, O–H, N–H…). Le mode ATR analyse directement les poudres et les solides."
+      ],
+      "ja": [
+        "FTIR分光法",
+        "フーリエ変換赤外分光法は、試料がどの赤外波長を吸収するかを測定します。化学結合は固有の振動数で振動するため、スペクトルから存在する官能基（C=O、O–H、N–H…）がわかります。ATRモードでは粉末や固体を直接測定できます。"
+      ]
+    },
+    "Elemental analysis (CHNS)": {
+      "fr": [
+        "Analyse élémentaire (CHNS)",
+        "L'échantillon est entièrement brûlé et les gaz mesurés pour déterminer sa teneur globale en carbone, hydrogène, azote et soufre — ce qui quantifie la matière organique qu'il contient et permet de vérifier qu'un composé synthétisé correspond à sa formule attendue."
+      ],
+      "ja": [
+        "元素分析（CHNS）",
+        "試料を完全に燃焼させ、発生したガスを測定して炭素・水素・窒素・硫黄の総含有量を求めます。含まれる有機物の量を定量し、合成した化合物が期待される組成式に合致するかを確認できます。"
+      ]
+    },
+    "Isotope-ratio MS & stable isotopes": {
+      "fr": [
+        "SM de rapports isotopiques & isotopes stables",
+        "La spectrométrie de masse de rapports isotopiques mesure le rapport précis des isotopes stables (p. ex. ¹³C/¹²C, ¹⁵N/¹⁴N) d'un échantillon. Ces rapports indiquent où une molécule s'est formée et comment elle a été transformée — en astrobiologie, ils aident à distinguer la matière organique réellement extraterrestre de la contamination terrestre."
+      ],
+      "ja": [
+        "同位体比質量分析と安定同位体",
+        "同位体比質量分析は、試料中の安定同位体の比（例：¹³C/¹²C、¹⁵N/¹⁴N）を精密に測定します。これらの比は分子がどこで生成し、どのように変化してきたかを示す指紋となり、アストロバイオロジーでは真に地球外起源の有機物と地球由来の汚染を見分ける助けとなります。"
+      ]
+    },
+    "SEM–EDX": {
+      "fr": [
+        "MEB–EDX",
+        "La microscopie électronique à balayage balaie un échantillon avec un faisceau d'électrons focalisé pour en imager la surface à très fort grossissement ; le détecteur EDX associé lit les rayons X émis pour cartographier quels éléments sont présents et où — reliant la texture d'un grain minéral ou météoritique à sa chimie."
+      ],
+      "ja": [
+        "SEM–EDX",
+        "走査型電子顕微鏡は、集束した電子ビームで試料を走査し、表面を非常に高い倍率で画像化します。付属のEDX検出器は励起されたX線を読み取り、どの元素がどこに存在するかをマッピングし、鉱物や隕石の粒子の組織と化学を結びつけます。"
+      ]
+    },
+    "Density functional theory (DFT)": {
+      "fr": [
+        "Théorie de la fonctionnelle de la densité (DFT)",
+        "Une méthode de calcul quantique qui détermine les énergies et structures moléculaires à partir des premiers principes. Elle décrit le chemin suivi par une réaction et les barrières d'énergie rencontrées — utilisée pour expliquer des résultats expérimentaux, comme la façon dont un ion métallique et l'eau ouvrent le cycle du ribose d'un ribonucléoside."
+      ],
+      "ja": [
+        "密度汎関数理論（DFT）",
+        "分子のエネルギーと構造を第一原理から計算する量子力学的な計算手法。反応がたどる経路と途中のエネルギー障壁を明らかにし、例えば金属イオンと水がリボヌクレオシドのリボース環をいかに開くかといった実験結果の説明に用いられます。"
+      ]
+    },
+    "Organic synthesis": {
+      "fr": [
+        "Synthèse organique",
+        "La construction et la transformation contrôlées de molécules carbonées par des réactions choisies — préparer un composé cible, effectuer des réductions et ajuster les conditions pour le rendement et la pureté. Elle fournit les produits de départ purs pour les expériences de mécanochimie et de choc."
+      ],
+      "ja": [
+        "有機合成",
+        "意図した反応によって炭素系分子を制御しながら構築・変換すること。目的化合物の合成、還元反応の実施、収率と純度のための条件最適化を行い、メカノケミストリーや衝撃実験のための純粋な出発物質を供給します。"
+      ]
+    },
+    "Nucleobases": {
+      "fr": [
+        "Nucléobases",
+        "Les cycles azotés (adénine, guanine, cytosine, uracile, thymine) qui portent l'information génétique dans l'ARN et l'ADN. Comment ils se forment, se lient à un sucre et survivent dans l'espace est une question prébiotique centrale."
+      ],
+      "ja": [
+        "核酸塩基",
+        "RNAとDNAで遺伝情報を担う窒素含有の環（アデニン、グアニン、シトシン、ウラシル、チミン）。それらがどのように生成し、糖と結合し、宇宙で生き残るかは前生物化学の中心的な問いです。"
+      ]
+    },
+    "Amino acids": {
+      "fr": [
+        "Acides aminés",
+        "Les briques moléculaires des protéines. On en a trouvé dans des météorites carbonées, ce qui montre que les ingrédients de la vie peuvent se former de façon abiotique dans l'espace — un fil conducteur entre la chimie des météorites et l'origine de la vie."
+      ],
+      "ja": [
+        "アミノ酸",
+        "タンパク質の分子的構成要素。炭素質隕石から見つかっており、生命の材料が宇宙で非生物的に生成し得ることを示しています。隕石の化学と生命の起源をつなぐ重要な手がかりです。"
+      ]
+    },
+    "Ribose & sugars": {
+      "fr": [
+        "Ribose & sucres",
+        "Le ribose est le sucre à cinq carbones du squelette de l'ARN ; des sucres apparentés ont été détectés dans des météorites. Les sucres sont fragiles : comprendre comment ils se forment et survivent aux impacts est important pour le scénario du monde à ARN."
+      ],
+      "ja": [
+        "リボースと糖",
+        "リボースはRNAの骨格をなす五炭糖で、関連する糖は隕石からも検出されています。糖は壊れやすいため、それらがどのように生成し衝突過程を生き延びるかを理解することは、RNAワールドの物語にとって重要です。"
+      ]
+    },
+    "Chirality & homochirality": {
+      "fr": [
+        "Chiralité & homochiralité",
+        "De nombreuses molécules biologiques existent sous deux formes images l'une de l'autre dans un miroir, mais la vie n'en utilise presque qu'une (acides aminés gauches, sucres droits). Expliquer comment cette asymétrie est apparue à partir d'une chimie prébiotique vraisemblablement symétrique reste un problème ouvert majeur."
+      ],
+      "ja": [
+        "キラリティーとホモキラリティー",
+        "多くの生体分子は互いに鏡像の関係にある2つの形で存在しますが、生命はほぼ一方だけを使っています（左手型のアミノ酸、右手型の糖）。おそらく対称的だった前生物化学から、この片手性がいかに生じたかを説明することは、根深い未解決問題です。"
+      ]
+    },
+    "Ryugu, Bennu & sample return": {
+      "fr": [
+        "Ryugu, Bennu & retour d'échantillons",
+        "Des missions spatiales qui ont rapporté sur Terre de la matière d'astéroïde intacte — Hayabusa2 depuis Ryugu et OSIRIS-REx depuis Bennu. Ces échantillons non contaminés permettent de confronter directement la chimie de laboratoire à la vraie matière organique d'astéroïdes."
+      ],
+      "ja": [
+        "リュウグウ、ベンヌとサンプルリターン",
+        "手つかずの小惑星物質を地球に持ち帰った宇宙ミッション（リュウグウからのはやぶさ2、ベンヌからのOSIRIS-REx）。汚染されていないこれらの試料により、実験室の化学を実際の小惑星有機物と直接照らし合わせることができます。"
+      ]
+    },
+    "Carbonaceous chondrites": {
+      "fr": [
+        "Chondrites carbonées",
+        "Des météorites primitives riches en carbone (comme Murchison) qui conservent des molécules organiques du Système solaire primitif — dont des acides aminés, des nucléobases et des sucres. Ce sont des archives naturelles de la chimie prébiotique."
+      ],
+      "ja": [
+        "炭素質コンドライト",
+        "初期太陽系の有機分子（アミノ酸、核酸塩基、糖など）を保存している、炭素に富む始原的な隕石（マーチソン隕石など）。前生物化学の天然のアーカイブです。"
+      ]
+    },
+    "Comets & micrometeorites": {
+      "fr": [
+        "Comètes & micrométéorites",
+        "Les comètes et la pluie constante de micrométéorites apportent de la matière riche en composés organiques à la surface des planètes. Ce sont des vecteurs possibles qui auraient pu ensemencer la Terre primitive avec les molécules nécessaires à la vie."
+      ],
+      "ja": [
+        "彗星と微小隕石",
+        "彗星と絶え間なく降り注ぐ微小隕石は、有機物に富む物質を惑星表面にもたらします。生命に必要な分子を初期地球にもたらした可能性のある運び手の候補です。"
+      ]
+    },
+    "Space weathering": {
+      "fr": [
+        "Altération spatiale",
+        "L'altération progressive d'une surface sans atmosphère par les ions du vent solaire, le rayonnement et les impacts de micrométéorites. Avec le remaniement par impacts, elle détermine la façon dont la matière organique est transformée et préservée sur les astéroïdes."
+      ],
+      "ja": [
+        "宇宙風化",
+        "太陽風イオン、放射線、微小隕石の衝突による、大気のない天体表面の緩やかな変質。衝突による撹拌とともに、小惑星上で有機物がどのように変化し保存されるかを左右します。"
+      ]
+    },
+    "Miller–Urey experiment": {
+      "fr": [
+        "Expérience de Miller–Urey",
+        "L'expérience de 1953 qui a produit des acides aminés en faisant passer des étincelles électriques dans une atmosphère simulant celle de la Terre primitive — la démonstration fondatrice que les briques du vivant peuvent se former à partir de molécules simples et d'énergie."
+      ],
+      "ja": [
+        "ミラー–ユーリーの実験",
+        "初期地球の大気を模した気体に電気火花を通してアミノ酸を生成した1953年の実験。生命の構成要素が単純な分子とエネルギーから生成し得ることを示した、先駆的な実証です。"
+      ]
+    },
+    "Mineral catalysis": {
+      "fr": [
+        "Catalyse minérale",
+        "Les minéraux — argiles comme la montmorillonite, oxydes métalliques et sels — peuvent accélérer et orienter les réactions prébiotiques à leur surface, en concentrant les réactifs et en abaissant les barrières d'énergie. Les surfaces minérales sont un cadre probable de la chimie primitive."
+      ],
+      "ja": [
+        "鉱物触媒",
+        "モンモリロナイトのような粘土、金属酸化物、塩などの鉱物は、表面で反応物を濃縮しエネルギー障壁を下げることで、前生物的反応を加速し方向づけることができます。鉱物表面は初期の化学の舞台であった可能性が高いと考えられています。"
+      ]
+    },
+    "Exogenous delivery / panspermia": {
+      "fr": [
+        "Apport exogène / panspermie",
+        "L'idée qu'une partie des ingrédients chimiques de la vie — voire la vie elle-même — est arrivée sur Terre depuis l'espace, transportée par des météorites, des comètes et des poussières. Mes travaux évaluent dans quelle mesure les molécules organiques survivent à ce voyage et à ses impacts."
+      ],
+      "ja": [
+        "外来供給／パンスペルミア",
+        "生命の化学的材料の一部、あるいは生命そのものが、隕石、彗星、塵によって宇宙から地球に運ばれてきたという考え。私の研究は、有機分子がその旅と衝突をどれほど生き延びるかを検証しています。"
+      ]
+    },
+    "Habitability & biosignatures": {
+      "fr": [
+        "Habitabilité & biosignatures",
+        "L'habitabilité désigne la capacité d'un environnement à abriter la vie ; une biosignature est un indice chimique ou structural montrant que la vie est ou a été présente. Distinguer les vraies biosignatures de la chimie abiotique est un défi central de l'astrobiologie."
+      ],
+      "ja": [
+        "ハビタビリティと生命痕跡",
+        "ハビタビリティとは環境が生命を支えられるかどうかであり、生命痕跡（バイオシグネチャー）とは生命が存在する、あるいは存在したことを示す化学的・構造的な痕跡です。真の生命痕跡を非生物的な化学と見分けることは、アストロバイオロジーの中心的な課題です。"
+      ]
+    }
+  };
+  const KB_KEYS = {"Asteroid gardening": ["remaniement", "jardinage", "小惑星表面の撹拌", "撹拌", "ガーデニング"],
+    "Mechanochemistry": ["mécanochimie", "mecanochimie", "broyage", "メカノケミストリー", "メカノケミカル", "ボールミル"],
+    "Prebiotic chemistry": ["prébiotique", "prebiotique", "前生物化学", "前生物"],
+    "Origin of life": ["origine de la vie", "生命の起源"],
+    "Astrobiology": ["astrobiologie", "アストロバイオロジー", "宇宙生物学"],
+    "Ribonucleosides": ["ribonucléoside", "ribonucléosides", "リボヌクレオシド"],
+    "Shock-driven synthesis": ["synthèse par choc", "choc", "衝撃合成", "衝撃"],
+    "Regolith": ["régolithe", "regolithe", "レゴリス"],
+    "Meteorites & organics": ["météorite", "météorites", "隕石"],
+    "RNA world": ["monde à arn", "arn", "rnaワールド"],
+    "Chromatography": ["chromatographie", "クロマトグラフィー"],
+    "NMR spectroscopy": ["rmn", "résonance magnétique", "核磁気共鳴"],
+    "X-ray diffraction (XRD)": ["drx", "diffraction", "x線回折"],
+    "FTIR spectroscopy": ["infrarouge", "irtf", "赤外"],
+    "Elemental analysis (CHNS)": ["analyse élémentaire", "元素分析"],
+    "Isotope-ratio MS & stable isotopes": ["isotope", "isotopes", "同位体"],
+    "SEM–EDX": ["meb", "microscopie électronique", "電子顕微鏡"],
+    "Density functional theory (DFT)": ["fonctionnelle de la densité", "密度汎関数", "計算化学"],
+    "Organic synthesis": ["synthèse organique", "有機合成"],
+    "Nucleobases": ["nucléobase", "nucléobases", "核酸塩基"],
+    "Amino acids": ["acide aminé", "acides aminés", "アミノ酸"],
+    "Ribose & sugars": ["sucre", "sucres", "リボース", "糖"],
+    "Chirality & homochirality": ["chiralité", "homochiralité", "キラリティー", "ホモキラリティー"],
+    "Ryugu, Bennu & sample return": ["retour d'échantillons", "リュウグウ", "ベンヌ", "はやぶさ", "サンプルリターン"],
+    "Carbonaceous chondrites": ["chondrite carbonée", "chondrites", "炭素質コンドライト", "コンドライト"],
+    "Comets & micrometeorites": ["comète", "comètes", "micrométéorite", "彗星", "微小隕石"],
+    "Space weathering": ["altération spatiale", "宇宙風化"],
+    "Miller–Urey experiment": ["miller", "ミラー"],
+    "Mineral catalysis": ["catalyse", "argile", "鉱物触媒", "触媒", "粘土"],
+    "Exogenous delivery / panspermia": ["apport exogène", "panspermie", "パンスペルミア", "外来供給"],
+    "Habitability & biosignatures": ["habitabilité", "biosignature", "ハビタビリティ", "生命痕跡", "バイオシグネチャー"]};
+  KB.forEach(item => {
+    const t = KB_I18N[item.term.en];
+    if (t) for (const L of ["fr", "ja"]) { item.term[L] = t[L][0]; item.a[L] = t[L][1]; }
+    (KB_KEYS[item.term.en] || []).forEach(k => { if (item.keys.indexOf(k) === -1) item.keys.push(k); });
+  });
 
   function answerFor(query) {
     const q = " " + query.toLowerCase().replace(/[¿?¡!.,;:]/g, " ").replace(/\s+/g, " ") + " ";
@@ -252,9 +633,7 @@
     active = -1;
     if (query.length < 2) {
       current = [];
-      hint.textContent = lang() === "pt"
-        ? "Pesquise no site ou faça uma pergunta científica — ex.: “o que é jardinagem de asteroides?”"
-        : "Search the site, or ask a science question — e.g. “what is asteroid gardening?”";
+      hint.textContent = ui("hint");
       hint.style.display = "";
       return;
     }
@@ -275,8 +654,8 @@
 
     if (!current.length) {
       hint.textContent = ans
-        ? (lang() === "pt" ? "Sem outras correspondências no site." : "No other matches on the site.")
-        : (lang() === "pt" ? "Sem resultados. Tente outra palavra." : "No matches found. Try another word.");
+        ? ui("noOther")
+        : ui("none");
       hint.style.display = ans ? "none" : "";
       if (ans) hint.style.display = "";
       return;
@@ -307,7 +686,7 @@
     card.className = "search-answer";
     const head = document.createElement("div");
     head.className = "sa-head";
-    head.innerHTML = '<span class="sa-badge">' + (lang() === "pt" ? "Resposta" : "Answer") + '</span>';
+    head.innerHTML = '<span class="sa-badge">' + ui("answer") + '</span>';
     const term = document.createElement("span");
     term.className = "sa-term";
     term.textContent = (item.term[lang()] || item.term.en);
@@ -351,6 +730,7 @@
   }
 
   function open() {
+    input.placeholder = ui("placeholder");
     buildIndex();
     overlay.hidden = false;
     document.body.classList.add("search-open");

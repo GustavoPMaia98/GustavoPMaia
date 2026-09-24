@@ -49,6 +49,8 @@
   <!-- Apply saved/system theme before CSS to avoid a flash -->
   <script>(function(){try{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
 
+  <!-- GPM Astrobiology Design System: tokens (colours, type, spacing, effects) -->
+  <link rel="stylesheet" href="design-system/styles.css">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="ui-extra.css">
 
@@ -202,7 +204,7 @@
           <img src="images/avatar.jpg" alt="Gustavo Pinho Maia" class="avatar-img" width="220" height="230"
             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
           <div class="avatar-fallback" style="display:none">GM</div>
-          <div class="avatar-credit"><em>Credit: IMPMC — Cécile Duflot</em></div>
+          <div class="avatar-credit" data-pt="<em>Crédito: IMPMC — Cécile Duflot</em>"><em>Credit: IMPMC — Cécile Duflot</em></div>
         </div>
 
         <div class="hero-intro">
@@ -259,7 +261,7 @@
               <a class="profile-link" href="https://scholar.google.com/citations?user=TTVIFykAAAAJ" target="_blank" rel="noopener noreferrer" title="Google Scholar">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M5.242 13.769L0 9.5 12 0l12 9.5-5.242 4.269C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.547 1.748-6.758 4.269zM12 10a7 7 0 1 0 0 14 7 7 0 0 0 0-14z"/></svg><span>Scholar</span></a>
               <a class="profile-link" href="mailto:gustavopinho.maia@mnhn.fr" title="Email">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M2 6.5C2 5.67 2.67 5 3.5 5h17c.83 0 1.5.67 1.5 1.5v11c0 .83-.67 1.5-1.5 1.5h-17A1.5 1.5 0 0 1 2 17.5v-11zM4 7v.83l8 5.33 8-5.33V7l-8 5-8-5z"/></svg><span>Email</span></a>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M2 6.5C2 5.67 2.67 5 3.5 5h17c.83 0 1.5.67 1.5 1.5v11c0 .83-.67 1.5-1.5 1.5h-17A1.5 1.5 0 0 1 2 17.5v-11zM4 7v.83l8 5.33 8-5.33V7l-8 5-8-5z"/></svg><span data-pt="Email">Email</span></a>
               <a href="#tutoring" class="cta-pill">Cientifica(mente)</a>
             </div>
             <div class="affiliations-block">
@@ -333,7 +335,7 @@
         <a href="https://www.researchgate.net/profile/Gustavo_Maia2" target="_blank" rel="noopener noreferrer">ResearchGate</a>
         <a href="https://scholar.google.com/citations?user=TTVIFykAAAAJ" target="_blank" rel="noopener noreferrer">Google Scholar</a>
         <a href="https://cienciavitae.pt/portal/en/8212-CEE3-E928" target="_blank" rel="noopener noreferrer">CiênciaVitae</a>
-        <a href="mailto:gustavopinho.maia@mnhn.fr">Email</a>
+        <a href="mailto:gustavopinho.maia@mnhn.fr" data-pt="Email">Email</a>
       </nav>
     </div>
   </footer>

@@ -1,8 +1,11 @@
 /* Service worker: app-shell caching + offline fallback.
    Network-first for HTML (so content stays fresh), cache-first for static assets. */
-const CACHE = "gpm-v53";
+const CACHE = "gpm-v54";
 const CORE = [
-  "./", "index.html", "style.css", "ui-extra.css", "script.js", "search.js",
+  "./", "index.html", "design-system/styles.css", "design-system/tokens/fonts.css",
+  "design-system/tokens/colors.css", "design-system/tokens/typography.css",
+  "design-system/tokens/spacing.css", "design-system/tokens/effects.css",
+  "style.css", "ui-extra.css", "script.js", "search.js",
   "favicon.svg", "manifest.webmanifest", "cv.pdf",
   "highlights.html", "news.html", "education.html", "experience.html", "presentations.html", "funding.html",
   "publications.html", "awards.html", "tree.html", "map.html", "tutoring.html"

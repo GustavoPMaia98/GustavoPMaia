@@ -665,7 +665,12 @@
     const container = document.getElementById("pub-list");
     if (!container) return;
     const status = document.getElementById("pub-status");
-    const setStatus = (msg) => { if (status) status.textContent = msg; };
+    const setStatus = (msg, pt) => {
+      if (!status) return;
+      status.dataset.enHtml = msg;            // keep the language switcher in sync
+      if (pt) status.setAttribute("data-pt", pt);
+      status.innerHTML = currentLang === "pt" && pt ? pt : trLookup(currentLang, msg);
+    };
     const clearStatus = () => { if (status) status.remove(); };
 
     const seenDois = new Set();
@@ -682,7 +687,8 @@
       try { works = await fetchCrossrefByOrcid(); }
       catch (err2) {
         console.warn("Could not load publications automatically:", err2);
-        setStatus("Live sync unavailable right now — the publications listed above are current.");
+        setStatus("Live sync unavailable right now — the publications listed above are current.",
+                  "Sincronização automática indisponível de momento — as publicações acima estão atualizadas.");
         buildPublicationFilter();
         decoratePublications();
         return;
@@ -961,7 +967,8 @@
     tag1:{en:"Mechanochemistry",pt:"Mecanoquímica"}, tag2:{en:"Prebiotic Chemistry",pt:"Química Prebiótica"},
     tag3:{en:"Astrobiology",pt:"Astrobiologia"}, tag4:{en:"Origin of Life",pt:"Origem da Vida"},
     m_pubs:{en:"Publications",pt:"Publicações"}, m_talks:{en:"Talks & posters",pt:"Comunicações"},
-    m_areas:{en:"Research areas",pt:"Áreas de investigação"}, m_hindex:{en:"h-index",pt:"índice h"}, cv:{en:"Download CV",pt:"Descarregar CV"}
+    m_areas:{en:"Research areas",pt:"Áreas de investigação"}, m_hindex:{en:"h-index",pt:"índice h"}, cv:{en:"Download CV",pt:"Descarregar CV"},
+    affiliated:{en:"Affiliated with",pt:"Afiliações"}
   };
   const HEADINGS = {
     "Education":"Educação", "Experience":"Experiência", "Presentations":"Apresentações",
@@ -1201,25 +1208,37 @@
     const COU  = "#a78bfa";  // courses / training schools
 
     const education = [
-      { n:"Instituto Superior Técnico, Lisbon", c:[38.7369,-9.1366], d:"MSc in Chemistry (2020–2022) · PhD in Chemistry / Astrobiology (2023–present)" },
-      { n:"Universidade da Beira Interior, Covilhã", c:[40.2784,-7.5046], d:"BSc in Industrial Chemistry (2017–2020)" },
-      { n:"Escola Profissional de Espinho (ESPE)", c:[41.0073,-8.6415], d:"Mechatronics Technician, Level IV (2013–2016)" }
+      { n:"Instituto Superior Técnico, Lisbon", c:[38.7369,-9.1366], d:"MSc in Chemistry (2020–2022) · PhD in Chemistry / Astrobiology (2023–present)",
+        pt:{ n:"Instituto Superior Técnico, Lisboa", d:"Mestrado em Química (2020–2022) · Doutoramento em Química / Astrobiologia (2023–presente)" } },
+      { n:"Universidade da Beira Interior, Covilhã", c:[40.2784,-7.5046], d:"BSc in Industrial Chemistry (2017–2020)",
+        pt:{ d:"Licenciatura em Química Industrial (2017–2020)" } },
+      { n:"Escola Profissional de Espinho (ESPE)", c:[41.0073,-8.6415], d:"Mechatronics Technician, Level IV (2013–2016)",
+        pt:{ d:"Técnico de Mecatrónica, Nível IV (2013–2016)" } }
     ];
     const labs = [
-      { n:"CQE — Instituto Superior Técnico, Lisbon", c:[38.7369,-9.1366], d:"PhD researcher · Invited teaching assistant" },
-      { n:"IMPMC — MNHN, Paris", c:[48.8443,2.3562], d:"Visiting Scientist (2025–present)" },
-      { n:"NASA Goddard Space Flight Center, Greenbelt MD", c:[38.9961,-76.8483], d:"Visiting Scientist (2024)" },
-      { n:"Universidade da Beira Interior, Covilhã", c:[40.2784,-7.5046], d:"Research intern (2020)" }
+      { n:"CQE — Instituto Superior Técnico, Lisbon", c:[38.7369,-9.1366], d:"PhD researcher · Invited teaching assistant",
+        pt:{ n:"CQE — Instituto Superior Técnico, Lisboa", d:"Investigador de doutoramento · Assistente convidado" } },
+      { n:"IMPMC — MNHN, Paris", c:[48.8443,2.3562], d:"Visiting Scientist (2025–present)",
+        pt:{ d:"Cientista Visitante (2025–presente)" } },
+      { n:"NASA Goddard Space Flight Center, Greenbelt MD", c:[38.9961,-76.8483], d:"Visiting Scientist (2024)",
+        pt:{ d:"Cientista Visitante (2024)" } },
+      { n:"Universidade da Beira Interior, Covilhã", c:[40.2784,-7.5046], d:"Research intern (2020)",
+        pt:{ d:"Estagiário de investigação (2020)" } }
     ];
     const pres = [
-      { n:"Lisbon, Portugal", c:[38.7369,-9.1366], d:"EANA 2025 (poster · award) · AbGradE’25 · NInTec 2024 · EuChemS ECC8 2022 · IST PhD Open Days 2024 · CQE Days 2022" },
-      { n:"Paris, France", c:[48.8443,2.3562], d:"IPGP “Small Bodies Day” 2025 · IMPMC PhD Students’ Day 2025" },
-      { n:"Reykjavik, Iceland", c:[64.1466,-21.9426], d:"BEACON 2025 (oral)" },
-      { n:"Covilhã, Portugal", c:[40.2784,-7.5046], d:"XV CICS-UBI Symposium 2020 (poster)" }
+      { n:"Lisbon, Portugal", c:[38.7369,-9.1366], d:"EANA 2025 (poster · award) · AbGradE’25 · NInTec 2024 · EuChemS ECC8 2022 · IST PhD Open Days 2024 · CQE Days 2022",
+        pt:{ n:"Lisboa, Portugal", d:"EANA 2025 (póster · prémio) · AbGradE’25 · NInTec 2024 · EuChemS ECC8 2022 · IST PhD Open Days 2024 · CQE Days 2022" } },
+      { n:"Paris, France", pt:{ n:"Paris, França" }, c:[48.8443,2.3562], d:"IPGP “Small Bodies Day” 2025 · IMPMC PhD Students’ Day 2025" },
+      { n:"Reykjavik, Iceland", c:[64.1466,-21.9426], d:"BEACON 2025 (oral)",
+        pt:{ n:"Reiquiavique, Islândia", d:"BEACON 2025 (comunicação oral)" } },
+      { n:"Covilhã, Portugal", c:[40.2784,-7.5046], d:"XV CICS-UBI Symposium 2020 (poster)",
+        pt:{ d:"Simpósio XV CICS-UBI 2020 (póster)" } }
     ];
     const courses = [
-      { n:"Marseille, France", c:[43.2965,5.3698], d:"Origins Institute Summer School 2026 — Building the Hard Rocky Planets (Institut Origines · IPGP)" },
-      { n:"Le Teich, France", c:[44.6367,-1.0203], d:"RED Astrobiology Introductory Course 2025 (in person)" }
+      { n:"Marseille, France", c:[43.2965,5.3698], d:"Origins Institute Summer School 2026 — Building the Hard Rocky Planets (Institut Origines · IPGP)",
+        pt:{ n:"Marselha, França", d:"Escola de Verão do Origins Institute 2026 — Construir os Planetas Rochosos (Institut Origines · IPGP)" } },
+      { n:"Le Teich, France", c:[44.6367,-1.0203], d:"RED Astrobiology Introductory Course 2025 (in person)",
+        pt:{ n:"Le Teich, França", d:"Curso Introdutório de Astrobiologia RED 2025 (presencial)" } }
     ];
 
     const map = L.map(el, { scrollWheelZoom: true });
@@ -1237,9 +1256,17 @@
     });
     const tip = (n, label, color, d) =>
       '<strong>' + n + '</strong><br><span style="color:' + color + ';font-weight:600">' + label + '</span><br>' + d;
+    // Tooltip text follows the language: PT from each entry's "pt" object,
+    // FR/JA from the translations.js dictionary (English kept when no translation).
+    const MAP_PT = { "Studies":"Estudos", "Presentations":"Apresentações",
+                     "Courses / training":"Cursos / formação", "Laboratory / research":"Laboratório / investigação" };
+    const loc = (lang, en, pt) => lang === "pt" ? (pt || en) : trLookup(lang, en);
+    const tipFor = (p, label, color, lang) => tip(loc(lang, p.n, p.pt && p.pt.n), loc(lang, label, MAP_PT[label]), color, loc(lang, p.d, p.pt && p.pt.d));
+    const markers = [];
     const place = (arr, color, label) => arr.forEach(p => {
-      L.marker(p.c, { icon: pinIcon(color) }).addTo(map)
-        .bindTooltip(tip(p.n, label, color, p.d), { direction:"top", opacity:0.97 });
+      const m = L.marker(p.c, { icon: pinIcon(color) }).addTo(map)
+        .bindTooltip(tipFor(p, label, color, currentLang), { direction:"top", opacity:0.97 });
+      markers.push(lang => m.setTooltipContent(tipFor(p, label, color, lang)));
       all.push(p.c);
     });
 
@@ -1269,7 +1296,7 @@
     legend.onAdd = function () {
       const div = L.DomUtil.create("div", "map-legend");
       div.innerHTML = legendHTML(currentLang);
-      mapLangUpdate = lang => { div.innerHTML = legendHTML(lang); };
+      mapLangUpdate = lang => { div.innerHTML = legendHTML(lang); markers.forEach(f => f(lang)); };
       return div;
     };
     legend.addTo(map);
@@ -1494,7 +1521,12 @@
     try { DATA = JSON.parse(dataEl.textContent); } catch (e) { return; }
 
     const lang = () => document.documentElement.getAttribute("lang") || "en";
-    const pick = v => (v && typeof v === "object") ? (v[lang()] || trLookup(lang(), v.en)) : v;
+    const pick = v => {
+      if (!v || typeof v !== "object") return v;
+      if (v[lang()]) return v[lang()];
+      // body/points are lists: translate each paragraph/bullet on its own (FR/JA dictionary)
+      return Array.isArray(v.en) ? v.en.map(s => trLookup(lang(), s)) : trLookup(lang(), v.en);
+    };
 
     const elIcon = document.getElementById("hlModalIcon");
     const elEyebrow = document.getElementById("hlModalEyebrow");
@@ -1608,7 +1640,12 @@
     let DATA = {};
     try { DATA = JSON.parse(dataEl.textContent); } catch (e) { return; }
     const lang = () => document.documentElement.getAttribute("data-lang") || "en";
-    const pick = v => (v && typeof v === "object") ? (v[lang()] || trLookup(lang(), v.en)) : v;
+    const pick = v => {
+      if (!v || typeof v !== "object") return v;
+      if (v[lang()]) return v[lang()];
+      // body/points are lists: translate each paragraph/bullet on its own (FR/JA dictionary)
+      return Array.isArray(v.en) ? v.en.map(s => trLookup(lang(), s)) : trLookup(lang(), v.en);
+    };
 
     const elIcon = document.getElementById("techModalIcon");
     const elEyebrow = document.getElementById("techModalEyebrow");
