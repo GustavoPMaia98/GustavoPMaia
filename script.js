@@ -27,7 +27,27 @@
   let langWired = false;
   let mapWired = false;
   let mapLangUpdate = null;   // set once the map legend exists; called by applyLang
-  let currentLang = (function(){ try { return localStorage.getItem("lang") || "en"; } catch(e){ return "en"; } })();
+  // Language: a ?lang=xx link wins (shareable, indexable URLs), then the saved choice.
+  const LANGS = ["en", "pt", "fr", "ja"];
+  let currentLang = (function(){
+    try {
+      const q = new URLSearchParams(location.search).get("lang");
+      if (q && LANGS.indexOf(q) !== -1) { localStorage.setItem("lang", q); return q; }
+      return localStorage.getItem("lang") || "en";
+    } catch(e){ return "en"; }
+  })();
+  // French/Japanese dictionary (~180 KB) is only downloaded when it is needed.
+  let trPromise = null;
+  function ensureTR(lang) {
+    if (lang !== "fr" && lang !== "ja") return Promise.resolve();
+    if (window.TR && window.TR.fr && Object.keys(window.TR.fr).length) return Promise.resolve();
+    if (!trPromise) trPromise = new Promise(res => {
+      const s = document.createElement("script");
+      s.src = "i18n/translations.js"; s.onload = res; s.onerror = res;
+      document.head.appendChild(s);
+    });
+    return trPromise;
+  }
 
   // ============================================================
   //  ANIMATED STARFIELD (canvas, GPU-light, drifts left -> right)
@@ -248,6 +268,27 @@
       });
     }
 
+    // "More" menu in the desktop toolbar (secondary sections)
+    const more = document.getElementById("navMore");
+    if (more && !more.dataset.wired) {
+      more.dataset.wired = "1";
+      const mbtn = document.getElementById("navMoreBtn");
+      const menu = document.getElementById("navMoreMenu");
+      const setMore = (open) => {
+        menu.hidden = !open; more.classList.toggle("is-open", open);
+        mbtn.setAttribute("aria-expanded", open ? "true" : "false");
+      };
+      mbtn.addEventListener("click", (e) => { e.stopPropagation(); setMore(menu.hidden); });
+      if (window.matchMedia && window.matchMedia("(hover: hover)").matches) {
+        let t = null;
+        more.addEventListener("pointerenter", () => { clearTimeout(t); setMore(true); });
+        more.addEventListener("pointerleave", () => { clearTimeout(t); t = setTimeout(() => setMore(false), 220); });
+      }
+      menu.querySelectorAll("a").forEach(a => a.addEventListener("click", () => setMore(false)));
+      document.addEventListener("click", (e) => { if (!more.contains(e.target)) setMore(false); });
+      document.addEventListener("keydown", (e) => { if (e.key === "Escape") setMore(false); });
+    }
+
     // Scrollspy: only set up once, and only when the target sections exist
     // (they are injected asynchronously, so this may run on a later call).
     if (scrollspyWired) return;
@@ -265,6 +306,14 @@
           Object.values(navMap).forEach(a => a.classList.remove("active"));
           const a = navMap[e.target.id];
           if (a) a.classList.add("active");
+          // desktop toolbar: highlight the matching section (or "More" for secondary ones)
+          const id = e.target.id;
+          document.querySelectorAll(".nav-sec-strip .nav-sec-main").forEach(x => x.classList.remove("active"));
+          const main = document.querySelector('.nav-sec-strip > a.nav-sec-main[href="#' + id + '"]');
+          if (main) main.classList.add("active");
+          else if (document.querySelector('#navMoreMenu a[href="#' + id + '"]')) {
+            const mb = document.getElementById("navMoreBtn"); if (mb) mb.classList.add("active");
+          }
         }
       });
     }, { rootMargin: "-45% 0px -50% 0px", threshold: 0 });
@@ -578,12 +627,12 @@
     // Esc turns it off quickly (desktop)
     document.addEventListener("keydown", (e) => { if (e.key === "Escape" && enabled) apply(false, true); });
 
-    // Auto-activate on first visit (desktop pointer + mobile tilt); respect an explicit opt-out.
+    // Off by default: the page never scrolls by itself unless the visitor
+    // switches hands-free on (the choice is remembered).
     {
       let saved = null;
       try { saved = localStorage.getItem(KEY); } catch (_) {}
-      const firstVisit = (saved === null);
-      const on = firstVisit ? true : (saved === "1");
+      const on = (saved === "1");
       apply(on, false);
       // Whenever hands-free is active, surface the balloon once per browsing
       // session (so it reliably appears each fresh visit, not only ever-once).
@@ -679,6 +728,31 @@
       if (m) seenDois.add(decodeURIComponent(m[1]).trim().toLowerCase());
     });
 
+    // 1) data/publications.json is refreshed every night by a GitHub Action
+    //    (OpenAlex + Crossref): new papers, citation counts and citation data.
+    let db = null;
+    try {
+      const r = await fetch("data/publications.json", { cache: "no-cache" });
+      if (r.ok) db = await r.json();
+    } catch (e) { db = null; }
+    if (db && Array.isArray(db.works)) {
+      db.works.slice().sort((a, b) => (b.year || 0) - (a.year || 0)).forEach(w => {
+        const key = (w.doi || "").toLowerCase();
+        if (!key || seenDois.has(key) || w.hidden) return;
+        seenDois.add(key);
+        renderPublication(container, w);
+      });
+      clearStatus();
+      observeReveals(container);
+      wireAccordions();
+      buildPublicationFilter();
+      decoratePublications();
+      setupCiteTools(db);
+      updateMetrics();
+      return;
+    }
+
+    // 2) fallback: ask ORCID / Crossref directly from the browser
     let works = [];
     try {
       works = await fetchOrcidWorks();
@@ -686,11 +760,12 @@
       console.warn("ORCID fetch failed, trying Crossref fallback:", err);
       try { works = await fetchCrossrefByOrcid(); }
       catch (err2) {
+        // the static list is always current, so fail quietly
         console.warn("Could not load publications automatically:", err2);
-        setStatus("Live sync unavailable right now — the publications listed above are current.",
-                  "Sincronização automática indisponível de momento — as publicações acima estão atualizadas.");
+        clearStatus();
         buildPublicationFilter();
         decoratePublications();
+        setupCiteTools(null);
         return;
       }
     }
@@ -721,7 +796,108 @@
     wireAccordions();
     buildPublicationFilter();
     decoratePublications();
+    setupCiteTools(null);
     updateMetrics();
+  }
+
+  // ============================================================
+  //  "CITE" + CITATION COUNT under each publication
+  //  Uses data/publications.json when present, otherwise the card itself.
+  // ============================================================
+  const CITE_TXT = {
+    en: { cite:"Cite", copy:"Copy", copied:"Copied", cited:n => "Cited by " + n, src:"Citation count: OpenAlex" },
+    pt: { cite:"Citar", copy:"Copiar", copied:"Copiado", cited:n => "Citado " + n + (n === 1 ? " vez" : " vezes"), src:"Número de citações: OpenAlex" },
+    fr: { cite:"Citer", copy:"Copier", copied:"Copié", cited:n => "Cité " + n + " fois", src:"Nombre de citations : OpenAlex" },
+    ja: { cite:"引用", copy:"コピー", copied:"コピーしました", cited:n => "被引用数 " + n, src:"被引用数：OpenAlex" }
+  };
+  let citeLangUpdate = null;
+  function citeFromCard(item, doi) {
+    const title = (item.querySelector(".timeline-header strong") || {}).textContent || "";
+    const meta = ((item.querySelector(".timeline-header .meta") || {}).textContent || "").split(" · ");
+    const yearIdx = meta.findIndex(x => /^(19|20)\d{2}$/.test(x.trim()));
+    return {
+      doi, title: title.trim(),
+      authors: yearIdx > 0 ? meta.slice(0, yearIdx).join(" · ").trim() : "",
+      year: yearIdx >= 0 ? meta[yearIdx].trim() : "",
+      journal: yearIdx >= 0 ? meta.slice(yearIdx + 1).join(" · ").trim() : ""
+    };
+  }
+  function splitAuthors(a) {
+    return String(a || "").replace(/ et al\.?$/, ", et al.").split(/,\s*|\s+and\s+|\s*&\s*/).map(x => x.trim()).filter(Boolean);
+  }
+  function bibtexOf(w) {
+    if (w.bibtex) return w.bibtex;
+    const au = splitAuthors(w.authors).map(n => n === "et al." ? "others" : n).join(" and ");
+    const first = (splitAuthors(w.authors)[0] || "maia").split(" ").pop().toLowerCase().normalize("NFD").replace(/[^a-z]/g, "");
+    const key = first + (w.year || "") + ((w.title || "").split(/\s+/)[0] || "").toLowerCase().replace(/[^a-z]/g, "");
+    const f = [["title", "{" + w.title + "}"], ["author", au], ["journal", w.journal], ["year", w.year],
+               ["volume", w.volume], ["number", w.issue], ["pages", w.pages], ["doi", w.doi]]
+      .filter(x => x[1]).map(x => "  " + x[0] + " = {" + x[1] + "}").join(",\n");
+    return "@article{" + key + ",\n" + f + "\n}";
+  }
+  function apaOf(w) {
+    if (w.apa) return w.apa;
+    const names = splitAuthors(w.authors).map(n => {
+      if (n === "et al.") return n;
+      const p = n.split(/\s+/); const last = p.pop();
+      return last + ", " + p.map(x => x.charAt(0) + ".").join(" ");
+    });
+    const au = names.length > 1 ? names.slice(0, -1).join(", ") + (names[names.length - 1] === "et al." ? ", et al." : ", & " + names[names.length - 1]) : (names[0] || "");
+    const vol = w.volume ? ", " + w.volume + (w.issue ? "(" + w.issue + ")" : "") : "";
+    const pg = w.pages ? ", " + w.pages : "";
+    return au + " (" + (w.year || "n.d.") + "). " + w.title + ". " + (w.journal || "") + vol + pg + ". https://doi.org/" + w.doi;
+  }
+  function setupCiteTools(db) {
+    const byDoi = {};
+    if (db && Array.isArray(db.works)) db.works.forEach(w => { if (w.doi) byDoi[w.doi.toLowerCase()] = w; });
+    const items = document.querySelectorAll("#publications .timeline-item.publication");
+    const T = () => CITE_TXT[currentLang] || CITE_TXT.en;
+    items.forEach(item => {
+      if (item.querySelector(".pub-tools")) return;
+      const a = item.querySelector('a[href*="doi.org/"]');
+      if (!a) return;
+      const doi = decodeURIComponent(a.getAttribute("href").replace(/^.*doi\.org\//i, "")).trim();
+      const w = Object.assign(citeFromCard(item, doi), byDoi[doi.toLowerCase()] || {});
+      const tools = document.createElement("div");
+      tools.className = "pub-tools";
+      tools.innerHTML =
+        (typeof w.cited_by === "number" && w.cited_by > 0 ? '<span class="pub-cites" data-n="' + w.cited_by + '"></span>' : "") +
+        '<button type="button" class="pub-cite-btn" aria-expanded="false"></button>' +
+        '<div class="pub-cite-panel" hidden>' +
+          '<div class="pub-cite-row"><span class="pub-cite-fmt">BibTeX</span><button type="button" class="pub-copy" data-fmt="bib"></button></div>' +
+          '<pre class="pub-cite-text" data-fmt="bib"></pre>' +
+          '<div class="pub-cite-row"><span class="pub-cite-fmt">APA</span><button type="button" class="pub-copy" data-fmt="apa"></button></div>' +
+          '<pre class="pub-cite-text" data-fmt="apa"></pre>' +
+        '</div>';
+      tools.querySelector('pre[data-fmt="bib"]').textContent = bibtexOf(w);
+      tools.querySelector('pre[data-fmt="apa"]').textContent = apaOf(w);
+      const btn = tools.querySelector(".pub-cite-btn");
+      const panel = tools.querySelector(".pub-cite-panel");
+      btn.addEventListener("click", e => {
+        e.stopPropagation();
+        panel.hidden = !panel.hidden;
+        btn.setAttribute("aria-expanded", panel.hidden ? "false" : "true");
+      });
+      tools.querySelectorAll(".pub-copy").forEach(c => c.addEventListener("click", e => {
+        e.stopPropagation();
+        const txt = tools.querySelector('pre[data-fmt="' + c.dataset.fmt + '"]').textContent;
+        const done = () => { c.textContent = T().copied; setTimeout(() => { c.textContent = T().copy; }, 1600); };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done, done);
+        else { const r = document.createRange(); r.selectNodeContents(tools.querySelector('pre[data-fmt="' + c.dataset.fmt + '"]')); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); done(); }
+      }));
+      const card = item.querySelector(".timeline-card");
+      card.insertAdjacentElement("afterend", tools);
+    });
+    citeLangUpdate = () => {
+      const t = T();
+      document.querySelectorAll(".pub-tools").forEach(tools => {
+        const c = tools.querySelector(".pub-cites");
+        if (c) { c.textContent = t.cited(+c.dataset.n); c.title = t.src; }
+        tools.querySelector(".pub-cite-btn").textContent = t.cite;
+        tools.querySelectorAll(".pub-copy").forEach(b => { b.textContent = t.copy; });
+      });
+    };
+    citeLangUpdate();
   }
 
   // Add a blue year badge to every publication and order the whole list
@@ -961,6 +1137,7 @@
     nav_experience:{en:"Experience",pt:"Experiência"}, nav_presentations:{en:"Presentations",pt:"Apresentações"},
     nav_funding:{en:"Funding",pt:"Financiamento"}, nav_publications:{en:"Publications",pt:"Publicações"},
     nav_tree:{en:"Tree",pt:"Árvore"}, nav_map:{en:"Map",pt:"Mapa"}, nav_tutoring:{en:"Tutoring",pt:"Explicações"}, nav_courses:{en:"Courses",pt:"Cursos"},
+    nav_research:{en:"Research",pt:"Investigação"}, nav_skills:{en:"Skills",pt:"Competências"}, nav_more:{en:"More",pt:"Mais"},
     role:{en:"PhD Researcher in Chemistry · Astrobiology",pt:"Investigador de Doutoramento em Química · Astrobiologia"},
     bio:{en:"My research explores the origins and evolution of life in the universe, using chemistry to uncover the processes that may have led to life's emergence. A key focus is mechanochemistry — chemical reactions driven by mechanical forces. I investigate how mechanical energy, from parent-body formation, asteroid gardening, or meteorite impacts, could have promoted the synthesis and transformation of organic molecules on the early Earth and other planetary bodies, revealing alternative pathways for prebiotic chemistry under extreme and extraterrestrial environments.",
          pt:"A minha investigação explora as origens e a evolução da vida no universo, usando a química para desvendar os processos que poderão ter conduzido ao surgimento da vida. Um foco central é a mecanoquímica — reações químicas impulsionadas por forças mecânicas. Investigo como a energia mecânica, da formação de corpos progenitores, do asteroid gardening ou de impactos de meteoritos, poderá ter promovido a síntese e a transformação de moléculas orgânicas na Terra primitiva e noutros corpos planetários, revelando vias alternativas para a química prebiótica em ambientes extremos e extraterrestres."},
@@ -968,7 +1145,8 @@
     tag3:{en:"Astrobiology",pt:"Astrobiologia"}, tag4:{en:"Origin of Life",pt:"Origem da Vida"},
     m_pubs:{en:"Publications",pt:"Publicações"}, m_talks:{en:"Talks & posters",pt:"Comunicações"},
     m_areas:{en:"Research areas",pt:"Áreas de investigação"}, m_hindex:{en:"h-index",pt:"índice h"}, cv:{en:"Download CV",pt:"Descarregar CV"},
-    affiliated:{en:"Affiliated with",pt:"Afiliações"}
+    affiliated:{en:"Affiliated with",pt:"Afiliações"},
+    opento:{en:"Open to postdoctoral positions from 2027",pt:"Disponível para posições de pós-doutoramento a partir de 2027"}
   };
   const HEADINGS = {
     "Education":"Educação", "Experience":"Experiência", "Presentations":"Apresentações",
@@ -1008,6 +1186,18 @@
   }
   function applyLang() {
     const lang = currentLang;
+    if ((lang === "fr" || lang === "ja") && !(window.TR && window.TR[lang] && Object.keys(window.TR[lang]).length)) {
+      ensureTR(lang).then(() => { if (currentLang === lang) applyLang(); });
+      return;
+    }
+    // Keep the address bar and canonical link in step with the language.
+    try {
+      const url = new URL(location.href);
+      if (lang === "en") url.searchParams.delete("lang"); else url.searchParams.set("lang", lang);
+      if (url.href !== location.href) history.replaceState(history.state, "", url.href);
+      const canon = document.querySelector('link[rel="canonical"]');
+      if (canon) canon.href = "https://gustavopmaia98.github.io/GustavoPMaia/" + (lang === "en" ? "" : "?lang=" + lang);
+    } catch (e) {}
     document.querySelectorAll("[data-i18n]").forEach(el => {
       const t = I18N[el.getAttribute("data-i18n")];
       if (t) el.textContent = (lang === "en") ? t.en : (t[lang] || trLookup(lang, t.en));
@@ -1028,6 +1218,11 @@
       b.classList.toggle("active", on);
       b.setAttribute("aria-checked", on ? "true" : "false");
     });
+    // icon tooltips / accessible names follow the visible (translated) labels
+    document.querySelectorAll(".nav-sec-main").forEach(el => {
+      const l = el.querySelector(".nav-sec-label");
+      if (l) el.setAttribute("data-tip", l.textContent.trim());
+    });
     document.querySelectorAll("[data-i18n-filter]").forEach(b => {
       const key = b.getAttribute("data-i18n-filter");
       const en = { all: "All", oral: "Oral", poster: "Poster" }[key];
@@ -1035,6 +1230,7 @@
       if (en) b.textContent = (lang === "pt") ? pt : trLookup(lang, en);
     });
     if (typeof mapLangUpdate === "function") mapLangUpdate(lang);
+    if (typeof citeLangUpdate === "function") citeLangUpdate(lang);
   }
   function setupLangToggle() {
     const btn = document.getElementById("langToggle");
@@ -1264,9 +1460,12 @@
     const tipFor = (p, label, color, lang) => tip(loc(lang, p.n, p.pt && p.pt.n), loc(lang, label, MAP_PT[label]), color, loc(lang, p.d, p.pt && p.pt.d));
     const markers = [];
     const place = (arr, color, label) => arr.forEach(p => {
-      const m = L.marker(p.c, { icon: pinIcon(color) }).addTo(map)
+      const m = L.marker(p.c, { icon: pinIcon(color), title: loc(currentLang, p.n, p.pt && p.pt.n), keyboard: true }).addTo(map)
         .bindTooltip(tipFor(p, label, color, currentLang), { direction:"top", opacity:0.97 });
-      markers.push(lang => m.setTooltipContent(tipFor(p, label, color, lang)));
+      markers.push(lang => {
+        m.setTooltipContent(tipFor(p, label, color, lang));
+        const el = m.getElement(); if (el) el.setAttribute("title", loc(lang, p.n, p.pt && p.pt.n));
+      });
       all.push(p.c);
     });
 
@@ -1511,6 +1710,83 @@
     }
   }
 
+  // ============================================================
+  //  3D MOLECULE VIEWER (3Dmol.js, loaded only when first needed)
+  //  Ribonucleoside -> nucleobase + ribose, as in the mechanochemistry papers.
+  //  Structures: RDKit-embedded, MMFF-optimised geometries (data/molecules).
+  // ============================================================
+  const MOL_TXT = {
+    en: { h:"Explore the molecules in 3D", hint:"Drag to rotate · scroll or pinch to zoom", arrow:"mechanochemistry<br>(Ni²⁺ · CO₃²⁻)",
+          G:"Guanosine", g:"Guanine + ribose", U:"Uridine", u:"Uracil + ribose", load:"Loading 3D viewer…", fail:"The 3D viewer could not be loaded." },
+    pt: { h:"Explore as moléculas em 3D", hint:"Arraste para rodar · deslize ou aproxime os dedos para ampliar", arrow:"mecanoquímica<br>(Ni²⁺ · CO₃²⁻)",
+          G:"Guanosina", g:"Guanina + ribose", U:"Uridina", u:"Uracilo + ribose", load:"A carregar o visualizador 3D…", fail:"Não foi possível carregar o visualizador 3D." },
+    fr: { h:"Explorez les molécules en 3D", hint:"Faites glisser pour pivoter · défilez ou pincez pour zoomer", arrow:"mécanochimie<br>(Ni²⁺ · CO₃²⁻)",
+          G:"Guanosine", g:"Guanine + ribose", U:"Uridine", u:"Uracile + ribose", load:"Chargement du visualiseur 3D…", fail:"Le visualiseur 3D n'a pas pu être chargé." },
+    ja: { h:"分子を3Dで見る", hint:"ドラッグで回転 · スクロールまたはピンチで拡大", arrow:"メカノケミストリー<br>(Ni²⁺ · CO₃²⁻)",
+          G:"グアノシン", g:"グアニン + リボース", U:"ウリジン", u:"ウラシル + リボース", load:"3Dビューアを読み込み中…", fail:"3Dビューアを読み込めませんでした。" }
+  };
+  let mol3dLib = null;
+  function load3Dmol() {
+    if (window.$3Dmol) return Promise.resolve(window.$3Dmol);
+    if (!mol3dLib) mol3dLib = new Promise((res, rej) => {
+      const s = document.createElement("script");
+      s.src = "vendor/3Dmol-2.5.5-min.js";
+      s.onload = () => window.$3Dmol ? res(window.$3Dmol) : rej(new Error("3Dmol missing"));
+      s.onerror = rej;
+      document.head.appendChild(s);
+    });
+    return mol3dLib;
+  }
+  function mountMol3D(afterEl) {
+    let box = document.getElementById("hlMol3d");
+    if (!afterEl) { if (box) box.remove(); return; }
+    const T = MOL_TXT[currentLang] || MOL_TXT.en;
+    if (box) box.remove();
+    box = document.createElement("section");
+    box.id = "hlMol3d"; box.className = "mol3d";
+    box.innerHTML =
+      '<div class="mol3d-head"><h4 class="hl-results-title">' + T.h + '</h4>' +
+      '<div class="mol3d-pick" role="group">' +
+        '<button type="button" data-pair="G" class="active" aria-pressed="true">' + T.G + ' → ' + T.g.split(" + ")[0] + '</button>' +
+        '<button type="button" data-pair="U" aria-pressed="false">' + T.U + ' → ' + T.u.split(" + ")[0] + '</button>' +
+      '</div></div>' +
+      '<div class="mol3d-stage">' +
+        '<figure class="mol3d-cell"><div class="mol3d-view" data-slot="a" role="img"></div><figcaption data-cap="a"></figcaption></figure>' +
+        '<div class="mol3d-arrow" aria-hidden="true"><span>→</span><small>' + T.arrow + '</small></div>' +
+        '<figure class="mol3d-cell"><div class="mol3d-view" data-slot="b" role="img"></div><figcaption data-cap="b"></figcaption></figure>' +
+      '</div>' +
+      '<p class="mol3d-hint">' + T.hint + '</p>';
+    afterEl.insertAdjacentElement("afterend", box);
+    const views = box.querySelectorAll(".mol3d-view");
+    views.forEach(v => { v.textContent = T.load; });
+    const PAIRS = { G: ["guanosine", "guanine-ribose", T.G, T.g], U: ["uridine", "uracil-ribose", T.U, T.u] };
+    const still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let viewers = [];
+    const show = (key) => {
+      const [fa, fb, ca, cb] = PAIRS[key];
+      box.querySelector('[data-cap="a"]').textContent = ca;
+      box.querySelector('[data-cap="b"]').textContent = cb;
+      views[0].setAttribute("aria-label", ca); views[1].setAttribute("aria-label", cb);
+      box.querySelectorAll(".mol3d-pick button").forEach(b => {
+        const on = b.dataset.pair === key; b.classList.toggle("active", on); b.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+      load3Dmol().then(lib => Promise.all([fa, fb].map(f => fetch("data/molecules/" + f + ".sdf").then(r => r.text()))).then(sdfs => {
+        viewers.forEach(v => { try { v.clear(); } catch (e) {} });
+        views.forEach((el, i) => {
+          if (!viewers[i]) { el.textContent = ""; viewers[i] = lib.createViewer(el, { backgroundAlpha: 0, antialias: true }); }
+          const v = viewers[i];
+          v.addModel(sdfs[i], "sdf");
+          v.setStyle({}, { stick: { radius: 0.15 }, sphere: { scale: 0.24 } });
+          v.zoomTo(); v.zoom(0.95);
+          if (!still) v.spin("y", 0.35);
+          v.render();
+        });
+      })).catch(() => views.forEach(el => { el.textContent = T.fail; }));
+    };
+    box.querySelectorAll(".mol3d-pick button").forEach(b => b.addEventListener("click", () => show(b.dataset.pair)));
+    show("G");
+  }
+
   function setupHighlightModal() {
     const modal = document.getElementById("hlModal");
     const dataEl = document.getElementById("hl-detail-data");
@@ -1570,6 +1846,8 @@
       });
       // when the highlight has paper results, drop the redundant key-points list
       elPoints.hidden = !!(d.papers && d.papers.length);
+      // interactive 3D molecules for the ribonucleoside highlight
+      mountMol3D(id === "ribonucleosides" ? elBody : null);
       // Key results from the papers (optional)
       if (elResults) {
         elResults.innerHTML = "";
@@ -1749,6 +2027,16 @@
     });
   }
 
+  // News is a short list (latest three); the button reveals the rest.
+  function setupNewsList() {
+    const list = document.getElementById("newsList");
+    const btn = document.getElementById("newsAll");
+    if (!list || !btn || btn.dataset.wired) return;
+    btn.dataset.wired = "1";
+    if (list.children.length <= 3) { btn.hidden = true; return; }
+    btn.addEventListener("click", () => { list.classList.add("is-all"); btn.hidden = true; });
+  }
+
   function init() {
     initStarfield();
     initNav();
@@ -1762,6 +2050,7 @@
     setupLazyImages();
     setupTreePan();
     setupCarousels();
+    setupNewsList();
     setupHighlightModal();
     setupTechModal();
     setupThemeToggle();

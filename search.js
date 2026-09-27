@@ -703,6 +703,9 @@
   function go(entry) {
     close();
     const el = entry.el;
+    // results inside a collapsed group (e.g. "Earlier experience") open it first
+    let d = el.closest && el.closest("details");
+    while (d) { d.open = true; d = d.parentElement && d.parentElement.closest("details"); }
     // If the result is (or sits inside) a collapsible timeline item, open it so the
     // hidden abstract, equipment and photos are revealed when we land on it.
     const item = el.classList && el.classList.contains("timeline-item")

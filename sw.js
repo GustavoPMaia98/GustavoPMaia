@@ -1,14 +1,14 @@
 /* Service worker: app-shell caching + offline fallback.
    Network-first for HTML (so content stays fresh), cache-first for static assets. */
-const CACHE = "gpm-v54";
+const CACHE = "gpm-v55";
 const CORE = [
-  "./", "index.html", "design-system/styles.css", "design-system/tokens/fonts.css",
-  "design-system/tokens/colors.css", "design-system/tokens/typography.css",
-  "design-system/tokens/spacing.css", "design-system/tokens/effects.css",
-  "style.css", "ui-extra.css", "script.js", "search.js",
-  "favicon.svg", "manifest.webmanifest", "cv.pdf",
-  "highlights.html", "news.html", "education.html", "experience.html", "presentations.html", "funding.html",
-  "publications.html", "awards.html", "tree.html", "map.html", "tutoring.html"
+  "./", "index.html", "cientificamente.html",
+  "design-system/styles.css", "design-system/tokens/fonts.css", "design-system/tokens/colors.css",
+  "design-system/tokens/typography.css", "design-system/tokens/spacing.css", "design-system/tokens/effects.css",
+  "style.css", "ui-extra.css", "script.js", "search.js", "vendor/lucide-1.48.0.min.js", "favicon.svg",
+  "sections/highlights.html", "sections/news.html", "sections/publications.html", "sections/presentations.html",
+  "sections/education.html", "sections/experience.html", "sections/courses.html", "sections/awards.html",
+  "sections/funding.html", "sections/tree.html", "sections/map.html"
 ];
 
 self.addEventListener("install", e => {

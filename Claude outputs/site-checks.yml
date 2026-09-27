@@ -1,0 +1,25 @@
+# Runs on every push / pull request: broken links and images, oversized
+# images, and JavaScript syntax. A red cross in GitHub means something to fix.
+name: Site checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Links, images and file sizes
+        run: python tools/check_site.py
+      - name: JavaScript syntax
+        run: |
+          for f in script.js search.js sw.js i18n/translations.js; do node --check "$f"; done

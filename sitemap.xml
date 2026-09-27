@@ -1,8 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://gustavopmaia98.github.io/GustavoPMaia/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gustavopmaia98.github.io/GustavoPMaia/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://gustavopmaia98.github.io/GustavoPMaia/?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gustavopmaia98.github.io/GustavoPMaia/?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://gustavopmaia98.github.io/GustavoPMaia/?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://gustavopmaia98.github.io/GustavoPMaia/"/>
     <changefreq>monthly</changefreq>
-    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://gustavopmaia98.github.io/GustavoPMaia/?lang=pt</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gustavopmaia98.github.io/GustavoPMaia/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://gustavopmaia98.github.io/GustavoPMaia/?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gustavopmaia98.github.io/GustavoPMaia/?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://gustavopmaia98.github.io/GustavoPMaia/?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://gustavopmaia98.github.io/GustavoPMaia/"/>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://gustavopmaia98.github.io/GustavoPMaia/?lang=fr</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gustavopmaia98.github.io/GustavoPMaia/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://gustavopmaia98.github.io/GustavoPMaia/?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gustavopmaia98.github.io/GustavoPMaia/?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://gustavopmaia98.github.io/GustavoPMaia/?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://gustavopmaia98.github.io/GustavoPMaia/"/>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://gustavopmaia98.github.io/GustavoPMaia/?lang=ja</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gustavopmaia98.github.io/GustavoPMaia/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://gustavopmaia98.github.io/GustavoPMaia/?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://gustavopmaia98.github.io/GustavoPMaia/?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://gustavopmaia98.github.io/GustavoPMaia/?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://gustavopmaia98.github.io/GustavoPMaia/"/>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://gustavopmaia98.github.io/GustavoPMaia/cientificamente.html</loc>
+    <changefreq>yearly</changefreq>
   </url>
 </urlset>
