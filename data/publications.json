@@ -1,108 +1,34 @@
 {
- "source": "OpenAlex (https://openalex.org) for ORCID 0000-0001-5314-8816",
- "h_index_openalex": 1,
- "citations_openalex": 4,
+ "source": "ORCID 0000-0001-5314-8816 (journal articles) + Crossref metadata",
+ "updated": "2026-09-27",
  "works": [
   {
    "doi": "10.1016/j.epsl.2026.120237",
    "title": "Effect of asteroid gardening on the exogenous delivery of extraterrestrial organic matter",
    "year": 2026,
    "journal": "Earth and Planetary Science Letters",
-   "volume": "692",
-   "issue": "",
-   "pages": "120237–120237",
-   "authors_list": [
-    "Maia, Gustavo P.",
-    "Rémusat, Laurent",
-    "Amano, Kana",
-    "Viennet, J.-C.",
-    "Dworkin, Jason P.",
-    "McLain, Hannah L.",
-    "da Silva, José Armando L."
-   ],
-   "authors": "Gustavo P. Maia, Laurent Rémusat, Kana Amano, J.-C. Viennet, Jason P. Dworkin, Hannah L. McLain, José Armando L. da Silva",
-   "cited_by": 0,
-   "bibtex": "@article{maia2026effect,\n  title = {{Effect of asteroid gardening on the exogenous delivery of extraterrestrial organic matter}},\n  author = {Maia, Gustavo P. and Rémusat, Laurent and Amano, Kana and Viennet, J.-C. and Dworkin, Jason P. and McLain, Hannah L. and da Silva, José Armando L.},\n  journal = {Earth and Planetary Science Letters},\n  year = {2026},\n  volume = {692},\n  pages = {120237–120237},\n  doi = {10.1016/j.epsl.2026.120237}\n}",
-   "apa": "Maia, G. P., Rémusat, L., Amano, K., Viennet, J. C., Dworkin, J. P., McLain, H. L., & da Silva, J. A. L. (2026). Effect of asteroid gardening on the exogenous delivery of extraterrestrial organic matter. Earth and Planetary Science Letters, 692, 120237–120237. https://doi.org/10.1016/j.epsl.2026.120237"
+   "authors": "Gustavo P. Maia, Laurent Rémusat, Kana Amano, J.-C. Viennet, Jason P. Dworkin, Hannah L. McLain, José Armando L. da Silva"
   },
   {
    "doi": "10.3390/app15031363",
    "title": "Mechanochemical Reactivity of Ribonucleosides Mediated by Inorganic Species: Implications for Extraterrestrial Organic Matter Interpretation",
    "year": 2025,
    "journal": "Applied Sciences",
-   "volume": "15",
-   "issue": "3",
-   "pages": "1363–1363",
-   "authors_list": [
-    "Maia, Gustavo P.",
-    "Gonçalves, Catarina",
-    "Carvalho, Ana P.",
-    "André, Vânia",
-    "Galvão, Adelino M.",
-    "Ribeiro, Ana P. C.",
-    "Pinheiro, Pedro F.",
-    "da Silva, José Armando L."
-   ],
-   "authors": "Gustavo P. Maia, Catarina Gonçalves, Ana P. Carvalho, Vânia André, Adelino M. Galvão, Ana P. C. Ribeiro, Pedro F. Pinheiro, José Armando L. da Silva",
-   "cited_by": 1,
-   "bibtex": "@article{maia2025mechanochemical,\n  title = {{Mechanochemical Reactivity of Ribonucleosides Mediated by Inorganic Species: Implications for Extraterrestrial Organic Matter Interpretation}},\n  author = {Maia, Gustavo P. and Gonçalves, Catarina and Carvalho, Ana P. and André, Vânia and Galvão, Adelino M. and Ribeiro, Ana P. C. and Pinheiro, Pedro F. and da Silva, José Armando L.},\n  journal = {Applied Sciences},\n  year = {2025},\n  volume = {15},\n  number = {3},\n  pages = {1363–1363},\n  doi = {10.3390/app15031363}\n}",
-   "apa": "Maia, G. P., Gonçalves, C., Carvalho, A. P., André, V., Galvão, A. M., Ribeiro, A. P. C., Pinheiro, P. F., & da Silva, J. A. L. (2025). Mechanochemical Reactivity of Ribonucleosides Mediated by Inorganic Species: Implications for Extraterrestrial Organic Matter Interpretation. Applied Sciences, 15(3), 1363–1363. https://doi.org/10.3390/app15031363"
+   "authors": "Gustavo P. Maia, Catarina Gonçalves, Ana P. Carvalho, Vânia André, Adelino M. Galvão, Ana P. C. Ribeiro, Pedro F. Pinheiro, José Armando L. da Silva"
   },
   {
    "doi": "10.52590/m3.p708.a30002745",
    "title": "Da Química Bioinorgânica para a Química Prebiótica: Levar Mais Longe o Legado do Prof. Fraústo da Silva",
    "year": 2024,
    "journal": "Boletim da Sociedade Portuguesa de Química",
-   "volume": "",
-   "issue": "",
-   "pages": "49–49",
-   "authors_list": [
-    "Franco, Ana",
-    "Maia, Gustavo P.",
-    "da Silva, José Armando L."
-   ],
-   "authors": "Ana Franco, Gustavo P. Maia, José Armando L. da Silva",
-   "cited_by": 0,
-   "bibtex": "@article{franco2024da,\n  title = {{Da Química Bioinorgânica para a Química Prebiótica: Levar Mais Longe o Legado do Prof. Fraústo da Silva}},\n  author = {Franco, Ana and Maia, Gustavo P. and da Silva, José Armando L.},\n  journal = {Boletim da Sociedade Portuguesa de Química},\n  year = {2024},\n  pages = {49–49},\n  doi = {10.52590/m3.p708.a30002745}\n}",
-   "apa": "Franco, A., Maia, G. P., & da Silva, J. A. L. (2024). Da Química Bioinorgânica para a Química Prebiótica: Levar Mais Longe o Legado do Prof. Fraústo da Silva. Boletim da Sociedade Portuguesa de Química, 49–49. https://doi.org/10.52590/m3.p708.a30002745"
-  },
-  {
-   "doi": "10.55905/cuadv16n8-126",
-   "title": "Educação e direitos de estudantes com deficiência em instituições de ensino superior da cidade de Salvador/BA",
-   "year": 2024,
-   "journal": "Cuadernos de Educación y Desarrollo",
-   "volume": "16",
-   "issue": "8",
-   "pages": "e5328–e5328",
-   "authors_list": [
-    "dos Santos, Ana Kátia Alves",
-    "Mota, Gabriel Almeida Guimarães",
-    "Maia, Gustavo P."
-   ],
-   "authors": "Ana Kátia Alves dos Santos, Gabriel Almeida Guimarães Mota, Gustavo P. Maia",
-   "cited_by": 0,
-   "bibtex": "@article{santos2024educacao,\n  title = {{Educação e direitos de estudantes com deficiência em instituições de ensino superior da cidade de Salvador/BA}},\n  author = {dos Santos, Ana Kátia Alves and Mota, Gabriel Almeida Guimarães and Maia, Gustavo P.},\n  journal = {Cuadernos de Educación y Desarrollo},\n  year = {2024},\n  volume = {16},\n  number = {8},\n  pages = {e5328–e5328},\n  doi = {10.55905/cuadv16n8-126}\n}",
-   "apa": "dos Santos, A. K. A., Mota, G. A. G., & Maia, G. P. (2024). Educação e direitos de estudantes com deficiência em instituições de ensino superior da cidade de Salvador/BA. Cuadernos de Educación y Desarrollo, 16(8), e5328–e5328. https://doi.org/10.55905/cuadv16n8-126"
+   "authors": "Ana Franco, Gustavo P. Maia, José Armando L. da Silva"
   },
   {
    "doi": "10.3390/molecules28248006",
    "title": "Shock-Induced Degradation of Guanosine and Uridine Promoted by Nickel and Carbonate: Potential Applications",
    "year": 2023,
    "journal": "Molecules",
-   "volume": "28",
-   "issue": "24",
-   "pages": "8006–8006",
-   "authors_list": [
-    "Maia, Gustavo P.",
-    "da Silva, José Armando L.",
-    "André, Vânia",
-    "Galvão, Adelino M."
-   ],
-   "authors": "Gustavo P. Maia, José Armando L. da Silva, Vânia André, Adelino M. Galvão",
-   "cited_by": 1,
-   "bibtex": "@article{maia2023shockinduced,\n  title = {{Shock-Induced Degradation of Guanosine and Uridine Promoted by Nickel and Carbonate: Potential Applications}},\n  author = {Maia, Gustavo P. and da Silva, José Armando L. and André, Vânia and Galvão, Adelino M.},\n  journal = {Molecules},\n  year = {2023},\n  volume = {28},\n  number = {24},\n  pages = {8006–8006},\n  doi = {10.3390/molecules28248006}\n}",
-   "apa": "Maia, G. P., da Silva, J. A. L., André, V., & Galvão, A. M. (2023). Shock-Induced Degradation of Guanosine and Uridine Promoted by Nickel and Carbonate: Potential Applications. Molecules, 28(24), 8006–8006. https://doi.org/10.3390/molecules28248006"
+   "authors": "Gustavo P. Maia, José Armando L. da Silva, Vânia André, Adelino M. Galvão"
   }
- ],
- "updated": "2026-09-27"
+ ]
 }

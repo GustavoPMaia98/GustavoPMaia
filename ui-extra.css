@@ -472,29 +472,6 @@ html[data-theme="light"] .tech-pager button{ background:rgba(15,23,42,.18); }
   .mol3d-view{ height:200px; }
 }
 
-/* ---- Publications: citation count + "Cite" (BibTeX / APA) ---- */
-.pub-tools{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:-4px 0 0; padding:0 18px 14px; position:relative; }
-.timeline-item.publication{ position:relative; }
-.pub-cites{
-  font-family:var(--font-mono); font-size:.72rem; font-weight:700; color:var(--accent);
-  background:rgba(125,211,252,.10); border:1px solid rgba(125,211,252,.22);
-  padding:3px 10px; border-radius:var(--radius-pill);
-}
-.pub-cite-btn, .pub-copy{
-  font:inherit; font-size:var(--text-chip); font-weight:700; cursor:pointer;
-  color:var(--accent); background:transparent; border:1px solid var(--border-strong);
-  padding:4px 12px; border-radius:var(--radius-pill);
-}
-.pub-cite-btn:hover, .pub-copy:hover{ background:rgba(125,211,252,.1); }
-.pub-cite-panel{ flex-basis:100%; margin-top:4px; padding:12px; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--bg-2); }
-.pub-cite-panel[hidden]{ display:none; }
-.pub-cite-row{ display:flex; align-items:center; justify-content:space-between; margin:4px 0 6px; }
-.pub-cite-fmt{ font-size:var(--text-eyebrow); font-weight:800; letter-spacing:var(--tracking-eyebrow); text-transform:uppercase; color:var(--muted); }
-.pub-cite-text{
-  margin:0 0 10px; padding:10px 12px; max-height:220px; overflow:auto; white-space:pre-wrap; word-break:break-word;
-  font-family:var(--font-mono); font-size:.76rem; line-height:1.5; color:var(--text);
-  background:var(--card); border:1px solid var(--border); border-radius:var(--radius-sm);
-}
 /* accessibility: underline links inside the map attribution */
 .leaflet-control-attribution a{ text-decoration:underline; }
 

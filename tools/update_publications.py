@@ -1,132 +1,109 @@
 #!/usr/bin/env python3
-"""Refresh data/publications.json from OpenAlex (+ Crossref for page ranges).
+"""Refresh data/publications.json from your ORCID record (+ Crossref details).
 
 Run by .github/workflows/update-publications.yml every night, or by hand:
     python tools/update_publications.py
 
-The website reads data/publications.json to
-  * add any new journal article that is not yet written in sections/publications.html,
-  * show "Cited by N" under each paper,
-  * offer ready-made BibTeX / APA citations ("Cite" button).
+Only journal articles listed on ORCID 0000-0001-5314-8816 are used, so the
+site never picks up someone else's paper. The website adds any article from
+this file that is not yet written in sections/publications.html.
+
+To hide a paper for good, add its DOI to EXCLUDE below.
 Only standard-library Python is used, so no install step is needed.
 """
-import json, os, re, sys, time, unicodedata, urllib.parse, urllib.request
+import json, os, re, sys, time, urllib.parse, urllib.request
 
 ORCID = "0000-0001-5314-8816"
-MAILTO = "gustavopinho.maia@mnhn.fr"          # OpenAlex / Crossref "polite pool"
+MAILTO = "gustavopinho.maia@mnhn.fr"          # Crossref "polite pool"
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "data", "publications.json")
-PARTICLES = {"da", "de", "do", "dos", "das", "di", "del", "van", "von", "der", "den", "la", "le"}
+
+# DOIs that must never appear on the site (e.g. papers by a namesake).
+EXCLUDE = {
+    "10.55905/cuadv16n8-126",   # "Educação e direitos de estudantes com deficiência…" (not mine)
+}
 
 
-def get(url):
-    req = urllib.request.Request(url, headers={"User-Agent": f"GustavoPMaia-site (mailto:{MAILTO})"})
+def get(url, accept="application/json"):
+    req = urllib.request.Request(url, headers={"Accept": accept,
+                                               "User-Agent": f"GustavoPMaia-site (mailto:{MAILTO})"})
     for attempt in range(3):
         try:
             with urllib.request.urlopen(req, timeout=30) as r:
                 return json.load(r)
-        except Exception as e:  # network hiccup: retry, then give up
+        except Exception:
             if attempt == 2:
                 raise
             time.sleep(3 * (attempt + 1))
 
 
-def ascii_key(s):
-    return re.sub(r"[^a-z]", "", unicodedata.normalize("NFD", s).lower())
+def orcid_works():
+    data = get(f"https://pub.orcid.org/v3.0/{ORCID}/works")
+    works = []
+    for group in data.get("group", []):
+        s = (group.get("work-summary") or [{}])[0]
+        if (s.get("type") or "").lower() != "journal-article":
+            continue                                   # peer-reviewed articles only
+        ids = ((group.get("external-ids") or {}).get("external-id") or []) + \
+              ((s.get("external-ids") or {}).get("external-id") or [])
+        doi = next((i.get("external-id-value", "").strip() for i in ids
+                    if (i.get("external-id-type") or "").lower() == "doi"), "")
+        doi = re.sub(r"^https?://(dx\.)?doi\.org/", "", doi).strip()
+        if not doi or doi.lower() in EXCLUDE:
+            continue
+        title = (((s.get("title") or {}).get("title") or {}).get("value") or "").strip()
+        journal = ((s.get("journal-title") or {}).get("value") or "").strip()
+        year = (((s.get("publication-date") or {}).get("year") or {}).get("value") or "")
+        works.append({"doi": doi, "title": title, "journal": journal, "year": int(year) if year else None})
+    return works
 
 
-def bibtex(w):
-    authors = " and ".join(w["authors_list"]) or "Maia, Gustavo P."
-    first = ascii_key((w["authors_list"][0].split(",")[0].split()[-1]) if w["authors_list"] else "maia")
-    key = f"{first}{w['year'] or ''}{ascii_key((w['title'].split() or [''])[0])}"
-    fields = [("title", "{" + w["title"] + "}"), ("author", authors), ("journal", w["journal"]),
-              ("year", w["year"]), ("volume", w["volume"]), ("number", w["issue"]),
-              ("pages", w["pages"]), ("doi", w["doi"])]
-    body = ",\n".join(f"  {k} = {{{v}}}" for k, v in fields if v)
-    return f"@article{{{key},\n{body}\n}}"
-
-
-def apa(w):
-    names = []
-    for a in w["authors_list"]:
-        last, _, given = a.partition(", ")
-        initials = " ".join(p[0] + "." for p in re.split(r"[\s-]+", given) if p)
-        names.append(f"{last}, {initials}".strip(", "))
-    if len(names) > 20:
-        names = names[:19] + ["…", names[-1]]
-    au = names[0] if len(names) == 1 else ", ".join(names[:-1]) + ", & " + names[-1] if names else ""
-    vol = f", {w['volume']}" + (f"({w['issue']})" if w["issue"] else "") if w["volume"] else ""
-    pg = f", {w['pages']}" if w["pages"] else ""
-    return f"{au} ({w['year'] or 'n.d.'}). {w['title']}. {w['journal']}{vol}{pg}. https://doi.org/{w['doi']}"
+def crossref(doi):
+    try:
+        m = get("https://api.crossref.org/works/" + urllib.parse.quote(doi) + "?mailto=" + MAILTO).get("message", {})
+    except Exception:
+        return {}
+    parts = ((m.get("issued") or {}).get("date-parts") or [[None]])[0]
+    authors = ", ".join(" ".join(p for p in (a.get("given"), a.get("family")) if p) for a in m.get("author", []))
+    return {
+        "title": re.sub(r"<[^>]+>", "", (m.get("title") or [""])[0]).strip(),
+        "journal": (m.get("container-title") or [""])[0].strip(),
+        "year": parts[0] if parts else None,
+        "authors": authors,
+    }
 
 
 def main():
-    old = {}
+    try:
+        found = orcid_works()
+    except Exception as e:
+        print("ORCID unreachable, keeping the existing file:", e)
+        return 0
+    if not found:
+        print("ORCID returned no journal articles; keeping the existing file.")
+        return 0
+    works = []
+    for w in found:
+        extra = crossref(w["doi"])
+        works.append({
+            "doi": w["doi"],
+            "title": extra.get("title") or w["title"],
+            "year": extra.get("year") or w["year"],
+            "journal": extra.get("journal") or w["journal"],
+            "authors": extra.get("authors", ""),
+        })
+        time.sleep(0.3)
+    works.sort(key=lambda w: (-(w["year"] or 0), w["title"]))
+
+    cur = {}
     if os.path.exists(OUT):
         with open(OUT, encoding="utf-8") as f:
-            prev = json.load(f)
-        old = {w["doi"].lower(): w for w in prev.get("works", [])}
-
-    url = ("https://api.openalex.org/works?per-page=200&mailto=" + MAILTO +
-           "&filter=" + urllib.parse.quote(f"author.orcid:{ORCID},type:article"))
-    res = get(url)
-    works = []
-    for it in res.get("results", []):
-        doi = (it.get("doi") or "").replace("https://doi.org/", "")
-        loc = it.get("primary_location") or {}
-        src = loc.get("source") or {}
-        if not doi or src.get("type") == "repository" or loc.get("version") == "submittedVersion" and src.get("type") != "journal":
-            continue                                   # journal versions only, no preprints
-        b = it.get("biblio") or {}
-        pages = "–".join(p for p in (b.get("first_page"), b.get("last_page")) if p) or ""
-        authors = []
-        for au in it.get("authorships", []):
-            name = (au.get("author") or {}).get("display_name") or ""
-            parts = name.split()
-            cut = len(parts) - 1                       # keep "da Silva", "van der Berg" together
-            while cut > 1 and parts[cut - 1].lower() in PARTICLES:
-                cut -= 1
-            authors.append(f"{' '.join(parts[cut:])}, {' '.join(parts[:cut])}" if len(parts) > 1 else name)
-        w = {
-            "doi": doi,
-            "title": re.sub(r"<[^>]+>", "", it.get("title") or ""),
-            "year": it.get("publication_year"),
-            "journal": src.get("display_name") or "",
-            "volume": b.get("volume") or "",
-            "issue": b.get("issue") or "",
-            "pages": pages,
-            "authors_list": authors,
-            "authors": ", ".join(" ".join(reversed(a.split(", "))) for a in authors),
-            "cited_by": it.get("cited_by_count", 0),
-        }
-        keep = old.get(doi.lower(), {})
-        if keep.get("hidden"):
-            w["hidden"] = True                         # hand-set flag survives refreshes
-        w["bibtex"] = bibtex(w)
-        w["apa"] = apa(w)
-        works.append(w)
-
-    if not works:
-        print("OpenAlex returned no works; keeping the existing file.")
-        return 0
-    works.sort(key=lambda w: (-(w["year"] or 0), w["title"]))
-    try:
-        author = get(f"https://api.openalex.org/authors/orcid:{ORCID}?mailto={MAILTO}")
-        stats = author.get("summary_stats") or {}
-    except Exception:
-        stats = {}
-    data = {
-        "source": "OpenAlex (https://openalex.org) for ORCID " + ORCID,
-        "h_index_openalex": stats.get("h_index"),
-        "citations_openalex": author.get("cited_by_count") if stats else None,
-        "works": works,
-    }
-    new = json.dumps(data, ensure_ascii=False, indent=1)
-    cur = open(OUT, encoding="utf-8").read() if os.path.exists(OUT) else ""
-    if json.loads(cur or "{}").get("works") == works and cur:
+            cur = json.load(f)
+    if cur.get("works") == works:
         print("No change.")
         return 0
-    data["updated"] = time.strftime("%Y-%m-%d")
+    data = {"source": f"ORCID {ORCID} (journal articles) + Crossref metadata",
+            "updated": time.strftime("%Y-%m-%d"), "works": works}
     with open(OUT, "w", encoding="utf-8") as f:
         f.write(json.dumps(data, ensure_ascii=False, indent=1) + "\n")
     print(f"Wrote {len(works)} works to {OUT}")

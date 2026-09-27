@@ -729,7 +729,7 @@
     });
 
     // 1) data/publications.json is refreshed every night by a GitHub Action
-    //    (OpenAlex + Crossref): new papers, citation counts and citation data.
+    //    from the ORCID record (papers you list there) + Crossref metadata.
     let db = null;
     try {
       const r = await fetch("data/publications.json", { cache: "no-cache" });
@@ -747,7 +747,6 @@
       wireAccordions();
       buildPublicationFilter();
       decoratePublications();
-      setupCiteTools(db);
       updateMetrics();
       return;
     }
@@ -765,7 +764,6 @@
         clearStatus();
         buildPublicationFilter();
         decoratePublications();
-        setupCiteTools(null);
         return;
       }
     }
@@ -796,108 +794,7 @@
     wireAccordions();
     buildPublicationFilter();
     decoratePublications();
-    setupCiteTools(null);
     updateMetrics();
-  }
-
-  // ============================================================
-  //  "CITE" + CITATION COUNT under each publication
-  //  Uses data/publications.json when present, otherwise the card itself.
-  // ============================================================
-  const CITE_TXT = {
-    en: { cite:"Cite", copy:"Copy", copied:"Copied", cited:n => "Cited by " + n, src:"Citation count: OpenAlex" },
-    pt: { cite:"Citar", copy:"Copiar", copied:"Copiado", cited:n => "Citado " + n + (n === 1 ? " vez" : " vezes"), src:"Número de citações: OpenAlex" },
-    fr: { cite:"Citer", copy:"Copier", copied:"Copié", cited:n => "Cité " + n + " fois", src:"Nombre de citations : OpenAlex" },
-    ja: { cite:"引用", copy:"コピー", copied:"コピーしました", cited:n => "被引用数 " + n, src:"被引用数：OpenAlex" }
-  };
-  let citeLangUpdate = null;
-  function citeFromCard(item, doi) {
-    const title = (item.querySelector(".timeline-header strong") || {}).textContent || "";
-    const meta = ((item.querySelector(".timeline-header .meta") || {}).textContent || "").split(" · ");
-    const yearIdx = meta.findIndex(x => /^(19|20)\d{2}$/.test(x.trim()));
-    return {
-      doi, title: title.trim(),
-      authors: yearIdx > 0 ? meta.slice(0, yearIdx).join(" · ").trim() : "",
-      year: yearIdx >= 0 ? meta[yearIdx].trim() : "",
-      journal: yearIdx >= 0 ? meta.slice(yearIdx + 1).join(" · ").trim() : ""
-    };
-  }
-  function splitAuthors(a) {
-    return String(a || "").replace(/ et al\.?$/, ", et al.").split(/,\s*|\s+and\s+|\s*&\s*/).map(x => x.trim()).filter(Boolean);
-  }
-  function bibtexOf(w) {
-    if (w.bibtex) return w.bibtex;
-    const au = splitAuthors(w.authors).map(n => n === "et al." ? "others" : n).join(" and ");
-    const first = (splitAuthors(w.authors)[0] || "maia").split(" ").pop().toLowerCase().normalize("NFD").replace(/[^a-z]/g, "");
-    const key = first + (w.year || "") + ((w.title || "").split(/\s+/)[0] || "").toLowerCase().replace(/[^a-z]/g, "");
-    const f = [["title", "{" + w.title + "}"], ["author", au], ["journal", w.journal], ["year", w.year],
-               ["volume", w.volume], ["number", w.issue], ["pages", w.pages], ["doi", w.doi]]
-      .filter(x => x[1]).map(x => "  " + x[0] + " = {" + x[1] + "}").join(",\n");
-    return "@article{" + key + ",\n" + f + "\n}";
-  }
-  function apaOf(w) {
-    if (w.apa) return w.apa;
-    const names = splitAuthors(w.authors).map(n => {
-      if (n === "et al.") return n;
-      const p = n.split(/\s+/); const last = p.pop();
-      return last + ", " + p.map(x => x.charAt(0) + ".").join(" ");
-    });
-    const au = names.length > 1 ? names.slice(0, -1).join(", ") + (names[names.length - 1] === "et al." ? ", et al." : ", & " + names[names.length - 1]) : (names[0] || "");
-    const vol = w.volume ? ", " + w.volume + (w.issue ? "(" + w.issue + ")" : "") : "";
-    const pg = w.pages ? ", " + w.pages : "";
-    return au + " (" + (w.year || "n.d.") + "). " + w.title + ". " + (w.journal || "") + vol + pg + ". https://doi.org/" + w.doi;
-  }
-  function setupCiteTools(db) {
-    const byDoi = {};
-    if (db && Array.isArray(db.works)) db.works.forEach(w => { if (w.doi) byDoi[w.doi.toLowerCase()] = w; });
-    const items = document.querySelectorAll("#publications .timeline-item.publication");
-    const T = () => CITE_TXT[currentLang] || CITE_TXT.en;
-    items.forEach(item => {
-      if (item.querySelector(".pub-tools")) return;
-      const a = item.querySelector('a[href*="doi.org/"]');
-      if (!a) return;
-      const doi = decodeURIComponent(a.getAttribute("href").replace(/^.*doi\.org\//i, "")).trim();
-      const w = Object.assign(citeFromCard(item, doi), byDoi[doi.toLowerCase()] || {});
-      const tools = document.createElement("div");
-      tools.className = "pub-tools";
-      tools.innerHTML =
-        (typeof w.cited_by === "number" && w.cited_by > 0 ? '<span class="pub-cites" data-n="' + w.cited_by + '"></span>' : "") +
-        '<button type="button" class="pub-cite-btn" aria-expanded="false"></button>' +
-        '<div class="pub-cite-panel" hidden>' +
-          '<div class="pub-cite-row"><span class="pub-cite-fmt">BibTeX</span><button type="button" class="pub-copy" data-fmt="bib"></button></div>' +
-          '<pre class="pub-cite-text" data-fmt="bib"></pre>' +
-          '<div class="pub-cite-row"><span class="pub-cite-fmt">APA</span><button type="button" class="pub-copy" data-fmt="apa"></button></div>' +
-          '<pre class="pub-cite-text" data-fmt="apa"></pre>' +
-        '</div>';
-      tools.querySelector('pre[data-fmt="bib"]').textContent = bibtexOf(w);
-      tools.querySelector('pre[data-fmt="apa"]').textContent = apaOf(w);
-      const btn = tools.querySelector(".pub-cite-btn");
-      const panel = tools.querySelector(".pub-cite-panel");
-      btn.addEventListener("click", e => {
-        e.stopPropagation();
-        panel.hidden = !panel.hidden;
-        btn.setAttribute("aria-expanded", panel.hidden ? "false" : "true");
-      });
-      tools.querySelectorAll(".pub-copy").forEach(c => c.addEventListener("click", e => {
-        e.stopPropagation();
-        const txt = tools.querySelector('pre[data-fmt="' + c.dataset.fmt + '"]').textContent;
-        const done = () => { c.textContent = T().copied; setTimeout(() => { c.textContent = T().copy; }, 1600); };
-        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done, done);
-        else { const r = document.createRange(); r.selectNodeContents(tools.querySelector('pre[data-fmt="' + c.dataset.fmt + '"]')); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); done(); }
-      }));
-      const card = item.querySelector(".timeline-card");
-      card.insertAdjacentElement("afterend", tools);
-    });
-    citeLangUpdate = () => {
-      const t = T();
-      document.querySelectorAll(".pub-tools").forEach(tools => {
-        const c = tools.querySelector(".pub-cites");
-        if (c) { c.textContent = t.cited(+c.dataset.n); c.title = t.src; }
-        tools.querySelector(".pub-cite-btn").textContent = t.cite;
-        tools.querySelectorAll(".pub-copy").forEach(b => { b.textContent = t.copy; });
-      });
-    };
-    citeLangUpdate();
   }
 
   // Add a blue year badge to every publication and order the whole list
@@ -1230,7 +1127,6 @@
       if (en) b.textContent = (lang === "pt") ? pt : trLookup(lang, en);
     });
     if (typeof mapLangUpdate === "function") mapLangUpdate(lang);
-    if (typeof citeLangUpdate === "function") citeLangUpdate(lang);
   }
   function setupLangToggle() {
     const btn = document.getElementById("langToggle");
