@@ -1,0 +1,33 @@
+{
+ "source": "Seed copied from sections/publications.html; replaced nightly by tools/update_publications.py (OpenAlex)",
+ "works": [
+  {
+   "doi": "10.1016/j.epsl.2026.120237",
+   "title": "Effect of asteroid gardening on the exogenous delivery of extraterrestrial organic matter",
+   "year": 2026,
+   "journal": "Earth and Planetary Science Letters",
+   "authors": "Gustavo P. Maia et al."
+  },
+  {
+   "doi": "10.3390/app15031363",
+   "title": "Mechanochemical Reactivity of Ribonucleosides Mediated by Inorganic Species: Implications for Extraterrestrial Organic Matter Interpretation",
+   "year": 2025,
+   "journal": "Applied Sciences",
+   "authors": "Gustavo P. Maia, Catarina Gonçalves, Ana J. Carvalho, Vânia André, Adelino Galvão, Ana P. C. Ribeiro, Pedro F. Pinheiro and José Armando Luísa da Silva"
+  },
+  {
+   "doi": "10.3390/molecules28248006",
+   "title": "Shock-Induced Degradation of Guanosine and Uridine Promoted by Nickel and Carbonate: Potential Applications",
+   "year": 2023,
+   "journal": "Molecules",
+   "authors": "Gustavo P. Maia, José Armando Luísa da Silva, Vânia André and Adelino M. Galvão"
+  },
+  {
+   "doi": "10.52590/M3.P708.A30002745",
+   "title": "Da Química Bioinorgânica para a Química Prebiótica: Levar Mais Longe o Legado do Prof. Fraústo da Silva",
+   "year": 2023,
+   "journal": "Boletim da Sociedade Portuguesa de Química",
+   "authors": "Ana Franco, Gustavo P. Maia and José Armando Luísa da Silva"
+  }
+ ]
+}

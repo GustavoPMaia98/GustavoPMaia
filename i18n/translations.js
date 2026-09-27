@@ -1198,3 +1198,39 @@ Object.assign(window.TR.ja, {
   "EANA 2025 · Lisbon, Portugal": "EANA 2025 · リスボン、ポルトガル",
   "RoboCup 2016 · Leipzig, Germany": "RoboCup 2016 · ライプツィヒ、ドイツ",
 });
+
+/* ---- Added Sept 2026 (site refresh): toolbar, news list, experience, skills ---- */
+Object.assign(window.TR.fr, {
+  "Research": "Recherche",
+  "Skills": "Compétences",
+  "More": "Plus",
+  "Show all updates": "Afficher toutes les actualités",
+  "Earlier experience (2014–2019)": "Expériences antérieures (2014–2019)",
+  "Analytical techniques": "Techniques analytiques",
+  "Synthesis &amp; modelling": "Synthèse &amp; modélisation",
+  "Instruments &amp; data": "Instruments &amp; données",
+  "Chemistry &amp; computation": "Chimie &amp; calcul",
+  "Engineering &amp; electronics": "Ingénierie &amp; électronique",
+  "Productivity &amp; code": "Productivité &amp; code",
+});
+Object.assign(window.TR.ja, {
+  "Research": "研究",
+  "Skills": "スキル",
+  "More": "その他",
+  "Show all updates": "すべてのニュースを表示",
+  "Earlier experience (2014–2019)": "それ以前の経歴（2014–2019）",
+  "Analytical techniques": "分析技術",
+  "Synthesis &amp; modelling": "合成とモデリング",
+  "Instruments &amp; data": "装置制御・データ解析",
+  "Chemistry &amp; computation": "化学・計算",
+  "Engineering &amp; electronics": "工学・電子工学",
+  "Productivity &amp; code": "生産性・コード",
+});
+
+/* ---- Hero: availability line ---- */
+Object.assign(window.TR.fr, {
+  "Open to postdoctoral positions from 2027": "Ouvert à des postes postdoctoraux à partir de 2027",
+});
+Object.assign(window.TR.ja, {
+  "Open to postdoctoral positions from 2027": "2027年以降のポスドク職を探しています",
+});
