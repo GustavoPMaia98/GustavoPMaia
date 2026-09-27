@@ -33,7 +33,7 @@
   // Interface text of the search palette in the four site languages
   const UI = {
     hint: { en: "Search the site, or ask a science question — e.g. “what is asteroid gardening?”",
-            pt: "Pesquise no site ou faça uma pergunta científica — ex.: “o que é jardinagem de asteroides?”",
+            pt: "Pesquise no site ou faça uma pergunta científica — ex.: “o que é o reprocessamento de asteroides?”",
             fr: "Recherchez sur le site ou posez une question scientifique — p. ex. « qu'est-ce que l'asteroid gardening ? »",
             ja: "サイト内を検索、または科学の質問をどうぞ（例：「小惑星表面の撹拌とは？」）" },
     noOther: { en: "No other matches on the site.", pt: "Sem outras correspondências no site.",
@@ -52,8 +52,8 @@
   // visitor type a real question ("what is asteroid gardening?") and get a
   // concise answer right inside the search palette.
   const KB = [
-    { keys: ["asteroid gardening", "impact gardening", "gardening", "jardinagem"],
-      term: { en: "Asteroid gardening", pt: "Jardinagem de asteroides" },
+    { keys: ["asteroid gardening", "impact gardening", "gardening", "reprocessamento", "reprocessamento de asteroides"],
+      term: { en: "Asteroid gardening", pt: "Reprocessamento de asteroides (asteroid gardening)" },
       a: { en: "The slow churning of an airless body's surface by meteorite and micrometeorite impacts. Over billions of years it buries, exhumes, mixes and shock-heats the regolith — processing any organic matter present, so what we measure today is the survivor of a long impact history.",
            pt: "A agitação lenta da superfície de um corpo sem atmosfera por impactos de meteoritos e micrometeoritos. Ao longo de milhares de milhões de anos, soterra, expõe, mistura e aquece por choque o regolito — processando a matéria orgânica presente, pelo que o que medimos hoje é o sobrevivente de uma longa história de impactos." } },
     { keys: ["astrobiology", "astrobiologia"],
@@ -83,7 +83,7 @@
     { keys: ["regolith", "regolito"],
       term: { en: "Regolith", pt: "Regolito" },
       a: { en: "The loose layer of dust and broken rock covering the surface of an asteroid, moon or planet — the material that impact gardening continually reworks.",
-           pt: "A camada solta de poeira e rocha fragmentada que cobre a superfície de um asteroide, lua ou planeta — o material que a jardinagem por impactos remodela continuamente." } },
+           pt: "A camada solta de poeira e rocha fragmentada que cobre a superfície de um asteroide, lua ou planeta — o material que o reprocessamento por impactos remodela continuamente." } },
     { keys: ["meteorite", "meteorites", "meteorito", "meteoritos", "carbonaceous"],
       term: { en: "Meteorites & organics", pt: "Meteoritos e compostos orgânicos" },
       a: { en: "Carbon-rich (carbonaceous) meteorites carry amino acids, sugars and nucleobases formed in space. Studying them — and returned samples from Ryugu and Bennu — links laboratory chemistry to real extraterrestrial material.",
@@ -163,7 +163,7 @@
     { keys: ["space weathering", "meteorizacao espacial", "meteorização espacial", "solar wind"],
       term: { en: "Space weathering", pt: "Meteorização espacial" },
       a: { en: "The gradual alteration of an airless surface by solar-wind ions, radiation and micrometeorite impacts. Alongside impact gardening it shapes how organic matter is processed and preserved on asteroids.",
-           pt: "A alteração gradual de uma superfície sem atmosfera por iões do vento solar, radiação e impactos de micrometeoritos. Juntamente com a jardinagem por impactos, condiciona como a matéria orgânica é processada e preservada nos asteroides." } },
+           pt: "A alteração gradual de uma superfície sem atmosfera por iões do vento solar, radiação e impactos de micrometeoritos. Juntamente com o reprocessamento por impactos, condiciona como a matéria orgânica é processada e preservada nos asteroides." } },
     { keys: ["miller-urey", "miller urey", "spark discharge", "primitive earth", "terra primitiva"],
       term: { en: "Miller–Urey experiment", pt: "Experiência de Miller–Urey" },
       a: { en: "The 1953 experiment that produced amino acids by passing electric sparks through a simulated early-Earth atmosphere — the founding demonstration that life's building blocks can form from simple molecules and energy.",
@@ -519,7 +519,7 @@
       ]
     }
   };
-  const KB_KEYS = {"Asteroid gardening": ["remaniement", "jardinage", "小惑星表面の撹拌", "撹拌", "ガーデニング"],
+  const KB_KEYS = {"Asteroid gardening": ["remaniement", "小惑星表面の撹拌", "撹拌", "ガーデニング"],
     "Mechanochemistry": ["mécanochimie", "mecanochimie", "broyage", "メカノケミストリー", "メカノケミカル", "ボールミル"],
     "Prebiotic chemistry": ["prébiotique", "prebiotique", "前生物化学", "前生物"],
     "Origin of life": ["origine de la vie", "生命の起源"],
