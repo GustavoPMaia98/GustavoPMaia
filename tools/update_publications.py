@@ -18,6 +18,10 @@ MAILTO = "gustavopinho.maia@mnhn.fr"          # Crossref "polite pool"
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "data", "publications.json")
 
+# DOI prefixes of preprint servers (Preprints.org, ChemRxiv, bioRxiv, Research Square,
+# EarthArXiv, Authorea, arXiv, SSRN, OSF, ESS Open Archive): never listed as papers.
+PREPRINT = re.compile(r"^10\.(20944|26434|1101|21203|31223|22541|48550|2139|31219|1002/essoar)\b", re.I)
+
 # DOIs that must never appear on the site (e.g. papers by a namesake).
 EXCLUDE = {
     "10.55905/cuadv16n8-126",   # "Educação e direitos de estudantes com deficiência…" (not mine)
@@ -46,9 +50,10 @@ def orcid_works():
             continue                                   # peer-reviewed articles only
         ids = ((group.get("external-ids") or {}).get("external-id") or []) + \
               ((s.get("external-ids") or {}).get("external-id") or [])
-        doi = next((i.get("external-id-value", "").strip() for i in ids
-                    if (i.get("external-id-type") or "").lower() == "doi"), "")
-        doi = re.sub(r"^https?://(dx\.)?doi\.org/", "", doi).strip()
+        dois = [re.sub(r"^https?://(dx\.)?doi\.org/", "", i.get("external-id-value", "")).strip()
+                for i in ids if (i.get("external-id-type") or "").lower() == "doi"]
+        dois = [d for d in dois if d and not PREPRINT.match(d)]   # journal version only
+        doi = dois[0] if dois else ""
         if not doi or doi.lower() in EXCLUDE:
             continue
         title = (((s.get("title") or {}).get("title") or {}).get("value") or "").strip()

@@ -736,9 +736,15 @@
       if (r.ok) db = await r.json();
     } catch (e) { db = null; }
     if (db && Array.isArray(db.works)) {
+      const normT = t => String(t || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+      const seenTitles = new Set(Array.from(document.querySelectorAll("#publications .timeline-item.publication .timeline-header strong")).map(x => normT(x.textContent)));
+      // papers wrongly attributed to me by indexing services (keep in sync with tools/update_publications.py)
+      const NOT_MINE = new Set(["10.55905/cuadv16n8-126"]);
+      const PREPRINT_DOI = /^10\.(20944|26434|1101|21203|31223|22541|48550|2139|31219|1002\/essoar)\b/i;
       db.works.slice().sort((a, b) => (b.year || 0) - (a.year || 0)).forEach(w => {
         const key = (w.doi || "").toLowerCase();
-        if (!key || seenDois.has(key) || w.hidden) return;
+        if (!key || seenDois.has(key) || w.hidden || NOT_MINE.has(key) || PREPRINT_DOI.test(key) || seenTitles.has(normT(w.title))) return;
+        seenTitles.add(normT(w.title));
         seenDois.add(key);
         renderPublication(container, w);
       });
