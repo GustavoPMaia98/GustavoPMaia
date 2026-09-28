@@ -6,11 +6,8 @@ on:
   schedule:
     - cron: "17 4 * * *"          # every day at 04:17 UTC
   workflow_dispatch:               # "Run workflow" button in the Actions tab
-  push:
-    branches: [main]
-    paths:
-      - tools/update_publications.py
-      - .github/workflows/update-publications.yml
+  # (no run on push: the bot's commit would otherwise land right after yours and
+  #  GitHub Desktop would ask you to pull before every next push)
 
 permissions:
   contents: write
@@ -36,7 +33,8 @@ jobs:
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add data/publications.json
             git commit -m "Update verified publication list"
-            git push
+            # if you pushed while this was running, put this commit on top of yours
+            for i in 1 2 3; do git pull --rebase origin main && git push && break; sleep 5; done
           else
             echo "No changes."
           fi
