@@ -729,7 +729,8 @@
     });
 
     // 1) data/publications.json is refreshed every night by a GitHub Action
-    //    from the ORCID record (papers you list there) + Crossref metadata.
+    //    (tools/update_publications.py): every paper there has been verified
+    //    (author Gustavo P. Maia + chemistry/astrobiology/meteoritics + ORCID/co-author).
     let db = null;
     try {
       const r = await fetch("data/publications.json", { cache: "no-cache" });
@@ -744,6 +745,7 @@
       db.works.slice().sort((a, b) => (b.year || 0) - (a.year || 0)).forEach(w => {
         const key = (w.doi || "").toLowerCase();
         if (!key || seenDois.has(key) || w.hidden || NOT_MINE.has(key) || PREPRINT_DOI.test(key) || seenTitles.has(normT(w.title))) return;
+        if (!Array.isArray(w.verified) || !w.verified.length) return;   // only papers that passed the nightly checks
         seenTitles.add(normT(w.title));
         seenDois.add(key);
         renderPublication(container, w);
@@ -757,47 +759,10 @@
       return;
     }
 
-    // 2) fallback: ask ORCID / Crossref directly from the browser
-    let works = [];
-    try {
-      works = await fetchOrcidWorks();
-    } catch (err) {
-      console.warn("ORCID fetch failed, trying Crossref fallback:", err);
-      try { works = await fetchCrossrefByOrcid(); }
-      catch (err2) {
-        // the static list is always current, so fail quietly
-        console.warn("Could not load publications automatically:", err2);
-        clearStatus();
-        buildPublicationFilter();
-        decoratePublications();
-        return;
-      }
-    }
-
-    works.sort((a, b) => (b.year || 0) - (a.year || 0));
-
-    let added = 0;
-    for (const wk of works) {
-      const key = wk.doi ? wk.doi.toLowerCase() : null;
-      if (key && seenDois.has(key)) continue;
-
-      const meta = wk.doi ? await fetchCrossref(wk.doi) : null;
-      const pub = {
-        title:    (meta && meta.title)    || wk.title    || "Untitled",
-        authors:  (meta && meta.authors)  || wk.authors  || "",
-        year:     (meta && meta.year)     || wk.year     || "",
-        journal:  (meta && meta.journal)  || wk.journal  || "",
-        abstract: (meta && meta.abstract) || "",
-        doi:      wk.doi || (meta && meta.doi) || ""
-      };
-      if (key) seenDois.add(key);
-      renderPublication(container, pub);
-      added++;
-    }
-
+    // 2) no verified list available: the hand-written list stays as it is.
+    //    (The browser never adds papers on its own; only the nightly, verified
+    //    tools/update_publications.py may add them.)
     clearStatus();
-    observeReveals(container);
-    wireAccordions();
     buildPublicationFilter();
     decoratePublications();
     updateMetrics();
