@@ -32,9 +32,9 @@
   const lang = () => { const l = document.documentElement.getAttribute("lang"); return (l === "pt" || l === "fr" || l === "ja") ? l : "en"; };
   // Interface text of the search palette in the four site languages
   const UI = {
-    hint: { en: "Search the site, or ask a science question — e.g. “what is asteroid gardening?”",
-            pt: "Pesquise no site ou faça uma pergunta científica — ex.: “o que é o reprocessamento de asteroides?”",
-            fr: "Recherchez sur le site ou posez une question scientifique — p. ex. « qu'est-ce que l'asteroid gardening ? »",
+    hint: { en: "Search the site, or ask a science question, e.g. “what is asteroid gardening?”",
+            pt: "Pesquise no site ou faça uma pergunta científica, ex.: “o que é o reprocessamento de asteroides?”",
+            fr: "Recherchez sur le site ou posez une question scientifique, p. ex. « qu'est-ce que l'asteroid gardening ? »",
             ja: "サイト内を検索、または科学の質問をどうぞ（例：「小惑星表面の撹拌とは？」）" },
     noOther: { en: "No other matches on the site.", pt: "Sem outras correspondências no site.",
                fr: "Aucun autre résultat sur le site.", ja: "サイト内に他の一致はありません。" },
@@ -54,108 +54,108 @@
   const KB = [
     { keys: ["asteroid gardening", "impact gardening", "gardening", "reprocessamento", "reprocessamento de asteroides"],
       term: { en: "Asteroid gardening", pt: "Reprocessamento de asteroides (asteroid gardening)" },
-      a: { en: "The slow churning of an airless body's surface by meteorite and micrometeorite impacts. Over billions of years it buries, exhumes, mixes and shock-heats the regolith — processing any organic matter present, so what we measure today is the survivor of a long impact history.",
-           pt: "A agitação lenta da superfície de um corpo sem atmosfera por impactos de meteoritos e micrometeoritos. Ao longo de milhares de milhões de anos, soterra, expõe, mistura e aquece por choque o regolito — processando a matéria orgânica presente, pelo que o que medimos hoje é o sobrevivente de uma longa história de impactos." } },
+      a: { en: "The slow churning of an airless body's surface by meteorite and micrometeorite impacts. Over billions of years it buries, exhumes, mixes and shock-heats the regolith, processing any organic matter present, so what we measure today is the survivor of a long impact history.",
+           pt: "A agitação lenta da superfície de um corpo sem atmosfera por impactos de meteoritos e micrometeoritos. Ao longo de milhares de milhões de anos, soterra, expõe, mistura e aquece por choque o regolito, processando a matéria orgânica presente, pelo que o que medimos hoje é o sobrevivente de uma longa história de impactos." } },
     { keys: ["astrobiology", "astrobiologia"],
       term: { en: "Astrobiology", pt: "Astrobiologia" },
-      a: { en: "The science of life's origin, evolution and distribution in the universe — bringing together chemistry, biology, geology and astronomy to ask how life began and whether it could exist elsewhere.",
-           pt: "A ciência da origem, evolução e distribuição da vida no universo — reunindo química, biologia, geologia e astronomia para perguntar como a vida começou e se poderá existir noutros locais." } },
+      a: { en: "The science of life's origin, evolution and distribution in the universe, bringing together chemistry, biology, geology and astronomy to ask how life began and whether it could exist elsewhere.",
+           pt: "A ciência da origem, evolução e distribuição da vida no universo, reunindo química, biologia, geologia e astronomia para perguntar como a vida começou e se poderá existir noutros locais." } },
     { keys: ["mechanochemistry", "mechanochemical", "ball milling", "ball-milling", "mecanoquimica", "mecanoquímica"],
       term: { en: "Mechanochemistry", pt: "Mecanoquímica" },
-      a: { en: "Chemistry driven by mechanical force rather than heat or solvent — for example grinding solids together in a ball mill. It mimics energy sources available on planetary surfaces and is central to my work on solvent-free prebiotic synthesis.",
-           pt: "Química impulsionada por força mecânica em vez de calor ou solvente — por exemplo, moendo sólidos num moinho de bolas. Imita as fontes de energia disponíveis em superfícies planetárias e é central no meu trabalho de síntese prebiótica sem solvente." } },
+      a: { en: "Chemistry driven by mechanical force rather than heat or solvent, for example grinding solids together in a ball mill. It mimics energy sources available on planetary surfaces and is central to my work on solvent-free prebiotic synthesis.",
+           pt: "Química impulsionada por força mecânica em vez de calor ou solvente, por exemplo, moendo sólidos num moinho de bolas. Imita as fontes de energia disponíveis em superfícies planetárias e é central no meu trabalho de síntese prebiótica sem solvente." } },
     { keys: ["prebiotic", "prebiotic chemistry", "prebiótica", "prebiotica"],
       term: { en: "Prebiotic chemistry", pt: "Química prebiótica" },
-      a: { en: "The chemistry that could have produced the building blocks of life — amino acids, sugars, nucleobases — before biology itself existed, under conditions plausible on the early Earth or in space.",
-           pt: "A química que poderá ter produzido os blocos de construção da vida — aminoácidos, açúcares, nucleobases — antes de a própria biologia existir, em condições plausíveis na Terra primitiva ou no espaço." } },
+      a: { en: "The chemistry that could have produced the building blocks of life (amino acids, sugars, nucleobases) before biology itself existed, under conditions plausible on the early Earth or in space.",
+           pt: "A química que poderá ter produzido os blocos de construção da vida (aminoácidos, açúcares, nucleobases) antes de a própria biologia existir, em condições plausíveis na Terra primitiva ou no espaço." } },
     { keys: ["ribonucleoside", "ribonucleosides", "ribonucleósidos", "ribonucleosidos", "nucleoside"],
       term: { en: "Ribonucleosides", pt: "Ribonucleósidos" },
-      a: { en: "A nucleobase joined to a ribose sugar — the building block one step below RNA. Whether assembled ribonucleosides can form and survive in space is an open question I test with mechanochemistry and shock synthesis.",
-           pt: "Uma nucleobase ligada a um açúcar (ribose) — o bloco de construção um passo abaixo do RNA. Se os ribonucleósidos já montados se conseguem formar e sobreviver no espaço é uma questão em aberto que testo com mecanoquímica e síntese por choque." } },
+      a: { en: "A nucleobase joined to a ribose sugar: the building block one step below RNA. Whether assembled ribonucleosides can form and survive in space is an open question I test with mechanochemistry and shock synthesis.",
+           pt: "Uma nucleobase ligada a um açúcar (ribose): o bloco de construção um passo abaixo do RNA. Se os ribonucleósidos já montados se conseguem formar e sobreviver no espaço é uma questão em aberto que testo com mecanoquímica e síntese por choque." } },
     { keys: ["origin of life", "origin-of-life", "abiogenesis", "origem da vida"],
       term: { en: "Origin of life", pt: "Origem da vida" },
       a: { en: "The transition from non-living chemistry to the first self-sustaining, replicating systems. My research probes one piece of it: how life's molecular building blocks could assemble from simple ingredients and energy.",
            pt: "A transição da química não-viva para os primeiros sistemas auto-sustentáveis e capazes de se replicar. A minha investigação aborda uma parte: como os blocos moleculares da vida se poderão montar a partir de ingredientes simples e energia." } },
     { keys: ["shock synthesis", "shock-driven", "impact synthesis", "síntese por choque", "sintese por choque"],
       term: { en: "Shock-driven synthesis", pt: "Síntese induzida por choque" },
-      a: { en: "Using the brief, intense pulse of pressure and temperature from an impact to drive chemical reactions — a way to reproduce, in the lab, the chemistry that comet and meteorite impacts could trigger.",
-           pt: "Usar o breve e intenso pulso de pressão e temperatura de um impacto para promover reações químicas — uma forma de reproduzir, em laboratório, a química que os impactos de cometas e meteoritos poderiam desencadear." } },
+      a: { en: "Using the brief, intense pulse of pressure and temperature from an impact to drive chemical reactions: a way to reproduce, in the lab, the chemistry that comet and meteorite impacts could trigger.",
+           pt: "Usar o breve e intenso pulso de pressão e temperatura de um impacto para promover reações químicas: uma forma de reproduzir, em laboratório, a química que os impactos de cometas e meteoritos poderiam desencadear." } },
     { keys: ["regolith", "regolito"],
       term: { en: "Regolith", pt: "Regolito" },
-      a: { en: "The loose layer of dust and broken rock covering the surface of an asteroid, moon or planet — the material that impact gardening continually reworks.",
-           pt: "A camada solta de poeira e rocha fragmentada que cobre a superfície de um asteroide, lua ou planeta — o material que o reprocessamento por impactos remodela continuamente." } },
+      a: { en: "The loose layer of dust and broken rock covering the surface of an asteroid, moon or planet: the material that impact gardening continually reworks.",
+           pt: "A camada solta de poeira e rocha fragmentada que cobre a superfície de um asteroide, lua ou planeta: o material que o reprocessamento por impactos remodela continuamente." } },
     { keys: ["meteorite", "meteorites", "meteorito", "meteoritos", "carbonaceous"],
       term: { en: "Meteorites & organics", pt: "Meteoritos e compostos orgânicos" },
-      a: { en: "Carbon-rich (carbonaceous) meteorites carry amino acids, sugars and nucleobases formed in space. Studying them — and returned samples from Ryugu and Bennu — links laboratory chemistry to real extraterrestrial material.",
-           pt: "Os meteoritos ricos em carbono (carbonáceos) transportam aminoácidos, açúcares e nucleobases formados no espaço. Estudá-los — e às amostras recolhidas de Ryugu e Bennu — liga a química de laboratório a material extraterrestre real." } },
+      a: { en: "Carbon-rich (carbonaceous) meteorites carry amino acids, sugars and nucleobases formed in space. Studying them, and returned samples from Ryugu and Bennu, links laboratory chemistry to real extraterrestrial material.",
+           pt: "Os meteoritos ricos em carbono (carbonáceos) transportam aminoácidos, açúcares e nucleobases formados no espaço. Estudá-los, e às amostras recolhidas de Ryugu e Bennu, liga a química de laboratório a material extraterrestre real." } },
     { keys: ["rna world", "rna", "mundo do rna"],
       term: { en: "RNA world", pt: "Mundo do RNA" },
       a: { en: "The hypothesis that early life relied on RNA both to store information and to catalyse reactions, before DNA and proteins took over. It makes the prebiotic formation of RNA's building blocks a key question.",
            pt: "A hipótese de que a vida primitiva dependeu do RNA tanto para armazenar informação como para catalisar reações, antes de o DNA e as proteínas assumirem esse papel. Torna a formação prebiótica dos blocos do RNA uma questão central." } },
     { keys: ["hplc", "mass spectrometry", "hplc-ms", "lc-ms", "lc/ms", "lcms", "espetrometria de massa", "espectrometria"],
       term: { en: "HPLC–MS / LC–MS", pt: "HPLC–MS / LC–MS" },
-      a: { en: "High-performance liquid chromatography coupled to mass spectrometry — the analytical workhorse for separating and identifying trace organic molecules in meteoritic and laboratory samples. Chromatography pulls the mixture apart; the mass spectrometer weighs each molecule to name it.",
-           pt: "Cromatografia líquida de alta eficiência acoplada a espetrometria de massa — a principal técnica analítica para separar e identificar moléculas orgânicas vestigiais em amostras meteoríticas e de laboratório. A cromatografia separa a mistura; o espetrómetro de massa pesa cada molécula para a identificar." } },
+      a: { en: "High-performance liquid chromatography coupled to mass spectrometry: the analytical workhorse for separating and identifying trace organic molecules in meteoritic and laboratory samples. Chromatography pulls the mixture apart. The mass spectrometer weighs each molecule to name it.",
+           pt: "Cromatografia líquida de alta eficiência acoplada a espetrometria de massa: a principal técnica analítica para separar e identificar moléculas orgânicas vestigiais em amostras meteoríticas e de laboratório. A cromatografia separa a mistura. O espetrómetro de massa pesa cada molécula para a identificar." } },
     { keys: ["chromatography", "gc-ms", "gc/ms", "gc-fid", "gas chromatography", "cromatografia"],
       term: { en: "Chromatography", pt: "Cromatografia" },
-      a: { en: "A family of techniques that separate a mixture by carrying it through a column that holds each compound back by a different amount. Gas chromatography (GC) handles volatile molecules, liquid chromatography (LC) handles dissolved ones; both can be paired with mass-spectrometric or flame-ionization detection.",
-           pt: "Uma família de técnicas que separam uma mistura ao fazê-la passar por uma coluna que retém cada composto de forma diferente. A cromatografia gasosa (GC) lida com moléculas voláteis, a líquida (LC) com as dissolvidas; ambas podem ser acopladas a deteção por massa ou ionização de chama." } },
+      a: { en: "A family of techniques that separate a mixture by carrying it through a column that holds each compound back by a different amount. Gas chromatography (GC) handles volatile molecules, liquid chromatography (LC) handles dissolved ones. Both can be paired with mass-spectrometric or flame-ionization detection.",
+           pt: "Uma família de técnicas que separam uma mistura ao fazê-la passar por uma coluna que retém cada composto de forma diferente. A cromatografia gasosa (GC) lida com moléculas voláteis, a líquida (LC), com as dissolvidas. Ambas podem ser acopladas a deteção por massa ou ionização de chama." } },
     { keys: ["nmr", "nuclear magnetic resonance", "ressonancia magnetica", "ressonância magnética", "rmn", "proton nmr"],
       term: { en: "NMR spectroscopy", pt: "Espetroscopia de RMN" },
-      a: { en: "Nuclear magnetic resonance places a sample in a strong magnetic field and reads the radio-frequency signals from its atomic nuclei. Because each nucleus reports on its chemical surroundings, the spectrum maps how atoms are connected — used to confirm a molecule's identity and purity.",
-           pt: "A ressonância magnética nuclear coloca a amostra num campo magnético intenso e lê os sinais de radiofrequência dos seus núcleos atómicos. Como cada núcleo reflete a sua vizinhança química, o espetro mapeia a ligação entre os átomos — usada para confirmar a identidade e a pureza de uma molécula." } },
+      a: { en: "Nuclear magnetic resonance places a sample in a strong magnetic field and reads the radio-frequency signals from its atomic nuclei. Because each nucleus reports on its chemical surroundings, the spectrum maps how atoms are connected: used to confirm a molecule's identity and purity.",
+           pt: "A ressonância magnética nuclear coloca a amostra num campo magnético intenso e lê os sinais de radiofrequência dos seus núcleos atómicos. Como cada núcleo reflete a sua vizinhança química, o espetro mapeia a ligação entre os átomos: usada para confirmar a identidade e a pureza de uma molécula." } },
     { keys: ["xrd", "x-ray diffraction", "difracao de raios x", "difração de raios x", "crystallography", "cristalografia"],
       term: { en: "X-ray diffraction (XRD)", pt: "Difração de raios X (XRD)" },
-      a: { en: "X-rays scattered off a solid's ordered atomic lattice produce a pattern of peaks that fingerprints its crystal structure — identifying which mineral or crystalline phase is present and whether grinding has changed it.",
-           pt: "Os raios X dispersos pela rede atómica ordenada de um sólido produzem um padrão de picos que identifica a sua estrutura cristalina — revelando a fase mineral ou cristalina presente e se a moagem a alterou." } },
+      a: { en: "X-rays scattered off a solid's ordered atomic lattice produce a pattern of peaks that fingerprints its crystal structure, identifying which mineral or crystalline phase is present and whether grinding has changed it.",
+           pt: "Os raios X dispersos pela rede atómica ordenada de um sólido produzem um padrão de picos que identifica a sua estrutura cristalina, revelando a fase mineral ou cristalina presente e se a moagem a alterou." } },
     { keys: ["ftir", "infrared", "infrared spectroscopy", "atr", "infravermelho", "espetroscopia de infravermelho"],
       term: { en: "FTIR spectroscopy", pt: "Espetroscopia FTIR" },
       a: { en: "Fourier-transform infrared spectroscopy measures which infrared wavelengths a sample absorbs. Chemical bonds vibrate at characteristic frequencies, so the spectrum reveals the functional groups present (C=O, O–H, N–H…). ATR mode reads powders and solids directly.",
            pt: "A espetroscopia de infravermelho com transformada de Fourier mede que comprimentos de onda no infravermelho uma amostra absorve. As ligações vibram a frequências características, revelando os grupos funcionais presentes (C=O, O–H, N–H…). O modo ATR lê pós e sólidos diretamente." } },
     { keys: ["elemental analysis", "chns", "analise elementar", "análise elementar", "combustion analysis"],
       term: { en: "Elemental analysis (CHNS)", pt: "Análise elementar (CHNS)" },
-      a: { en: "The sample is fully combusted and the gases measured to determine its bulk carbon, hydrogen, nitrogen and sulfur content — quantifying how much organic matter it holds and checking a synthesised compound against its expected formula.",
-           pt: "A amostra é totalmente queimada e os gases medidos para determinar o seu teor global de carbono, hidrogénio, azoto e enxofre — quantificando a matéria orgânica presente e comparando um composto sintetizado com a fórmula esperada." } },
+      a: { en: "The sample is fully combusted and the gases measured to determine its bulk carbon, hydrogen, nitrogen and sulfur content, quantifying how much organic matter it holds and checking a synthesised compound against its expected formula.",
+           pt: "A amostra é totalmente queimada e os gases medidos para determinar o seu teor global de carbono, hidrogénio, azoto e enxofre, quantificando a matéria orgânica presente e comparando um composto sintetizado com a fórmula esperada." } },
     { keys: ["irms", "isotope ratio", "isotope-ratio", "stable isotopes", "isotopes", "isotopos", "isótopos", "razao isotopica", "razão isotópica", "delta 13c", "13c"],
       term: { en: "Isotope-ratio MS & stable isotopes", pt: "irMS e isótopos estáveis" },
-      a: { en: "Isotope-ratio mass spectrometry measures the precise ratio of stable isotopes (e.g. ¹³C/¹²C, ¹⁵N/¹⁴N) in a sample. Those ratios fingerprint where a molecule formed and how it was processed — in astrobiology they help tell genuinely extraterrestrial organics apart from terrestrial contamination.",
-           pt: "A espetrometria de massa de razão isotópica mede a razão precisa de isótopos estáveis (ex.: ¹³C/¹²C, ¹⁵N/¹⁴N) numa amostra. Essas razões identificam onde uma molécula se formou e como foi processada — em astrobiologia ajudam a distinguir compostos orgânicos genuinamente extraterrestres de contaminação terrestre." } },
+      a: { en: "Isotope-ratio mass spectrometry measures the precise ratio of stable isotopes (e.g. ¹³C/¹²C, ¹⁵N/¹⁴N) in a sample. Those ratios fingerprint where a molecule formed and how it was processed: in astrobiology they help tell genuinely extraterrestrial organics apart from terrestrial contamination.",
+           pt: "A espetrometria de massa de razão isotópica mede a razão precisa de isótopos estáveis (ex.: ¹³C/¹²C, ¹⁵N/¹⁴N) numa amostra. Essas razões identificam onde uma molécula se formou e como foi processada: em astrobiologia ajudam a distinguir compostos orgânicos genuinamente extraterrestres de contaminação terrestre." } },
     { keys: ["sem", "scanning electron", "edx", "eds", "electron microscopy", "microscopia eletronica", "microscopia eletrónica"],
       term: { en: "SEM–EDX", pt: "SEM–EDX" },
-      a: { en: "Scanning electron microscopy rasters a focused electron beam across a sample to image its surface at very high magnification; the attached EDX detector reads the excited X-rays to map which elements are present and where — linking the texture of a mineral or meteorite grain to its chemistry.",
-           pt: "A microscopia eletrónica de varrimento faz varrer um feixe de eletrões sobre a amostra para a imagiar a alta ampliação; o detetor EDX acoplado lê os raios X excitados para mapear que elementos estão presentes e onde — ligando a textura de um grão mineral ou de meteorito à sua química." } },
+      a: { en: "Scanning electron microscopy rasters a focused electron beam across a sample to image its surface at very high magnification. The attached EDX detector reads the excited X-rays to map which elements are present and where, linking the texture of a mineral or meteorite grain to its chemistry.",
+           pt: "A microscopia eletrónica de varrimento faz varrer um feixe de eletrões sobre a amostra para a imagiar a alta ampliação. O detetor EDX acoplado lê os raios X excitados para mapear que elementos estão presentes e onde, ligando a textura de um grão mineral ou de meteorito à sua química." } },
     { keys: ["dft", "density functional theory", "computational chemistry", "ab initio", "teoria do funcional da densidade", "modelacao", "modelação"],
       term: { en: "Density functional theory (DFT)", pt: "Teoria do funcional da densidade (DFT)" },
-      a: { en: "A quantum-mechanical computer method that calculates molecular energies and structures from first principles. It maps the pathway a reaction follows and the energy barriers along it — used to explain experimental results, such as how a metal ion and water open a ribonucleoside's ribose ring.",
-           pt: "Um método computacional de mecânica quântica que calcula energias e estruturas moleculares a partir de princípios fundamentais. Mapeia o percurso de uma reação e as suas barreiras energéticas — usado para explicar resultados experimentais, como a abertura do anel de ribose de um ribonucleósido por um ião metálico e água." } },
+      a: { en: "A quantum-mechanical computer method that calculates molecular energies and structures from first principles. It maps the pathway a reaction follows and the energy barriers along it: used to explain experimental results, such as how a metal ion and water open a ribonucleoside's ribose ring.",
+           pt: "Um método computacional de mecânica quântica que calcula energias e estruturas moleculares a partir de princípios fundamentais. Mapeia o percurso de uma reação e as suas barreiras energéticas: usado para explicar resultados experimentais, como a abertura do anel de ribose de um ribonucleósido por um ião metálico e água." } },
     { keys: ["organic synthesis", "synthesis", "reduction", "sintese organica", "síntese orgânica", "sintese"],
       term: { en: "Organic synthesis", pt: "Síntese orgânica" },
-      a: { en: "The controlled construction and transformation of carbon-based molecules through deliberate reactions — building a target compound, running reductions, and tuning conditions for yield and purity. It supplies the clean starting materials for the mechanochemical and shock experiments.",
-           pt: "A construção e transformação controladas de moléculas baseadas em carbono através de reações deliberadas — construir um composto-alvo, realizar reduções e ajustar condições para rendimento e pureza. Fornece os materiais de partida puros para as experiências mecanoquímicas e de choque." } },
+      a: { en: "The controlled construction and transformation of carbon-based molecules through deliberate reactions, building a target compound, running reductions, and tuning conditions for yield and purity. It supplies the clean starting materials for the mechanochemical and shock experiments.",
+           pt: "A construção e transformação controladas de moléculas baseadas em carbono através de reações deliberadas: construir um composto-alvo, realizar reduções e ajustar condições para rendimento e pureza. Fornece os materiais de partida puros para as experiências mecanoquímicas e de choque." } },
     { keys: ["nucleobase", "nucleobases", "adenine", "guanine", "uracil", "cytosine", "nucleobases", "bases azotadas"],
       term: { en: "Nucleobases", pt: "Nucleobases" },
       a: { en: "The nitrogen-containing rings (adenine, guanine, cytosine, uracil, thymine) that carry genetic information in RNA and DNA. How they form, attach to a sugar and survive in space is a central prebiotic question.",
            pt: "Os anéis azotados (adenina, guanina, citosina, uracilo, timina) que transportam a informação genética no RNA e no DNA. Como se formam, se ligam a um açúcar e sobrevivem no espaço é uma questão prebiótica central." } },
     { keys: ["amino acid", "amino acids", "aminoacidos", "aminoácidos", "peptide", "peptides"],
       term: { en: "Amino acids", pt: "Aminoácidos" },
-      a: { en: "The molecular building blocks of proteins. They have been found in carbonaceous meteorites, showing that life's ingredients can form abiotically in space — a key thread linking meteorite chemistry to the origin of life.",
-           pt: "Os blocos moleculares das proteínas. Foram encontrados em meteoritos carbonáceos, mostrando que os ingredientes da vida se podem formar abioticamente no espaço — um elo central entre a química dos meteoritos e a origem da vida." } },
+      a: { en: "The molecular building blocks of proteins. They have been found in carbonaceous meteorites, showing that life's ingredients can form abiotically in space: a key thread linking meteorite chemistry to the origin of life.",
+           pt: "Os blocos moleculares das proteínas. Foram encontrados em meteoritos carbonáceos, mostrando que os ingredientes da vida se podem formar abioticamente no espaço: um elo central entre a química dos meteoritos e a origem da vida." } },
     { keys: ["ribose", "sugar", "sugars", "carbohydrate", "acucar", "açúcar", "acucares"],
       term: { en: "Ribose & sugars", pt: "Ribose e açúcares" },
-      a: { en: "Ribose is the five-carbon sugar in the backbone of RNA; related sugars have been detected in meteorites. Sugars are fragile, so understanding how they form and survive impact processing is important for the RNA-world story.",
-           pt: "A ribose é o açúcar de cinco carbonos no esqueleto do RNA; açúcares relacionados foram detetados em meteoritos. Os açúcares são frágeis, pelo que compreender como se formam e sobrevivem ao processamento por impactos é importante para a hipótese do mundo do RNA." } },
+      a: { en: "Ribose is the five-carbon sugar in the backbone of RNA. Related sugars have been detected in meteorites. Sugars are fragile, so understanding how they form and survive impact processing is important for the RNA-world story.",
+           pt: "A ribose é o açúcar de cinco carbonos no esqueleto do RNA. Açúcares relacionados foram detetados em meteoritos. Os açúcares são frágeis, pelo que compreender como se formam e sobrevivem ao processamento por impactos é importante para a hipótese do mundo do RNA." } },
     { keys: ["chirality", "homochirality", "enantiomer", "quiralidade", "homoquiralidade", "handedness"],
       term: { en: "Chirality & homochirality", pt: "Quiralidade e homoquiralidade" },
       a: { en: "Many biological molecules exist in two mirror-image forms, yet life uses almost exclusively one (left-handed amino acids, right-handed sugars). Explaining how this single-handedness arose from a presumably symmetric prebiotic chemistry is a deep open problem.",
            pt: "Muitas moléculas biológicas existem em duas formas em espelho, mas a vida usa quase exclusivamente uma (aminoácidos à esquerda, açúcares à direita). Explicar como esta lateralidade única surgiu de uma química prebiótica presumivelmente simétrica é um problema profundo em aberto." } },
     { keys: ["ryugu", "bennu", "hayabusa", "hayabusa2", "osiris-rex", "osiris rex", "sample return", "amostras de asteroide"],
       term: { en: "Ryugu, Bennu & sample return", pt: "Ryugu, Bennu e amostras retornadas" },
-      a: { en: "Space missions that brought pristine asteroid material back to Earth — Hayabusa2 from Ryugu and OSIRIS-REx from Bennu. These uncontaminated samples let laboratory chemistry be tested directly against real asteroid organics.",
-           pt: "Missões espaciais que trouxeram material de asteroide intacto para a Terra — a Hayabusa2 de Ryugu e a OSIRIS-REx de Bennu. Estas amostras não contaminadas permitem testar a química de laboratório diretamente contra compostos orgânicos reais de asteroides." } },
+      a: { en: "Space missions that brought pristine asteroid material back to Earth: Hayabusa2 from Ryugu and OSIRIS-REx from Bennu. These uncontaminated samples let laboratory chemistry be tested directly against real asteroid organics.",
+           pt: "Missões espaciais que trouxeram material de asteroide intacto para a Terra: a Hayabusa2 de Ryugu e a OSIRIS-REx de Bennu. Estas amostras não contaminadas permitem testar a química de laboratório diretamente contra compostos orgânicos reais de asteroides." } },
     { keys: ["carbonaceous chondrite", "chondrite", "condrito", "condrito carbonaceo", "murchison"],
       term: { en: "Carbonaceous chondrites", pt: "Condritos carbonáceos" },
-      a: { en: "Primitive, carbon-rich meteorites (like Murchison) that preserve organic molecules from the early Solar System — amino acids, nucleobases and sugars among them. They are natural archives of prebiotic chemistry.",
-           pt: "Meteoritos primitivos e ricos em carbono (como Murchison) que preservam moléculas orgânicas do início do Sistema Solar — aminoácidos, nucleobases e açúcares entre elas. São arquivos naturais de química prebiótica." } },
+      a: { en: "Primitive, carbon-rich meteorites (like Murchison) that preserve organic molecules from the early Solar System: amino acids, nucleobases and sugars among them. They are natural archives of prebiotic chemistry.",
+           pt: "Meteoritos primitivos e ricos em carbono (como Murchison) que preservam moléculas orgânicas do início do Sistema Solar: aminoácidos, nucleobases e açúcares entre elas. São arquivos naturais de química prebiótica." } },
     { keys: ["comet", "comets", "micrometeorite", "micrometeorites", "cometa", "cometas", "interplanetary dust"],
       term: { en: "Comets & micrometeorites", pt: "Cometas e micrometeoritos" },
       a: { en: "Comets and the constant rain of micrometeorites deliver organic-rich material to planetary surfaces. They are candidate carriers that could have seeded the early Earth with the molecules needed for life.",
@@ -166,20 +166,20 @@
            pt: "A alteração gradual de uma superfície sem atmosfera por iões do vento solar, radiação e impactos de micrometeoritos. Juntamente com o reprocessamento por impactos, condiciona como a matéria orgânica é processada e preservada nos asteroides." } },
     { keys: ["miller-urey", "miller urey", "spark discharge", "primitive earth", "terra primitiva"],
       term: { en: "Miller–Urey experiment", pt: "Experiência de Miller–Urey" },
-      a: { en: "The 1953 experiment that produced amino acids by passing electric sparks through a simulated early-Earth atmosphere — the founding demonstration that life's building blocks can form from simple molecules and energy.",
-           pt: "A experiência de 1953 que produziu aminoácidos ao passar faíscas elétricas por uma atmosfera simulada da Terra primitiva — a demonstração fundadora de que os blocos da vida se podem formar a partir de moléculas simples e energia." } },
+      a: { en: "The 1953 experiment that produced amino acids by passing electric sparks through a simulated early-Earth atmosphere: the founding demonstration that life's building blocks can form from simple molecules and energy.",
+           pt: "A experiência de 1953 que produziu aminoácidos ao passar faíscas elétricas por uma atmosfera simulada da Terra primitiva: a demonstração fundadora de que os blocos da vida se podem formar a partir de moléculas simples e energia." } },
     { keys: ["mineral catalysis", "montmorillonite", "clay", "argila", "catalysis", "catalise", "catálise"],
       term: { en: "Mineral catalysis", pt: "Catálise mineral" },
-      a: { en: "Minerals — clays like montmorillonite, metal oxides and salts — can speed up and steer prebiotic reactions on surfaces, concentrating reactants and lowering energy barriers. Mineral surfaces are a likely setting for early chemistry.",
-           pt: "Os minerais — argilas como a montmorilonite, óxidos metálicos e sais — podem acelerar e orientar reações prebióticas em superfícies, concentrando reagentes e reduzindo barreiras energéticas. As superfícies minerais são um cenário provável para a química primitiva." } },
+      a: { en: "Minerals (clays like montmorillonite, metal oxides and salts) can speed up and steer prebiotic reactions on surfaces, concentrating reactants and lowering energy barriers. Mineral surfaces are a likely setting for early chemistry.",
+           pt: "Os minerais (argilas como a montmorilonite, óxidos metálicos e sais) podem acelerar e orientar reações prebióticas em superfícies, concentrando reagentes e reduzindo barreiras energéticas. As superfícies minerais são um cenário provável para a química primitiva." } },
     { keys: ["panspermia", "exogenous delivery", "entrega exogena", "entrega exógena"],
       term: { en: "Exogenous delivery / panspermia", pt: "Entrega exógena / panspermia" },
-      a: { en: "The idea that some of life's chemical ingredients — or even life itself — arrived on Earth from space, carried by meteorites, comets and dust. My work tests how well organic molecules survive that journey and its impacts.",
-           pt: "A ideia de que alguns dos ingredientes químicos da vida — ou a própria vida — chegaram à Terra vindos do espaço, transportados por meteoritos, cometas e poeira. O meu trabalho testa quão bem as moléculas orgânicas sobrevivem a essa viagem e aos seus impactos." } },
+      a: { en: "The idea that some of life's chemical ingredients, or even life itself, arrived on Earth from space, carried by meteorites, comets and dust. My work tests how well organic molecules survive that journey and its impacts.",
+           pt: "A ideia de que alguns dos ingredientes químicos da vida, ou a própria vida, chegaram à Terra vindos do espaço, transportados por meteoritos, cometas e poeira. O meu trabalho testa quão bem as moléculas orgânicas sobrevivem a essa viagem e aos seus impactos." } },
     { keys: ["habitability", "biosignature", "biosignatures", "habitabilidade", "bioassinatura"],
       term: { en: "Habitability & biosignatures", pt: "Habitabilidade e bioassinaturas" },
-      a: { en: "Habitability is whether an environment can support life; a biosignature is a chemical or structural sign that life is or was present. Distinguishing true biosignatures from abiotic chemistry is a core challenge of astrobiology.",
-           pt: "A habitabilidade é a capacidade de um ambiente sustentar vida; uma bioassinatura é um sinal químico ou estrutural de que a vida está ou esteve presente. Distinguir bioassinaturas verdadeiras de química abiótica é um desafio central da astrobiologia." } }
+      a: { en: "Habitability is whether an environment can support life. A biosignature is a chemical or structural sign that life is or was present. Distinguishing true biosignatures from abiotic chemistry is a core challenge of astrobiology.",
+           pt: "A habitabilidade é a capacidade de um ambiente sustentar vida. Uma bioassinatura é um sinal químico ou estrutural de que a vida está ou esteve presente. Distinguir bioassinaturas verdadeiras de química abiótica é um desafio central da astrobiologia." } }
   ];
 
   // Compact CV science context — grounds the optional free-form AI answers.
@@ -201,7 +201,7 @@
     "Asteroid gardening": {
       "fr": [
         "Remaniement de la surface des astéroïdes (asteroid gardening)",
-        "Le brassage lent de la surface d'un corps sans atmosphère par les impacts de météorites et de micrométéorites. Sur des milliards d'années, il enfouit, exhume, mélange et chauffe par choc le régolithe — transformant la matière organique présente, si bien que ce que l'on mesure aujourd'hui est le survivant d'une longue histoire d'impacts."
+        "Le brassage lent de la surface d'un corps sans atmosphère par les impacts de météorites et de micrométéorites. Sur des milliards d'années, il enfouit, exhume, mélange et chauffe par choc le régolithe, transformant la matière organique présente, si bien que ce que l'on mesure aujourd'hui est le survivant d'une longue histoire d'impacts."
       ],
       "ja": [
         "小惑星表面の撹拌（asteroid gardening）",
@@ -211,7 +211,7 @@
     "Astrobiology": {
       "fr": [
         "Astrobiologie",
-        "La science de l'origine, de l'évolution et de la distribution de la vie dans l'univers — réunissant chimie, biologie, géologie et astronomie pour comprendre comment la vie est apparue et si elle pourrait exister ailleurs."
+        "La science de l'origine, de l'évolution et de la distribution de la vie dans l'univers, réunissant chimie, biologie, géologie et astronomie pour comprendre comment la vie est apparue et si elle pourrait exister ailleurs."
       ],
       "ja": [
         "アストロバイオロジー（宇宙生物学）",
@@ -221,7 +221,7 @@
     "Mechanochemistry": {
       "fr": [
         "Mécanochimie",
-        "Une chimie entraînée par la force mécanique plutôt que par la chaleur ou un solvant — par exemple en broyant des solides dans un broyeur à billes. Elle reproduit des sources d'énergie disponibles à la surface des planètes et est au cœur de mes travaux sur la synthèse prébiotique sans solvant."
+        "Une chimie entraînée par la force mécanique plutôt que par la chaleur ou un solvant, par exemple en broyant des solides dans un broyeur à billes. Elle reproduit des sources d'énergie disponibles à la surface des planètes et est au cœur de mes travaux sur la synthèse prébiotique sans solvant."
       ],
       "ja": [
         "メカノケミストリー（mechanochemistry）",
@@ -231,7 +231,7 @@
     "Prebiotic chemistry": {
       "fr": [
         "Chimie prébiotique",
-        "La chimie qui aurait pu produire les briques du vivant — acides aminés, sucres, nucléobases — avant l'existence de la biologie elle-même, dans des conditions plausibles sur la Terre primitive ou dans l'espace."
+        "La chimie qui aurait pu produire les briques du vivant (acides aminés, sucres, nucléobases), avant l'existence de la biologie elle-même, dans des conditions plausibles sur la Terre primitive ou dans l'espace."
       ],
       "ja": [
         "前生物化学（prebiotic chemistry）",
@@ -241,7 +241,7 @@
     "Ribonucleosides": {
       "fr": [
         "Ribonucléosides",
-        "Une nucléobase liée à un sucre, le ribose — la brique située juste en dessous de l'ARN. Savoir si des ribonucléosides déjà assemblés peuvent se former et survivre dans l'espace est une question ouverte que j'étudie par mécanochimie et synthèse par choc."
+        "Une nucléobase liée à un sucre, le ribose : la brique située juste en dessous de l'ARN. Savoir si des ribonucléosides déjà assemblés peuvent se former et survivre dans l'espace est une question ouverte que j'étudie par mécanochimie et synthèse par choc."
       ],
       "ja": [
         "リボヌクレオシド",
@@ -261,7 +261,7 @@
     "Shock-driven synthesis": {
       "fr": [
         "Synthèse induite par choc",
-        "Utiliser la brève et intense impulsion de pression et de température d'un impact pour déclencher des réactions chimiques — une façon de reproduire en laboratoire la chimie que les impacts de comètes et de météorites pourraient provoquer."
+        "Utiliser la brève et intense impulsion de pression et de température d'un impact pour déclencher des réactions chimiques : une façon de reproduire en laboratoire la chimie que les impacts de comètes et de météorites pourraient provoquer."
       ],
       "ja": [
         "衝撃駆動合成",
@@ -271,7 +271,7 @@
     "Regolith": {
       "fr": [
         "Régolithe",
-        "La couche meuble de poussière et de roches fragmentées qui recouvre la surface d'un astéroïde, d'une lune ou d'une planète — le matériau que le remaniement par impacts retravaille sans cesse."
+        "La couche meuble de poussière et de roches fragmentées qui recouvre la surface d'un astéroïde, d'une lune ou d'une planète : le matériau que le remaniement par impacts retravaille sans cesse."
       ],
       "ja": [
         "レゴリス",
@@ -281,7 +281,7 @@
     "Meteorites & organics": {
       "fr": [
         "Météorites & matière organique",
-        "Les météorites riches en carbone (carbonées) contiennent des acides aminés, des sucres et des nucléobases formés dans l'espace. Les étudier — ainsi que les échantillons rapportés de Ryugu et Bennu — relie la chimie de laboratoire à de la vraie matière extraterrestre."
+        "Les météorites riches en carbone (carbonées) contiennent des acides aminés, des sucres et des nucléobases formés dans l'espace. Les étudier, ainsi que les échantillons rapportés de Ryugu et Bennu, relie la chimie de laboratoire à de la vraie matière extraterrestre."
       ],
       "ja": [
         "隕石と有機物",
@@ -301,7 +301,7 @@
     "HPLC–MS / LC–MS": {
       "fr": [
         "HPLC–MS / LC–MS",
-        "La chromatographie liquide haute performance couplée à la spectrométrie de masse — l'outil analytique de référence pour séparer et identifier des traces de molécules organiques dans des échantillons météoritiques et de laboratoire. La chromatographie sépare le mélange ; le spectromètre de masse pèse chaque molécule pour l'identifier."
+        "La chromatographie liquide haute performance couplée à la spectrométrie de masse : l'outil analytique de référence pour séparer et identifier des traces de molécules organiques dans des échantillons météoritiques et de laboratoire. La chromatographie sépare le mélange. Le spectromètre de masse pèse chaque molécule pour l'identifier."
       ],
       "ja": [
         "HPLC–MS / LC–MS",
@@ -321,7 +321,7 @@
     "NMR spectroscopy": {
       "fr": [
         "Spectroscopie RMN",
-        "La résonance magnétique nucléaire place un échantillon dans un champ magnétique intense et lit les signaux radiofréquence émis par ses noyaux atomiques. Comme chaque noyau renseigne sur son environnement chimique, le spectre cartographie la façon dont les atomes sont liés — ce qui permet de confirmer l'identité et la pureté d'une molécule."
+        "La résonance magnétique nucléaire place un échantillon dans un champ magnétique intense et lit les signaux radiofréquence émis par ses noyaux atomiques. Comme chaque noyau renseigne sur son environnement chimique, le spectre cartographie la façon dont les atomes sont liés : ce qui permet de confirmer l'identité et la pureté d'une molécule."
       ],
       "ja": [
         "NMR分光法",
@@ -331,7 +331,7 @@
     "X-ray diffraction (XRD)": {
       "fr": [
         "Diffraction des rayons X (DRX)",
-        "Les rayons X diffusés par le réseau atomique ordonné d'un solide produisent un motif de pics qui sert d'empreinte de sa structure cristalline — identifiant le minéral ou la phase cristalline présente et si le broyage l'a modifiée."
+        "Les rayons X diffusés par le réseau atomique ordonné d'un solide produisent un motif de pics qui sert d'empreinte de sa structure cristalline, identifiant le minéral ou la phase cristalline présente et si le broyage l'a modifiée."
       ],
       "ja": [
         "X線回折（XRD）",
@@ -351,7 +351,7 @@
     "Elemental analysis (CHNS)": {
       "fr": [
         "Analyse élémentaire (CHNS)",
-        "L'échantillon est entièrement brûlé et les gaz mesurés pour déterminer sa teneur globale en carbone, hydrogène, azote et soufre — ce qui quantifie la matière organique qu'il contient et permet de vérifier qu'un composé synthétisé correspond à sa formule attendue."
+        "L'échantillon est entièrement brûlé et les gaz mesurés pour déterminer sa teneur globale en carbone, hydrogène, azote et soufre : ce qui quantifie la matière organique qu'il contient et permet de vérifier qu'un composé synthétisé correspond à sa formule attendue."
       ],
       "ja": [
         "元素分析（CHNS）",
@@ -361,7 +361,7 @@
     "Isotope-ratio MS & stable isotopes": {
       "fr": [
         "SM de rapports isotopiques & isotopes stables",
-        "La spectrométrie de masse de rapports isotopiques mesure le rapport précis des isotopes stables (p. ex. ¹³C/¹²C, ¹⁵N/¹⁴N) d'un échantillon. Ces rapports indiquent où une molécule s'est formée et comment elle a été transformée — en astrobiologie, ils aident à distinguer la matière organique réellement extraterrestre de la contamination terrestre."
+        "La spectrométrie de masse de rapports isotopiques mesure le rapport précis des isotopes stables (p. ex. ¹³C/¹²C, ¹⁵N/¹⁴N) d'un échantillon. Ces rapports indiquent où une molécule s'est formée et comment elle a été transformée : en astrobiologie, ils aident à distinguer la matière organique réellement extraterrestre de la contamination terrestre."
       ],
       "ja": [
         "同位体比質量分析と安定同位体",
@@ -371,7 +371,7 @@
     "SEM–EDX": {
       "fr": [
         "MEB–EDX",
-        "La microscopie électronique à balayage balaie un échantillon avec un faisceau d'électrons focalisé pour en imager la surface à très fort grossissement ; le détecteur EDX associé lit les rayons X émis pour cartographier quels éléments sont présents et où — reliant la texture d'un grain minéral ou météoritique à sa chimie."
+        "La microscopie électronique à balayage balaie un échantillon avec un faisceau d'électrons focalisé pour en imager la surface à très fort grossissement. Le détecteur EDX associé lit les rayons X émis pour cartographier quels éléments sont présents et où, reliant la texture d'un grain minéral ou météoritique à sa chimie."
       ],
       "ja": [
         "SEM–EDX",
@@ -381,7 +381,7 @@
     "Density functional theory (DFT)": {
       "fr": [
         "Théorie de la fonctionnelle de la densité (DFT)",
-        "Une méthode de calcul quantique qui détermine les énergies et structures moléculaires à partir des premiers principes. Elle décrit le chemin suivi par une réaction et les barrières d'énergie rencontrées — utilisée pour expliquer des résultats expérimentaux, comme la façon dont un ion métallique et l'eau ouvrent le cycle du ribose d'un ribonucléoside."
+        "Une méthode de calcul quantique qui détermine les énergies et structures moléculaires à partir des premiers principes. Elle décrit le chemin suivi par une réaction et les barrières d'énergie rencontrées : utilisée pour expliquer des résultats expérimentaux, comme la façon dont un ion métallique et l'eau ouvrent le cycle du ribose d'un ribonucléoside."
       ],
       "ja": [
         "密度汎関数理論（DFT）",
@@ -391,7 +391,7 @@
     "Organic synthesis": {
       "fr": [
         "Synthèse organique",
-        "La construction et la transformation contrôlées de molécules carbonées par des réactions choisies — préparer un composé cible, effectuer des réductions et ajuster les conditions pour le rendement et la pureté. Elle fournit les produits de départ purs pour les expériences de mécanochimie et de choc."
+        "La construction et la transformation contrôlées de molécules carbonées par des réactions choisies : préparer un composé cible, effectuer des réductions et ajuster les conditions pour le rendement et la pureté. Elle fournit les produits de départ purs pour les expériences de mécanochimie et de choc."
       ],
       "ja": [
         "有機合成",
@@ -411,7 +411,7 @@
     "Amino acids": {
       "fr": [
         "Acides aminés",
-        "Les briques moléculaires des protéines. On en a trouvé dans des météorites carbonées, ce qui montre que les ingrédients de la vie peuvent se former de façon abiotique dans l'espace — un fil conducteur entre la chimie des météorites et l'origine de la vie."
+        "Les briques moléculaires des protéines. On en a trouvé dans des météorites carbonées, ce qui montre que les ingrédients de la vie peuvent se former de façon abiotique dans l'espace : un fil conducteur entre la chimie des météorites et l'origine de la vie."
       ],
       "ja": [
         "アミノ酸",
@@ -441,7 +441,7 @@
     "Ryugu, Bennu & sample return": {
       "fr": [
         "Ryugu, Bennu & retour d'échantillons",
-        "Des missions spatiales qui ont rapporté sur Terre de la matière d'astéroïde intacte — Hayabusa2 depuis Ryugu et OSIRIS-REx depuis Bennu. Ces échantillons non contaminés permettent de confronter directement la chimie de laboratoire à la vraie matière organique d'astéroïdes."
+        "Des missions spatiales qui ont rapporté sur Terre de la matière d'astéroïde intacte : Hayabusa2 depuis Ryugu et OSIRIS-REx depuis Bennu. Ces échantillons non contaminés permettent de confronter directement la chimie de laboratoire à la vraie matière organique d'astéroïdes."
       ],
       "ja": [
         "リュウグウ、ベンヌとサンプルリターン",
@@ -451,7 +451,7 @@
     "Carbonaceous chondrites": {
       "fr": [
         "Chondrites carbonées",
-        "Des météorites primitives riches en carbone (comme Murchison) qui conservent des molécules organiques du Système solaire primitif — dont des acides aminés, des nucléobases et des sucres. Ce sont des archives naturelles de la chimie prébiotique."
+        "Des météorites primitives riches en carbone (comme Murchison) qui conservent des molécules organiques du Système solaire primitif, dont des acides aminés, des nucléobases et des sucres. Ce sont des archives naturelles de la chimie prébiotique."
       ],
       "ja": [
         "炭素質コンドライト",
@@ -481,7 +481,7 @@
     "Miller–Urey experiment": {
       "fr": [
         "Expérience de Miller–Urey",
-        "L'expérience de 1953 qui a produit des acides aminés en faisant passer des étincelles électriques dans une atmosphère simulant celle de la Terre primitive — la démonstration fondatrice que les briques du vivant peuvent se former à partir de molécules simples et d'énergie."
+        "L'expérience de 1953 qui a produit des acides aminés en faisant passer des étincelles électriques dans une atmosphère simulant celle de la Terre primitive : la démonstration fondatrice que les briques du vivant peuvent se former à partir de molécules simples et d'énergie."
       ],
       "ja": [
         "ミラー–ユーリーの実験",
@@ -491,7 +491,7 @@
     "Mineral catalysis": {
       "fr": [
         "Catalyse minérale",
-        "Les minéraux — argiles comme la montmorillonite, oxydes métalliques et sels — peuvent accélérer et orienter les réactions prébiotiques à leur surface, en concentrant les réactifs et en abaissant les barrières d'énergie. Les surfaces minérales sont un cadre probable de la chimie primitive."
+        "Les minéraux (argiles comme la montmorillonite, oxydes métalliques et sels) peuvent accélérer et orienter les réactions prébiotiques à leur surface, en concentrant les réactifs et en abaissant les barrières d'énergie. Les surfaces minérales sont un cadre probable de la chimie primitive."
       ],
       "ja": [
         "鉱物触媒",
@@ -501,7 +501,7 @@
     "Exogenous delivery / panspermia": {
       "fr": [
         "Apport exogène / panspermie",
-        "L'idée qu'une partie des ingrédients chimiques de la vie — voire la vie elle-même — est arrivée sur Terre depuis l'espace, transportée par des météorites, des comètes et des poussières. Mes travaux évaluent dans quelle mesure les molécules organiques survivent à ce voyage et à ses impacts."
+        "L'idée qu'une partie des ingrédients chimiques de la vie, voire la vie elle-même, est arrivée sur Terre depuis l'espace, transportée par des météorites, des comètes et des poussières. Mes travaux évaluent dans quelle mesure les molécules organiques survivent à ce voyage et à ses impacts."
       ],
       "ja": [
         "外来供給／パンスペルミア",

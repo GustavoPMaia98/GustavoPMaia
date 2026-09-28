@@ -658,8 +658,8 @@
 
       const msg = document.createElement("span");
       msg.textContent = pt
-        ? "Deslocação automática ativada — clique neste botão para a desativar."
-        : "Hands-free scroll is on — click this button to turn it off.";
+        ? "Deslocação automática ativada: clique neste botão para a desativar."
+        : "Hands-free scroll is on: click this button to turn it off.";
 
       const close = document.createElement("button");
       close.type = "button";
@@ -889,7 +889,7 @@
       '<div class="timeline-expand"><div class="expand-body">' +
         (pub.abstract
           ? '<p>' + escapeHtml(pub.abstract) + '</p>'
-          : '<p><em>Abstract not available — open the paper via the DOI link below.</em></p>') +
+          : '<p><em>Abstract not available. Open the paper via the DOI link below.</em></p>') +
         (doiUrl
           ? '<p><a href="' + doiUrl + '" target="_blank" rel="noopener noreferrer"><strong>DOI: ' + escapeHtml(pub.doi) + '</strong></a></p>'
           : '') +
@@ -1007,8 +1007,8 @@
     nav_tree:{en:"Tree",pt:"Árvore"}, nav_map:{en:"Map",pt:"Mapa"}, nav_tutoring:{en:"Tutoring",pt:"Explicações"}, nav_courses:{en:"Courses",pt:"Cursos"},
     nav_research:{en:"Research",pt:"Investigação"}, nav_skills:{en:"Skills",pt:"Competências"}, nav_more:{en:"More",pt:"Mais"},
     role:{en:"PhD Researcher in Chemistry · Astrobiology",pt:"Investigador de Doutoramento em Química · Astrobiologia"},
-    bio:{en:"My research explores the origins and evolution of life in the universe, using chemistry to uncover the processes that may have led to life's emergence. A key focus is mechanochemistry — chemical reactions driven by mechanical forces. I investigate how mechanical energy, from parent-body formation, asteroid gardening, or meteorite impacts, could have promoted the synthesis and transformation of organic molecules on the early Earth and other planetary bodies, revealing alternative pathways for prebiotic chemistry under extreme and extraterrestrial environments.",
-         pt:"A minha investigação explora as origens e a evolução da vida no universo, usando a química para desvendar os processos que poderão ter conduzido ao surgimento da vida. Um foco central é a mecanoquímica — reações químicas impulsionadas por forças mecânicas. Investigo como a energia mecânica, da formação de corpos progenitores, do asteroid gardening ou de impactos de meteoritos, poderá ter promovido a síntese e a transformação de moléculas orgânicas na Terra primitiva e noutros corpos planetários, revelando vias alternativas para a química prebiótica em ambientes extremos e extraterrestres."},
+    bio:{en:"My research explores the origins and evolution of life in the universe, using chemistry to uncover the processes that may have led to life's emergence. A key focus is mechanochemistry: chemical reactions driven by mechanical forces. I investigate how mechanical energy, from parent-body formation, asteroid gardening, or meteorite impacts, could have promoted the synthesis and transformation of organic molecules on the early Earth and other planetary bodies, revealing alternative pathways for prebiotic chemistry under extreme and extraterrestrial environments.",
+         pt:"A minha investigação explora as origens e a evolução da vida no universo, usando a química para desvendar os processos que poderão ter conduzido ao surgimento da vida. Um foco central é a mecanoquímica: reações químicas impulsionadas por forças mecânicas. Investigo como a energia mecânica, da formação de corpos progenitores, do asteroid gardening ou de impactos de meteoritos, poderá ter promovido a síntese e a transformação de moléculas orgânicas na Terra primitiva e noutros corpos planetários, revelando vias alternativas para a química prebiótica em ambientes extremos e extraterrestres."},
     tag1:{en:"Mechanochemistry",pt:"Mecanoquímica"}, tag2:{en:"Prebiotic Chemistry",pt:"Química Prebiótica"},
     tag3:{en:"Astrobiology",pt:"Astrobiologia"}, tag4:{en:"Origin of Life",pt:"Origem da Vida"},
     m_pubs:{en:"Publications",pt:"Publicações"}, m_talks:{en:"Talks & posters",pt:"Comunicações"},
@@ -1279,9 +1279,9 @@
         pt:{ d:"Técnico de Mecatrónica, Nível IV (2013–2016)" } }
     ];
     const labs = [
-      { n:"CQE — Instituto Superior Técnico, Lisbon", c:[38.7369,-9.1366], d:"PhD researcher · Invited teaching assistant",
-        pt:{ n:"CQE — Instituto Superior Técnico, Lisboa", d:"Investigador de doutoramento · Assistente convidado" } },
-      { n:"IMPMC — MNHN, Paris", c:[48.8443,2.3562], d:"Visiting Scientist (2025–present)",
+      { n:"CQE · Instituto Superior Técnico, Lisbon", c:[38.7369,-9.1366], d:"PhD researcher · Invited teaching assistant",
+        pt:{ n:"CQE · Instituto Superior Técnico, Lisboa", d:"Investigador de doutoramento · Assistente convidado" } },
+      { n:"IMPMC · MNHN, Paris", c:[48.8443,2.3562], d:"Visiting Scientist (2025–present)",
         pt:{ d:"Cientista Visitante (2025–presente)" } },
       { n:"NASA Goddard Space Flight Center, Greenbelt MD", c:[38.9961,-76.8483], d:"Visiting Scientist (2024)",
         pt:{ d:"Cientista Visitante (2024)" } },
@@ -1298,8 +1298,8 @@
         pt:{ d:"Simpósio XV CICS-UBI 2020 (póster)" } }
     ];
     const courses = [
-      { n:"Marseille, France", c:[43.2965,5.3698], d:"Origins Institute Summer School 2026 — Building the Hard Rocky Planets (Institut Origines · IPGP)",
-        pt:{ n:"Marselha, França", d:"Escola de Verão do Origins Institute 2026 — Construir os Planetas Rochosos (Institut Origines · IPGP)" } },
+      { n:"Marseille, France", c:[43.2965,5.3698], d:"Origins Institute Summer School 2026: Building the Hard Rocky Planets (Institut Origines · IPGP)",
+        pt:{ n:"Marselha, França", d:"Escola de Verão do Origins Institute 2026: Construir os Planetas Rochosos (Institut Origines · IPGP)" } },
       { n:"Le Teich, France", c:[44.6367,-1.0203], d:"RED Astrobiology Introductory Course 2025 (in person)",
         pt:{ n:"Le Teich, França", d:"Curso Introdutório de Astrobiologia RED 2025 (presencial)" } }
     ];
