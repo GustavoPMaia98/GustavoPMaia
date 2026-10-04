@@ -1711,8 +1711,8 @@
         li.textContent = pt;
         elPoints.appendChild(li);
       });
-      // when the highlight has paper results, drop the redundant key-points list
-      elPoints.hidden = !!(d.papers && d.papers.length);
+      // show the key-points list only when the highlight has bullet points
+      elPoints.hidden = !elPoints.children.length;
       // interactive 3D molecules for the ribonucleoside highlight
       mountMol3D(id === "ribonucleosides" ? elBody : null);
       // Key results from the papers (optional)
