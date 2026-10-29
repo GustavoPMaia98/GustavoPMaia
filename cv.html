@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Security: only this site and Google Fonts may run code or load styles here.
+       After editing an inline script, run: python tools/check_site.py --fix -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Gustavo Pinho Maia · Curriculum Vitae</title>
+  <meta name="description" content="Curriculum vitae of Gustavo Pinho Maia, PhD researcher in Chemistry (Astrobiology): education, experience, publications, presentations, awards and funding.">
+  <link rel="canonical" href="https://gustavopmaia98.github.io/GustavoPMaia/cv.html">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500..700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="cv.css">
+</head>
+<body>
+  <!-- The CV is assembled by cv.js from the same files as the website
+       (data/*.json and sections/*.html), so it is always up to date.
+       A PDF copy (cv.pdf / cv-pt.pdf) is made every night by tools/build_cv.py. -->
+  <nav class="cv-bar" aria-label="CV options">
+    <a href="./" class="cv-back">← <span data-l="back">Website</span></a>
+    <span class="cv-bar-gap"></span>
+    <a href="?lang=en" class="cv-lang" data-set-lang="en">EN</a>
+    <a href="?lang=pt" class="cv-lang" data-set-lang="pt">PT</a>
+    <a href="#" class="cv-btn" id="cvPdf" download><span data-l="pdf">Download PDF</span></a>
+  </nav>
+  <main class="cv" id="cv" aria-busy="true">
+    <p class="cv-loading">Loading…</p>
+  </main>
+  <script src="mail.js"></script>
+  <script src="cv.js"></script>
+</body>
+</html>

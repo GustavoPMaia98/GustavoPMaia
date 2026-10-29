@@ -18,7 +18,7 @@ import base64, glob, hashlib, html, json, os, re, sys, urllib.parse
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MAX_KB = 600
-PAGES = ["index.html", "cientificamente.html"] + sorted(glob.glob(os.path.join(ROOT, "sections", "*.html")))
+PAGES = ["index.html", "cientificamente.html", "cv.html"] + sorted(glob.glob(os.path.join(ROOT, "sections", "*.html")))
 PAGES = [os.path.relpath(p, ROOT) if os.path.isabs(p) else p for p in PAGES]
 REF = re.compile(r'''(?:src|href|data-src)\s*=\s*(["'])(.*?)\1''')
 JSON_IMG = re.compile(r'"(?:image|src)"\s*:\s*"([^"]+\.(?:jpe?g|png|webp|svg|gif))"')

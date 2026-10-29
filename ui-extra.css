@@ -590,3 +590,6 @@ html[data-theme="light"] .hl-modal-backdrop{ background:rgba(15,23,42,.45); }
 .pub-tool svg{ width:15px; height:15px; }
 .pub-tool-done{ font-size:.82rem; font-weight:600; color:var(--status-live, #22c55e); }
 
+
+/* CV button icon (the button now opens cv.html) */
+.btn--cv svg{ width:18px; height:18px; flex:0 0 auto; }
