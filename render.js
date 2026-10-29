@@ -87,7 +87,7 @@
     const role = n.role || {};
     const inst = n.institution || {};
     const photo = safeUrl(n.photo);
-    const kids = (n.mentors || []).filter(c => c && !c.hidden && c.name);
+    const kids = (n.mentors || []).filter(c => c && !c.hidden && !c.cvOnly && c.name);
     return "<li>" +
       '<div class="at-node' + (isSelf ? " at-self" : "") + '">' +
         '<span class="at-avatar">' +

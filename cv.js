@@ -1,7 +1,7 @@
 /* Builds cv.html from the website's own content, so the CV never needs
    separate updating. Everything shown on the site goes in:
      sections/highlights.html (research interests), data/education.json,
-     data/experience.json, data/tree.json (supervisors), data/publications.json +
+     data/experience.json, data/tree.json (supervisors, including "cvOnly" ones), data/publications.json +
      sections/publications.html, data/presentations.json, sections/awards.html,
      sections/funding.html, data/courses.json, sections/experience.html (skills),
      data/news.json (media & recognition), script.js (profile text).
@@ -124,9 +124,15 @@
   }
 
   // ---------------------------------------------------------------- blocks
-  const section = (title, body) => body ? '<section class="cv-sec"><h2>' + esc(title) + "</h2>" + body + "</section>" : "";
-  function entry(w, title, sub, note, desc) {
-    return '<div class="cv-entry"><div class="cv-when">' + esc(w) + '</div><div class="cv-what">' +
+  // section heading with a small line icon (Lucide, as on the website)
+  const section = (title, body, icon) => body ? '<section class="cv-sec"><h2>' +
+    (icon ? '<span class="cv-ico" aria-hidden="true"><i data-lucide="' + icon + '"></i></span>' : "") +
+    "<span>" + esc(title) + "</span></h2>" + body + "</section>" : "";
+  const safeSrc = s => /^images\/[\w./ -]+$/.test(String(s || "")) ? s : "";
+  function entry(w, title, sub, note, desc, logo) {
+    logo = safeSrc(logo);
+    return '<div class="cv-entry' + (logo ? " cv-entry--logo" : "") + '"><div class="cv-when">' + esc(w) + "</div>" +
+      (logo ? '<img class="cv-logo" src="' + esc(logo) + '" alt="">' : "") + '<div class="cv-what">' +
       (title ? '<div class="cv-title">' + title + "</div>" : "") +
       (sub ? '<div class="cv-sub">' + esc(sub) + "</div>" : "") +
       (note ? '<div class="cv-note">' + esc(note) + "</div>" : "") +
@@ -146,7 +152,7 @@
       .map(({ it, m }) => {
         const tag = opts.badges && L[it.type] ? '<span class="cv-tag">' + esc(L[it.type]) + "</span>" : "";
         return entry(m.when, esc(pick(it.title)) + tag, m.rest, opts.summary ? pick(it.summary) : "",
-                     opts.desc && !it.earlier ? firstPara(it.details) : "");
+                     opts.desc && !it.earlier ? firstPara(it.details) : "", opts.logos && it.logo ? it.logo.src : "");
       }).join("");
   }
   const ME = /(Gustavo\s+(P\.|Pinho)\s+Maia|G\.\s*P\.\s*Maia|Gustavo\s+Maia)/g;
@@ -234,6 +240,8 @@
     return { role: get("role"), bio: get("bio"), opento: get("opento") };
   }
 
+  const contact = (icon, label, link) => '<li><span class="cv-cico" aria-hidden="true">' + icon + "</span><span>" + esc(label) + "</span>" + link + "</li>";
+
   // ---------------------------------------------------------------- load
   const getJSON = n => fetch("data/" + n + ".json", { cache: "no-cache" }).then(r => r.ok ? r.json() : null).catch(() => null);
   const getDoc = n => fetch("sections/" + n + ".html", { cache: "no-cache" }).then(r => r.ok ? r.text() : "")
@@ -261,27 +269,28 @@
         '<h1 class="cv-name">Gustavo Pinho Maia</h1>' +
         '<p class="cv-role">' + esc(prof.role || "PhD Researcher in Chemistry · Astrobiology") + "</p>" +
         '<ul class="cv-contact">' +
-          '<li><span>' + esc(L.email) + '</span><a href="#" id="cvMail" data-user="gustavopinho.maia" data-domain="mnhn.fr"></a></li>' +
-          '<li><span>ORCID</span><a href="https://orcid.org/0000-0001-5314-8816">0000-0001-5314-8816</a></li>' +
-          '<li><span>' + esc(L.web) + '</span><a href="https://gustavopmaia98.github.io/GustavoPMaia/">gustavopmaia98.github.io/GustavoPMaia</a></li>' +
-          '<li><span>LinkedIn</span><a href="https://www.linkedin.com/in/gustavopinhomaia">linkedin.com/in/gustavopinhomaia</a></li>' +
-          '<li><span>CiênciaVitae</span><a href="https://www.cienciavitae.pt/portal/en/8212-CEE3-E928">8212-CEE3-E928</a></li>' +
-          '<li><span>Google Scholar</span><a href="https://scholar.google.com/citations?user=TTVIFykAAAAJ">TTVIFykAAAAJ</a></li>' +
+          contact('<i data-lucide="mail"></i>', L.email, '<a href="#" id="cvMail" data-user="gustavopinho.maia" data-domain="mnhn.fr"></a>') +
+          contact('<img src="images/logos/orcid.png" alt="">', "ORCID", '<a href="https://orcid.org/0000-0001-5314-8816">0000-0001-5314-8816</a>') +
+          contact('<i data-lucide="globe"></i>', L.web, '<a href="https://gustavopmaia98.github.io/GustavoPMaia/">gustavopmaia98.github.io/GustavoPMaia</a>') +
+          contact('<img src="images/logos/linkedin.png" alt="">', "LinkedIn", '<a href="https://www.linkedin.com/in/gustavopinhomaia">linkedin.com/in/gustavopinhomaia</a>') +
+          contact('<i data-lucide="id-card"></i>', "CiênciaVitae", '<a href="https://www.cienciavitae.pt/portal/en/8212-CEE3-E928">8212-CEE3-E928</a>') +
+          contact('<i data-lucide="graduation-cap"></i>', "Google Scholar", '<a href="https://scholar.google.com/citations?user=TTVIFykAAAAJ">TTVIFykAAAAJ</a>') +
         "</ul></div>" +
-        '<img class="cv-photo" src="images/avatar.jpg" alt=""></header>' +
+        '<figure class="cv-portrait"><img class="cv-photo" src="images/cv-photo.jpg" alt="">' +
+          '<figcaption>' + esc(tr("<em>Credit: IMPMC · Cécile Duflot</em>", "<em>Crédito: IMPMC · Cécile Duflot</em>")) + "</figcaption></figure></header>" +
       section(L.profile, prof.bio ? '<p class="cv-profile">' + esc(prof.bio) +
-        (prof.opento ? ' <span class="cv-open">' + esc(prof.opento) + ".</span>" : "") + "</p>" : "") +
-      section(L.interests, interests(hlDoc)) +
-      section(L.education, timeline(edu, { summary: true, desc: true })) +
-      section(L.experience, timeline(exp, { desc: true })) +
-      section(L.supervisors, supervisors(tree)) +
-      section(L.publications, publications(pubDoc, pubdb)) +
-      section(L.presentations, timeline(pres, { badges: true, summary: true })) +
-      section(L.awards, awards(awDoc)) +
-      section(L.funding, funding(funDoc)) +
-      section(L.courses, timeline(courses, { summary: true })) +
-      section(L.skills, skills(expDoc)) +
-      section(L.media, media(news)) +
+        (prof.opento ? ' <span class="cv-open">' + esc(prof.opento) + ".</span>" : "") + "</p>" : "", "user") +
+      section(L.interests, interests(hlDoc), "atom") +
+      section(L.education, timeline(edu, { summary: true, desc: true, logos: true }), "graduation-cap") +
+      section(L.experience, timeline(exp, { desc: true, logos: true }), "flask-conical") +
+      section(L.supervisors, supervisors(tree), "users") +
+      section(L.publications, publications(pubDoc, pubdb), "book-open") +
+      section(L.presentations, timeline(pres, { badges: true, summary: true }), "presentation") +
+      section(L.awards, awards(awDoc), "award") +
+      section(L.funding, funding(funDoc), "landmark") +
+      section(L.courses, timeline(courses, { summary: true }), "notebook-pen") +
+      section(L.skills, skills(expDoc), "microscope") +
+      section(L.media, media(news), "newspaper") +
       '<p class="cv-foot">' + esc(L.generated) + (lang === "ja" ? "" : " ") +
         fmt({ y: today.getFullYear(), m: today.getMonth() + 1, day: today.getDate() }) + (lang === "ja" ? "" : ".") + "</p>";
     const cv = document.getElementById("cv");
@@ -289,6 +298,7 @@
     // the email text is put together here, so it is not in the page source
     const mail = document.getElementById("cvMail");
     mail.textContent = mail.dataset.user + "@" + mail.dataset.domain;
+    if (window.lucide && lucide.createIcons) try { lucide.createIcons({ attrs: { "stroke-width": 1.8 } }); } catch (e) {}
     cv.setAttribute("aria-busy", "false");
     document.documentElement.dataset.cvReady = "1";  // tools/build_cv.py waits for this
   });
