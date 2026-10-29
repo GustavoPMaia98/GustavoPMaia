@@ -668,61 +668,73 @@ html[data-theme="light"] .hl-modal-backdrop{ background:rgba(15,23,42,.45); }
   .glance-step:not(:last-child)::after{ content:"↓"; right:auto; left:50%; top:auto; bottom:-17px; transform:translateX(-50%); }
 }
 
-/* ---- Career path (Education section): interactive steps + summary panel ---- */
-.path-wrap{ margin:6px 0 24px; }
+/* ---- Career path (Education section): one card, like the timeline entries ----
+   Steps are tiles with the institution logo of the matching entry (filled in by
+   script.js), a year pill like the publication years, and the summary below. */
+.path-wrap{
+  margin:6px 0 26px; padding:18px 20px 16px;
+  background:var(--card); border:1px solid var(--border); border-radius:var(--radius-md);
+  box-shadow:0 14px 34px rgba(2,8,23,.4);
+}
+html[data-theme="light"] .path-wrap{ box-shadow:0 14px 34px rgba(15,23,42,.10); }
 .path{
   list-style:none; margin:0; padding:0; position:relative;
   display:grid; grid-template-columns:repeat(6, minmax(0,1fr)); gap:10px;
 }
-.path::before, .path::after{                 /* the line, and how far it has been drawn */
-  content:""; position:absolute; top:21px; left:22px; right:22px; height:3px; border-radius:3px;
-  background:color-mix(in srgb, var(--accent) 18%, transparent);
+.path::before{                               /* the line through the logos */
+  content:""; position:absolute; top:31px; left:8%; right:8%; height:2px;
+  background:linear-gradient(90deg, transparent, color-mix(in srgb, var(--accent) 45%, transparent) 8%,
+             color-mix(in srgb, var(--accent) 45%, transparent) 92%, transparent);
+  transform:scaleX(0); transform-origin:left center; transition:transform 1.2s cubic-bezier(.22,.61,.36,1);
 }
-.path::after{                                  /* drawn in when the path scrolls into view */
-  background:linear-gradient(90deg, color-mix(in srgb, var(--accent) 55%, transparent), var(--accent));
-  transform:scaleX(0); transform-origin:left center; transition:transform 1.4s cubic-bezier(.22,.61,.36,1); }
-.path.is-drawn::after{ transform:scaleX(1); }
-.path-step{ position:relative; z-index:1; min-width:0; }
+.path.is-drawn::before{ transform:scaleX(1); }
+.path-step{ position:relative; min-width:0; }
 .path-btn{
-  display:flex; flex-direction:column; align-items:flex-start; gap:2px; width:100%; height:100%;
-  padding:0 8px 10px 0; text-align:left; cursor:pointer; font:inherit; color:inherit;
-  background:none; border:0; border-radius:var(--radius-md);
+  position:relative; z-index:1;
+  display:flex; flex-direction:column; align-items:center; text-align:center; gap:4px;
+  width:100%; height:100%; padding:8px 6px 12px; cursor:pointer; font:inherit; color:inherit;
+  background:transparent; border:1px solid transparent; border-radius:var(--radius-sm);
+  transition:background .18s ease, border-color .18s ease, transform .18s ease;
 }
-.path-dot{
-  display:grid; place-items:center; width:44px; height:44px; border-radius:50%; margin-bottom:8px;
-  color:var(--accent); background:var(--card); border:2px solid color-mix(in srgb, var(--accent) 55%, transparent);
-  box-shadow:0 6px 16px rgba(2,8,23,.18);
-  transition:transform .2s ease, background .2s ease, color .2s ease, box-shadow .2s ease;
+.path-btn:hover{ background:color-mix(in srgb, var(--text) 4%, transparent); border-color:var(--border); transform:translateY(-2px); }
+.path-btn[aria-pressed="true"]{
+  background:color-mix(in srgb, var(--accent) 10%, transparent);
+  border-color:color-mix(in srgb, var(--accent) 45%, transparent);
 }
-.path-dot{ position:relative; }
-.path-dot svg{ width:20px; height:20px; }
-.path-now .path-dot{ color:var(--on-accent); background:var(--accent); border-color:var(--accent); }
-.path-now .path-dot::after{                  /* "you are here" pulse */
-  content:""; position:absolute; width:44px; height:44px; border-radius:50%;
-  border:2px solid var(--accent); animation:pathPulse 2.4s ease-out infinite;
+.path-btn:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+.path-logo{                                  /* white chip like the affiliation logos */
+  display:grid; place-items:center; width:48px; height:48px; padding:6px; margin-bottom:4px;
+  border-radius:12px; background:#fbfdff; border:1px solid rgba(255,255,255,.9);
+  box-shadow:0 6px 16px rgba(2,8,23,.35), inset 0 0 0 1px rgba(15,23,42,.06); color:#1e3a5f;
 }
-@keyframes pathPulse{ from{ transform:scale(1); opacity:.7; } to{ transform:scale(1.6); opacity:0; } }
-.path-btn:hover .path-dot, .path-btn:focus-visible .path-dot{ transform:translateY(-3px) scale(1.06); box-shadow:0 10px 22px rgba(2,8,23,.25); }
-.path-btn[aria-pressed="true"] .path-dot{ color:var(--on-accent); background:var(--accent-strong, var(--accent)); border-color:var(--accent); transform:scale(1.08); }
-.path-btn[aria-pressed="true"] .path-place{ color:var(--accent); }
-.path-btn:focus-visible{ outline:2px solid var(--accent); outline-offset:4px; }
-.path-year{ font-family:var(--font-mono); font-size:.76rem; font-weight:700; color:var(--accent); }
-.path-kind{ font-size:.64rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
-.path-place{ font-weight:700; font-size:.95rem; color:var(--text); transition:color .2s ease; }
+html[data-theme="light"] .path-logo{ box-shadow:0 6px 14px rgba(15,23,42,.12), inset 0 0 0 1px rgba(15,23,42,.08); }
+.path-logo img{ max-width:100%; max-height:100%; object-fit:contain; display:block; }
+.path-logo svg{ width:22px; height:22px; }
+.path-year{                                  /* same pill as the publication years */
+  display:inline-block; font-family:var(--font-body); font-weight:700; font-size:.76rem; letter-spacing:.02em;
+  color:var(--accent); border:1px solid rgba(125,211,252,.35); background:rgba(125,211,252,.10);
+  padding:1px 9px; border-radius:var(--radius-pill);
+}
+html[data-theme="light"] .path-year{ color:var(--accent-strong); border-color:rgba(96,165,250,.4); background:rgba(96,165,250,.12); }
+.path-kind{ font-size:.66rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+.path-place{ font-weight:700; font-size:.95rem; color:var(--text); }
 .path-what{ font-size:.78rem; line-height:1.35; color:var(--muted); }
+.path-now .path-year::before{               /* "now": the green status dot used in the intro */
+  content:""; display:inline-block; width:7px; height:7px; margin-right:6px; vertical-align:1px; border-radius:50%;
+  background:var(--status-live); box-shadow:0 0 0 3px rgba(40,200,64,.18);
+}
 
-.path-detail{
-  margin-top:6px; padding:14px 18px; border-radius:var(--radius-md);
-  background:var(--card); border:1px solid var(--border); border-left:3px solid var(--accent);
-  display:flex; flex-wrap:wrap; align-items:center; gap:6px 16px;
+.path-detail{                                /* summary of the selected step, styled like an entry */
+  display:flex; flex-wrap:wrap; align-items:center; gap:8px 16px;
+  margin-top:12px; padding-top:14px; border-top:1px solid var(--border);
   animation:pathIn .25s ease;
 }
 .path-detail[hidden]{ display:none; }
 @keyframes pathIn{ from{ opacity:0; transform:translateY(-4px); } to{ opacity:1; transform:none; } }
 .path-detail-text{ flex:1 1 320px; min-width:0; }
-.path-detail-title{ display:block; font-weight:700; color:var(--text); }
-.path-detail-meta{ display:block; font-size:.86rem; color:var(--muted); }
-.path-detail-sum{ display:block; font-size:.86rem; font-style:italic; color:var(--muted); margin-top:2px; }
+.path-detail-title{ display:block; font-weight:700; font-size:1.02rem; line-height:1.3; color:var(--text); }
+.path-detail-meta{ display:block; font-size:.86rem; color:var(--muted); margin-top:3px; }
+.path-detail-sum{ display:block; font-size:.9rem; font-style:italic; color:var(--muted); margin-top:6px; }
 .path-detail-go{
   display:inline-flex; align-items:center; gap:6px; cursor:pointer; white-space:nowrap;
   font:inherit; font-size:.86rem; font-weight:700; color:var(--accent);
@@ -733,19 +745,19 @@ html[data-theme="light"] .hl-modal-backdrop{ background:rgba(15,23,42,.45); }
 .path-detail-go:hover{ background:color-mix(in srgb, var(--accent) 18%, transparent); }
 .path-detail-go svg{ width:15px; height:15px; }
 
-@media (max-width:760px){                    /* phones: vertical line, steps as rows */
+@media (max-width:760px){                    /* phones: steps as rows, line on the left */
+  .path-wrap{ padding:14px 12px; }
   .path{ grid-template-columns:1fr; gap:4px; }
-  .path::before, .path::after{ top:22px; bottom:22px; left:21px; right:auto; width:3px; height:auto; }
-  .path::after{ background:linear-gradient(180deg, color-mix(in srgb, var(--accent) 55%, transparent), var(--accent));
-                transform:scaleY(0); transform-origin:center top; }
-  .path.is-drawn::after{ transform:scaleY(1); }
-  .path-btn{ display:grid; grid-template-columns:44px 1fr; column-gap:14px; align-items:center; padding:4px 0; }
-  .path-dot{ grid-row:1 / span 4; margin:0; }
-  .path-btn > :not(.path-dot){ grid-column:2; }
+  .path::before{ top:26px; bottom:26px; left:35px; right:auto; width:2px; height:auto;
+    background:color-mix(in srgb, var(--accent) 40%, transparent); transform:scaleY(0); transform-origin:center top; }
+  .path.is-drawn::before{ transform:scaleY(1); }
+  .path-btn{ display:grid; grid-template-columns:48px 1fr; column-gap:14px; align-items:center; text-align:left; padding:8px; }
+  .path-btn:hover{ transform:none; }
+  .path-logo{ grid-row:1 / span 4; margin:0; }
+  .path-btn > :not(.path-logo){ grid-column:2; justify-self:start; }
 }
 @media (prefers-reduced-motion:reduce){
-  .path::after{ transition:none; } .path-now .path-dot::after{ animation:none; display:none; }
-  .path-dot, .path-detail{ transition:none; animation:none; }
+  .path::before, .path-btn{ transition:none; } .path-detail{ animation:none; }
 }
 
 /* ---- Blog (posts from data/blog.json) ---- */

@@ -2037,6 +2037,27 @@
   //  CAREER PATH (Education): each step shows a summary of the matching
   //  Education / Experience entry, with a button that opens the full card.
   // ============================================================
+  // Paint a logo's tile in the colour of the logo's own background (read from
+  // its corner pixels), so no margin shows around it. Transparent logos keep the
+  // default white tile.
+  function matchLogoBackground(img, box) {
+    try {
+      const c = document.createElement("canvas");
+      const w = c.width = Math.min(img.naturalWidth, 64), h = c.height = Math.min(img.naturalHeight, 64);
+      const ctx = c.getContext("2d", { willReadFrequently: true });
+      ctx.drawImage(img, 0, 0, w, h);
+      const px = [[0, 0], [w - 1, 0], [0, h - 1], [w - 1, h - 1]].map(([x, y]) => ctx.getImageData(x, y, 1, 1).data);
+      if (px.some(p => p[3] < 200)) return;                     // transparent corners: keep the white tile
+      const avg = k => Math.round(px.reduce((t, p) => t + p[k], 0) / px.length);
+      const spread = Math.max(...[0, 1, 2].map(k => Math.max(...px.map(p => p[k])) - Math.min(...px.map(p => p[k]))));
+      if (spread > 40) return;                                  // corners disagree: no single background
+      const rgb = "rgb(" + avg(0) + "," + avg(1) + "," + avg(2) + ")";
+      box.style.background = rgb;
+      box.style.borderColor = rgb;
+      box.classList.add("is-matched");
+    } catch (e) { /* unreadable image: keep the default tile */ }
+  }
+
   function setupCareerPath() {
     const path = document.querySelector(".path");
     const panel = document.getElementById("pathDetail");
@@ -2084,6 +2105,18 @@
       panel.hidden = false;
       if (window.lucide && lucide.createIcons) try { lucide.createIcons(); } catch (e) {}
     }
+    // each step shows the institution logo of its entry (one source of truth)
+    steps.forEach(b => {
+      const it = target(b), img = it && it.querySelector(".timeline-header img");
+      const box = b.querySelector(".path-logo");
+      if (img && box) {
+        const i = document.createElement("img");
+        i.alt = "";
+        i.addEventListener("load", () => matchLogoBackground(i, box));
+        i.src = img.getAttribute("src");
+        box.innerHTML = ""; box.appendChild(i);
+      }
+    });
     steps.forEach((b, i) => {
       b.addEventListener("click", () => show(b));
       b.addEventListener("keydown", e => {         // arrow keys move along the path
