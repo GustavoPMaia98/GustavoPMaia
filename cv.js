@@ -181,11 +181,13 @@
         (extra.length ? '<div class="cv-pmeta">' + extra.join("") + "</div>" : "") + "</li>";
     }).join("") + "</ol>";
   }
+  // the research highlights shown in the Current Work Interests carousel
   function interests(doc) {
     if (!doc) return "";
-    const steps = [...doc.querySelectorAll(".glance-step")];
-    return steps.length ? '<ul class="cv-interests">' + steps.map(s =>
-      "<li><b>" + esc(fromEl(s.querySelector(".glance-title"))) + ".</b> " + esc(fromEl(s.querySelector("p"))) + "</li>").join("") + "</ul>" : "";
+    const cards = [...doc.querySelectorAll(".hl-card")];
+    return cards.length ? '<ul class="cv-interests">' + cards.map(c =>
+      "<li><b>" + esc(fromEl(c.querySelector(".hl-title")).replace(/([^.?!？。])$/, "$1.")) + "</b> " +
+      esc(fromEl(c.querySelector(".hl-text"))) + "</li>").join("") + "</ul>" : "";
   }
   function supervisors(tree) {
     const ms = ((tree && tree.root && tree.root.mentors) || []).filter(m => !m.hidden);
