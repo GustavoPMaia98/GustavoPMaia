@@ -72,11 +72,14 @@ html[lang="ja"] .cv h2{ letter-spacing:.04em; }
   break-inside:avoid; page-break-inside:avoid; }
 .cv-when{ color:var(--faint); font-size:.8rem; font-weight:600; padding-top:2px; font-variant-numeric:tabular-nums; }
 .cv-what{ min-width:0; }
-.cv-entry--logo{ grid-template-columns:132px 34px 1fr; }
-.cv-logo{ width:34px; height:30px; object-fit:contain; object-position:left top; margin-top:1px; }
+.cv-entry--logo{ grid-template-columns:132px 46px 1fr; }
+/* every logo in the same tile: trimmed to its visible part by cv.js, then fitted */
+.cv-logo{ width:40px; height:40px; padding:3px; box-sizing:border-box; object-fit:contain; margin-top:1px;
+  background:#fff; border:1px solid var(--line); border-radius:6px; }
 .cv-title{ font-weight:700; font-size:.95rem; }
 .cv-sub{ color:var(--muted); font-size:.85rem; font-style:italic; }
 .cv-note{ font-size:.84rem; color:var(--muted); margin-top:1px; }
+.cv sub, .cv sup{ font-size:.72em; line-height:0; }
 .cv-desc{ font-size:.85rem; margin-top:3px; color:#374151; }
 .cv-tag{ display:inline-block; font-size:.64rem; font-weight:800; text-transform:uppercase; letter-spacing:.06em;
   color:var(--accent); background:var(--accent-soft); border-radius:3px; padding:1px 6px; margin-left:8px; vertical-align:2px; }
@@ -101,7 +104,7 @@ html[lang="ja"] .cv h2{ letter-spacing:.04em; }
   .cv-contact li{ white-space:normal; }
   .cv-contact a{ overflow-wrap:anywhere; }
   .cv-entry{ grid-template-columns:1fr; }
-  .cv-entry--logo{ grid-template-columns:30px 1fr; }
+  .cv-entry--logo{ grid-template-columns:40px 1fr; }
   .cv-entry--logo .cv-when{ grid-column:1 / -1; }
   .cv-skills th{ width:auto; display:block; padding-bottom:0; }
   .cv-skills td{ display:block; }

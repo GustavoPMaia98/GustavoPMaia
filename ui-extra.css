@@ -708,11 +708,16 @@ html[data-theme="light"] .path-year{ color:var(--accent-strong); border-color:rg
   animation:pathIn .25s ease;
 }
 .path-detail[hidden]{ display:none; }
+.path-detail{ scroll-margin-top:120px; }
 @keyframes pathIn{ from{ opacity:0; transform:translateY(-4px); } to{ opacity:1; transform:none; } }
 .path-detail-text{ flex:1 1 320px; min-width:0; }
 .path-detail-title{ display:block; font-weight:700; font-size:1.02rem; line-height:1.3; color:var(--text); }
 .path-detail-meta{ display:block; font-size:.86rem; color:var(--muted); margin-top:3px; }
 .path-detail-sum{ display:block; font-size:.9rem; font-style:italic; color:var(--muted); margin-top:6px; }
+.path-detail-body{ flex:1 1 100%; min-width:0; font-size:.95rem; line-height:1.65; color:var(--text); }
+.path-detail-body > p{ margin:0 0 10px; }
+.path-detail-body .expand-gallery{ margin-top:12px; }
+.edu-source[hidden]{ display:none !important; }
 .path-detail-go{
   display:inline-flex; align-items:center; gap:6px; cursor:pointer; white-space:nowrap;
   font:inherit; font-size:.86rem; font-weight:700; color:var(--accent);

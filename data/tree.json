@@ -17,8 +17,8 @@
         "name": "José Armando L. da Silva",
         "url": "https://cqe.tecnico.ulisboa.pt/expert/jose-armando-l-da-silva/",
         "role": {
-          "en": "Doctoral advisor",
-          "pt": "Orientador de doutoramento"
+          "en": "Doctoral and Master's advisor",
+          "pt": "Orientador de doutoramento e de mestrado"
         },
         "institution": {
           "name": "Centro de Química Estrutural · IST",
@@ -245,11 +245,12 @@
         ]
       },
       {
-        "name": "João Serrano",
+        "name": "Paulo J. S. Almeida",
         "cvOnly": true,
+        "url": "https://www.ubi.pt/sites/cics/en/investigador/221",
         "role": {
-          "en": "Master's advisor",
-          "pt": "Orientador de mestrado"
+          "en": "Bachelor's advisor",
+          "pt": "Orientador de licenciatura"
         },
         "institution": {
           "name": "Universidade da Beira Interior",
@@ -257,16 +258,26 @@
         }
       },
       {
-        "name": "Paulo J. S. Almeida",
+        "name": "João Serrano",
         "cvOnly": true,
-        "url": "https://www.ubi.pt/sites/cics/en/investigador/221",
         "role": {
-          "en": "Bachelor's project advisor",
-          "pt": "Orientador do projeto de licenciatura"
+          "en": "Bachelor's co-advisor (then a Master's student)",
+          "pt": "Coorientador de licenciatura (então estudante de mestrado)"
         },
         "institution": {
           "name": "Universidade da Beira Interior",
           "url": "https://www.ubi.pt/"
+        }
+      },
+      {
+        "name": "Eng. Carlos Amorim",
+        "cvOnly": true,
+        "role": {
+          "en": "Internship coordinator · Professional course",
+          "pt": "Coordenador de estágio · Curso Profissional"
+        },
+        "institution": {
+          "name": "Escola Profissional de Espinho"
         }
       }
     ],
