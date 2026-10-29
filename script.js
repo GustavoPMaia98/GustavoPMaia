@@ -748,7 +748,9 @@
       wireAccordions();
       buildPublicationFilter();
       decoratePublications();
-      updateMetrics();
+      enrichPublications(db);
+      updateMetrics(db);
+      applyLang();                       // translate the labels added above
       return;
     }
 
@@ -759,6 +761,89 @@
     buildPublicationFilter();
     decoratePublications();
     updateMetrics();
+  }
+
+  // ---- Citation counts, free PDF links and a "Cite" button, from the nightly
+  //      data in data/publications.json (OpenAlex + Crossref). Papers without an
+  //      entry there are simply left as they are.
+  function enrichPublications(db) {
+    const byDoi = {};
+    (db.works || []).forEach(w => { if (w.doi) byDoi[w.doi.toLowerCase()] = w; });
+    document.querySelectorAll("#publications .timeline-item.publication").forEach(it => {
+      const a = it.querySelector('a[href*="doi.org/"]');
+      const m = a && a.getAttribute("href").match(/doi\.org\/(.+)$/i);
+      const w = m && byDoi[decodeURIComponent(m[1]).trim().toLowerCase()];
+      if (!w || it.querySelector(".pub-tools")) return;
+      const n = +w.cited_by || 0;
+      if (n > 0) {
+        const c = document.createElement("span");
+        c.className = "pub-cites";
+        c.innerHTML = "<b>" + n + "</b> " + (n === 1 ? '<span data-pt="citação">citation</span>' : '<span data-pt="citações">citations</span>');
+        const year = it.querySelector(".pub-year") || it.querySelector(".timeline-header strong");
+        if (year) year.insertAdjacentElement("afterend", c);
+      }
+      const body = it.querySelector(".expand-body");
+      if (!body) return;
+      const tools = document.createElement("div");
+      tools.className = "pub-tools";
+      tools.innerHTML =
+        (w.oa_url && /^https:\/\//.test(w.oa_url)
+          ? '<a class="pub-tool" href="' + escapeHtml(w.oa_url) + '" target="_blank" rel="noopener noreferrer"><i data-lucide="file-down"></i><span data-pt="PDF gratuito">Free PDF</span></a>' : "") +
+        '<button type="button" class="pub-tool" data-cite="apa"><i data-lucide="quote"></i><span data-pt="Copiar citação (APA)">Copy citation (APA)</span></button>' +
+        '<button type="button" class="pub-tool" data-cite="bibtex"><i data-lucide="braces"></i><span>BibTeX</span></button>' +
+        '<span class="pub-tool-done" role="status" aria-live="polite"></span>';
+      tools.addEventListener("click", e => {
+        const b = e.target.closest("[data-cite]");
+        if (!b) return;
+        e.stopPropagation();
+        copyText(b.dataset.cite === "bibtex" ? bibtex(w) : apa(w)).then(ok => {
+          const done = tools.querySelector(".pub-tool-done");
+          done.textContent = ok ? ({ pt: "Copiado!", fr: "Copié !", ja: "コピーしました" }[currentLang] || "Copied!") : "";
+          setTimeout(() => { done.textContent = ""; }, 2200);
+        });
+      });
+      body.appendChild(tools);
+    });
+    if (window.lucide && lucide.createIcons) try { lucide.createIcons(); } catch (e) {}
+  }
+
+  function authorList(w) {
+    if (Array.isArray(w.author_list) && w.author_list.length) return w.author_list;
+    return String(w.authors || "").split(/,\s*|\s+and\s+/).filter(Boolean).map(full => {
+      const p = full.trim().split(/\s+/);
+      return { given: p.slice(0, -1).join(" "), family: p.slice(-1)[0] || "" };
+    });
+  }
+  const initials = g => String(g || "").split(/[\s.]+/).filter(Boolean)
+    .map(x => x.split("-").map(y => y[0].toUpperCase() + ".").join("-")).join(" ");
+  function apa(w) {
+    const au = authorList(w).map(a => a.family + (a.given ? ", " + initials(a.given) : ""));
+    const names = au.length > 1 ? au.slice(0, -1).join(", ") + ", & " + au[au.length - 1] : (au[0] || "");
+    const vol = w.volume ? ", " + w.volume + (w.issue ? "(" + w.issue + ")" : "") : "";
+    return names + " (" + (w.year || "n.d.") + "). " + w.title + ". " + (w.journal || "") + vol +
+      (w.pages ? ", " + w.pages : "") + ". https://doi.org/" + w.doi;
+  }
+  function bibtex(w) {
+    const first = authorList(w)[0] || { family: "maia" };
+    const ascii = s => String(s).normalize("NFD").replace(/[^\x00-\x7f]/g, "");
+    const word = (ascii(w.title).toLowerCase().match(/[a-z]{4,}/) || ["paper"])[0];
+    const key = ascii(first.family).toLowerCase().replace(/[^a-z]/g, "") + (w.year || "") + word;
+    const f = (k, v) => v ? "  " + k + " = {" + v + "},\n" : "";
+    return "@article{" + key + ",\n" +
+      f("author", authorList(w).map(a => a.family + (a.given ? ", " + a.given : "")).join(" and ")) +
+      f("title", w.title) + f("journal", w.journal) + f("year", w.year) + f("volume", w.volume) +
+      f("number", w.issue) + f("pages", w.pages) + f("doi", w.doi) + "}";
+  }
+  function copyText(t) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(t).then(() => true, () => fallback());
+    return Promise.resolve(fallback());
+    function fallback() {
+      const ta = document.createElement("textarea");
+      ta.value = t; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      let ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+      ta.remove(); return ok;
+    }
   }
 
   // Add a blue year badge to every publication and order the whole list
@@ -1167,7 +1252,7 @@
 
   // The intro numbers count what is on the page, so they never go stale:
   // papers (preprints excluded), talks & posters, research areas (the tags).
-  function updateMetrics() {
+  function updateMetrics(db) {
     const set = (key, n) => { const el = document.querySelector('[data-metric="' + key + '"]'); if (el && n) el.textContent = n; };
     let pubs = 0;
     document.querySelectorAll("#publications .timeline-item.publication").forEach(it => {
@@ -1176,6 +1261,16 @@
     set("pubs", pubs);
     set("talks", document.querySelectorAll("#presentations .timeline-item").length);
     set("areas", document.querySelectorAll(".hero-tags > span").length);
+    // h-index refreshed every night from OpenAlex (data/publications.json)
+    const m = db && db.metrics;
+    if (m && m.h_index) {
+      set("hindex", m.h_index);
+      const link = document.querySelector('[data-metric="hindex"]').closest("a");
+      if (link && m.profile) {
+        link.href = m.profile;
+        link.title = "h-index · " + m.citations + " citations (OpenAlex)";
+      }
+    }
   }
 
   // Presentation map (Leaflet)

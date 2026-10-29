@@ -128,11 +128,14 @@ def crossref_meta(doi):
             .get("message")) or None
 
 
-def openalex_topics(doi):
+def openalex_work(doi):
     try:
-        w = get("https://api.openalex.org/works/doi:" + urllib.parse.quote(doi) + "?" + POLITE.lstrip("&")) or {}
+        return get("https://api.openalex.org/works/doi:" + urllib.parse.quote(doi) + "?" + POLITE.lstrip("&")) or {}
     except Exception:
-        return []
+        return {}
+
+
+def openalex_topics(w):
     out = []
     for t in (w.get("topics") or []):
         out.append(t.get("display_name", ""))
@@ -170,8 +173,10 @@ def verify(doi, sources):
     orcid_linked = any(ORCID in (a.get("ORCID") or "") for a in authors)
     title = re.sub(r"<[^>]+>", " ", (m.get("title") or [""])[0]).strip()
     journal = (m.get("container-title") or [""])[0].strip()
-    abstract = re.sub(r"<[^>]+>", " ", m.get("abstract") or "")
-    topics = openalex_topics(doi)
+    abstract = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.get("abstract") or "")).strip()
+    abstract = re.sub(r"^abstract[:\s]*", "", abstract, flags=re.I)
+    work = openalex_work(doi)
+    topics = openalex_topics(work)
     text = plain(" ".join([title, journal, abstract, " ".join(m.get("subject") or []), " ".join(topics)]))
     field_ok = (bool(FIELD.search(text)) or plain(journal) in FIELD_JOURNALS
                 or any(plain(t) in FIELD_TOPICS for t in topics))
@@ -182,7 +187,9 @@ def verify(doi, sources):
     if not (orcid_linked or on_record or coauthor):
         return None, "name and field match, but no ORCID link, ORCID listing or known co-author"
     parts = ((m.get("issued") or {}).get("date-parts") or [[None]])[0]
-    return {
+    oa = work.get("best_oa_location") or {}
+    oa_url = oa.get("pdf_url") or oa.get("landing_page_url") or (work.get("open_access") or {}).get("oa_url")
+    entry = {
         "doi": doi,
         "title": title,
         "year": parts[0] if parts else None,
@@ -191,7 +198,39 @@ def verify(doi, sources):
                              for a in authors),
         "verified": [x for x, ok in (("orcid-id-on-paper", orcid_linked), ("on-orcid-record", on_record),
                                      ("known-coauthor", coauthor)) if ok],
-    }, "ok"
+        # for the "Cite" button (APA / BibTeX)
+        "author_list": [{"given": a.get("given", ""), "family": a.get("family") or a.get("name", "")} for a in authors],
+        "volume": m.get("volume", ""),
+        "issue": m.get("issue", ""),
+        "pages": m.get("page") or m.get("article-number", ""),
+        # from OpenAlex: abstract (when Crossref has none), free full text, citations
+        "abstract": abstract or inverted_abstract(work.get("abstract_inverted_index")),
+        "oa_url": oa_url if (work.get("open_access") or {}).get("is_oa") and oa_url else "",
+        "cited_by": work.get("cited_by_count") or 0,
+    }
+    return entry, "ok"
+
+
+def inverted_abstract(index):
+    """OpenAlex stores abstracts as {word: [positions]}; put the words back in order."""
+    if not index:
+        return ""
+    words = sorted((pos, w) for w, positions in index.items() for pos in positions)
+    return " ".join(w for _, w in words)
+
+
+def author_metrics():
+    """h-index, i10-index and total citations from my OpenAlex author profile."""
+    try:
+        a = get(f"https://api.openalex.org/authors/orcid:{ORCID}" + ("?" + POLITE.lstrip("&") if POLITE else "")) or {}
+    except Exception as e:
+        print(f"warning: OpenAlex author profile unreachable ({e})")
+        return None
+    st = a.get("summary_stats") or {}
+    if not a.get("id"):
+        return None
+    return {"h_index": st.get("h_index") or 0, "i10_index": st.get("i10_index") or 0,
+            "citations": a.get("cited_by_count") or 0, "source": "OpenAlex", "profile": a.get("id")}
 
 
 def main():
@@ -235,11 +274,14 @@ def main():
     if os.path.exists(OUT):
         with open(OUT, encoding="utf-8") as f:
             cur = json.load(f)
-    if cur.get("works") == works:
+    metrics = author_metrics() or cur.get("metrics")
+    if cur.get("works") == works and cur.get("metrics") == metrics:
         print("No change.")
         return 0
     data = {"source": f"ORCID {ORCID}, Crossref and OpenAlex; every paper verified (author + field + identity)",
             "updated": time.strftime("%Y-%m-%d"), "works": works}
+    if metrics:
+        data["metrics"] = metrics
     with open(OUT, "w", encoding="utf-8") as f:
         f.write(json.dumps(data, ensure_ascii=False, indent=1) + "\n")
     print(f"Wrote {len(works)} verified works to {OUT}")

@@ -571,3 +571,22 @@ html[data-theme="light"] .hl-modal-backdrop{ background:rgba(15,23,42,.45); }
   .footer-inner{ padding-bottom:84px; }
 }
 
+/* ---- Publications: citation count, free PDF and "Cite" (data from OpenAlex) ---- */
+.pub-cites{
+  display:inline-block; margin-left:8px; vertical-align:middle;
+  font-size:.78rem; font-weight:600; color:var(--muted);
+  border:1px solid var(--border); padding:2px 9px; border-radius:var(--radius-pill);
+}
+.pub-cites b{ color:var(--text); }
+.pub-tools{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:6px 0 4px; }
+.pub-tool{
+  display:inline-flex; align-items:center; gap:6px; cursor:pointer;
+  font:inherit; font-size:.84rem; font-weight:600; color:var(--accent); text-decoration:none;
+  background:color-mix(in srgb, var(--accent) 10%, transparent);
+  border:1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  border-radius:var(--radius-pill); padding:6px 12px;
+}
+.pub-tool:hover, .pub-tool:focus-visible{ background:color-mix(in srgb, var(--accent) 18%, transparent); text-decoration:none; }
+.pub-tool svg{ width:15px; height:15px; }
+.pub-tool-done{ font-size:.82rem; font-weight:600; color:var(--status-live, #22c55e); }
+

@@ -10,6 +10,10 @@
 window.TR = window.TR || { fr: {}, ja: {} };
 
 window.TR.fr = {
+  "citation": "citation",
+  "citations": "citations",
+  "Free PDF": "PDF gratuit",
+  "Copy citation (APA)": "Copier la citation (APA)",
   "Technique": "Technique",
   "Skill": "Compétence",
   "Select any item to see how I use it.": "Sélectionnez un élément pour voir comment je l’utilise.",
@@ -483,6 +487,10 @@ window.TR.fr = {
 };
 
 window.TR.ja = {
+  "citation": "件の被引用",
+  "citations": "件の被引用",
+  "Free PDF": "無料PDF",
+  "Copy citation (APA)": "引用をコピー (APA)",
   "Technique": "技術",
   "Skill": "スキル",
   "Select any item to see how I use it.": "項目を選ぶと、その使い方を表示します。",
