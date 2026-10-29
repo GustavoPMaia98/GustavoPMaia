@@ -10,12 +10,12 @@
 window.TR = window.TR || { fr: {}, ja: {} };
 
 window.TR.fr = {
-  "Impacts in space": "Impacts dans l’espace",
-  "Collisions, micrometeorite impacts and asteroid gardening deliver mechanical energy to organic matter in space.": "Collisions, impacts de micrométéorites et « asteroid gardening » (remaniement de surface des astéroïdes) apportent de l’énergie mécanique à la matière organique dans l’espace.",
-  "Mechanochemistry in the lab": "La mécanochimie au laboratoire",
-  "In the lab I reproduce these forces by milling and grinding, and follow which molecules form, break down or survive.": "Au laboratoire, je reproduis ces forces par broyage et j’observe quelles molécules se forment, se dégradent ou survivent.",
-  "Origin of life": "Origine de la vie",
-  "This shows how meteorites and asteroids may have delivered, and transformed, the building blocks of life on the early Earth.": "Cela montre comment météorites et astéroïdes ont pu apporter, et transformer, les briques du vivant sur la Terre primitive.",
+  "Shock and impact processing": "Processus de choc et d’impact",
+  "From planetesimal accretion to asteroid gardening by micrometeorite and IDP impacts, and meteoroid atmospheric entry, extraterrestrial organic matter is repeatedly exposed to mechanical energy.": "De l’accrétion des planétésimaux à l’« asteroid gardening » par impacts de micrométéorites et d’IDP, jusqu’à l’entrée atmosphérique des météoroïdes, la matière organique extraterrestre est soumise à répétition à de l’énergie mécanique.",
+  "Solid-state mechanochemistry": "Mécanochimie à l’état solide",
+  "Ball milling and grinding of organic analogues (hexamethylenetetramine, ribonucleosides) with minerals and ions found in meteorites (clays, Fe, Ni, Al, carbonate); products characterised by chromatography–mass spectrometry, NMR and DFT calculations.": "Broyage d’analogues organiques (hexaméthylènetétramine, ribonucléosides) avec des minéraux et des ions présents dans les météorites (argiles, Fe, Ni, Al, carbonate) ; produits caractérisés par chromatographie–spectrométrie de masse, RMN et calculs DFT.",
+  "Exogenous delivery and prebiotic chemistry": "Apport exogène et chimie prébiotique",
+  "Impact processing can both transform and protect organic matter, from forming new N-heterocycles to degrading ribonucleosides into nucleobases, shaping the organic inventory delivered to the early Earth.": "Les impacts peuvent à la fois transformer et protéger la matière organique, de la formation de nouveaux hétérocycles azotés à la dégradation de ribonucléosides en bases nucléiques, façonnant l’inventaire organique apporté à la Terre primitive.",
   "Mechatronics Technician · Escola Profissional de Espinho": "Technicien en mécatronique · Escola Profissional de Espinho",
   "BSc Industrial Chemistry · UBI": "Licence en chimie industrielle · UBI",
   "Lisbon": "Lisbonne",
@@ -504,12 +504,12 @@ window.TR.fr = {
 };
 
 window.TR.ja = {
-  "Impacts in space": "宇宙での衝突",
-  "Collisions, micrometeorite impacts and asteroid gardening deliver mechanical energy to organic matter in space.": "天体の衝突、微小隕石の衝突、小惑星表面のガーデニング（asteroid gardening）が、宇宙の有機物に機械的エネルギーを与えます。",
-  "Mechanochemistry in the lab": "実験室でのメカノケミストリー",
-  "In the lab I reproduce these forces by milling and grinding, and follow which molecules form, break down or survive.": "実験室ではボールミルや粉砕でこれらの力を再現し、どの分子が生成・分解・残存するかを追跡します。",
-  "Origin of life": "生命の起源",
-  "This shows how meteorites and asteroids may have delivered, and transformed, the building blocks of life on the early Earth.": "これにより、隕石や小惑星が初期地球に生命の材料を運び、変化させた可能性が明らかになります。",
+  "Shock and impact processing": "衝撃・衝突プロセス",
+  "From planetesimal accretion to asteroid gardening by micrometeorite and IDP impacts, and meteoroid atmospheric entry, extraterrestrial organic matter is repeatedly exposed to mechanical energy.": "微惑星の集積から、微小隕石や惑星間塵（IDP）の衝突による小惑星表面のガーデニング、流星体の大気突入まで、地球外有機物は繰り返し機械的エネルギーにさらされます。",
+  "Solid-state mechanochemistry": "固体メカノケミストリー",
+  "Ball milling and grinding of organic analogues (hexamethylenetetramine, ribonucleosides) with minerals and ions found in meteorites (clays, Fe, Ni, Al, carbonate); products characterised by chromatography–mass spectrometry, NMR and DFT calculations.": "有機類似物質（ヘキサメチレンテトラミン、リボヌクレオシド）を隕石に含まれる鉱物・イオン（粘土鉱物、Fe、Ni、Al、炭酸塩）とボールミル・粉砕処理し、生成物をクロマトグラフィー質量分析、NMR、DFT計算で解析します。",
+  "Exogenous delivery and prebiotic chemistry": "外因的供給と前生物化学",
+  "Impact processing can both transform and protect organic matter, from forming new N-heterocycles to degrading ribonucleosides into nucleobases, shaping the organic inventory delivered to the early Earth.": "衝突による処理は有機物を変化させることも保護することもあり、新たな含窒素複素環の生成からリボヌクレオシドの核酸塩基への分解まで、初期地球へ運ばれた有機物の組成を形づくります。",
   "Mechatronics Technician · Escola Profissional de Espinho": "メカトロニクス技術者 · エスピーニョ職業学校",
   "BSc Industrial Chemistry · UBI": "工業化学学士 · UBI",
   "Lisbon": "リスボン",
