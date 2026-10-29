@@ -26,4 +26,4 @@ jobs:
         run: python tools/check_site.py
       - name: JavaScript syntax
         run: |
-          for f in script.js search.js render.js sw.js i18n/translations.js; do node --check "$f"; done
+          for f in script.js search.js render.js mail.js sw.js i18n/translations.js; do node --check "$f"; done

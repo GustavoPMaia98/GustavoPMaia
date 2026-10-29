@@ -32,6 +32,8 @@ jobs:
           python-version: "3.12"
       - run: pip install pillow==10.4.0
       - name: Publications (ORCID)
+        env:
+          CONTACT_EMAIL: ${{ secrets.CONTACT_EMAIL }}   # optional, see tools/update_publications.py
         run: python tools/update_publications.py
       - name: Academic tree (Chemistry Tree)
         run: python tools/update_tree.py

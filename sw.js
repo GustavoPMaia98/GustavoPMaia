@@ -1,12 +1,12 @@
 /* Service worker: app-shell caching + offline fallback.
    Network-first for HTML, CSS, JS and data (so new content shows at once),
    cache-then-refresh for pictures and other static files. */
-const CACHE = "gpm-v58";
+const CACHE = "gpm-v59";
 const CORE = [
   "./", "index.html", "cientificamente.html",
   "design-system/styles.css", "design-system/tokens/fonts.css", "design-system/tokens/colors.css",
   "design-system/tokens/typography.css", "design-system/tokens/spacing.css", "design-system/tokens/effects.css",
-  "style.css", "ui-extra.css", "script.js", "search.js", "render.js", "vendor/lucide-1.48.0.min.js", "favicon.svg",
+  "style.css", "ui-extra.css", "script.js", "search.js", "render.js", "mail.js", "vendor/lucide-1.48.0.min.js", "favicon.svg",
   "sections/highlights.html", "sections/news.html", "sections/publications.html", "sections/presentations.html",
   "sections/education.html", "sections/experience.html", "sections/courses.html", "sections/awards.html",
   "sections/funding.html", "sections/tree.html", "sections/map.html",

@@ -84,7 +84,6 @@
         "description": "PhD researcher in Chemistry (Astrobiology) studying the mechanochemical and shock-driven synthesis of organic molecules relevant to prebiotic chemistry and the origin of life.",
         "image": "https://gustavopmaia98.github.io/GustavoPMaia/images/avatar.jpg",
         "url": "https://gustavopmaia98.github.io/GustavoPMaia/",
-        "email": "mailto:gustavopinho.maia@mnhn.fr",
         "knowsAbout": ["Mechanochemistry","Prebiotic chemistry","Astrobiology","Origin of life","Mass spectrometry"],
         "affiliation": [
           {"@type":"Organization","name":"Centro de Química Estrutural, Instituto Superior Técnico, Universidade de Lisboa"},
@@ -235,7 +234,7 @@
             <h1 data-pt="Gustavo Pinho Maia">Gustavo Pinho Maia</h1>
           </div>
           <div class="role" data-i18n="role">PhD Researcher in Chemistry · Astrobiology</div>
-          <a class="open-to" href="mailto:gustavopinho.maia@mnhn.fr?subject=Postdoctoral%20position"><span class="open-to-dot" aria-hidden="true"></span><span data-i18n="opento">Open to postdoctoral positions from 2027</span></a>
+          <a class="open-to" href="#" data-user="gustavopinho.maia" data-domain="mnhn.fr" data-subject="Postdoctoral position"><span class="open-to-dot" aria-hidden="true"></span><span data-i18n="opento">Open to postdoctoral positions from 2027</span></a>
 
           <p data-i18n="bio">
             My research explores the origins and evolution of life in the universe, using chemistry
@@ -284,7 +283,7 @@
                 <img src="images/logos/researchgate.png" width="18" height="18" alt=""><span>ResearchGate</span></a>
               <a class="profile-link" href="https://scholar.google.com/citations?user=TTVIFykAAAAJ" target="_blank" rel="noopener noreferrer" title="Google Scholar">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M5.242 13.769L0 9.5 12 0l12 9.5-5.242 4.269C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.547 1.748-6.758 4.269zM12 10a7 7 0 1 0 0 14 7 7 0 0 0 0-14z"/></svg><span>Scholar</span></a>
-              <a class="profile-link" href="mailto:gustavopinho.maia@mnhn.fr" title="Email">
+              <a class="profile-link" href="#" data-user="gustavopinho.maia" data-domain="mnhn.fr" title="Email">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M2 6.5C2 5.67 2.67 5 3.5 5h17c.83 0 1.5.67 1.5 1.5v11c0 .83-.67 1.5-1.5 1.5h-17A1.5 1.5 0 0 1 2 17.5v-11zM4 7v.83l8 5.33 8-5.33V7l-8 5-8-5z"/></svg><span data-pt="Email">Email</span></a>
               <a href="cientificamente.html" class="cta-pill">Cientifica(mente)</a>
             </div>
@@ -320,7 +319,7 @@
       chemistry and the origin of life. Affiliated with Centro de Química Estrutural (CQE),
       Instituto Superior Técnico · Universidade de Lisboa, NASA Goddard Astrobiology Analytical
       Laboratory, and MNHN · IMPMC, Sorbonne Université (Paris).</p>
-      <p>Contact: gustavopinho.maia@mnhn.fr ·
+      <p>Contact: gustavopinho.maia (at) mnhn.fr ·
       <a href="https://orcid.org/0000-0001-5314-8816">ORCID 0000-0001-5314-8816</a> ·
       <a href="https://scholar.google.com/citations?user=TTVIFykAAAAJ">Google Scholar</a></p>
       <h3>Selected publications</h3>
@@ -359,7 +358,7 @@
         <a href="https://www.researchgate.net/profile/Gustavo_Maia2" target="_blank" rel="noopener noreferrer">ResearchGate</a>
         <a href="https://scholar.google.com/citations?user=TTVIFykAAAAJ" target="_blank" rel="noopener noreferrer">Google Scholar</a>
         <a href="https://cienciavitae.pt/portal/en/8212-CEE3-E928" target="_blank" rel="noopener noreferrer">CiênciaVitae</a>
-        <a href="mailto:gustavopinho.maia@mnhn.fr" data-pt="Email">Email</a>
+        <a href="#" data-user="gustavopinho.maia" data-domain="mnhn.fr" data-pt="Email">Email</a>
       </nav>
     </div>
   </footer>
@@ -372,6 +371,8 @@
   <script src="vendor/lucide-1.48.0.min.js"></script>
   <!-- Builds News and the Academic Tree from data/news.json and data/tree.json -->
   <script src="render.js"></script>
+  <!-- Email links: the address is only assembled when clicked (keeps it away from spam bots) -->
+  <script src="mail.js"></script>
 
   <script>
     // "no-cache" = always ask the server whether the file changed (cheap 304 when it
