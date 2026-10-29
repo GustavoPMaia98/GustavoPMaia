@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Security: only this site, Google Fonts and the pinned map library may run code or load styles here.
        After editing an inline script, run: python tools/check_site.py --fix -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://unpkg.com/leaflet@1.9.4/ 'sha256-aSbGc3/HP5sipjRcPUtVvlNl802lhgPZUwMTNfE+gQg=' 'sha256-cUh90J5iy5ynkHCYEfQfmElwdsTCob+XEaqaTvWpyyU=' 'sha256-4q2xuongV1yIe//jKK9VhIfoTj8TRdiwk12UI+5uJRk='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com/leaflet@1.9.4/; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self'; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://unpkg.com/leaflet@1.9.4/ 'sha256-aSbGc3/HP5sipjRcPUtVvlNl802lhgPZUwMTNfE+gQg=' 'sha256-f62pSEeDtTr+94apxX/MpPFT3M0aldSKzTPtmfUCJLI=' 'sha256-4q2xuongV1yIe//jKK9VhIfoTj8TRdiwk12UI+5uJRk='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com/leaflet@1.9.4/; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self'; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="referrer" content="strict-origin-when-cross-origin">
 
   <!-- ============ PRIMARY / SEO ============ -->
@@ -251,8 +251,8 @@
         <div class="hero-lower">
           <div class="metrics metrics--strip" aria-label="Highlights">
             <div class="metric"><span class="metric-num" data-metric="pubs">3</span><span class="metric-label" data-i18n="m_pubs">Publications</span></div>
-            <div class="metric"><span class="metric-num">11</span><span class="metric-label" data-i18n="m_talks">Talks &amp; posters</span></div>
-            <div class="metric"><span class="metric-num">4</span><span class="metric-label" data-i18n="m_areas">Research areas</span></div>
+            <div class="metric"><span class="metric-num" data-metric="talks">11</span><span class="metric-label" data-i18n="m_talks">Talks &amp; posters</span></div>
+            <div class="metric"><span class="metric-num" data-metric="areas">4</span><span class="metric-label" data-i18n="m_areas">Research areas</span></div>
             <a class="metric metric-link" href="https://scholar.google.com/citations?user=TTVIFykAAAAJ" target="_blank" rel="noopener noreferrer" title="Google Scholar"><span class="metric-num" data-metric="hindex">2</span><span class="metric-label" data-i18n="m_hindex">h-index</span></a>
           </div>
 
@@ -392,9 +392,11 @@
     async function loadSections() {
       const sections = ['highlights','news','publications','presentations','education','experience','courses','awards','funding','tree','map'];
       const c = document.getElementById('mainContent');
-      const [results, news, tree] = await Promise.all([Promise.all(sections.map(fetchSection)), fetchData('news'), fetchData('tree')]);
+      const dataNames = ['news', 'tree', 'presentations', 'education', 'experience', 'courses'];
+      const [results, datasets] = await Promise.all([Promise.all(sections.map(fetchSection)), Promise.all(dataNames.map(fetchData))]);
+      const data = {}; dataNames.forEach((n, i) => { data[n] = datasets[i]; });
       let html = results.join('');
-      if (window.SiteRender) html = SiteRender.fill(html, { news: news, tree: tree });
+      if (window.SiteRender) html = SiteRender.fill(html, data);
       c.insertAdjacentHTML('beforeend', html);
       if (window.SiteApp && SiteApp.init) SiteApp.init();
     }

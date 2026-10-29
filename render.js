@@ -108,12 +108,65 @@
     return data && data.root ? "<ul>" + treeNode(data.root, true) + "</ul>" : "";
   }
 
-  // Replace the <!--@news--> / <!--@tree--> placeholders in the loaded section HTML.
-  function fill(html, data) {
-    return html
-      .replace("<!--@news-->", () => news(data.news))
-      .replace("<!--@tree-->", () => tree(data.tree));
+  // ---------------------------------------------------------------- timelines
+  // Presentations, Education, Experience and Courses (data/<name>.json).
+  // These files are only ever edited by hand (no automation writes them), so
+  // their text may contain any HTML: galleries, links, lists in "details".
+  const attr = s => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+  const ptAttr = t => (t && t.pt != null && t.pt !== "") ? ' data-pt="' + attr(t.pt) + '"' : "";
+  const BADGE = { oral: ["Oral", "Oral"], poster: ["Poster", "Póster"] };
+
+  function timelineItem(it, opts) {
+    const cls = ["timeline-item"].concat(it.class ? [it.class] : []).join(" ");
+    const type = it.type ? ' data-type="' + attr(it.type) + '"' : "";
+    const logo = it.logo
+      ? '<img src="' + attr(it.logo.src) + '" alt="' + attr(it.logo.alt || "") + '"' +
+        (it.logo.class ? ' class="' + attr(it.logo.class) + '"' : "") + ">"
+      : "";
+    const m = it.meta || {};
+    const meta = opts.badges
+      ? '<div class="meta"><span' + ptAttr(m) + ">" + (m.en || "") + "</span>" +
+        (BADGE[it.type] ? ' <span class="preso-badge preso-' + it.type + '" data-pt="' + BADGE[it.type][1] + '">' +
+                          BADGE[it.type][0] + "</span>" : "") + "</div>"
+      : '<div class="meta"' + ptAttr(m) + ">" + (m.en || "") + "</div>";
+    const t = it.title || {};
+    const s = it.summary;
+    return '<div class="' + cls + '"' + type + ">" +
+      '<div class="timeline-card"><div class="timeline-header">' + logo +
+        "<div><strong" + ptAttr(t) + ">" + (t.en || "") + "</strong>" + meta + "</div></div>" +
+        (s && s.en ? "<p><em" + ptAttr(s) + ">" + s.en + "</em></p>" : "") +
+      "</div>" +
+      (it.details ? '<div class="timeline-expand"><div class="expand-body">' + it.details + "</div></div>" : "") +
+      "</div>";
   }
 
-  window.SiteRender = { fill: fill, news: news, tree: tree, esc: esc, rich: rich, safeUrl: safeUrl };
+  function timeline(data, opts) {
+    if (!data || !Array.isArray(data.items)) return "";
+    const shown = data.items.filter(it => it && !it.hidden);
+    const now = shown.filter(it => !it.earlier), old = shown.filter(it => it.earlier);
+    let html = now.map(it => timelineItem(it, opts || {})).join("\n");
+    if (old.length) {                       // Experience: folded "Earlier experience" group
+      const l = data.earlierLabel || { en: "Earlier", pt: "Anteriores" };
+      html += '<details class="exp-earlier"><summary><span' + ptAttr(l) + ">" + l.en + "</span> " +
+              '<span class="exp-earlier-count">' + old.length + "</span></summary>" +
+              old.map(it => timelineItem(it, opts || {})).join("\n") + "</details>";
+    }
+    return html;
+  }
+  const TIMELINES = { presentations: { badges: true }, education: {}, experience: {}, courses: {} };
+
+  // Replace the <!--@news--> / <!--@tree--> / <!--@timeline:name--> placeholders
+  // in the loaded section HTML.
+  function fill(html, data) {
+    html = html
+      .replace("<!--@news-->", () => news(data.news))
+      .replace("<!--@tree-->", () => tree(data.tree));
+    Object.keys(TIMELINES).forEach(name => {
+      html = html.replace("<!--@timeline:" + name + "-->", () => timeline(data[name], TIMELINES[name]));
+    });
+    return html;
+  }
+
+  window.SiteRender = { fill: fill, news: news, tree: tree, timeline: timeline, timelines: Object.keys(TIMELINES),
+                        esc: esc, rich: rich, safeUrl: safeUrl };
 })();

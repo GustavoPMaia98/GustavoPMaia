@@ -1165,14 +1165,17 @@
     return false;
   }
 
+  // The intro numbers count what is on the page, so they never go stale:
+  // papers (preprints excluded), talks & posters, research areas (the tags).
   function updateMetrics() {
-    const el = document.querySelector('[data-metric="pubs"]');
-    if (!el) return;
-    let n = 0;
+    const set = (key, n) => { const el = document.querySelector('[data-metric="' + key + '"]'); if (el && n) el.textContent = n; };
+    let pubs = 0;
     document.querySelectorAll("#publications .timeline-item.publication").forEach(it => {
-      if (!isPreprintItem(it)) n++;   // preprints shown in the list but not counted
+      if (!isPreprintItem(it)) pubs++;   // preprints shown in the list but not counted
     });
-    if (n) el.textContent = n;
+    set("pubs", pubs);
+    set("talks", document.querySelectorAll("#presentations .timeline-item").length);
+    set("areas", document.querySelectorAll(".hero-tags > span").length);
   }
 
   // Presentation map (Leaflet)
