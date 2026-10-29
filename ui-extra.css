@@ -593,3 +593,6 @@ html[data-theme="light"] .hl-modal-backdrop{ background:rgba(15,23,42,.45); }
 
 /* CV button icon (the button now opens cv.html) */
 .btn--cv svg{ width:18px; height:18px; flex:0 0 auto; }
+
+/* "Updated dd/mm/yyyy" under section headings (data/updated.json) */
+.sec-updated{ margin:-4px 0 12px; font-size:.78rem; font-weight:600; color:var(--muted); letter-spacing:.01em; }

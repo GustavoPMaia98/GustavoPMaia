@@ -164,6 +164,20 @@
     Object.keys(TIMELINES).forEach(name => {
       html = html.replace("<!--@timeline:" + name + "-->", () => timeline(data[name], TIMELINES[name]));
     });
+    return updatedLabels(html, data.updated);
+  }
+
+  // "Updated dd/mm/yyyy" under each section heading (dates from data/updated.json,
+  // written every night by tools/update_dates.py).
+  function updatedLabels(html, dates) {
+    if (!dates) return html;
+    Object.keys(dates).forEach(id => {
+      const m = String(dates[id]).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (!m || !/^[a-z-]+$/.test(id)) return;
+      const label = '<p class="sec-updated"><span data-pt="Atualizado">Updated</span> ' +
+                    '<time datetime="' + m[0] + '">' + m[3] + "/" + m[2] + "/" + m[1] + "</time></p>";
+      html = html.replace(new RegExp('(id="' + id + '"[^>]*>[\\s\\S]*?</h2>)'), "$1" + label);
+    });
     return html;
   }
 

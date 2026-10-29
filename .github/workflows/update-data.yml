@@ -28,6 +28,8 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0             # full history: tools/update_dates.py reads it
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
@@ -49,6 +51,8 @@ jobs:
           pip install playwright==1.48.0
           python -m playwright install --with-deps chromium
           python tools/build_cv.py
+      - name: Section dates
+        run: python tools/update_dates.py
       - name: Check the site still builds
         run: python tools/check_site.py
       - name: Commit if anything changed
