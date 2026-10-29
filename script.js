@@ -800,6 +800,14 @@
       }
       const body = it.querySelector(".expand-body");
       if (!body) return;
+      // keywords: the authors' own (publisher page) or OpenAlex's, refreshed nightly
+      if (Array.isArray(w.keywords) && w.keywords.length) {
+        const kw = document.createElement("div");
+        kw.className = "pub-keywords";
+        kw.innerHTML = '<span class="pub-kw-label" data-pt="Palavras-chave">Keywords</span>' +
+          w.keywords.map(k => '<span class="pub-kw">' + escapeHtml(k) + "</span>").join("");
+        body.insertBefore(kw, body.firstChild);
+      }
       const tools = document.createElement("div");
       tools.className = "pub-tools";
       tools.innerHTML =

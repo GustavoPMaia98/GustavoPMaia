@@ -10,6 +10,8 @@
 window.TR = window.TR || { fr: {}, ja: {} };
 
 window.TR.fr = {
+  "The central questions driving my current research.": "Les questions centrales qui guident mes recherches actuelles.",
+  "Keywords": "Mots-clés",
   "Shock and impact processing": "Processus de choc et d’impact",
   "From planetesimal accretion to asteroid gardening by micrometeorite and IDP impacts, and meteoroid atmospheric entry, extraterrestrial organic matter is repeatedly exposed to mechanical energy.": "De l’accrétion des planétésimaux à l’« asteroid gardening » par impacts de micrométéorites et d’IDP, jusqu’à l’entrée atmosphérique des météoroïdes, la matière organique extraterrestre est soumise à répétition à de l’énergie mécanique.",
   "Solid-state mechanochemistry": "Mécanochimie à l’état solide",
@@ -504,6 +506,8 @@ window.TR.fr = {
 };
 
 window.TR.ja = {
+  "The central questions driving my current research.": "現在の研究を導く中心的な問いです。",
+  "Keywords": "キーワード",
   "Shock and impact processing": "衝撃・衝突プロセス",
   "From planetesimal accretion to asteroid gardening by micrometeorite and IDP impacts, and meteoroid atmospheric entry, extraterrestrial organic matter is repeatedly exposed to mechanical energy.": "微惑星の集積から、微小隕石や惑星間塵（IDP）の衝突による小惑星表面のガーデニング、流星体の大気突入まで、地球外有機物は繰り返し機械的エネルギーにさらされます。",
   "Solid-state mechanochemistry": "固体メカノケミストリー",

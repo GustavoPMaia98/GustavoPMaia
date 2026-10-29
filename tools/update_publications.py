@@ -21,7 +21,7 @@ Candidates come from my ORCID record, Crossref (ORCID filter) and OpenAlex (ORCI
 filter). Rejected candidates are printed in the GitHub Action log with the reason.
 To block a paper for good, add its DOI to EXCLUDE. Standard-library Python only.
 """
-import json, os, re, sys, time, unicodedata, urllib.error, urllib.parse, urllib.request
+import html, json, os, re, sys, time, unicodedata, urllib.error, urllib.parse, urllib.request
 
 ORCID = "0000-0001-5314-8816"
 # Contact address for the Crossref / OpenAlex "polite pool" (faster, more reliable
@@ -128,6 +128,43 @@ def crossref_meta(doi):
             .get("message")) or None
 
 
+def publisher_keywords(doi):
+    """The authors' own keywords, from the publisher's article page.
+
+    Most publishers put them in <meta name="citation_keywords"> (Google Scholar
+    tags) or <meta name="keywords">. Pages that need JavaScript or block robots
+    simply give nothing, and OpenAlex keywords are used instead."""
+    req = urllib.request.Request("https://doi.org/" + urllib.parse.quote(doi), headers={
+        "User-Agent": "Mozilla/5.0 (compatible; GustavoPMaia-site/1.0; +https://gustavopmaia98.github.io/GustavoPMaia/)",
+        "Accept": "text/html"})
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            page = r.read(2_000_000).decode("utf-8", "replace")
+    except Exception:
+        return []
+    found = []
+    for name in ("citation_keywords", "keywords", "dc.subject"):
+        for m in re.finditer(r'<meta\s+[^>]*name=["\']' + re.escape(name) + r'["\'][^>]*>', page, re.I):
+            c = re.search(r'content=["\']([^"\']*)["\']', m.group(0), re.I)
+            if c:
+                found += re.split(r"\s*[;,]\s*", html.unescape(c.group(1)))
+        if found:
+            break
+    out, seen = [], set()
+    for k in found:
+        k = re.sub(r"\s+", " ", k).strip(" .")
+        if 2 <= len(k) <= 60 and k.lower() not in seen and not re.search(r"https?:|journal|article|mdpi|elsevier", k, re.I):
+            seen.add(k.lower())
+            out.append(k)
+    return out[:10]
+
+
+def openalex_keywords(w):
+    """Keywords OpenAlex assigns to the paper (used when the publisher gives none)."""
+    ks = sorted(w.get("keywords") or [], key=lambda k: -(k.get("score") or 0))
+    return [k.get("display_name") for k in ks if (k.get("score") or 0) >= 0.3 and k.get("display_name")][:8]
+
+
 def openalex_work(doi):
     try:
         return get("https://api.openalex.org/works/doi:" + urllib.parse.quote(doi) + "?" + POLITE.lstrip("&")) or {}
@@ -208,6 +245,9 @@ def verify(doi, sources):
         "oa_url": oa_url if (work.get("open_access") or {}).get("is_oa") and oa_url else "",
         "cited_by": work.get("cited_by_count") or 0,
     }
+    kw = publisher_keywords(doi)
+    entry["keywords"] = kw or openalex_keywords(work)
+    entry["keywords_source"] = "publisher" if kw else ("OpenAlex" if entry["keywords"] else "")
     return entry, "ok"
 
 
