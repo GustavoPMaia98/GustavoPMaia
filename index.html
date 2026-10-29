@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Security: only this site, Google Fonts and the pinned map library may run code or load styles here.
+  <!-- Security: only this site, GoatCounter, Google Fonts and the pinned map library may run code or load styles here.
        After editing an inline script, run: python tools/check_site.py --fix -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://unpkg.com/leaflet@1.9.4/ 'sha256-aSbGc3/HP5sipjRcPUtVvlNl802lhgPZUwMTNfE+gQg=' 'sha256-T7P4IchDR9PzSZKdqDNHtbA3YSCtO3uRLPoITdxz8k8=' 'sha256-4q2xuongV1yIe//jKK9VhIfoTj8TRdiwk12UI+5uJRk='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com/leaflet@1.9.4/; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self'; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://unpkg.com/leaflet@1.9.4/ 'sha256-aSbGc3/HP5sipjRcPUtVvlNl802lhgPZUwMTNfE+gQg=' 'sha256-T7P4IchDR9PzSZKdqDNHtbA3YSCtO3uRLPoITdxz8k8=' 'sha256-4q2xuongV1yIe//jKK9VhIfoTj8TRdiwk12UI+5uJRk=' https://gc.zgo.at; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com/leaflet@1.9.4/; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://gustavopmaia.goatcounter.com; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="referrer" content="strict-origin-when-cross-origin">
 
   <!-- ============ PRIMARY / SEO ============ -->
@@ -419,5 +419,7 @@
       });
     }
   </script>
+  <!-- Visitor statistics (GoatCounter: no cookies, no personal data) -->
+  <script data-goatcounter="https://gustavopmaia.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>

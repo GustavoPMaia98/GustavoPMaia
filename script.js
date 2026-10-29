@@ -20,14 +20,23 @@
   let langWired = false;
   let mapWired = false;
   let mapLangUpdate = null;   // set once the map legend exists; called by applyLang
-  // Language: a ?lang=xx link wins (shareable, indexable URLs), then the saved choice.
+  // Language: a ?lang=xx link wins for that visit (shareable, indexable URLs; not
+  // saved, so following one link does not change the language for good), then a
+  // choice made with the language button, then the browser's own language.
   const LANGS = ["en", "pt", "fr", "ja"];
   let currentLang = (function(){
     try {
       const q = new URLSearchParams(location.search).get("lang");
-      if (q && LANGS.indexOf(q) !== -1) { localStorage.setItem("lang", q); return q; }
-      return localStorage.getItem("lang") || "en";
-    } catch(e){ return "en"; }
+      if (q && LANGS.indexOf(q) !== -1) return q;
+      const saved = localStorage.getItem("lang");
+      if (saved && LANGS.indexOf(saved) !== -1) return saved;
+    } catch(e){}
+    const prefs = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || "en"];
+    for (const l of prefs) {
+      const base = String(l).toLowerCase().slice(0, 2);
+      if (LANGS.indexOf(base) !== -1) return base;
+    }
+    return "en";
   })();
   // French/Japanese dictionary (~180 KB) is only downloaded when it is needed.
   let trPromise = null;

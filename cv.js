@@ -7,7 +7,14 @@
    English by default, Portuguese with ?lang=pt. */
 (function () {
   "use strict";
-  const lang = new URLSearchParams(location.search).get("lang") === "pt" ? "pt" : "en";
+  // ?lang=pt|en, else the language chosen on the website, else the browser's
+  const lang = (function () {
+    const q = new URLSearchParams(location.search).get("lang");
+    if (q === "pt" || q === "en") return q;
+    let saved = null; try { saved = localStorage.getItem("lang"); } catch (e) {}
+    if (saved) return saved === "pt" ? "pt" : "en";
+    return /^pt/i.test(navigator.language || "") ? "pt" : "en";
+  })();
   document.documentElement.lang = lang;
   const L = {
     en: { profile: "Profile", education: "Education", experience: "Research & professional experience",
