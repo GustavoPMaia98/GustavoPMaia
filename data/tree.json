@@ -246,7 +246,6 @@
       },
       {
         "name": "Paulo J. S. Almeida",
-        "cvOnly": true,
         "url": "https://www.ubi.pt/sites/cics/en/investigador/221",
         "role": {
           "en": "Bachelor's advisor",
@@ -259,7 +258,6 @@
       },
       {
         "name": "João Serrano",
-        "cvOnly": true,
         "role": {
           "en": "Bachelor's co-advisor (then a Master's student)",
           "pt": "Coorientador de licenciatura (então estudante de mestrado)"
@@ -271,7 +269,6 @@
       },
       {
         "name": "Eng. Carlos Amorim",
-        "cvOnly": true,
         "role": {
           "en": "Internship coordinator · Professional course",
           "pt": "Coordenador de estágio · Curso Profissional"

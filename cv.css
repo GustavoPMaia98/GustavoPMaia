@@ -75,7 +75,7 @@ html[lang="ja"] .cv h2{ letter-spacing:.04em; }
 .cv-entry--logo{ grid-template-columns:132px 46px 1fr; }
 /* every logo in the same tile: trimmed to its visible part by cv.js, then fitted */
 .cv-logo{ width:40px; height:40px; padding:3px; box-sizing:border-box; object-fit:contain; margin-top:1px;
-  background:#fff; border:1px solid var(--line); border-radius:6px; }
+  background:transparent; border-radius:6px; }   /* cv.js sets the logo's own background colour */
 .cv-title{ font-weight:700; font-size:.95rem; }
 .cv-sub{ color:var(--muted); font-size:.85rem; font-style:italic; }
 .cv-note{ font-size:.84rem; color:var(--muted); margin-top:1px; }

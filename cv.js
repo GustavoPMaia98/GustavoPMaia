@@ -255,7 +255,8 @@
 
   // Logos come with very different blank margins, so the same box shows them at
   // different sizes. Crop each to its visible part (pixels that are neither
-  // transparent nor near-white) so every logo fills its tile the same way.
+  // transparent nor near-white) so every logo fills its tile the same way, and
+  // give the tile the logo's own background colour so the tile itself is not seen.
   function trimLogos(root) {
     const cache = {};
     function trim(src) {
@@ -268,6 +269,11 @@
             c.width = w; c.height = h;
             const ctx = c.getContext("2d"); ctx.drawImage(im, 0, 0);
             const d = ctx.getImageData(0, 0, w, h).data;
+            // background: the corners' colour when all four are opaque and alike
+            const px = [0, w - 1, (h - 1) * w, h * w - 1].map(i => d.slice(i * 4, i * 4 + 4));
+            const alike = px.every(p => p[3] > 200) &&
+              [0, 1, 2].every(k => Math.max(...px.map(p => p[k])) - Math.min(...px.map(p => p[k])) < 40);
+            const bg = alike ? "rgb(" + [0, 1, 2].map(k => Math.round(px.reduce((t, p) => t + p[k], 0) / 4)).join(",") + ")" : "transparent";
             let x0 = w, y0 = h, x1 = -1, y1 = -1;
             for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
               const k = (y * w + x) * 4;
@@ -275,24 +281,26 @@
                 if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
               }
             }
-            if (x1 < 0 || (x1 - x0 + 1) * (y1 - y0 + 1) > 0.92 * w * h) return res(src);   // nothing to trim
+            if (x1 < 0 || (x1 - x0 + 1) * (y1 - y0 + 1) > 0.92 * w * h) return res({ url: src, bg });   // nothing to trim
             const pad = Math.round(Math.max(x1 - x0, y1 - y0) * 0.04);
             x0 = Math.max(0, x0 - pad); y0 = Math.max(0, y0 - pad); x1 = Math.min(w - 1, x1 + pad); y1 = Math.min(h - 1, y1 + pad);
             const o = document.createElement("canvas");
             o.width = x1 - x0 + 1; o.height = y1 - y0 + 1;
             o.getContext("2d").drawImage(c, x0, y0, o.width, o.height, 0, 0, o.width, o.height);
-            res(o.toDataURL("image/png"));
-          } catch (e) { res(src); }
+            res({ url: o.toDataURL("image/png"), bg });
+          } catch (e) { res({ url: src, bg: "transparent" }); }
         };
-        im.onerror = () => res(src);
+        im.onerror = () => res({ url: src, bg: "transparent" });
         im.src = src;
       }));
     }
     return Promise.all([...root.querySelectorAll(".cv-logo")].map(img =>
-      trim(img.getAttribute("src")).then(u => new Promise(res => {
-        if (u === img.getAttribute("src")) return res();
+      trim(img.getAttribute("src")).then(r => new Promise(res => {
+        img.style.backgroundColor = r.bg;
+        if (r.bg === "transparent" || /^rgb\((2[3-5]\d),(2[3-5]\d),(2[3-5]\d)\)$/.test(r.bg)) img.style.padding = "0";   // no visible tile: use all of it
+        if (r.url === img.getAttribute("src")) return res();
         img.onload = img.onerror = () => res();
-        img.src = u;
+        img.src = r.url;
       }))));
   }
 
