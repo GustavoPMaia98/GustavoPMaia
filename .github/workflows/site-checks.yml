@@ -27,3 +27,4 @@ jobs:
       - name: JavaScript syntax
         run: |
           for f in script.js search.js render.js mail.js cv.js sw.js i18n/translations.js; do node --check "$f"; done
+          cp scenes3d.js /tmp/scenes3d.mjs && node --check /tmp/scenes3d.mjs   # ES module
