@@ -38,7 +38,7 @@
     "href": "https://www.linkedin.com/feed/update/urn:li:activity:7463711729630351360/",
     "media": {
       "kind": "photo",
-      "src": "images/tecnico.png",
+      "src": "images/tecnico.webp",
       "alt": "Instituto Superior Técnico façade"
     },
     "text": {
@@ -72,7 +72,7 @@
     "href": "https://mare-viva.pt/destaque/o-percurso-improvavel-de-gustavo-maia-levou-o-de-ovar-ate-a-nasa/",
     "media": {
       "kind": "photo",
-      "src": "images/nasa2.png",
+      "src": "images/nasa2.webp",
       "alt": "Gustavo Maia at NASA Goddard Space Flight Center",
       "align": "left"
     },
@@ -132,7 +132,7 @@
     "href": "https://www.linkedin.com/in/gustavopinhomaia",
     "media": {
       "kind": "photo",
-      "src": "images/nasa1.png",
+      "src": "images/nasa1.webp",
       "alt": "NASA Goddard Astrobiology Analytical Laboratory"
     },
     "text": {
@@ -148,7 +148,7 @@
     "date": "2024-11",
     "media": {
       "kind": "photo",
-      "src": "images/nasa1.png",
+      "src": "images/nasa1.webp",
       "alt": "HPLC–MS analysis of extraterrestrial organics"
     },
     "text": {

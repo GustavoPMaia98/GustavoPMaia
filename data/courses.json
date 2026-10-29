@@ -3,7 +3,7 @@
   "items": [
     {
       "logo": {
-        "src": "images/courses/summer-school-ohp-2026.png",
+        "src": "images/courses/summer-school-ohp-2026.webp",
         "alt": ""
       },
       "title": {
@@ -59,7 +59,7 @@
         "en": "Formation · Biblioteca do Instituto Superior Técnico (BIST) · Online · February 2025",
         "pt": "Formação · Biblioteca do Instituto Superior Técnico (BIST) · Online · fevereiro de 2025"
       },
-      "details": "<p data-pt=\"Sessão de formação organizada pela Biblioteca do Instituto Superior Técnico (BIST) sobre boas práticas para publicar em revistas internacionais com revisão por pares, abrangendo a seleção de revistas, a estruturação do manuscrito e o processo de submissão e revisão. Realizada por videoconferência a 13 de fevereiro de 2025.\">A training session organised by the Library of Instituto Superior Técnico (BIST) on best practices for publishing in international peer-reviewed journals, covering journal selection, manuscript structuring, and the submission and peer-review process. Held by videoconference on 13 February 2025.</p>\n<div class=\"expand-gallery\">\n<img src=\"images/courses/GM2025_BIST-formation.jpg\" alt=\"BIST, Declaration of attendance, Recommendations for publishing in international journals\">\n</div>"
+      "details": "<p data-pt=\"Sessão de formação organizada pela Biblioteca do Instituto Superior Técnico (BIST) sobre boas práticas para publicar em revistas internacionais com revisão por pares, abrangendo a seleção de revistas, a estruturação do manuscrito e o processo de submissão e revisão. Realizada por videoconferência a 13 de fevereiro de 2025.\">A training session organised by the Library of Instituto Superior Técnico (BIST) on best practices for publishing in international peer-reviewed journals, covering journal selection, manuscript structuring, and the submission and peer-review process. Held by videoconference on 13 February 2025.</p>\n<div class=\"expand-gallery\">\n<img src=\"images/courses/GM2025_BIST-formation.webp\" alt=\"BIST, Declaration of attendance, Recommendations for publishing in international journals\">\n</div>"
     }
   ]
 }
