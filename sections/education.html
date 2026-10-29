@@ -1,15 +1,61 @@
 <!-- EDUCATION -->
 <section class="section" id="education">
   <h2>Education</h2>
-  <!-- My path: a compact career line (edit the steps here) -->
-  <ol class="path reveal" aria-label="Career path">
-    <li><span class="path-year">2013</span><span class="path-place">Espinho</span><span class="path-what" data-pt="Técnico de Mecatrónica · Escola Profissional de Espinho">Mechatronics Technician · Escola Profissional de Espinho</span></li>
-    <li><span class="path-year">2017</span><span class="path-place">Covilhã</span><span class="path-what" data-pt="Licenciatura em Química Industrial · UBI">BSc Industrial Chemistry · UBI</span></li>
-    <li><span class="path-year">2020</span><span class="path-place" data-pt="Lisboa">Lisbon</span><span class="path-what" data-pt="Mestrado em Química · Instituto Superior Técnico">MSc Chemistry · Instituto Superior Técnico</span></li>
-    <li><span class="path-year">2023</span><span class="path-place" data-pt="Lisboa">Lisbon</span><span class="path-what" data-pt="Doutoramento em Química (Astrobiologia) · Técnico">PhD Chemistry (Astrobiology) · Técnico</span></li>
-    <li><span class="path-year">2024</span><span class="path-place" data-pt="Greenbelt, EUA">Greenbelt, USA</span><span class="path-what">NASA Goddard Space Flight Center</span></li>
-    <li class="path-now"><span class="path-year">2025</span><span class="path-place">Paris</span><span class="path-what">MNHN · IMPMC, Sorbonne Université</span></li>
+  <!-- My path: an interactive career line. Each step opens a summary of the matching
+       Education / Experience entry (data-section + data-match = text in its details line). -->
+  <div class="path-wrap reveal">
+  <ol class="path" aria-label="Career path">
+    <li class="path-step">
+      <button type="button" class="path-btn" data-section="education" data-match="Escola Profissional de Espinho" aria-pressed="false">
+        <span class="path-dot" aria-hidden="true"><i data-lucide="cpu"></i></span>
+        <span class="path-year">2013</span><span class="path-kind" data-pt="Formação">Education</span>
+        <span class="path-place">Espinho</span>
+        <span class="path-what" data-pt="Técnico de Mecatrónica · Escola Profissional de Espinho">Mechatronics Technician · Escola Profissional de Espinho</span>
+      </button>
+    </li>
+    <li class="path-step">
+      <button type="button" class="path-btn" data-section="education" data-match="2017–2020" aria-pressed="false">
+        <span class="path-dot" aria-hidden="true"><i data-lucide="graduation-cap"></i></span>
+        <span class="path-year">2017</span><span class="path-kind" data-pt="Formação">Education</span>
+        <span class="path-place">Covilhã</span>
+        <span class="path-what" data-pt="Licenciatura em Química Industrial · UBI">BSc Industrial Chemistry · UBI</span>
+      </button>
+    </li>
+    <li class="path-step">
+      <button type="button" class="path-btn" data-section="education" data-match="2020–2022" aria-pressed="false">
+        <span class="path-dot" aria-hidden="true"><i data-lucide="graduation-cap"></i></span>
+        <span class="path-year">2020</span><span class="path-kind" data-pt="Formação">Education</span>
+        <span class="path-place" data-pt="Lisboa">Lisbon</span>
+        <span class="path-what" data-pt="Mestrado em Química · Instituto Superior Técnico">MSc Chemistry · Instituto Superior Técnico</span>
+      </button>
+    </li>
+    <li class="path-step">
+      <button type="button" class="path-btn" data-section="education" data-match="2023–2027" aria-pressed="false">
+        <span class="path-dot" aria-hidden="true"><i data-lucide="flask-conical"></i></span>
+        <span class="path-year">2023</span><span class="path-kind" data-pt="Formação">Education</span>
+        <span class="path-place" data-pt="Lisboa">Lisbon</span>
+        <span class="path-what" data-pt="Doutoramento em Química (Astrobiologia) · Técnico">PhD Chemistry (Astrobiology) · Técnico</span>
+      </button>
+    </li>
+    <li class="path-step">
+      <button type="button" class="path-btn" data-section="experience" data-match="NASA Goddard" aria-pressed="false">
+        <span class="path-dot" aria-hidden="true"><i data-lucide="rocket"></i></span>
+        <span class="path-year">2024</span><span class="path-kind" data-pt="Investigação">Research</span>
+        <span class="path-place" data-pt="Greenbelt, EUA">Greenbelt, USA</span>
+        <span class="path-what">NASA Goddard Space Flight Center</span>
+      </button>
+    </li>
+    <li class="path-step path-now">
+      <button type="button" class="path-btn" data-section="experience" data-match="MNHN · IMPMC" aria-pressed="false">
+        <span class="path-dot" aria-hidden="true"><i data-lucide="microscope"></i></span>
+        <span class="path-year">2025</span><span class="path-kind" data-pt="Investigação">Research</span>
+        <span class="path-place">Paris</span>
+        <span class="path-what">MNHN · IMPMC, Sorbonne Université</span>
+      </button>
+    </li>
   </ol>
+  <div class="path-detail" id="pathDetail" aria-live="polite" hidden></div>
+  </div>
   <div class="timeline">
   <!-- The items come from data/education.json -->
   <!--@timeline:education-->
