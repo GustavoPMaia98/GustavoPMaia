@@ -766,10 +766,8 @@ html[data-theme="light"] .path-year{ color:var(--accent-strong); border-color:rg
 }
 
 /* ================================================================
-   3D (scenes3d.js): dust-disk background and the Earth globe
+   3D (scenes3d.js): the Earth globe
    ================================================================ */
-#space3d{ position:fixed; inset:0; width:100%; height:100%; z-index:-1; pointer-events:none; display:block; }
-.has-space3d #starfield{ display:none; }
 
 .preso-map.globe{                            /* floats on the page: no box */
   position:relative; height:560px; touch-action:pan-y; outline:none;
@@ -812,5 +810,3 @@ html[data-theme="light"] .path-year{ color:var(--accent-strong); border-color:rg
 }
 
 .globe-legend.globe-legend--below{ position:static; display:inline-block; margin-top:10px; pointer-events:auto; }
-/* with the 3D disk behind it, the intro card becomes frosted glass so the text stays clear */
-.has-space3d .hero-card{ backdrop-filter:blur(18px) saturate(115%); -webkit-backdrop-filter:blur(18px) saturate(115%); }
