@@ -1,5 +1,5 @@
 {
-  "_help": "Edit this file to change the Academic Tree. Each person lists their own 'mentors'. Nodes marked \"source\": \"academictree\" were added automatically from Chemistry Tree; set \"hidden\": true on one to remove it for good. See README.md.",
+  "_help": "Edit this file to change the Academic Tree. Each person lists their own 'mentors'. Nodes marked \"source\": \"academictree\" were added automatically from Chemistry Tree; set \"hidden\": true on one to remove it for good. See tools/update_tree.py.",
   "root": {
     "name": "Gustavo Pinho Maia",
     "url": "https://orcid.org/0000-0001-5314-8816",
