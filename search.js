@@ -709,6 +709,12 @@
       const more = document.getElementById("newsAll");
       if (more) more.click(); else newsList.classList.add("is-all");
     }
+    // talks / experience folded on phones: show the whole list first
+    const folded = el.closest && el.closest(".timeline.is-collapsible:not(.is-all)");
+    if (folded) {
+      folded.classList.add("is-all");
+      const b = folded.nextElementSibling; if (b && b.classList.contains("list-all")) b.hidden = true;
+    }
     // results inside a collapsed group (e.g. "Earlier experience") open it first
     let d = el.closest && el.closest("details");
     while (d) { d.open = true; d = d.parentElement && d.parentElement.closest("details"); }

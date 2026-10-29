@@ -302,6 +302,13 @@
           // desktop toolbar: highlight the matching section (or "More" for secondary ones)
           const id = e.target.id;
           document.querySelectorAll(".nav-sec-strip .nav-sec-main").forEach(x => x.classList.remove("active"));
+          document.querySelectorAll(".sec-chips a").forEach(c => {
+            const on = c.getAttribute("href") === "#" + id;
+            c.classList.toggle("active", on);
+            if (on && c.parentNode.scrollWidth > c.parentNode.clientWidth) {
+              c.parentNode.scrollTo({ left: c.offsetLeft - 16, behavior: prefersReduced ? "auto" : "smooth" });
+            }
+          });
           const main = document.querySelector('.nav-sec-strip > a.nav-sec-main[href="#' + id + '"]');
           if (main) main.classList.add("active");
           else if (document.querySelector('#navMoreMenu a[href="#' + id + '"]')) {
@@ -416,7 +423,7 @@
   }
 
   // ============================================================
-  //  SCROLL-TO-TOP BUTTON ("Slides up")
+  //  SCROLL-TO-TOP BUTTON ("Back to top")
   // ============================================================
   function setupScrollTopButton() {
     if (document.getElementById("scrollTopBtn")) return;
@@ -425,7 +432,7 @@
     btn.type = "button";
     btn.className = "scroll-top-btn";
     btn.setAttribute("aria-label", "Scroll back to top");
-    btn.innerHTML = '<span>Slides up</span><span aria-hidden="true">&uarr;</span>';
+    btn.innerHTML = '<span data-pt="Voltar ao topo">Back to top</span><span aria-hidden="true">&uarr;</span>';
     btn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: prefersReduced ? "auto" : "smooth" }));
     document.body.appendChild(btn);
 
@@ -652,7 +659,7 @@
       const msg = document.createElement("span");
       msg.textContent = pt
         ? "Deslocação automática ativada: clique neste botão para a desativar."
-        : "Hands-free scroll is on: click this button to turn it off.";
+        : "Auto-scroll is on: click this button to turn it off.";
 
       const close = document.createElement("button");
       close.type = "button";
@@ -1929,6 +1936,84 @@
     btn.addEventListener("click", () => { list.classList.add("is-all"); btn.hidden = true; });
   }
 
+  // ============================================================
+  //  PHONE HELPERS (≤ 760 px; all hidden by CSS on larger screens)
+  //  1. a scrollable row of section shortcuts under the top bar
+  //  2. long lists (talks, experience) show 4 items + "Show all"
+  //  3. the intro bio folds to a few lines + "Read more"
+  //  4. the auto-scroll switch moves from the top bar into the menu
+  // ============================================================
+  function setupPhoneHelpers() {
+    const nav = document.querySelector("header.nav");
+    if (nav && !nav.querySelector(".sec-chips")) {
+      const bar = document.createElement("nav");
+      bar.className = "sec-chips";
+      bar.setAttribute("aria-label", "Sections");
+      document.querySelectorAll('#navLinks a[href^="#"]').forEach(a => {
+        const c = a.cloneNode(true);
+        c.removeAttribute("class");
+        bar.appendChild(c);
+      });
+      nav.appendChild(bar);
+    }
+
+    [["#presentations .timeline", 4], ["#experience .timeline", 4]].forEach(([sel, n]) => {
+      const tl = document.querySelector(sel);
+      if (!tl || tl.dataset.collapse) return;
+      const items = tl.querySelectorAll(":scope > .timeline-item");
+      if (items.length <= n) return;
+      tl.dataset.collapse = n;
+      tl.classList.add("is-collapsible");
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "news-all list-all";
+      btn.innerHTML = '<span data-pt="Mostrar todos">Show all</span> (' + items.length + ")";
+      btn.addEventListener("click", () => { tl.classList.add("is-all"); btn.hidden = true; });
+      tl.insertAdjacentElement("afterend", btn);
+    });
+    // a filter (Oral / Poster) or a search hit needs the whole list
+    document.addEventListener("click", e => {
+      if (!e.target.closest("#preso-filter button")) return;
+      const tl = document.querySelector("#presentations .timeline.is-collapsible");
+      if (tl) { tl.classList.add("is-all"); const b = tl.nextElementSibling; if (b && b.classList.contains("list-all")) b.hidden = true; }
+    });
+
+    const bio = document.querySelector('.hero-intro p[data-i18n="bio"]');
+    if (bio && !bio.dataset.fold) {
+      bio.dataset.fold = "1";
+      bio.classList.add("bio-fold");
+      const more = document.createElement("button");
+      more.type = "button";
+      more.className = "bio-more";
+      more.setAttribute("aria-expanded", "false");
+      more.innerHTML = '<span data-pt="Ler mais">Read more</span>';
+      more.addEventListener("click", () => {
+        const open = bio.classList.toggle("is-open");
+        more.setAttribute("aria-expanded", String(open));
+        more.firstChild.setAttribute("data-pt", open ? "Ler menos" : "Ler mais");
+        more.firstChild.dataset.enHtml = open ? "Read less" : "Read more";
+        more.firstChild.innerHTML = currentLang === "pt" ? more.firstChild.getAttribute("data-pt") : trLookup(currentLang, more.firstChild.dataset.enHtml);
+      });
+      bio.insertAdjacentElement("afterend", more);
+    }
+
+    const pill = document.getElementById("autoScrollToggle");
+    const links = document.getElementById("navLinks");
+    if (pill && links && !links.querySelector(".nav-autoscroll")) {
+      const item = document.createElement("button");
+      item.type = "button";
+      item.className = "nav-autoscroll";
+      item.innerHTML = '<i data-lucide="smartphone"></i><span data-pt="Deslocação automática (inclinar o telemóvel)">Auto-scroll (tilt the phone)</span>' +
+                       '<span class="tool-pill-state" aria-hidden="true"></span>';
+      const sync = () => { item.querySelector(".tool-pill-state").textContent = pill.getAttribute("aria-pressed") === "true" ? "On" : "Off";
+                           item.setAttribute("aria-pressed", pill.getAttribute("aria-pressed")); };
+      item.addEventListener("click", () => { pill.click(); sync(); });
+      new MutationObserver(sync).observe(pill, { attributes: true, attributeFilter: ["aria-pressed"] });
+      sync();
+      links.appendChild(item);
+    }
+  }
+
   function init() {
     initStarfield();
     initNav();
@@ -1943,6 +2028,7 @@
     setupTreePan();
     setupCarousels();
     setupNewsList();
+    setupPhoneHelpers();
     setupHighlightModal();
     setupTechModal();
     setupThemeToggle();

@@ -596,3 +596,52 @@ html[data-theme="light"] .hl-modal-backdrop{ background:rgba(15,23,42,.45); }
 
 /* "Updated dd/mm/yyyy" under section headings (data/updated.json) */
 .sec-updated{ margin:-4px 0 12px; font-size:.78rem; font-weight:600; color:var(--muted); letter-spacing:.01em; }
+
+/* ================================================================
+   PHONE HELPERS (script.js setupPhoneHelpers): section shortcuts,
+   "Show all" for long lists, foldable bio, auto-scroll in the menu
+   ================================================================ */
+.sec-chips, .list-all, .bio-more, .nav-autoscroll{ display:none; }
+@media (max-width:760px){
+  .sec-chips{
+    display:flex; gap:6px; overflow-x:auto; padding:6px 16px 8px;
+    border-top:1px solid var(--border); scrollbar-width:none; -webkit-overflow-scrolling:touch;
+  }
+  .sec-chips::-webkit-scrollbar{ display:none; }
+  .sec-chips a{
+    flex:0 0 auto; white-space:nowrap; font-size:.82rem; font-weight:600; color:var(--muted);
+    padding:5px 12px; border-radius:var(--radius-pill); border:1px solid var(--border);
+    background:color-mix(in srgb, var(--text) 4%, transparent); text-decoration:none;
+  }
+  .sec-chips a.active{ color:var(--on-accent); background:var(--accent); border-color:var(--accent); }
+  /* headings stay visible below the taller top bar when jumping to a section */
+  section[id], #techniques{ scroll-margin-top:calc(var(--nav-h) + 60px); }
+
+  .timeline.is-collapsible:not(.is-all) > .timeline-item:nth-of-type(n+5){ display:none; }
+  .list-all{ display:block; margin:14px auto 0; }
+  .list-all[hidden]{ display:none; }
+
+  .bio-fold:not(.is-open){
+    display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:5; line-clamp:5; overflow:hidden;
+  }
+  .bio-more{
+    display:inline-block; margin:-10px auto 14px; padding:4px 10px; cursor:pointer;
+    font:inherit; font-weight:700; font-size:.9rem; color:var(--accent); background:none; border:0;
+  }
+
+  #autoScrollToggle{ display:none; }
+  .nav-autoscroll{
+    display:flex; align-items:center; gap:10px; width:100%; padding:13px 12px; cursor:pointer;
+    font:inherit; font-size:1rem; color:inherit; text-align:left; background:none; border:0;
+    border-top:1px solid var(--border); margin-top:6px;
+  }
+  .nav-autoscroll svg{ width:18px; height:18px; }
+  .nav-autoscroll .tool-pill-state{ margin-left:auto; }
+}
+
+/* phone menu: readable in the light theme and scrollable when taller than the screen */
+@media (max-width:820px){
+  .nav-links{ max-height:calc(100vh - var(--nav-h)); max-height:calc(100dvh - var(--nav-h)); overflow-y:auto; overscroll-behavior:contain; }
+  html[data-theme="light"] .nav-links{ background:rgba(248,250,252,.98); }
+  html[data-theme="light"] .nav-links a, html[data-theme="light"] .nav-autoscroll{ color:var(--text); }
+}

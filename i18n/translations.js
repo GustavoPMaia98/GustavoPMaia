@@ -10,6 +10,11 @@
 window.TR = window.TR || { fr: {}, ja: {} };
 
 window.TR.fr = {
+  "Back to top": "Haut de page",
+  "Show all": "Tout afficher",
+  "Read more": "Lire la suite",
+  "Read less": "Réduire",
+  "Auto-scroll (tilt the phone)": "Défilement automatique (inclinez le téléphone)",
   "citation": "citation",
   "citations": "citations",
   "Free PDF": "PDF gratuit",
@@ -487,6 +492,11 @@ window.TR.fr = {
 };
 
 window.TR.ja = {
+  "Back to top": "トップへ戻る",
+  "Show all": "すべて表示",
+  "Read more": "続きを読む",
+  "Read less": "閉じる",
+  "Auto-scroll (tilt the phone)": "自動スクロール（スマホを傾ける）",
   "citation": "件の被引用",
   "citations": "件の被引用",
   "Free PDF": "無料PDF",
