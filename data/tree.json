@@ -1,0 +1,250 @@
+{
+  "_help": "Edit this file to change the Academic Tree. Each person lists their own 'mentors'. Nodes marked \"source\": \"academictree\" were added automatically from Chemistry Tree; set \"hidden\": true on one to remove it for good. See README.md.",
+  "root": {
+    "name": "Gustavo Pinho Maia",
+    "url": "https://orcid.org/0000-0001-5314-8816",
+    "photo": "images/avatar.jpg",
+    "role": {
+      "en": "PhD researcher",
+      "pt": "Investigador de doutoramento"
+    },
+    "institution": {
+      "name": "Centro de Química Estrutural · IST",
+      "url": "https://cqe.tecnico.ulisboa.pt/"
+    },
+    "mentors": [
+      {
+        "name": "José Armando L. da Silva",
+        "url": "https://cqe.tecnico.ulisboa.pt/expert/jose-armando-l-da-silva/",
+        "role": {
+          "en": "Doctoral advisor",
+          "pt": "Orientador de doutoramento"
+        },
+        "institution": {
+          "name": "Centro de Química Estrutural · IST",
+          "url": "https://cqe.tecnico.ulisboa.pt/"
+        },
+        "mentors": [
+          {
+            "name": "João J. R. Fraústo da Silva",
+            "url": "https://en.wikipedia.org/wiki/Jo%C3%A3o_J._R._Fra%C3%BAsto_da_Silva",
+            "initials": "JF",
+            "photo": "images/tree/fraustodasilva.jpg",
+            "role": {
+              "en": "Mentor of J. A. L. da Silva",
+              "pt": "Mentor de J. A. L. da Silva"
+            },
+            "institution": {
+              "name": "Centro de Química Estrutural · IST",
+              "url": "https://cqe.tecnico.ulisboa.pt/"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Laurent Remusat",
+        "url": "https://impmc.sorbonne-universite.fr/en/research_teams/research-on-carbon-rich-key-samples-rocks/list-of-members/laurent-remusat.html",
+        "photo": "images/tree/remusat.jpg",
+        "role": {
+          "en": "Research supervisor · IMPMC",
+          "pt": "Supervisor de investigação · IMPMC"
+        },
+        "institution": {
+          "name": "Muséum national d’Histoire naturelle",
+          "url": "https://www.mnhn.fr/en"
+        }
+      },
+      {
+        "name": "Jason P. Dworkin",
+        "url": "https://science.gsfc.nasa.gov/sci/bio/jason.p.dworkin",
+        "role": {
+          "en": "Research supervisor · NASA",
+          "pt": "Supervisor de investigação · NASA"
+        },
+        "institution": {
+          "name": "NASA Goddard Space Flight Center",
+          "url": "https://www.nasa.gov/goddard/"
+        },
+        "mentors": [
+          {
+            "name": "Stanley Lloyd Miller",
+            "url": "https://en.wikipedia.org/wiki/Stanley_Miller",
+            "photo": "images/tree/miller.jpeg",
+            "role": {
+              "en": "Advisor of J. P. Dworkin",
+              "pt": "Orientador de J. P. Dworkin"
+            },
+            "institution": {
+              "name": "University of California, San Diego",
+              "url": "https://www.ucsd.edu/"
+            },
+            "mentors": [
+              {
+                "name": "Harold Clayton Urey",
+                "url": "https://en.wikipedia.org/wiki/Harold_Urey",
+                "photo": "images/tree/urey.jpg",
+                "nobel": true,
+                "role": {
+                  "en": "Advisor of S. L. Miller · Nobel laureate",
+                  "pt": "Orientador de S. L. Miller · Prémio Nobel"
+                },
+                "institution": {
+                  "name": "University of California, San Diego",
+                  "url": "https://www.ucsd.edu/"
+                },
+                "mentors": [
+                  {
+                    "name": "Gilbert N. Lewis",
+                    "url": "https://en.wikipedia.org/wiki/Gilbert_N._Lewis",
+                    "photo": "images/tree/lewis.jpg",
+                    "role": {
+                      "en": "Doctoral advisor of H. C. Urey",
+                      "pt": "Orientador de doutoramento de H. C. Urey"
+                    },
+                    "institution": {
+                      "name": "University of California, Berkeley",
+                      "url": "https://chemistry.berkeley.edu/"
+                    }
+                  },
+                  {
+                    "name": "Niels Bohr",
+                    "url": "https://en.wikipedia.org/wiki/Niels_Bohr",
+                    "photo": "images/tree/bohr.jpg",
+                    "nobel": true,
+                    "role": {
+                      "en": "Postdoctoral mentor of H. C. Urey · Nobel laureate",
+                      "pt": "Mentor de pós-doutoramento de H. C. Urey · Prémio Nobel"
+                    },
+                    "institution": {
+                      "name": "University of Copenhagen",
+                      "url": "https://www.ku.dk/english"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Joan Oró",
+            "url": "https://en.wikipedia.org/wiki/Joan_Or%C3%B3",
+            "photo": "images/tree/oro.webp",
+            "role": {
+              "en": "Origin-of-life chemistry lineage",
+              "pt": "Linhagem da química da origem da vida"
+            },
+            "institution": {
+              "name": "University of Houston",
+              "url": "https://www.uh.edu/"
+            },
+            "mentors": [
+              {
+                "name": "Donald A. Rappoport",
+                "url": "https://academictree.org/chemistry/peopleinfo.php?pid=83723",
+                "role": {
+                  "en": "Advisor of Joan Oró",
+                  "pt": "Orientador de Joan Oró"
+                },
+                "institution": {
+                  "name": "UT Medical Branch, Galveston",
+                  "url": "https://www.utmb.edu/"
+                },
+                "academictree": 83723
+              }
+            ]
+          },
+          {
+            "name": "Louis J. Allamandola",
+            "url": "https://www.nasa.gov/people/louis-allamandola",
+            "role": {
+              "en": "Postdoctoral mentor · NASA Ames",
+              "pt": "Mentor de pós-doutoramento · NASA Ames"
+            },
+            "institution": {
+              "name": "NASA Ames Research Center",
+              "url": "https://www.nasa.gov/ames/"
+            },
+            "mentors": [
+              {
+                "name": "J. Mayo Greenberg",
+                "url": "https://link.springer.com/rwe/10.1007/978-1-0716-0738-1_100715-1",
+                "role": {
+                  "en": "Advisor of L. J. Allamandola",
+                  "pt": "Orientador de L. J. Allamandola"
+                },
+                "institution": {
+                  "name": "Leiden University",
+                  "url": "https://www.universiteitleiden.nl/en"
+                }
+              },
+              {
+                "name": "George C. Pimentel",
+                "url": "https://en.wikipedia.org/wiki/George_C._Pimentel",
+                "role": {
+                  "en": "Mentor of L. J. Allamandola",
+                  "pt": "Mentor de L. J. Allamandola"
+                },
+                "institution": {
+                  "name": "University of California, Berkeley",
+                  "url": "https://chemistry.berkeley.edu/"
+                },
+                "mentors": [
+                  {
+                    "name": "Kenneth S. Pitzer",
+                    "url": "https://en.wikipedia.org/wiki/Kenneth_Pitzer",
+                    "role": {
+                      "en": "Advisor of G. C. Pimentel",
+                      "pt": "Orientador de G. C. Pimentel"
+                    },
+                    "institution": {
+                      "name": "University of California, Berkeley",
+                      "url": "https://chemistry.berkeley.edu/"
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "Joseph W. Nibler",
+                "url": "https://science.oregonstate.edu/directory/joseph-w-nibler",
+                "role": {
+                  "en": "Postdoctoral mentor of L. J. Allamandola",
+                  "pt": "Mentor de pós-doutoramento de L. J. Allamandola"
+                },
+                "institution": {
+                  "name": "Oregon State University",
+                  "url": "https://oregonstate.edu/"
+                }
+              }
+            ]
+          },
+          {
+            "name": "Scott A. Sandford",
+            "url": "https://www.nasa.gov/people/scott-sandford/",
+            "role": {
+              "en": "Mentor · NASA Ames",
+              "pt": "Mentor · NASA Ames"
+            },
+            "institution": {
+              "name": "NASA Ames Research Center",
+              "url": "https://www.nasa.gov/ames/"
+            },
+            "mentors": [
+              {
+                "name": "Robert M. Walker",
+                "url": "https://en.wikipedia.org/wiki/Robert_M._Walker_(physicist)",
+                "role": {
+                  "en": "Doctoral advisor of S. A. Sandford",
+                  "pt": "Orientador de doutoramento de S. A. Sandford"
+                },
+                "institution": {
+                  "name": "Washington University in St. Louis",
+                  "url": "https://wustl.edu/"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "academictree": 972410
+  }
+}

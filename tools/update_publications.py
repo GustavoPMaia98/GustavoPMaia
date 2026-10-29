@@ -93,6 +93,7 @@ def from_orcid():
     dois = set()
     for g in data.get("group", []):
         s = (g.get("work-summary") or [{}])[0]
+        # ORCID has a separate "preprint" work type; only journal articles are taken.
         if (s.get("type") or "").lower() != "journal-article":
             continue
         ids = ((g.get("external-ids") or {}).get("external-id") or []) + \
@@ -154,6 +155,10 @@ def verify(doi, sources):
         return None, "no Crossref record"
     if (m.get("type") or "") != "journal-article":
         return None, f"not a journal article ({m.get('type')})"
+    # Preprints registered under a journal-like type: Crossref marks them with
+    # subtype "preprint" or links them to the published paper ("is-preprint-of").
+    if (m.get("subtype") or "").lower() == "preprint" or "is-preprint-of" in (m.get("relation") or {}):
+        return None, "preprint (the published journal version is listed instead)"
     authors = m.get("author") or []
     mine = [a for a in authors if is_me(a) or ORCID in (a.get("ORCID") or "")]
     if not mine:

@@ -1,0 +1,57 @@
+# Every night: refreshes the data the site is built from, then commits it.
+#   - Publications: ORCID + Crossref + OpenAlex, verified, journal articles only
+#     (preprints excluded)                            -> data/publications.json
+#   - Academic Tree: new mentors from Chemistry Tree  -> data/tree.json
+#   - News: new LinkedIn posts, if the LINKEDIN_FEED_URL secret is set
+#                                                     -> data/news.json
+# The site reads these files when it loads, so nothing else needs editing.
+name: Update site data
+
+on:
+  schedule:
+    - cron: "17 4 * * *"          # every day at 04:17 UTC
+  workflow_dispatch:               # "Run workflow" button in the Actions tab
+  # (no run on push: the bot's commit would otherwise land right after yours and
+  #  GitHub Desktop would ask you to pull before every next push)
+
+permissions:
+  contents: write
+
+concurrency:
+  group: site-data                 # shared with "Add news from LinkedIn"
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pillow==10.4.0
+      - name: Publications (ORCID)
+        run: python tools/update_publications.py
+      - name: Academic tree (Chemistry Tree)
+        run: python tools/update_tree.py
+      - name: News (LinkedIn feed)
+        env:
+          FEED: ${{ secrets.LINKEDIN_FEED_URL }}
+        run: |
+          if [ -n "$FEED" ]; then python tools/add_news.py --feed "$FEED"
+          else echo "No LINKEDIN_FEED_URL secret; skipped (see README.md)."; fi
+      - name: Check the site still builds
+        run: python tools/check_site.py
+      - name: Commit if anything changed
+        run: |
+          if [ -n "$(git status --porcelain data images/news)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add data images/news
+            git commit -m "Update site data (publications, tree, news)"
+            # if you pushed while this was running, put this commit on top of yours
+            for i in 1 2 3; do git pull --rebase origin main && git push && break; sleep 5; done
+          else
+            echo "No changes."
+          fi

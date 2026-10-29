@@ -1,0 +1,8 @@
+# Keeps the GitHub Actions used by the workflows on their latest secure versions:
+# once a month GitHub opens a small pull request when one of them has an update.
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"

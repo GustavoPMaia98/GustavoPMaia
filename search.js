@@ -594,7 +594,7 @@
       index.push({ id, label, title: heading, text: norm(sec.textContent).toLowerCase(), el: sec });
 
       // Granular entries for individual items inside the section
-      const items = sec.querySelectorAll(".timeline-item, .news-list li, .at-node");
+      const items = sec.querySelectorAll(".timeline-item, .news-slide, .at-node");
       items.forEach(item => {
         const titleEl = item.querySelector("strong, h3, .at-name, .blog-title");
         const title = norm(titleEl ? titleEl.textContent : item.textContent);
@@ -703,6 +703,12 @@
   function go(entry) {
     close();
     const el = entry.el;
+    // older news items are folded away: show the full list first
+    const newsList = el.closest && el.closest("#newsList");
+    if (newsList && !newsList.classList.contains("is-all")) {
+      const more = document.getElementById("newsAll");
+      if (more) more.click(); else newsList.classList.add("is-all");
+    }
     // results inside a collapsed group (e.g. "Earlier experience") open it first
     let d = el.closest && el.closest("details");
     while (d) { d.open = true; d = d.parentElement && d.parentElement.closest("details"); }
