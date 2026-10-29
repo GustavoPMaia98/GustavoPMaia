@@ -152,6 +152,8 @@
     }
 
     function frame(t) {
+      // the 3D dust disk (scenes3d.js) replaces this star field when WebGL works
+      if (document.documentElement.classList.contains("has-space3d")) { raf = null; return; }
       const dt = Math.min((t - last) / 1000, 0.05) || 0;
       last = t;
       drawStars(true, dt);
@@ -1303,7 +1305,7 @@
   function initPresoMap() {
     if (mapWired) return;
     const el = document.getElementById("presoMap");
-    if (!el || !window.L) return;
+    if (!el) return;
     mapWired = true;
 
     const EDU  = "#34d399";  // studies / education
@@ -1345,19 +1347,8 @@
         pt:{ n:"Le Teich, França", d:"Curso Introdutório de Astrobiologia RED 2025 (presencial)" } }
     ];
 
-    const map = L.map(el, { scrollWheelZoom: true });
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 18, attribution: "&copy; OpenStreetMap contributors"
-    }).addTo(map);
-
-    const all = [];
-    const pinIcon = color => L.divIcon({
-      className: "map-pin",
-      html: '<svg width="26" height="36" viewBox="0 0 26 36" xmlns="http://www.w3.org/2000/svg">'
-          + '<path d="M13 35C13 35 24 21.5 24 13A11 11 0 1 0 2 13C2 21.5 13 35 13 35Z" fill="' + color + '" stroke="#0b1020" stroke-width="1.6"/>'
-          + '<circle cx="13" cy="13" r="4.2" fill="#0b1020"/></svg>',
-      iconSize:[26,36], iconAnchor:[13,35], tooltipAnchor:[0,-30]
-    });
+    // Shown on the 3D globe by scenes3d.js (window.SiteGlobeData), which also
+    // draws arcs along the career path below.
     const tip = (n, label, color, d) =>
       '<strong>' + n + '</strong><br><span style="color:' + color + ';font-weight:600">' + label + '</span><br>' + d;
     // Tooltip text follows the language: PT from each entry's "pt" object,
@@ -1366,27 +1357,16 @@
                      "Courses / training":"Cursos / formação", "Laboratory / research":"Laboratório / investigação" };
     const loc = (lang, en, pt) => lang === "pt" ? (pt || en) : trLookup(lang, en);
     const tipFor = (p, label, color, lang) => tip(loc(lang, p.n, p.pt && p.pt.n), loc(lang, label, MAP_PT[label]), color, loc(lang, p.d, p.pt && p.pt.d));
-    const markers = [];
-    const place = (arr, color, label) => arr.forEach(p => {
-      const m = L.marker(p.c, { icon: pinIcon(color), title: loc(currentLang, p.n, p.pt && p.pt.n), keyboard: true }).addTo(map)
-        .bindTooltip(tipFor(p, label, color, currentLang), { direction:"top", opacity:0.97 });
-      markers.push(lang => {
-        m.setTooltipContent(tipFor(p, label, color, lang));
-        const el = m.getElement(); if (el) el.setAttribute("title", loc(lang, p.n, p.pt && p.pt.n));
-      });
-      all.push(p.c);
-    });
-
+    const places = [];
+    const place = (arr, color, label) => arr.forEach(p => places.push({
+      lat: p.c[0], lng: p.c[1], color: color, html: lang => tipFor(p, label, color, lang)
+    }));
+    place(labs,      LAB,  "Laboratory / research");
     place(education, EDU,  "Studies");
     place(pres,      PRES, "Presentations");
     place(courses,   COU,  "Courses / training");
-    place(labs,      LAB,  "Laboratory / research");
 
-    const defaultBounds = L.latLngBounds(all).pad(0.15);
-    const fit = () => map.fitBounds(defaultBounds);
-    fit();
-
-    // Legend (text follows the current language; updated live on language toggle)
+    // Legend (text follows the current language)
     const legendText = lang => {
       if (lang === "pt") return ['Estudos (ESPE · UBI · Técnico)', 'Laboratórios e investigação', 'Comunicações orais e painéis', 'Cursos e escolas de formação'];
       return ['Studies (ESPE · UBI · Técnico)', 'Laboratories &amp; research', 'Oral &amp; poster presentations', 'Courses &amp; training schools']
@@ -1399,28 +1379,29 @@
              '<span class="dot" style="background:' + PRES + '"></span>' + t[2] + '<br>' +
              '<span class="dot" style="background:' + COU  + '"></span>' + t[3];
     };
-    const legend = L.control({ position: "bottomleft" });
-    legend.onAdd = function () {
-      const div = L.DomUtil.create("div", "map-legend");
-      div.innerHTML = legendHTML(currentLang);
-      mapLangUpdate = lang => { div.innerHTML = legendHTML(lang); markers.forEach(f => f(lang)); };
-      return div;
-    };
-    legend.addTo(map);
-
-    // Reset-to-default-view control
-    const reset = L.control({ position: "topright" });
-    reset.onAdd = function () {
-      const b = L.DomUtil.create("button", "map-reset");
-      b.type = "button"; b.title = "Reset view"; b.setAttribute("aria-label", "Reset view");
-      b.innerHTML = "⌖";
-      L.DomEvent.disableClickPropagation(b);
-      L.DomEvent.on(b, "click", function (e) { L.DomEvent.preventDefault(e); fit(); });
-      return b;
-    };
-    reset.addTo(map);
-
-    setTimeout(() => map.invalidateSize(), 200);
+    // career path, in order: Espinho -> Covilhã -> Lisbon -> Greenbelt -> Paris
+    const path = [
+      { lat: 41.0073, lng: -8.6415 }, { lat: 40.2784, lng: -7.5046 }, { lat: 38.7369, lng: -9.1366 },
+      { lat: 38.9961, lng: -76.8483 }, { lat: 48.8443, lng: 2.3562 }
+    ];
+    // buttons under the globe: each turns the globe to that place (career order first)
+    const city = (en, pt, lat, lng, color) => ({ lat: lat, lng: lng, color: color, name: lang => loc(lang, en, pt) });
+    const cities = [
+      city("Espinho", null, 41.0073, -8.6415, EDU), city("Covilhã", null, 40.2784, -7.5046, EDU),
+      city("Lisbon", "Lisboa", 38.7369, -9.1366, LAB), city("Greenbelt, USA", "Greenbelt, EUA", 38.9961, -76.8483, LAB),
+      city("Paris", null, 48.8443, 2.3562, LAB), city("Reykjavik", "Reiquiavique", 64.1466, -21.9426, PRES),
+      city("Marseille", "Marselha", 43.2965, 5.3698, COU), city("Le Teich", null, 44.6367, -1.0203, COU)
+    ];
+    window.SiteGlobeData = { places: places, legendHTML: legendHTML, path: path, cities: cities };
+    window.dispatchEvent(new CustomEvent("site:globe-data", { detail: window.SiteGlobeData }));
+    // safety net: if the 3D module never starts (old browser, blocked script), list the places
+    setTimeout(() => {
+      if (el.dataset.globe) return;
+      el.classList.add("globe-fallback");
+      el.innerHTML = '<ul class="globe-list">' + places.map(p =>
+        '<li><span class="dot" style="background:' + p.color + '"></span>' + p.html(currentLang) + "</li>").join("") + "</ul>";
+    }, 8000);
+    mapLangUpdate = lang => window.dispatchEvent(new CustomEvent("site:lang", { detail: lang }));
   }
 
   // Performance: lazy-load below-the-fold images

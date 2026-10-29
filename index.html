@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Security: only this site, GoatCounter, Google Fonts and the pinned map library may run code or load styles here.
+  <!-- Security: only this site, GoatCounter and Google Fonts may run code or load styles here.
        After editing an inline script, run: python tools/check_site.py --fix -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://unpkg.com/leaflet@1.9.4/ https://gc.zgo.at 'sha256-aSbGc3/HP5sipjRcPUtVvlNl802lhgPZUwMTNfE+gQg=' 'sha256-sIUn72laVtkA5+ffrSPnak2L0WVx84gPnqoN58RLsIU=' 'sha256-4q2xuongV1yIe//jKK9VhIfoTj8TRdiwk12UI+5uJRk='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com/leaflet@1.9.4/; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://gustavopmaia.goatcounter.com; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://gc.zgo.at 'sha256-aSbGc3/HP5sipjRcPUtVvlNl802lhgPZUwMTNfE+gQg=' 'sha256-sIUn72laVtkA5+ffrSPnak2L0WVx84gPnqoN58RLsIU=' 'sha256-4q2xuongV1yIe//jKK9VhIfoTj8TRdiwk12UI+5uJRk='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://gustavopmaia.goatcounter.com; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="referrer" content="strict-origin-when-cross-origin">
 
   <!-- ============ PRIMARY / SEO ============ -->
@@ -46,14 +46,8 @@
   <!-- ============ FONTS ============ -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://unpkg.com" crossorigin>
-  <link rel="dns-prefetch" href="https://unpkg.com">
-  <link rel="dns-prefetch" href="https://tile.openstreetmap.org">
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- ============ MAP (Leaflet) ============ -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 
   <!-- Apply saved/system theme before CSS to avoid a flash -->
   <script>(function(){try{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.setAttribute('data-theme',t);}catch(e){}
@@ -358,10 +352,10 @@
 
 
   <!-- Libraries -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <!-- Lucide icons, pinned and self-hosted (was unpkg "@latest") -->
   <script src="vendor/lucide-1.48.0.min.js"></script>
+  <!-- 3D: dust-disk background and the globe in "Where I have been" (Three.js, loaded on demand) -->
+  <script type="module" src="scenes3d.js"></script>
   <!-- Builds News and the Academic Tree from data/news.json and data/tree.json -->
   <script src="render.js"></script>
   <!-- Email links: the address is only assembled when clicked (keeps it away from spam bots) -->

@@ -764,3 +764,51 @@ html[data-theme="light"] .path-year{ color:var(--accent-strong); border-color:rg
   font-size:.8rem; font-weight:600; color:var(--text); padding:2px 10px; border-radius:var(--radius-pill);
   background:color-mix(in srgb, var(--accent) 9%, transparent); border:1px solid color-mix(in srgb, var(--accent) 25%, transparent);
 }
+
+/* ================================================================
+   3D (scenes3d.js): dust-disk background and the Earth globe
+   ================================================================ */
+#space3d{ position:fixed; inset:0; width:100%; height:100%; z-index:-1; pointer-events:none; display:block; }
+.has-space3d #starfield{ display:none; }
+
+.preso-map.globe{                            /* floats on the page: no box */
+  position:relative; height:560px; touch-action:pan-y; outline:none;
+  background:none; border:0; border-radius:0; box-shadow:none; overflow:visible;
+}
+.preso-map.globe:focus-visible{ box-shadow:0 0 0 2px var(--accent); }
+.globe-canvas{ position:absolute; inset:0; width:100%; height:100%; cursor:grab; touch-action:pan-y; }
+.globe-canvas:active{ cursor:grabbing; }
+.globe-legend{ position:absolute; left:12px; bottom:12px; z-index:2; pointer-events:none; }
+.globe-reset{ position:absolute; top:12px; right:12px; z-index:2; }
+.globe-hint{
+  position:absolute; right:12px; bottom:12px; z-index:2; pointer-events:none;
+  font-size:.74rem; color:var(--muted); background:color-mix(in srgb, var(--bg) 70%, transparent);
+  padding:3px 9px; border-radius:var(--radius-pill);
+}
+.globe-tip{
+  position:absolute; z-index:3; max-width:260px; padding:10px 12px; font-size:.84rem; line-height:1.45;
+  color:#e7edf6; background:rgba(11,16,32,.94); border:1px solid rgba(255,255,255,.22); border-radius:var(--radius-sm);
+  box-shadow:0 8px 24px rgba(0,0,0,.45); pointer-events:none;
+}
+.globe-tip-sep{ border:0; border-top:1px solid rgba(255,255,255,.15); margin:8px 0; }
+.globe-places{ display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+.globe-place{
+  display:inline-flex; align-items:center; gap:7px; cursor:pointer;
+  font:inherit; font-size:.85rem; font-weight:600; color:var(--text);
+  background:var(--card); border:1px solid var(--border); border-radius:var(--radius-pill); padding:6px 13px;
+  transition:border-color .18s ease, background .18s ease;
+}
+.globe-place .dot{ width:9px; height:9px; border-radius:50%; flex:none; }
+.globe-place:hover{ border-color:color-mix(in srgb, var(--accent) 55%, transparent); }
+.globe-place[aria-pressed="true"]{ border-color:var(--accent); background:color-mix(in srgb, var(--accent) 12%, transparent); }
+.preso-map.globe-fallback{ height:auto; padding:16px; overflow:auto; background:var(--card); }
+.globe-list{ list-style:none; margin:0; padding:0; display:grid; gap:10px; font-size:.9rem; }
+.globe-list .dot{ display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:8px; }
+.sr-only{ position:absolute !important; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+@media (max-width:520px){
+  .preso-map.globe{ height:360px; }
+  .globe-hint{ display:none; }
+  .globe-legend{ font-size:.72rem; padding:6px 9px; line-height:1.6; }
+}
+
+.globe-legend.globe-legend--below{ position:static; display:inline-block; margin-top:10px; pointer-events:auto; }
