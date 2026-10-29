@@ -812,3 +812,5 @@ html[data-theme="light"] .path-year{ color:var(--accent-strong); border-color:rg
 }
 
 .globe-legend.globe-legend--below{ position:static; display:inline-block; margin-top:10px; pointer-events:auto; }
+/* with the 3D disk behind it, the intro card becomes frosted glass so the text stays clear */
+.has-space3d .hero-card{ backdrop-filter:blur(18px) saturate(115%); -webkit-backdrop-filter:blur(18px) saturate(115%); }
