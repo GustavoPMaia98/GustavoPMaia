@@ -668,31 +668,84 @@ html[data-theme="light"] .hl-modal-backdrop{ background:rgba(15,23,42,.45); }
   .glance-step:not(:last-child)::after{ content:"↓"; right:auto; left:50%; top:auto; bottom:-17px; transform:translateX(-50%); }
 }
 
-/* ---- Career path (Education section) ---- */
+/* ---- Career path (Education section): interactive steps + summary panel ---- */
+.path-wrap{ margin:6px 0 24px; }
 .path{
-  list-style:none; margin:4px 0 22px; padding:0;
-  display:grid; grid-template-columns:repeat(6, minmax(0,1fr)); gap:0;
+  list-style:none; margin:0; padding:0; position:relative;
+  display:grid; grid-template-columns:repeat(6, minmax(0,1fr)); gap:10px;
 }
-.path li{ position:relative; padding:22px 10px 0 0; min-width:0; }
-.path li::before{                            /* the line */
-  content:""; position:absolute; top:7px; left:0; right:0; height:2px;
-  background:color-mix(in srgb, var(--accent) 35%, transparent);
+.path::before, .path::after{                 /* the line, and how far it has been drawn */
+  content:""; position:absolute; top:21px; left:22px; right:22px; height:3px; border-radius:3px;
+  background:color-mix(in srgb, var(--accent) 18%, transparent);
 }
-.path li::after{                             /* the dot */
-  content:""; position:absolute; top:2px; left:0; width:12px; height:12px; border-radius:50%;
-  background:var(--card); border:2px solid var(--accent);
+.path::after{                                  /* drawn in when the path scrolls into view */
+  background:linear-gradient(90deg, color-mix(in srgb, var(--accent) 55%, transparent), var(--accent));
+  transform:scaleX(0); transform-origin:left center; transition:transform 1.4s cubic-bezier(.22,.61,.36,1); }
+.path.is-drawn::after{ transform:scaleX(1); }
+.path-step{ position:relative; z-index:1; min-width:0; }
+.path-btn{
+  display:flex; flex-direction:column; align-items:flex-start; gap:2px; width:100%; height:100%;
+  padding:0 8px 10px 0; text-align:left; cursor:pointer; font:inherit; color:inherit;
+  background:none; border:0; border-radius:var(--radius-md);
 }
-.path li.path-now::after{ background:var(--accent); box-shadow:0 0 0 4px color-mix(in srgb, var(--accent) 25%, transparent); }
-.path li:last-child::before{ right:auto; width:12px; }
-.path-year{ display:block; font-family:var(--font-mono); font-size:.74rem; font-weight:700; color:var(--accent); }
-.path-place{ display:block; font-weight:700; font-size:.92rem; color:var(--text); }
-.path-what{ display:block; font-size:.78rem; line-height:1.35; color:var(--muted); }
-@media (max-width:760px){                    /* vertical on phones */
-  .path{ grid-template-columns:1fr; }
-  .path li{ padding:0 0 12px 26px; }
-  .path li::before{ top:6px; bottom:0; left:5px; right:auto; width:2px; height:auto; }
-  .path li:last-child::before{ display:none; }
-  .path li::after{ top:3px; }
+.path-dot{
+  display:grid; place-items:center; width:44px; height:44px; border-radius:50%; margin-bottom:8px;
+  color:var(--accent); background:var(--card); border:2px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  box-shadow:0 6px 16px rgba(2,8,23,.18);
+  transition:transform .2s ease, background .2s ease, color .2s ease, box-shadow .2s ease;
+}
+.path-dot{ position:relative; }
+.path-dot svg{ width:20px; height:20px; }
+.path-now .path-dot{ color:var(--on-accent); background:var(--accent); border-color:var(--accent); }
+.path-now .path-dot::after{                  /* "you are here" pulse */
+  content:""; position:absolute; width:44px; height:44px; border-radius:50%;
+  border:2px solid var(--accent); animation:pathPulse 2.4s ease-out infinite;
+}
+@keyframes pathPulse{ from{ transform:scale(1); opacity:.7; } to{ transform:scale(1.6); opacity:0; } }
+.path-btn:hover .path-dot, .path-btn:focus-visible .path-dot{ transform:translateY(-3px) scale(1.06); box-shadow:0 10px 22px rgba(2,8,23,.25); }
+.path-btn[aria-pressed="true"] .path-dot{ color:var(--on-accent); background:var(--accent-strong, var(--accent)); border-color:var(--accent); transform:scale(1.08); }
+.path-btn[aria-pressed="true"] .path-place{ color:var(--accent); }
+.path-btn:focus-visible{ outline:2px solid var(--accent); outline-offset:4px; }
+.path-year{ font-family:var(--font-mono); font-size:.76rem; font-weight:700; color:var(--accent); }
+.path-kind{ font-size:.64rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+.path-place{ font-weight:700; font-size:.95rem; color:var(--text); transition:color .2s ease; }
+.path-what{ font-size:.78rem; line-height:1.35; color:var(--muted); }
+
+.path-detail{
+  margin-top:6px; padding:14px 18px; border-radius:var(--radius-md);
+  background:var(--card); border:1px solid var(--border); border-left:3px solid var(--accent);
+  display:flex; flex-wrap:wrap; align-items:center; gap:6px 16px;
+  animation:pathIn .25s ease;
+}
+.path-detail[hidden]{ display:none; }
+@keyframes pathIn{ from{ opacity:0; transform:translateY(-4px); } to{ opacity:1; transform:none; } }
+.path-detail-text{ flex:1 1 320px; min-width:0; }
+.path-detail-title{ display:block; font-weight:700; color:var(--text); }
+.path-detail-meta{ display:block; font-size:.86rem; color:var(--muted); }
+.path-detail-sum{ display:block; font-size:.86rem; font-style:italic; color:var(--muted); margin-top:2px; }
+.path-detail-go{
+  display:inline-flex; align-items:center; gap:6px; cursor:pointer; white-space:nowrap;
+  font:inherit; font-size:.86rem; font-weight:700; color:var(--accent);
+  background:color-mix(in srgb, var(--accent) 10%, transparent);
+  border:1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  border-radius:var(--radius-pill); padding:7px 14px;
+}
+.path-detail-go:hover{ background:color-mix(in srgb, var(--accent) 18%, transparent); }
+.path-detail-go svg{ width:15px; height:15px; }
+
+@media (max-width:760px){                    /* phones: vertical line, steps as rows */
+  .path{ grid-template-columns:1fr; gap:4px; }
+  .path::before, .path::after{ top:22px; bottom:22px; left:21px; right:auto; width:3px; height:auto; }
+  .path::after{ background:linear-gradient(180deg, color-mix(in srgb, var(--accent) 55%, transparent), var(--accent));
+                transform:scaleY(0); transform-origin:center top; }
+  .path.is-drawn::after{ transform:scaleY(1); }
+  .path-btn{ display:grid; grid-template-columns:44px 1fr; column-gap:14px; align-items:center; padding:4px 0; }
+  .path-dot{ grid-row:1 / span 4; margin:0; }
+  .path-btn > :not(.path-dot){ grid-column:2; }
+}
+@media (prefers-reduced-motion:reduce){
+  .path::after{ transition:none; } .path-now .path-dot::after{ animation:none; display:none; }
+  .path-dot, .path-detail{ transition:none; animation:none; }
 }
 
 /* ---- Blog (posts from data/blog.json) ---- */

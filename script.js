@@ -20,6 +20,7 @@
   let langWired = false;
   let mapWired = false;
   let mapLangUpdate = null;   // set once the map legend exists; called by applyLang
+  let pathLangUpdate = null;  // career path summary panel; called by applyLang
   // Language: a ?lang=xx link wins for that visit (shareable, indexable URLs; not
   // saved, so following one link does not change the language for good), then a
   // choice made with the language button, then the browser's own language.
@@ -1124,6 +1125,7 @@
       if (en) b.textContent = (lang === "pt") ? pt : trLookup(lang, en);
     });
     if (typeof mapLangUpdate === "function") mapLangUpdate(lang);
+    if (typeof pathLangUpdate === "function") pathLangUpdate();
   }
   function setupLangToggle() {
     const btn = document.getElementById("langToggle");
@@ -2031,6 +2033,77 @@
     }
   }
 
+  // ============================================================
+  //  CAREER PATH (Education): each step shows a summary of the matching
+  //  Education / Experience entry, with a button that opens the full card.
+  // ============================================================
+  function setupCareerPath() {
+    const path = document.querySelector(".path");
+    const panel = document.getElementById("pathDetail");
+    if (!path || !panel || path.dataset.wired) return;
+    path.dataset.wired = "1";
+    const steps = Array.from(path.querySelectorAll(".path-btn"));
+    const en = el => el ? (el.dataset.enHtml || el.innerHTML) : "";
+    // find the timeline card whose (English) details line contains data-match
+    function target(btn) {
+      return Array.from(document.querySelectorAll("#" + btn.dataset.section + " .timeline-item"))
+        .find(it => en(it.querySelector(".meta")).indexOf(btn.dataset.match) !== -1);
+    }
+    const LABEL = { education: { en: "Open in Education", pt: "Abrir em Educação", fr: "Ouvrir dans Formation", ja: "学歴で開く" },
+                    experience: { en: "Open in Experience", pt: "Abrir em Experiência", fr: "Ouvrir dans Expérience", ja: "職歴で開く" } };
+    let current = null;
+    function show(btn) {
+      current = btn;
+      steps.forEach(b => b.setAttribute("aria-pressed", String(b === btn)));
+      const it = target(btn);
+      if (!it) { panel.hidden = true; return; }
+      const txt = sel => { const e = it.querySelector(sel); return e ? e.textContent.trim() : ""; };
+      const sum = txt(".timeline-card > p em");
+      panel.innerHTML =
+        '<span class="path-detail-text"><span class="path-detail-title"></span><span class="path-detail-meta"></span>' +
+        (sum ? '<span class="path-detail-sum"></span>' : "") + "</span>" +
+        '<button type="button" class="path-detail-go"><i data-lucide="arrow-down-right"></i><span></span></button>';
+      panel.querySelector(".path-detail-title").textContent = txt(".timeline-header strong");
+      panel.querySelector(".path-detail-meta").textContent = txt(".timeline-header .meta");
+      if (sum) panel.querySelector(".path-detail-sum").textContent = sum;
+      const l = LABEL[btn.dataset.section] || LABEL.education;
+      panel.querySelector(".path-detail-go span").textContent = l[currentLang] || l.en;
+      panel.querySelector(".path-detail-go").addEventListener("click", () => {
+        if (it.closest("details")) it.closest("details").open = true;
+        const tl = it.closest(".timeline.is-collapsible");
+        if (tl) { tl.classList.add("is-all"); const b = tl.nextElementSibling; if (b && b.classList.contains("list-all")) b.hidden = true; }
+        // scroll first, then open: cards that are out of view close themselves
+        it.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "center" });
+        const io = new IntersectionObserver(es => {
+          if (!es[0].isIntersecting) return;
+          io.disconnect();
+          setTimeout(() => { if (!it.classList.contains("open")) openTimelineItem(it); }, prefersReduced ? 0 : 250);
+        }, { threshold: 0.6 });
+        io.observe(it);
+      });
+      panel.hidden = false;
+      if (window.lucide && lucide.createIcons) try { lucide.createIcons(); } catch (e) {}
+    }
+    steps.forEach((b, i) => {
+      b.addEventListener("click", () => show(b));
+      b.addEventListener("keydown", e => {         // arrow keys move along the path
+        const d = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+        if (!d) return;
+        e.preventDefault();
+        const n = steps[(i + d + steps.length) % steps.length];
+        n.focus(); show(n);
+      });
+    });
+    pathLangUpdate = () => { if (current) show(current); };
+    show(steps[steps.length - 1]);                 // start on the current position
+    // draw the line when the path scrolls into view
+    if (prefersReduced || !("IntersectionObserver" in window)) { path.classList.add("is-drawn"); return; }
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) { path.classList.add("is-drawn"); io.disconnect(); }
+    }), { threshold: 0.3 });
+    io.observe(path);
+  }
+
   function init() {
     initStarfield();
     initNav();
@@ -2046,6 +2119,7 @@
     setupCarousels();
     setupNewsList();
     setupPhoneHelpers();
+    setupCareerPath();
     setupHighlightModal();
     setupTechModal();
     setupThemeToggle();
