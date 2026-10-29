@@ -21,6 +21,7 @@ SECTIONS = {                    # section id -> files it is built from
     "awards": ["sections/awards.html"],
     "funding": ["sections/funding.html"],
     "tree": ["data/tree.json"],
+    "blog": ["data/blog.json"],
 }
 
 

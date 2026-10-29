@@ -1,0 +1,4 @@
+{
+  "_help": "Blog posts, newest first. Copy this example into \"posts\" to publish one: {\"date\": \"2026-11-15\", \"title\": {\"en\": \"...\", \"pt\": \"...\"}, \"tags\": [{\"en\": \"Astrobiology\", \"pt\": \"Astrobiologia\"}], \"summary\": {\"en\": \"One or two sentences shown on the card.\", \"pt\": \"...\"}, \"body\": {\"en\": \"<p>First paragraph.</p><p>Second paragraph.</p>\", \"pt\": \"<p>...</p>\"}}. Set \"hidden\": true to keep a draft off the site. While there are no posts the section shows 'new writing is coming soon'.",
+  "posts": []
+}

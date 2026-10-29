@@ -1013,7 +1013,7 @@
     nav_highlights:{en:"Highlights",pt:"Destaques"}, nav_awards:{en:"Awards",pt:"Prémios"},
     nav_experience:{en:"Experience",pt:"Experiência"}, nav_presentations:{en:"Presentations",pt:"Apresentações"},
     nav_funding:{en:"Funding",pt:"Financiamento"}, nav_publications:{en:"Publications",pt:"Publicações"},
-    nav_tree:{en:"Tree",pt:"Árvore"}, nav_map:{en:"Map",pt:"Mapa"}, nav_tutoring:{en:"Tutoring",pt:"Explicações"}, nav_courses:{en:"Courses",pt:"Cursos"},
+    nav_tree:{en:"Tree",pt:"Árvore"}, nav_map:{en:"Map",pt:"Mapa"}, nav_blog:{en:"Blog",pt:"Blog"}, nav_tutoring:{en:"Tutoring",pt:"Explicações"}, nav_courses:{en:"Courses",pt:"Cursos"},
     nav_research:{en:"Research",pt:"Investigação"}, nav_skills:{en:"Skills",pt:"Competências"}, nav_more:{en:"More",pt:"Mais"},
     role:{en:"PhD Researcher in Chemistry · Astrobiology",pt:"Investigador de Doutoramento em Química · Astrobiologia"},
     bio:{en:"My research explores the origins and evolution of life in the universe, using chemistry to uncover the processes that may have led to life's emergence. A key focus is mechanochemistry: chemical reactions driven by mechanical forces. I investigate how mechanical energy, from parent-body formation, asteroid gardening, or meteorite impacts, could have promoted the synthesis and transformation of organic molecules on the early Earth and other planetary bodies, revealing alternative pathways for prebiotic chemistry under extreme and extraterrestrial environments.",
@@ -1036,7 +1036,7 @@
   function injectHeadingIcons() {
     const ICONS = { highlights:"sparkles", news:"newspaper", education:"graduation-cap", experience:"briefcase", courses:"book-marked",
       presentations:"presentation", funding:"banknote", publications:"book-open",
-      awards:"award", tree:"git-fork", map:"map-pin", tutoring:"flask-conical" };
+      awards:"award", tree:"git-fork", blog:"pen-line", map:"map-pin", tutoring:"flask-conical" };
     document.querySelectorAll(".section > h2").forEach(h => {
       if (h.querySelector(".h2-label")) return;
       const sec = h.closest("section"); const id = sec ? sec.id : "";

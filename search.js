@@ -20,7 +20,7 @@
   const LABELS = {
     about: "About", highlights: "Current Work Interests", news: "News", education: "Education", experience: "Experience",
     presentations: "Presentations", funding: "Funding", publications: "Publications",
-    awards: "Awards", tree: "Academic tree", map: "Map", tutoring: "Tutoring", courses: "Courses & Formations"
+    awards: "Awards", blog: "Blog", tree: "Academic tree", map: "Map", tutoring: "Tutoring", courses: "Courses & Formations"
   };
   const labelFor = id => {
     if (id === "about") return ui("about");

@@ -155,12 +155,34 @@
   }
   const TIMELINES = { presentations: { badges: true }, education: {}, experience: {}, courses: {} };
 
+  // ---------------------------------------------------------------- blog
+  // data/blog.json is edited by hand only, so the post body may contain HTML.
+  function blog(data) {
+    const posts = ((data && data.posts) || []).filter(p => p && !p.hidden && p.title && p.title.en)
+      .sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
+    if (!posts.length) return "";
+    return '<div class="timeline blog-list">' + posts.map(p => {
+      const d = String(p.date || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
+      const tags = (p.tags || []).map(t => typeof t === "string" ? { en: t } : t)
+        .map(t => "<span" + ptAttr(t) + ">" + esc(t.en) + "</span>").join("");
+      return '<article class="timeline-item blog-post"><div class="timeline-card blog-card"><div class="blog-head">' +
+        (d ? '<time class="blog-date" datetime="' + d[0] + '">' + d[3] + "/" + d[2] + "/" + d[1] + "</time>" : "") +
+        (tags ? '<div class="blog-tags">' + tags + "</div>" : "") + "</div>" +
+        '<h3 class="blog-title"' + ptAttr(p.title) + ">" + p.title.en + "</h3>" +
+        (p.summary && p.summary.en ? '<p class="blog-excerpt"' + ptAttr(p.summary) + ">" + p.summary.en + "</p>" : "") +
+        "</div>" +
+        (p.body && p.body.en ? '<div class="timeline-expand"><div class="expand-body blog-full"' + ptAttr(p.body) + ">" + p.body.en + "</div></div>" : "") +
+        "</article>";
+    }).join("\n") + "</div>";
+  }
+
   // Replace the <!--@news--> / <!--@tree--> / <!--@timeline:name--> placeholders
   // in the loaded section HTML.
   function fill(html, data) {
     html = html
       .replace("<!--@news-->", () => news(data.news))
-      .replace("<!--@tree-->", () => tree(data.tree));
+      .replace("<!--@tree-->", () => tree(data.tree))
+      .replace("<!--@blog-->", () => blog(data.blog));
     Object.keys(TIMELINES).forEach(name => {
       html = html.replace("<!--@timeline:" + name + "-->", () => timeline(data[name], TIMELINES[name]));
     });
@@ -181,6 +203,6 @@
     return html;
   }
 
-  window.SiteRender = { fill: fill, news: news, tree: tree, timeline: timeline, timelines: Object.keys(TIMELINES),
+  window.SiteRender = { fill: fill, news: news, tree: tree, timeline: timeline, blog: blog, timelines: Object.keys(TIMELINES),
                         esc: esc, rich: rich, safeUrl: safeUrl };
 })();

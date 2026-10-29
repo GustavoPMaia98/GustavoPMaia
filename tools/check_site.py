@@ -103,6 +103,17 @@ for name in ("presentations", "education", "experience", "courses"):
         for ref in [m[1] for m in REF.findall(it.get("details", ""))]:   # pictures and links inside details
             need_file(where, ref.split("#")[0])
 
+blog = load_json("data/blog.json")
+if blog is not None:
+    for i, post in enumerate(blog.get("posts", []), 1):
+        where = f"data/blog.json post {i}"
+        if not DATE.match(str(post.get("date", ""))):
+            errors.append(f"{where}: date must look like 2026-11-15")
+        if not (post.get("title") or {}).get("en"):
+            errors.append(f"{where}: needs \"title\": {{\"en\": ...}}")
+        for ref in [m[1] for m in REF.findall((post.get("body") or {}).get("en", ""))]:
+            need_file(where, ref.split("#")[0])
+
 tree = load_json("data/tree.json")
 if tree is not None:
     def walk(node, path):
