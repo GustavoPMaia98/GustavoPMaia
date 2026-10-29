@@ -54,8 +54,19 @@
   }[lang];
 
   // ---------------------------------------------------------------- text
-  const esc = s => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-  const plain = html => { const d = document.createElement("div"); d.innerHTML = html || ""; return d.textContent.replace(/\s+/g, " ").trim(); };
+  // Text is kept plain, except chemical sub- and superscripts (CO<sub>3</sub><sup>2−</sup>):
+  // plain() turns them into private marks and esc() turns the marks back into tags.
+  const SUB = ["\u0001", "\u0002"], SUP = ["\u0003", "\u0004"];
+  const esc = s => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;")
+    .replace(/\u0001([^\u0002]*)\u0002/g, "<sub>$1</sub>").replace(/\u0003([^\u0004]*)\u0004/g, "<sup>$1</sup>");
+  const plain = html => {
+    const d = document.createElement("div"); d.innerHTML = html || "";
+    d.querySelectorAll("sub, sup").forEach(e => {
+      const m = e.tagName === "SUB" ? SUB : SUP;
+      e.replaceWith(m[0] + e.textContent + m[1]);
+    });
+    return d.textContent.replace(/\s+/g, " ").trim();
+  };
   const key = s => String(s || "").replace(/\s+/g, " ").trim();
   // One text in the CV language: Portuguese from the data, French/Japanese from the dictionary.
   function tr(en, pt) {
@@ -242,6 +253,49 @@
 
   const contact = (icon, label, link) => '<li><span class="cv-cico" aria-hidden="true">' + icon + "</span><span>" + esc(label) + "</span>" + link + "</li>";
 
+  // Logos come with very different blank margins, so the same box shows them at
+  // different sizes. Crop each to its visible part (pixels that are neither
+  // transparent nor near-white) so every logo fills its tile the same way.
+  function trimLogos(root) {
+    const cache = {};
+    function trim(src) {
+      if (cache[src]) return cache[src];
+      return (cache[src] = new Promise(res => {
+        const im = new Image();
+        im.onload = () => {
+          try {
+            const w = im.naturalWidth, h = im.naturalHeight, c = document.createElement("canvas");
+            c.width = w; c.height = h;
+            const ctx = c.getContext("2d"); ctx.drawImage(im, 0, 0);
+            const d = ctx.getImageData(0, 0, w, h).data;
+            let x0 = w, y0 = h, x1 = -1, y1 = -1;
+            for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+              const k = (y * w + x) * 4;
+              if (d[k + 3] > 24 && (d[k] < 236 || d[k + 1] < 236 || d[k + 2] < 236)) {
+                if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+              }
+            }
+            if (x1 < 0 || (x1 - x0 + 1) * (y1 - y0 + 1) > 0.92 * w * h) return res(src);   // nothing to trim
+            const pad = Math.round(Math.max(x1 - x0, y1 - y0) * 0.04);
+            x0 = Math.max(0, x0 - pad); y0 = Math.max(0, y0 - pad); x1 = Math.min(w - 1, x1 + pad); y1 = Math.min(h - 1, y1 + pad);
+            const o = document.createElement("canvas");
+            o.width = x1 - x0 + 1; o.height = y1 - y0 + 1;
+            o.getContext("2d").drawImage(c, x0, y0, o.width, o.height, 0, 0, o.width, o.height);
+            res(o.toDataURL("image/png"));
+          } catch (e) { res(src); }
+        };
+        im.onerror = () => res(src);
+        im.src = src;
+      }));
+    }
+    return Promise.all([...root.querySelectorAll(".cv-logo")].map(img =>
+      trim(img.getAttribute("src")).then(u => new Promise(res => {
+        if (u === img.getAttribute("src")) return res();
+        img.onload = img.onerror = () => res();
+        img.src = u;
+      }))));
+  }
+
   // ---------------------------------------------------------------- load
   const getJSON = n => fetch("data/" + n + ".json", { cache: "no-cache" }).then(r => r.ok ? r.json() : null).catch(() => null);
   const getDoc = n => fetch("sections/" + n + ".html", { cache: "no-cache" }).then(r => r.ok ? r.text() : "")
@@ -299,8 +353,10 @@
     const mail = document.getElementById("cvMail");
     mail.textContent = mail.dataset.user + "@" + mail.dataset.domain;
     if (window.lucide && lucide.createIcons) try { lucide.createIcons({ attrs: { "stroke-width": 1.8 } }); } catch (e) {}
+    trimLogos(cv).then(() => {
     cv.setAttribute("aria-busy", "false");
     document.documentElement.dataset.cvReady = "1";  // tools/build_cv.py waits for this
+    });
   });
 
   // top bar: labels, language, PDF (the print dialog until the nightly PDF exists)

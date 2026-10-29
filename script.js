@@ -21,6 +21,7 @@
   let mapWired = false;
   let mapLangUpdate = null;   // set once the map legend exists; called by applyLang
   let pathLangUpdate = null;  // career path summary panel; called by applyLang
+  let showPathFor = () => false;  // opens the career-path step of an education entry (search)
   // Language: a ?lang=xx link wins for that visit (shareable, indexable URLs; not
   // saved, so following one link does not change the language for good), then a
   // choice made with the language button, then the browser's own language.
@@ -2061,13 +2062,23 @@
       if (!it) { panel.hidden = true; return; }
       const txt = sel => { const e = it.querySelector(sel); return e ? e.textContent.trim() : ""; };
       const sum = txt(".timeline-card > p em");
+      // Education lives only in this path: its step shows the entry's whole text and
+      // photos here. Experience steps show a summary and a link to their card.
+      const full = btn.dataset.section === "education" ? it.querySelector(".expand-body") : null;
       panel.innerHTML =
         '<span class="path-detail-text"><span class="path-detail-title"></span><span class="path-detail-meta"></span>' +
         (sum ? '<span class="path-detail-sum"></span>' : "") + "</span>" +
-        '<button type="button" class="path-detail-go"><i data-lucide="arrow-down-right"></i><span></span></button>';
+        (full ? '<div class="path-detail-body expand-body"></div>'
+              : '<button type="button" class="path-detail-go"><i data-lucide="arrow-down-right"></i><span></span></button>');
       panel.querySelector(".path-detail-title").textContent = txt(".timeline-header strong");
       panel.querySelector(".path-detail-meta").textContent = txt(".timeline-header .meta");
       if (sum) panel.querySelector(".path-detail-sum").textContent = sum;
+      panel.hidden = false;
+      if (full) {
+        panel.querySelector(".path-detail-body").innerHTML = full.innerHTML;   // already in the page language
+        panel.querySelectorAll("img").forEach(i => { i.loading = "lazy"; i.decoding = "async"; });
+        return;
+      }
       const l = LABEL[btn.dataset.section] || LABEL.education;
       panel.querySelector(".path-detail-go span").textContent = l[currentLang] || l.en;
       panel.querySelector(".path-detail-go").addEventListener("click", () => {
@@ -2098,8 +2109,10 @@
         box.innerHTML = ""; box.appendChild(i);
       }
     });
+    // a step tapped on a phone: bring its text into view (it sits below the list)
+    const reveal = () => { if (innerWidth <= 760) panel.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "start" }); };
     steps.forEach((b, i) => {
-      b.addEventListener("click", () => show(b));
+      b.addEventListener("click", () => { show(b); reveal(); });
       b.addEventListener("keydown", e => {         // arrow keys move along the path
         const d = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
         if (!d) return;
@@ -2109,7 +2122,16 @@
       });
     });
     pathLangUpdate = () => { if (current) show(current); };
-    show(steps[steps.length - 1]);                 // start on the current position
+    // search results for an education entry open its step
+    showPathFor = it => {
+      const b = steps.find(x => target(x) === it);
+      if (!b) return false;
+      show(b);
+      path.closest(".path-wrap").scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "start" });
+      return true;
+    };
+    const edu = steps.filter(b => b.dataset.section === "education");
+    show(edu[edu.length - 1] || steps[steps.length - 1]);   // start on the latest degree
     // draw the line when the path scrolls into view
     if (prefersReduced || !("IntersectionObserver" in window)) { path.classList.add("is-drawn"); return; }
     const io = new IntersectionObserver(es => es.forEach(e => {
@@ -2148,7 +2170,7 @@
   }
 
   // Exposed so the section loader can re-run init() after injecting content.
-  window.SiteApp = { init: init, openItem: openTimelineItem };
+  window.SiteApp = { init: init, openItem: openTimelineItem, showPathFor: it => showPathFor(it) };
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
