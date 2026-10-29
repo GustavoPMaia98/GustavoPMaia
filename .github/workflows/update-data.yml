@@ -40,7 +40,7 @@ jobs:
           FEED: ${{ secrets.LINKEDIN_FEED_URL }}
         run: |
           if [ -n "$FEED" ]; then python tools/add_news.py --feed "$FEED"
-          else echo "No LINKEDIN_FEED_URL secret; skipped (see README.md)."; fi
+          else echo "No LINKEDIN_FEED_URL secret; skipped (see tools/add_news.py)."; fi
       - name: Check the site still builds
         run: python tools/check_site.py
       - name: Commit if anything changed
