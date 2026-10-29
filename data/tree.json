@@ -1,5 +1,5 @@
 {
-  "_help": "Edit this file to change the Academic Tree. Each person lists their own 'mentors'. Nodes marked \"source\": \"academictree\" were added automatically from Chemistry Tree; set \"hidden\": true on one to remove it for good. See tools/update_tree.py.",
+  "_help": "Edit this file to change the Academic Tree. Each person lists their own 'mentors'. Nodes marked \"source\": \"academictree\" were added automatically from Chemistry Tree; set \"hidden\": true on one to remove it for good. See tools/update_tree.py. \"cvOnly\": true shows a person in the CV (Supervisors) but not in the tree.",
   "root": {
     "name": "Gustavo Pinho Maia",
     "url": "https://orcid.org/0000-0001-5314-8816",
@@ -243,6 +243,31 @@
             ]
           }
         ]
+      },
+      {
+        "name": "João Serrano",
+        "cvOnly": true,
+        "role": {
+          "en": "Master's advisor",
+          "pt": "Orientador de mestrado"
+        },
+        "institution": {
+          "name": "Universidade da Beira Interior",
+          "url": "https://www.ubi.pt/"
+        }
+      },
+      {
+        "name": "Paulo J. S. Almeida",
+        "cvOnly": true,
+        "url": "https://www.ubi.pt/sites/cics/en/investigador/221",
+        "role": {
+          "en": "Bachelor's project advisor",
+          "pt": "Orientador do projeto de licenciatura"
+        },
+        "institution": {
+          "name": "Universidade da Beira Interior",
+          "url": "https://www.ubi.pt/"
+        }
       }
     ],
     "academictree": 972410
