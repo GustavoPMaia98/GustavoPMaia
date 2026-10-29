@@ -594,9 +594,9 @@
       index.push({ id, label, title: heading, text: norm(sec.textContent).toLowerCase(), el: sec });
 
       // Granular entries for individual items inside the section
-      const items = sec.querySelectorAll(".timeline-item, .news-slide, .at-node");
+      const items = sec.querySelectorAll(".timeline-item, .news-slide, .at-node, .skill-item");
       items.forEach(item => {
-        const titleEl = item.querySelector("strong, h3, .at-name, .blog-title");
+        const titleEl = item.querySelector("strong, h3, .at-name, .blog-title, .skill-item-name");
         const title = norm(titleEl ? titleEl.textContent : item.textContent);
         const text = norm(item.textContent);
         if (text.length < 3) return;

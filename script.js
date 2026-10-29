@@ -1315,6 +1315,16 @@
     if (!wrap || wrap.__panWired) return;
     wrap.__panWired = true;
 
+    // When the tree is wider than the screen (phones), start centred on me rather
+    // than at its far-left edge, so the first thing seen is the focal card.
+    const centreOnSelf = () => {
+      const self = wrap.querySelector(".at-self");
+      if (!self || wrap.scrollWidth <= wrap.clientWidth) return;
+      const w = wrap.getBoundingClientRect(), s = self.getBoundingClientRect();
+      wrap.scrollLeft += (s.left + s.width / 2) - (w.left + w.width / 2);
+    };
+    requestAnimationFrame(centreOnSelf);
+
     let down = false, moved = false, startX = 0, startLeft = 0;
     wrap.classList.add("at-grab");
 
