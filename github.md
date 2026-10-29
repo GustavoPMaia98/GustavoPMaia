@@ -13,4 +13,4 @@ date: 2026-08-07T07:46:22Z
 ## Screen map
 | Screen | Built from |
 | --- | --- |
-| Single-page portfolio | index.html, style.css, ui-extra.css, script.js, search.js, sections/*.html, i18n/translations.js, data/news.json |
+| Single-page portfolio | index.html, style.css, ui-extra.css, script.js, search.js, render.js, sections/*.html, i18n/translations.js, data/news.json, data/tree.json, data/publications.json |

@@ -4,15 +4,8 @@
   // ============================================================
   //  CONFIG
   // ============================================================
-  const ORCID_ID = "0000-0001-5314-8816";
-  const ORCID_WORKS_URL = `https://pub.orcid.org/v3.0/${ORCID_ID}/works`;
-  const CROSSREF_URL = "https://api.crossref.org/works/";
-  const CONTACT_MAILTO = "gustavopinho.maia@mnhn.fr"; // Crossref polite pool only
-
-  // Peer-reviewed papers only — presentations, preprints, datasets, etc. excluded.
-  // Add "review" / "book-chapter" here to include those too.
-  const ORCID_ALLOWED_TYPES = ["journal-article"];
-  const CROSSREF_ALLOWED_TYPES = ["journal-article"];
+  // Publications are found and verified every night by tools/update_publications.py
+  // (ORCID + Crossref + OpenAlex, journal articles only) and read from data/publications.json.
 
   const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -797,82 +790,6 @@
       .forEach(it => wrap.insertBefore(it, anchor));
   }
 
-  async function fetchOrcidWorks() {
-    const res = await fetch(ORCID_WORKS_URL, { headers: { Accept: "application/json" } });
-    if (!res.ok) throw new Error("ORCID request failed: " + res.status);
-    const data = await res.json();
-
-    const works = [];
-    (data.group || []).forEach(group => {
-      const summaries = group["work-summary"] || [];
-      if (!summaries.length) return;
-      const s = summaries[0];
-
-      const type = (s.type || "").toLowerCase();
-      if (!ORCID_ALLOWED_TYPES.includes(type)) return; // peer-reviewed papers only
-
-      const ids =
-        (group["external-ids"] && group["external-ids"]["external-id"]) ||
-        (s["external-ids"] && s["external-ids"]["external-id"]) || [];
-      let doi = null;
-      ids.forEach(id => {
-        if (!doi && (id["external-id-type"] || "").toLowerCase() === "doi") {
-          doi = (id["external-id-value"] || "").trim();
-        }
-      });
-
-      const title = s.title && s.title.title && s.title.title.value;
-      const journal = s["journal-title"] && s["journal-title"].value;
-      const yearVal = s["publication-date"] && s["publication-date"].year && s["publication-date"].year.value;
-
-      works.push({ doi, title, journal, authors: "", year: yearVal ? parseInt(yearVal, 10) : 0 });
-    });
-    return works;
-  }
-
-  async function fetchCrossrefByOrcid() {
-    const url = `${CROSSREF_URL.replace(/\/$/, "")}?filter=orcid:${ORCID_ID}&rows=200&mailto=${encodeURIComponent(CONTACT_MAILTO)}`;
-    const res = await fetch(url, { headers: { Accept: "application/json" } });
-    if (!res.ok) throw new Error("Crossref ORCID request failed: " + res.status);
-    const json = await res.json();
-    const items = (json.message && json.message.items) || [];
-    return items.map(parseCrossrefItem).filter(w => CROSSREF_ALLOWED_TYPES.includes(w.type));
-  }
-
-  async function fetchCrossref(doi) {
-    if (!doi) return null;
-    try {
-      const url = CROSSREF_URL + encodeURIComponent(doi) + "?mailto=" + encodeURIComponent(CONTACT_MAILTO);
-      const res = await fetch(url, { headers: { Accept: "application/json" } });
-      if (!res.ok) return null;
-      const json = await res.json();
-      return parseCrossrefItem(json.message || {});
-    } catch (e) { return null; }
-  }
-
-  function parseCrossrefItem(m) {
-    const title = Array.isArray(m.title) ? m.title[0] : (m.title || "");
-    const journal = Array.isArray(m["container-title"]) ? m["container-title"][0] : (m["container-title"] || "");
-    const dateParts =
-      (m.issued && m.issued["date-parts"] && m.issued["date-parts"][0]) ||
-      (m["published-print"] && m["published-print"]["date-parts"] && m["published-print"]["date-parts"][0]) ||
-      (m["published-online"] && m["published-online"]["date-parts"] && m["published-online"]["date-parts"][0]) || [];
-    const year = dateParts[0] || "";
-    const authors = (m.author || [])
-      .map(a => [a.given, a.family].filter(Boolean).join(" "))
-      .filter(Boolean).join(", ");
-    const abstract = m.abstract ? stripJats(m.abstract) : "";
-    return { title, journal, year, authors, abstract, doi: m.DOI || "", type: (m.type || "").toLowerCase() };
-  }
-
-  function stripJats(s) {
-    return String(s)
-      .replace(/<[^>]+>/g, " ")
-      .replace(/\s+/g, " ")
-      .replace(/^\s*abstract[:\s]*/i, "")
-      .trim();
-  }
-
   function renderPublication(container, pub) {
     const metaParts = [pub.authors, pub.year, pub.journal].filter(Boolean).join(" · ");
     const doiUrl = pub.doi ? "https://doi.org/" + encodeURI(pub.doi) : "";
@@ -1397,6 +1314,16 @@
     const wrap = document.querySelector(".at-wrap");
     if (!wrap || wrap.__panWired) return;
     wrap.__panWired = true;
+
+    // When the tree is wider than the screen (phones), start centred on me rather
+    // than at its far-left edge, so the first thing seen is the focal card.
+    const centreOnSelf = () => {
+      const self = wrap.querySelector(".at-self");
+      if (!self || wrap.scrollWidth <= wrap.clientWidth) return;
+      const w = wrap.getBoundingClientRect(), s = self.getBoundingClientRect();
+      wrap.scrollLeft += (s.left + s.width / 2) - (w.left + w.width / 2);
+    };
+    requestAnimationFrame(centreOnSelf);
 
     let down = false, moved = false, startX = 0, startLeft = 0;
     wrap.classList.add("at-grab");

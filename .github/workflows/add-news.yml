@@ -1,0 +1,63 @@
+# Adds one LinkedIn post to the News section.
+# GitHub -> Actions -> "Add news from LinkedIn" -> Run workflow (also works from the
+# GitHub phone app). Paste the link from the post's "..." menu -> "Copy link to post".
+name: Add news from LinkedIn
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "Link to the LinkedIn post"
+        required: true
+      text:
+        description: "English text (optional: leave empty to take it from LinkedIn)"
+        required: false
+      text_pt:
+        description: "Portuguese text (optional)"
+        required: false
+      image:
+        description: "Picture link (optional: leave empty to take it from LinkedIn)"
+        required: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: site-data
+  cancel-in-progress: false
+
+jobs:
+  add:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pillow==10.4.0
+      - name: Add the post
+        # inputs go through environment variables, never straight into the script,
+        # so text typed in the form can never run as a command
+        env:
+          URL: ${{ inputs.url }}
+          TEXT: ${{ inputs.text }}
+          TEXT_PT: ${{ inputs.text_pt }}
+          IMAGE: ${{ inputs.image }}
+        run: |
+          args=(--url "$URL")
+          [ -n "$TEXT" ] && args+=(--text "$TEXT")
+          [ -n "$TEXT_PT" ] && args+=(--text-pt "$TEXT_PT")
+          [ -n "$IMAGE" ] && args+=(--image "$IMAGE")
+          python tools/add_news.py "${args[@]}"
+      - name: Check the site still builds
+        run: python tools/check_site.py
+      - name: Commit
+        run: |
+          if [ -n "$(git status --porcelain data images/news)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add data images/news
+            git commit -m "Add LinkedIn post to News"
+            for i in 1 2 3; do git pull --rebase origin main && git push && break; sleep 5; done
+          fi

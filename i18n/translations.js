@@ -10,6 +10,9 @@
 window.TR = window.TR || { fr: {}, ja: {} };
 
 window.TR.fr = {
+  "Technique": "Technique",
+  "Skill": "Compétence",
+  "Select any item to see how I use it.": "Sélectionnez un élément pour voir comment je l’utilise.",
   // ---- Nav / section labels ----
   "Updated": "Mis à jour",
   "Education": "Formation",
@@ -480,6 +483,9 @@ window.TR.fr = {
 };
 
 window.TR.ja = {
+  "Technique": "技術",
+  "Skill": "スキル",
+  "Select any item to see how I use it.": "項目を選ぶと、その使い方を表示します。",
   // ---- Nav / section labels ----
   "Updated": "更新",
   "Education": "学歴",

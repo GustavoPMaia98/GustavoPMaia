@@ -998,6 +998,14 @@ body.autoscroll-on .autoscroll-edge.active{ opacity:.85; }
 .metrics--strip .metric-label{ font-size:.7rem; margin-top:6px; }
 .metrics--strip .metric-link{ text-decoration:none; transition:transform .15s; }
 .metrics--strip .metric-link:hover{ transform:translateY(-2px); }
+/* phones: 2 × 2 (the earlier mobile rule is overridden by the band above), and
+   long labels such as "Comunicações" may wrap instead of widening the page */
+.metrics--strip .metric{ min-width:0; }
+.metrics--strip .metric-label{ overflow-wrap:anywhere; }
+@media (max-width:560px){
+  .metrics--strip{ grid-template-columns:repeat(2,minmax(0,1fr)); row-gap:12px; }
+  .metrics--strip .metric:nth-child(odd){ border-left:0; }
+}
 
 /* ---- Section heading icons ---- */
 .section > h2{ display:flex; align-items:center; margin-bottom:26px; }
@@ -1065,7 +1073,7 @@ a.news-card:hover .news-media--photo img{ transform:scale(1.06); }
   font-size:1.02rem; line-height:1.55; color:var(--text);
   display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical; overflow:hidden;
 }
-.news-text em{ color:#cdd6e4; font-style:italic; }
+.news-text em{ color:var(--text); font-style:italic; }   /* was a fixed light grey, unreadable on the light theme */
 .news-cta{
   display:inline-flex; align-items:center; gap:6px; margin-top:2px;
   font-weight:700; font-size:.9rem; color:var(--accent); transition:gap .2s, color .2s;
