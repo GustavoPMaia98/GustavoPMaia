@@ -24,7 +24,11 @@ To block a paper for good, add its DOI to EXCLUDE. Standard-library Python only.
 import json, os, re, sys, time, unicodedata, urllib.error, urllib.parse, urllib.request
 
 ORCID = "0000-0001-5314-8816"
-MAILTO = "gustavopinho.maia@mnhn.fr"          # Crossref / OpenAlex "polite pool"
+# Contact address for the Crossref / OpenAlex "polite pool" (faster, more reliable
+# answers). Kept out of the public code: set it as the repository secret
+# CONTACT_EMAIL; without it the lookups still work, just in the slower pool.
+MAILTO = os.environ.get("CONTACT_EMAIL", "").strip()
+POLITE = f"&mailto={urllib.parse.quote(MAILTO)}" if MAILTO else ""
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "data", "publications.json")
 
@@ -67,7 +71,7 @@ def plain(s):
 
 def get(url):
     req = urllib.request.Request(url, headers={"Accept": "application/json",
-                                               "User-Agent": f"GustavoPMaia-site (mailto:{MAILTO})"})
+                                               "User-Agent": "GustavoPMaia-site" + (f" (mailto:{MAILTO})" if MAILTO else "")})
     for attempt in range(3):
         try:
             with urllib.request.urlopen(req, timeout=30) as r:
@@ -107,12 +111,12 @@ def from_orcid():
 
 
 def from_crossref():
-    data = get(f"https://api.crossref.org/works?filter=orcid:{ORCID},type:journal-article&rows=200&mailto={MAILTO}") or {}
+    data = get(f"https://api.crossref.org/works?filter=orcid:{ORCID},type:journal-article&rows=200{POLITE}") or {}
     return {clean_doi(i.get("DOI")) for i in (data.get("message") or {}).get("items", []) if i.get("DOI")}
 
 
 def from_openalex():
-    url = ("https://api.openalex.org/works?per-page=200&mailto=" + MAILTO +
+    url = ("https://api.openalex.org/works?per-page=200" + POLITE +
            "&filter=" + urllib.parse.quote(f"author.orcid:{ORCID},type:article"))
     data = get(url) or {}
     return {clean_doi(w.get("doi")) for w in data.get("results", []) if w.get("doi")}
@@ -120,13 +124,13 @@ def from_openalex():
 
 # ------------------------------------------------------------------ verification
 def crossref_meta(doi):
-    return ((get("https://api.crossref.org/works/" + urllib.parse.quote(doi) + "?mailto=" + MAILTO) or {})
+    return ((get("https://api.crossref.org/works/" + urllib.parse.quote(doi) + "?" + POLITE.lstrip("&")) or {})
             .get("message")) or None
 
 
 def openalex_topics(doi):
     try:
-        w = get("https://api.openalex.org/works/doi:" + urllib.parse.quote(doi) + "?mailto=" + MAILTO) or {}
+        w = get("https://api.openalex.org/works/doi:" + urllib.parse.quote(doi) + "?" + POLITE.lstrip("&")) or {}
     except Exception:
         return []
     out = []
