@@ -1,0 +1,245 @@
+{
+  "_help": "Talks and posters, newest first. Copy an item to add one: \"type\" is oral or poster; \"title\", \"meta\" (event · date · city) and \"summary\" take \"en\" and \"pt\"; \"details\" is the text shown when the card is opened (HTML allowed). Set \"hidden\": true to hide an item.",
+  "items": [
+    {
+      "type": "oral",
+      "logo": {
+        "src": "images/logos/metsoc.png",
+        "alt": ""
+      },
+      "title": {
+        "en": "Effect of Mechanochemistry on Organic Matter: Implications for Impact Gardening on Asteroid Surfaces",
+        "pt": "Efeito da mecanoquímica na matéria orgânica: implicações para o reprocessamento por impacto de superfícies de asteroides"
+      },
+      "meta": {
+        "en": "MetSoc 2026 · Aug 2026 · Frankfurt",
+        "pt": "MetSoc 2026 · ago. 2026 · Frankfurt"
+      },
+      "summary": {
+        "en": "Oral talk · Maia, Remusat, Amano, Viennet, Dworkin, McLain &amp; da Silva",
+        "pt": "Comunicação oral · Maia, Remusat, Amano, Viennet, Dworkin, McLain & da Silva"
+      },
+      "details": "<p data-pt=\"Comunicação oral na 88.ª Reunião da Meteoritical Society (MetSoc 2026, Frankfurt), na sessão Organics &amp; Ices. A moagem por impacto e a trituração de hexametilenotetramina (HMT), com montmorilonite sódica servem de análogo aos impactos repetidos do asteroid gardening. A moagem de alta energia desorganiza a estrutura da argila e converte a HMT numa variedade de novas espécies orgânicas (pirazina, derivados de triazina/triazinano e espécies azotadas com oxigénio) mesmo sem água líquida, enquanto a trituração mais suave intercala moléculas do tipo HMT entre as camadas da argila, protegendo-as. Os eventos de impacto transformam e preservam, assim, a matéria orgânica extraterrestre.\">Oral talk at the 88th Meeting of the Meteoritical Society (MetSoc 2026, Frankfurt), in the Organics &amp; Ices session. Ball-milling and grinding of hexamethylenetetramine (HMT), with Na-montmorillonite serve as an analogue for the repeated impacts of asteroid gardening. High-energy milling disrupts the clay structure and drives HMT into a diverse suite of new organics (pyrazine, triazine/triazinane derivatives, and oxygen-bearing nitrogen species) even without liquid water, while gentler grinding intercalates HMT-like molecules into the clay interlayers, protecting them. Impact events thus both transform and preserve extraterrestrial organic matter.</p>\n<p><a href=\"https://www.hou.usra.edu/meetings/metsoc2026/pdf/5158.pdf\" target=\"_blank\" rel=\"noopener\" data-pt=\"Resumo ↗\">Abstract ↗</a></p>"
+    },
+    {
+      "type": "oral",
+      "logo": {
+        "src": "images/logos/AbGradE.png",
+        "alt": ""
+      },
+      "title": {
+        "en": "The effect of mechanochemistry on the formation of extraterrestrial organic matter",
+        "pt": "O efeito da mecanoquímica na formação de matéria orgânica extraterrestre"
+      },
+      "meta": {
+        "en": "AbGradE’25 · Oct 2025 · Lisbon",
+        "pt": "AbGradE’25 · out. 2025 · Lisboa"
+      },
+      "summary": {
+        "en": "Oral talk · Maia, Dworkin, da Silva &amp; Remusat",
+        "pt": "Comunicação oral · Maia, Dworkin, da Silva & Remusat"
+      },
+      "details": "<p data-pt=\"Comunicação oral no encontro AbGradE’25 (Lisboa) sobre como a energia mecanoquímica influencia a formação e a evolução da matéria orgânica extraterrestre, e as suas implicações para a entrega exógena de moléculas orgânicas à Terra primitiva.\">Oral talk at the AbGradE’25 meeting (Lisbon) on how mechanochemical energy shapes the formation and evolution of extraterrestrial organic matter, and what this means for the exogenous delivery of organic molecules to the early Earth.</p>\n<div class=\"expand-gallery\">\n<img src=\"images/presentations/abgrade-2025.webp\" alt=\"AbGradE'25, oral presentation, Lisbon\">\n</div>"
+    },
+    {
+      "type": "poster",
+      "logo": {
+        "src": "images/logos/EANA.png",
+        "alt": ""
+      },
+      "title": {
+        "en": "Solid-state mechanochemistry of extraterrestrial organic molecules: new insights on the exogenous delivery of organic matter",
+        "pt": "Mecanoquímica em estado sólido de moléculas orgânicas extraterrestres: novas perspetivas sobre a entrega exógena de matéria orgânica"
+      },
+      "meta": {
+        "en": "EANA 2025 · Lisbon · Poster Award",
+        "pt": "EANA 2025 · Lisboa · Prémio de Póster"
+      },
+      "summary": {
+        "en": "Award-winning poster · EANA 2025",
+        "pt": "Painel premiado · EANA 2025"
+      },
+      "details": "<p data-pt=\"Painel apresentado na conferência da European Astrobiology Network Association (EANA 2025, Lisboa), distinguido com um prémio de painel. O trabalho estuda a mecanoquímica em estado sólido de análogos orgânicos extraterrestres (HMT + montmorilonite) e o que revela sobre a entrega exógena de matéria orgânica.\">Poster presented at the European Astrobiology Network Association conference (EANA 2025, Lisbon), recognised with a poster award. The work studies the solid-state mechanochemistry of extraterrestrial organic analogues (HMT + montmorillonite) and what it reveals about the exogenous delivery of organic matter.</p>\n<div class=\"expand-gallery\">\n<img src=\"images/presentations/eana-2025.webp\" alt=\"EANA 2025, poster presentation, Lisbon\">\n</div>"
+    },
+    {
+      "type": "oral",
+      "logo": {
+        "src": "images/logos/BEACON.png",
+        "alt": ""
+      },
+      "title": {
+        "en": "Effect of mechanochemical events on extraterrestrial organic matter and its implications for exogenous delivery",
+        "pt": "Efeito de eventos mecanoquímicos na matéria orgânica extraterrestre e implicações para a entrega exógena"
+      },
+      "meta": {
+        "en": "BEACON 2025 · Harpa, Reykjavik · Jul 2025",
+        "pt": "BEACON 2025 · Harpa, Reiquiavique · jul. 2025"
+      },
+      "summary": {
+        "en": "Oral presentation · BEACON 2025",
+        "pt": "Comunicação oral · BEACON 2025"
+      },
+      "details": "<p data-pt=\"Comunicação oral na BEACON 2025 (Harpa, Reiquiavique) sobre eventos mecanoquímicos e a sua influência na matéria orgânica extraterrestre, com implicações para a entrega exógena de moléculas relevantes para a origem da vida.\">Oral presentation at BEACON 2025 (Harpa, Reykjavik) on mechanochemical events and their influence on extraterrestrial organic matter, with implications for the exogenous delivery of molecules relevant to the origin of life.</p>\n<div class=\"expand-gallery\">\n<img src=\"images/presentations/beacon-2025.webp\" alt=\"BEACON 2025, oral presentation, Reykjavik\">\n</div>"
+    },
+    {
+      "type": "oral",
+      "logo": {
+        "src": "images/logos/SmallBodies.png",
+        "alt": ""
+      },
+      "title": {
+        "en": "Mechanochemistry of small bodies and the evolution of extraterrestrial organic matter",
+        "pt": "Mecanoquímica de pequenos corpos e a evolução da matéria orgânica extraterrestre"
+      },
+      "meta": {
+        "en": "IPGP “Small Bodies Day” 2025 · Paris",
+        "pt": "IPGP “Small Bodies Day” 2025 · Paris"
+      },
+      "summary": {
+        "en": "Oral talk · IPGP, Paris",
+        "pt": "Comunicação oral · IPGP, Paris"
+      },
+      "details": "<p data-pt=\"Comunicação oral no “Small Bodies Day” do IPGP (Paris, 2025) sobre como os processos mecanoquímicos em pequenos corpos do Sistema Solar afetam a matéria orgânica extraterrestre.\">Oral talk at the IPGP “Small Bodies Day” (Paris, 2025) on how mechanochemical processing on small Solar System bodies shapes extraterrestrial organic matter.</p>"
+    },
+    {
+      "type": "oral",
+      "logo": {
+        "src": "images/logos/IMPMC_PhD_Day.png",
+        "alt": ""
+      },
+      "title": {
+        "en": "The effect of shock/impacts on the exogenous delivery of organic matter",
+        "pt": "O efeito de choques/impactos na entrega exógena de matéria orgânica"
+      },
+      "meta": {
+        "en": "IMPMC PhD Day · Paris · 23 Jun 2025",
+        "pt": "IMPMC PhD Day · Paris · 23 jun. 2025"
+      },
+      "summary": {
+        "en": "Oral talk · IMPMC, Sorbonne Université",
+        "pt": "Comunicação oral · IMPMC, Sorbonne Université"
+      },
+      "details": "<p data-pt=\"Comunicação oral no IMPMC PhD Day (Sorbonne Université, Paris, 23 de junho de 2025) sobre como os eventos de choque e impacto influenciam a entrega exógena de matéria orgânica à Terra primitiva.\">Oral talk at the IMPMC PhD Day (Sorbonne Université, Paris, 23 June 2025) on how shock and impact events shape the exogenous delivery of organic matter to the early Earth.</p>\n<div class=\"expand-gallery\">\n<img src=\"images/presentations/impmc-phd-day-2025.webp\" alt=\"IMPMC PhD Day 2025, title slide, Paris\">\n</div>"
+    },
+    {
+      "type": "oral",
+      "logo": {
+        "src": "images/logos/mnhn.png",
+        "alt": ""
+      },
+      "title": {
+        "en": "Mechanochemistry of extraterrestrial bodies: Bridging exogenous delivery with prebiotic chemistry",
+        "pt": "Mecanoquímica de corpos extraterrestres: ligar a entrega exógena à química prebiótica"
+      },
+      "meta": {
+        "en": "MNHN · Paris · 28 Jan 2025",
+        "pt": "MNHN · Paris · 28 jan. 2025"
+      },
+      "summary": {
+        "en": "Oral talk · MNHN, Paris",
+        "pt": "Comunicação oral · MNHN, Paris"
+      },
+      "details": "<p data-pt=\"Comunicação oral no Muséum national d’Histoire naturelle (MNHN, Paris, 28 de janeiro de 2025) sobre como a mecanoquímica em corpos extraterrestres liga a entrega exógena de matéria orgânica à química prebiótica.\">Oral talk at the Muséum national d’Histoire naturelle (MNHN, Paris, 28 January 2025) on how mechanochemistry on extraterrestrial bodies bridges the exogenous delivery of organic matter with prebiotic chemistry.</p>\n<div class=\"expand-gallery\">\n<img src=\"images/presentations/mnhn-bridging-2025.webp\" alt=\"MNHN 2025, title slide ‘Mechanochemistry of extraterrestrial bodies’, Paris\">\n</div>"
+    },
+    {
+      "type": "oral",
+      "logo": {
+        "src": "images/logos/mnhn.png",
+        "alt": ""
+      },
+      "title": {
+        "en": "Mechanochemistry and astrobiology: mimicking impact reactions",
+        "pt": "Mecanoquímica e astrobiologia: mimetizar reações de impacto"
+      },
+      "meta": {
+        "en": "MNHN · Paris · 28 Jan 2025",
+        "pt": "MNHN · Paris · 28 jan. 2025"
+      },
+      "summary": {
+        "en": "Oral talk · MNHN, Paris",
+        "pt": "Comunicação oral · MNHN, Paris"
+      },
+      "details": "<p data-pt=\"Comunicação oral no Muséum national d’Histoire naturelle (MNHN, Paris, 28 de janeiro de 2025) apresentando uma nova abordagem mecanoquímica para mimetizar reações de impacto em amostras extraterrestres.\">Oral talk at the Muséum national d’Histoire naturelle (MNHN, Paris, 28 January 2025) presenting a novel mechanochemical approach to mimicking impact reactions on extraterrestrial samples.</p>\n<div class=\"expand-gallery\">\n<img src=\"images/presentations/mnhn-impact-2025.webp\" alt=\"MNHN 2025, title slide ‘Mechanochemistry and astrobiology: mimicking impact reactions’, Paris\">\n</div>"
+    },
+    {
+      "type": "oral",
+      "logo": {
+        "src": "images/logos/NInTec.png",
+        "alt": ""
+      },
+      "title": {
+        "en": "Impact events of extraterrestrial bodies: the bridge between exogenous delivery and the origin of life",
+        "pt": "Eventos de impacto de corpos extraterrestres: a ponte entre a entrega exógena e a origem da vida"
+      },
+      "meta": {
+        "en": "NInTec Science Days 2024 · Lisbon",
+        "pt": "NInTec Science Days 2024 · Lisboa"
+      },
+      "summary": {
+        "en": "Oral talk · NInTec Science Days 2024",
+        "pt": "Comunicação oral · NInTec Science Days 2024"
+      },
+      "details": "<p data-pt=\"Comunicação oral nas NInTec Science Days 2024 sobre o papel dos eventos de impacto de corpos extraterrestres como ligação entre a entrega exógena de moléculas orgânicas e a origem da vida.\">Oral talk at the NInTec Science Days 2024 on how impact events of extraterrestrial bodies bridge the exogenous delivery of organic molecules and the origin of life.</p>\n<div class=\"expand-gallery\">\n<img src=\"images/presentations/nintec-2024.webp\" alt=\"NInTec Science Days 2024, oral presentation\">\n</div>"
+    },
+    {
+      "type": "poster",
+      "logo": {
+        "src": "images/logos/IST_PhD_Open_Day.png",
+        "alt": ""
+      },
+      "title": {
+        "en": "Shock-Impact Events and the Origin of Life: a mechanochemical approach",
+        "pt": "Eventos de choque-impacto e a origem da vida: uma abordagem mecanoquímica"
+      },
+      "meta": {
+        "en": "IST PhD Open Days 2024 · Lisbon",
+        "pt": "IST PhD Open Days 2024 · Lisboa"
+      },
+      "summary": {
+        "en": "Poster · PhD Open Days 2024",
+        "pt": "Painel · PhD Open Days 2024"
+      },
+      "details": "<p data-pt=\"Painel apresentado nas PhD Open Days do Instituto Superior Técnico (2024), descrevendo o plano de doutoramento sobre eventos de choque-impacto e a origem da vida através de uma abordagem mecanoquímica.\">Poster presented at the Instituto Superior Técnico PhD Open Days (2024), outlining the doctoral plan on shock-impact events and the origin of life through a mechanochemical approach.</p>\n<div class=\"expand-gallery\">\n<img src=\"images/presentations/phd-open-days-2024.jpg\" alt=\"IST PhD Open Days 2024, poster presentation\">\n</div>"
+    },
+    {
+      "type": "oral",
+      "logo": {
+        "src": "images/logos/EuChemS.png",
+        "alt": ""
+      },
+      "title": {
+        "en": "Ribonucleoside stability and prebiotic synthesis",
+        "pt": "Estabilidade de ribonucleósidos e síntese prebiótica"
+      },
+      "meta": {
+        "en": "8th EuChemS Chemistry Congress · CCL, Lisbon · Aug–Sep 2022",
+        "pt": "8th EuChemS Chemistry Congress · CCL, Lisboa · ago.–set. 2022"
+      },
+      "summary": {
+        "en": "Oral talk · 8th EuChemS Congress",
+        "pt": "Comunicação oral · 8.º Congresso EuChemS"
+      },
+      "details": "<p data-pt=\"Comunicação oral no 8.º Congresso de Química EuChemS (CCL, Lisboa, 2022) sobre a estabilidade de ribonucleósidos e a sua relevância para a síntese prebiótica e a entrega exógena de moléculas orgânicas.\">Oral talk at the 8th EuChemS Chemistry Congress (CCL, Lisbon, 2022) on the stability of ribonucleosides and its relevance to prebiotic synthesis and the exogenous delivery of organic molecules.</p>\n<div class=\"expand-gallery\">\n<img src=\"images/presentations/euchems-ecc8-2022.jpg\" alt=\"8th EuChemS Chemistry Congress 2022, oral presentation, Lisbon\">\n</div>"
+    },
+    {
+      "type": "poster",
+      "logo": {
+        "src": "images/logos/CQEDays2022.png",
+        "alt": ""
+      },
+      "title": {
+        "en": "Ribonucleosides stability and prebiotic synthesis",
+        "pt": "Estabilidade de ribonucleósidos e síntese prebiótica"
+      },
+      "meta": {
+        "en": "CQE Days 2022 · Lisbon · P083",
+        "pt": "CQE Days 2022 · Lisboa · P083"
+      },
+      "summary": {
+        "en": "Poster · CQE Days 2022",
+        "pt": "Painel · CQE Days 2022"
+      },
+      "details": "<p data-pt=\"Painel (P083) apresentado nos CQE Days 2022 (Lisboa) sobre a degradação mecanoquímica de ribonucleósidos na presença de carbonato e iões metálicos, e o que isso sugere sobre a presença de nucleobases em extratos de meteoritos.\">Poster (P083) presented at CQE Days 2022 (Lisbon) on the mechanochemical degradation of ribonucleosides in the presence of carbonate and metal ions, and what it suggests about the presence of nucleobases in meteorite extracts.</p>\n<div class=\"expand-gallery\">\n<img src=\"images/presentations/cqe-days-2022.webp\" alt=\"CQE Days 2022, poster P083, Lisbon\">\n</div>"
+    }
+  ]
+}

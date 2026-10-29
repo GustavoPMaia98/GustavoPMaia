@@ -20,14 +20,23 @@
   let langWired = false;
   let mapWired = false;
   let mapLangUpdate = null;   // set once the map legend exists; called by applyLang
-  // Language: a ?lang=xx link wins (shareable, indexable URLs), then the saved choice.
+  // Language: a ?lang=xx link wins for that visit (shareable, indexable URLs; not
+  // saved, so following one link does not change the language for good), then a
+  // choice made with the language button, then the browser's own language.
   const LANGS = ["en", "pt", "fr", "ja"];
   let currentLang = (function(){
     try {
       const q = new URLSearchParams(location.search).get("lang");
-      if (q && LANGS.indexOf(q) !== -1) { localStorage.setItem("lang", q); return q; }
-      return localStorage.getItem("lang") || "en";
-    } catch(e){ return "en"; }
+      if (q && LANGS.indexOf(q) !== -1) return q;
+      const saved = localStorage.getItem("lang");
+      if (saved && LANGS.indexOf(saved) !== -1) return saved;
+    } catch(e){}
+    const prefs = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || "en"];
+    for (const l of prefs) {
+      const base = String(l).toLowerCase().slice(0, 2);
+      if (LANGS.indexOf(base) !== -1) return base;
+    }
+    return "en";
   })();
   // French/Japanese dictionary (~180 KB) is only downloaded when it is needed.
   let trPromise = null;
@@ -302,6 +311,13 @@
           // desktop toolbar: highlight the matching section (or "More" for secondary ones)
           const id = e.target.id;
           document.querySelectorAll(".nav-sec-strip .nav-sec-main").forEach(x => x.classList.remove("active"));
+          document.querySelectorAll(".sec-chips a").forEach(c => {
+            const on = c.getAttribute("href") === "#" + id;
+            c.classList.toggle("active", on);
+            if (on && c.parentNode.scrollWidth > c.parentNode.clientWidth) {
+              c.parentNode.scrollTo({ left: c.offsetLeft - 16, behavior: prefersReduced ? "auto" : "smooth" });
+            }
+          });
           const main = document.querySelector('.nav-sec-strip > a.nav-sec-main[href="#' + id + '"]');
           if (main) main.classList.add("active");
           else if (document.querySelector('#navMoreMenu a[href="#' + id + '"]')) {
@@ -416,7 +432,7 @@
   }
 
   // ============================================================
-  //  SCROLL-TO-TOP BUTTON ("Slides up")
+  //  SCROLL-TO-TOP BUTTON ("Back to top")
   // ============================================================
   function setupScrollTopButton() {
     if (document.getElementById("scrollTopBtn")) return;
@@ -425,7 +441,7 @@
     btn.type = "button";
     btn.className = "scroll-top-btn";
     btn.setAttribute("aria-label", "Scroll back to top");
-    btn.innerHTML = '<span>Slides up</span><span aria-hidden="true">&uarr;</span>';
+    btn.innerHTML = '<span data-pt="Voltar ao topo">Back to top</span><span aria-hidden="true">&uarr;</span>';
     btn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: prefersReduced ? "auto" : "smooth" }));
     document.body.appendChild(btn);
 
@@ -652,7 +668,7 @@
       const msg = document.createElement("span");
       msg.textContent = pt
         ? "Deslocação automática ativada: clique neste botão para a desativar."
-        : "Hands-free scroll is on: click this button to turn it off.";
+        : "Auto-scroll is on: click this button to turn it off.";
 
       const close = document.createElement("button");
       close.type = "button";
@@ -748,7 +764,9 @@
       wireAccordions();
       buildPublicationFilter();
       decoratePublications();
-      updateMetrics();
+      enrichPublications(db);
+      updateMetrics(db);
+      applyLang();                       // translate the labels added above
       return;
     }
 
@@ -759,6 +777,89 @@
     buildPublicationFilter();
     decoratePublications();
     updateMetrics();
+  }
+
+  // ---- Citation counts, free PDF links and a "Cite" button, from the nightly
+  //      data in data/publications.json (OpenAlex + Crossref). Papers without an
+  //      entry there are simply left as they are.
+  function enrichPublications(db) {
+    const byDoi = {};
+    (db.works || []).forEach(w => { if (w.doi) byDoi[w.doi.toLowerCase()] = w; });
+    document.querySelectorAll("#publications .timeline-item.publication").forEach(it => {
+      const a = it.querySelector('a[href*="doi.org/"]');
+      const m = a && a.getAttribute("href").match(/doi\.org\/(.+)$/i);
+      const w = m && byDoi[decodeURIComponent(m[1]).trim().toLowerCase()];
+      if (!w || it.querySelector(".pub-tools")) return;
+      const n = +w.cited_by || 0;
+      if (n > 0) {
+        const c = document.createElement("span");
+        c.className = "pub-cites";
+        c.innerHTML = "<b>" + n + "</b> " + (n === 1 ? '<span data-pt="citação">citation</span>' : '<span data-pt="citações">citations</span>');
+        const year = it.querySelector(".pub-year") || it.querySelector(".timeline-header strong");
+        if (year) year.insertAdjacentElement("afterend", c);
+      }
+      const body = it.querySelector(".expand-body");
+      if (!body) return;
+      const tools = document.createElement("div");
+      tools.className = "pub-tools";
+      tools.innerHTML =
+        (w.oa_url && /^https:\/\//.test(w.oa_url)
+          ? '<a class="pub-tool" href="' + escapeHtml(w.oa_url) + '" target="_blank" rel="noopener noreferrer"><i data-lucide="file-down"></i><span data-pt="PDF gratuito">Free PDF</span></a>' : "") +
+        '<button type="button" class="pub-tool" data-cite="apa"><i data-lucide="quote"></i><span data-pt="Copiar citação (APA)">Copy citation (APA)</span></button>' +
+        '<button type="button" class="pub-tool" data-cite="bibtex"><i data-lucide="braces"></i><span>BibTeX</span></button>' +
+        '<span class="pub-tool-done" role="status" aria-live="polite"></span>';
+      tools.addEventListener("click", e => {
+        const b = e.target.closest("[data-cite]");
+        if (!b) return;
+        e.stopPropagation();
+        copyText(b.dataset.cite === "bibtex" ? bibtex(w) : apa(w)).then(ok => {
+          const done = tools.querySelector(".pub-tool-done");
+          done.textContent = ok ? ({ pt: "Copiado!", fr: "Copié !", ja: "コピーしました" }[currentLang] || "Copied!") : "";
+          setTimeout(() => { done.textContent = ""; }, 2200);
+        });
+      });
+      body.appendChild(tools);
+    });
+    if (window.lucide && lucide.createIcons) try { lucide.createIcons(); } catch (e) {}
+  }
+
+  function authorList(w) {
+    if (Array.isArray(w.author_list) && w.author_list.length) return w.author_list;
+    return String(w.authors || "").split(/,\s*|\s+and\s+/).filter(Boolean).map(full => {
+      const p = full.trim().split(/\s+/);
+      return { given: p.slice(0, -1).join(" "), family: p.slice(-1)[0] || "" };
+    });
+  }
+  const initials = g => String(g || "").split(/[\s.]+/).filter(Boolean)
+    .map(x => x.split("-").map(y => y[0].toUpperCase() + ".").join("-")).join(" ");
+  function apa(w) {
+    const au = authorList(w).map(a => a.family + (a.given ? ", " + initials(a.given) : ""));
+    const names = au.length > 1 ? au.slice(0, -1).join(", ") + ", & " + au[au.length - 1] : (au[0] || "");
+    const vol = w.volume ? ", " + w.volume + (w.issue ? "(" + w.issue + ")" : "") : "";
+    return names + " (" + (w.year || "n.d.") + "). " + w.title + ". " + (w.journal || "") + vol +
+      (w.pages ? ", " + w.pages : "") + ". https://doi.org/" + w.doi;
+  }
+  function bibtex(w) {
+    const first = authorList(w)[0] || { family: "maia" };
+    const ascii = s => String(s).normalize("NFD").replace(/[^\x00-\x7f]/g, "");
+    const word = (ascii(w.title).toLowerCase().match(/[a-z]{4,}/) || ["paper"])[0];
+    const key = ascii(first.family).toLowerCase().replace(/[^a-z]/g, "") + (w.year || "") + word;
+    const f = (k, v) => v ? "  " + k + " = {" + v + "},\n" : "";
+    return "@article{" + key + ",\n" +
+      f("author", authorList(w).map(a => a.family + (a.given ? ", " + a.given : "")).join(" and ")) +
+      f("title", w.title) + f("journal", w.journal) + f("year", w.year) + f("volume", w.volume) +
+      f("number", w.issue) + f("pages", w.pages) + f("doi", w.doi) + "}";
+  }
+  function copyText(t) {
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(t).then(() => true, () => fallback());
+    return Promise.resolve(fallback());
+    function fallback() {
+      const ta = document.createElement("textarea");
+      ta.value = t; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      let ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+      ta.remove(); return ok;
+    }
   }
 
   // Add a blue year badge to every publication and order the whole list
@@ -921,7 +1022,7 @@
     nav_highlights:{en:"Highlights",pt:"Destaques"}, nav_awards:{en:"Awards",pt:"Prémios"},
     nav_experience:{en:"Experience",pt:"Experiência"}, nav_presentations:{en:"Presentations",pt:"Apresentações"},
     nav_funding:{en:"Funding",pt:"Financiamento"}, nav_publications:{en:"Publications",pt:"Publicações"},
-    nav_tree:{en:"Tree",pt:"Árvore"}, nav_map:{en:"Map",pt:"Mapa"}, nav_tutoring:{en:"Tutoring",pt:"Explicações"}, nav_courses:{en:"Courses",pt:"Cursos"},
+    nav_tree:{en:"Tree",pt:"Árvore"}, nav_map:{en:"Map",pt:"Mapa"}, nav_blog:{en:"Blog",pt:"Blog"}, nav_tutoring:{en:"Tutoring",pt:"Explicações"}, nav_courses:{en:"Courses",pt:"Cursos"},
     nav_research:{en:"Research",pt:"Investigação"}, nav_skills:{en:"Skills",pt:"Competências"}, nav_more:{en:"More",pt:"Mais"},
     role:{en:"PhD Researcher in Chemistry · Astrobiology",pt:"Investigador de Doutoramento em Química · Astrobiologia"},
     bio:{en:"My research explores the origins and evolution of life in the universe, using chemistry to uncover the processes that may have led to life's emergence. A key focus is mechanochemistry: chemical reactions driven by mechanical forces. I investigate how mechanical energy, from parent-body formation, asteroid gardening, or meteorite impacts, could have promoted the synthesis and transformation of organic molecules on the early Earth and other planetary bodies, revealing alternative pathways for prebiotic chemistry under extreme and extraterrestrial environments.",
@@ -944,7 +1045,7 @@
   function injectHeadingIcons() {
     const ICONS = { highlights:"sparkles", news:"newspaper", education:"graduation-cap", experience:"briefcase", courses:"book-marked",
       presentations:"presentation", funding:"banknote", publications:"book-open",
-      awards:"award", tree:"git-fork", map:"map-pin", tutoring:"flask-conical" };
+      awards:"award", tree:"git-fork", blog:"pen-line", map:"map-pin", tutoring:"flask-conical" };
     document.querySelectorAll(".section > h2").forEach(h => {
       if (h.querySelector(".h2-label")) return;
       const sec = h.closest("section"); const id = sec ? sec.id : "";
@@ -1165,14 +1266,27 @@
     return false;
   }
 
-  function updateMetrics() {
-    const el = document.querySelector('[data-metric="pubs"]');
-    if (!el) return;
-    let n = 0;
+  // The intro numbers count what is on the page, so they never go stale:
+  // papers (preprints excluded), talks & posters, research areas (the tags).
+  function updateMetrics(db) {
+    const set = (key, n) => { const el = document.querySelector('[data-metric="' + key + '"]'); if (el && n) el.textContent = n; };
+    let pubs = 0;
     document.querySelectorAll("#publications .timeline-item.publication").forEach(it => {
-      if (!isPreprintItem(it)) n++;   // preprints shown in the list but not counted
+      if (!isPreprintItem(it)) pubs++;   // preprints shown in the list but not counted
     });
-    if (n) el.textContent = n;
+    set("pubs", pubs);
+    set("talks", document.querySelectorAll("#presentations .timeline-item").length);
+    set("areas", document.querySelectorAll(".hero-tags > span").length);
+    // h-index refreshed every night from OpenAlex (data/publications.json)
+    const m = db && db.metrics;
+    if (m && m.h_index) {
+      set("hindex", m.h_index);
+      const link = document.querySelector('[data-metric="hindex"]').closest("a");
+      if (link && m.profile) {
+        link.href = m.profile;
+        link.title = "h-index · " + m.citations + " citations (OpenAlex)";
+      }
+    }
   }
 
   // Presentation map (Leaflet)
@@ -1831,6 +1945,84 @@
     btn.addEventListener("click", () => { list.classList.add("is-all"); btn.hidden = true; });
   }
 
+  // ============================================================
+  //  PHONE HELPERS (≤ 760 px; all hidden by CSS on larger screens)
+  //  1. a scrollable row of section shortcuts under the top bar
+  //  2. long lists (talks, experience) show 4 items + "Show all"
+  //  3. the intro bio folds to a few lines + "Read more"
+  //  4. the auto-scroll switch moves from the top bar into the menu
+  // ============================================================
+  function setupPhoneHelpers() {
+    const nav = document.querySelector("header.nav");
+    if (nav && !nav.querySelector(".sec-chips")) {
+      const bar = document.createElement("nav");
+      bar.className = "sec-chips";
+      bar.setAttribute("aria-label", "Sections");
+      document.querySelectorAll('#navLinks a[href^="#"]').forEach(a => {
+        const c = a.cloneNode(true);
+        c.removeAttribute("class");
+        bar.appendChild(c);
+      });
+      nav.appendChild(bar);
+    }
+
+    [["#presentations .timeline", 4], ["#experience .timeline", 4]].forEach(([sel, n]) => {
+      const tl = document.querySelector(sel);
+      if (!tl || tl.dataset.collapse) return;
+      const items = tl.querySelectorAll(":scope > .timeline-item");
+      if (items.length <= n) return;
+      tl.dataset.collapse = n;
+      tl.classList.add("is-collapsible");
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "news-all list-all";
+      btn.innerHTML = '<span data-pt="Mostrar todos">Show all</span> (' + items.length + ")";
+      btn.addEventListener("click", () => { tl.classList.add("is-all"); btn.hidden = true; });
+      tl.insertAdjacentElement("afterend", btn);
+    });
+    // a filter (Oral / Poster) or a search hit needs the whole list
+    document.addEventListener("click", e => {
+      if (!e.target.closest("#preso-filter button")) return;
+      const tl = document.querySelector("#presentations .timeline.is-collapsible");
+      if (tl) { tl.classList.add("is-all"); const b = tl.nextElementSibling; if (b && b.classList.contains("list-all")) b.hidden = true; }
+    });
+
+    const bio = document.querySelector('.hero-intro p[data-i18n="bio"]');
+    if (bio && !bio.dataset.fold) {
+      bio.dataset.fold = "1";
+      bio.classList.add("bio-fold");
+      const more = document.createElement("button");
+      more.type = "button";
+      more.className = "bio-more";
+      more.setAttribute("aria-expanded", "false");
+      more.innerHTML = '<span data-pt="Ler mais">Read more</span>';
+      more.addEventListener("click", () => {
+        const open = bio.classList.toggle("is-open");
+        more.setAttribute("aria-expanded", String(open));
+        more.firstChild.setAttribute("data-pt", open ? "Ler menos" : "Ler mais");
+        more.firstChild.dataset.enHtml = open ? "Read less" : "Read more";
+        more.firstChild.innerHTML = currentLang === "pt" ? more.firstChild.getAttribute("data-pt") : trLookup(currentLang, more.firstChild.dataset.enHtml);
+      });
+      bio.insertAdjacentElement("afterend", more);
+    }
+
+    const pill = document.getElementById("autoScrollToggle");
+    const links = document.getElementById("navLinks");
+    if (pill && links && !links.querySelector(".nav-autoscroll")) {
+      const item = document.createElement("button");
+      item.type = "button";
+      item.className = "nav-autoscroll";
+      item.innerHTML = '<i data-lucide="smartphone"></i><span data-pt="Deslocação automática (inclinar o telemóvel)">Auto-scroll (tilt the phone)</span>' +
+                       '<span class="tool-pill-state" aria-hidden="true"></span>';
+      const sync = () => { item.querySelector(".tool-pill-state").textContent = pill.getAttribute("aria-pressed") === "true" ? "On" : "Off";
+                           item.setAttribute("aria-pressed", pill.getAttribute("aria-pressed")); };
+      item.addEventListener("click", () => { pill.click(); sync(); });
+      new MutationObserver(sync).observe(pill, { attributes: true, attributeFilter: ["aria-pressed"] });
+      sync();
+      links.appendChild(item);
+    }
+  }
+
   function init() {
     initStarfield();
     initNav();
@@ -1845,6 +2037,7 @@
     setupTreePan();
     setupCarousels();
     setupNewsList();
+    setupPhoneHelpers();
     setupHighlightModal();
     setupTechModal();
     setupThemeToggle();

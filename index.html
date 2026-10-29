@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Security: only this site, Google Fonts and the pinned map library may run code or load styles here.
+  <!-- Security: only this site, GoatCounter, Google Fonts and the pinned map library may run code or load styles here.
        After editing an inline script, run: python tools/check_site.py --fix -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://unpkg.com/leaflet@1.9.4/ 'sha256-aSbGc3/HP5sipjRcPUtVvlNl802lhgPZUwMTNfE+gQg=' 'sha256-cUh90J5iy5ynkHCYEfQfmElwdsTCob+XEaqaTvWpyyU=' 'sha256-4q2xuongV1yIe//jKK9VhIfoTj8TRdiwk12UI+5uJRk='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com/leaflet@1.9.4/; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self'; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://unpkg.com/leaflet@1.9.4/ 'sha256-aSbGc3/HP5sipjRcPUtVvlNl802lhgPZUwMTNfE+gQg=' 'sha256-T7P4IchDR9PzSZKdqDNHtbA3YSCtO3uRLPoITdxz8k8=' 'sha256-4q2xuongV1yIe//jKK9VhIfoTj8TRdiwk12UI+5uJRk=' https://gc.zgo.at; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com/leaflet@1.9.4/; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://gustavopmaia.goatcounter.com; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="referrer" content="strict-origin-when-cross-origin">
 
   <!-- ============ PRIMARY / SEO ============ -->
@@ -160,6 +160,7 @@
         <a href="#awards" data-i18n="nav_awards">Awards</a>
         <a href="#funding" data-i18n="nav_funding">Funding</a>
         <a href="#tree" data-i18n="nav_tree">Tree</a>
+        <a href="#blog" data-i18n="nav_blog">Blog</a>
         <a href="#map" data-i18n="nav_map">Map</a>
         <a href="cientificamente.html" data-i18n="nav_tutoring">Tutoring</a>
       </nav>
@@ -181,6 +182,7 @@
                 <a href="#awards" role="menuitem"><i data-lucide="award"></i><span data-i18n="nav_awards">Awards</span></a>
                 <a href="#funding" role="menuitem"><i data-lucide="banknote"></i><span data-i18n="nav_funding">Funding</span></a>
                 <a href="#tree" role="menuitem"><i data-lucide="git-fork"></i><span data-i18n="nav_tree">Tree</span></a>
+                <a href="#blog" role="menuitem"><i data-lucide="pen-line"></i><span data-i18n="nav_blog">Blog</span></a>
                 <a href="#map" role="menuitem"><i data-lucide="map-pin"></i><span data-i18n="nav_map">Map</span></a>
                 <a href="cientificamente.html" role="menuitem"><i data-lucide="flask-conical"></i><span data-i18n="nav_tutoring">Tutoring</span></a>
               </span>
@@ -203,9 +205,9 @@
           <i data-lucide="moon"></i>
         </button>
         <span class="nav-sep" aria-hidden="true"></span>
-        <button class="tool-pill" id="autoScrollToggle" type="button" aria-pressed="false" aria-label="Hands-free scroll" data-tip="Glide the page by moving the mouse to a screen edge">
+        <button class="tool-pill" id="autoScrollToggle" type="button" aria-pressed="false" aria-label="Auto-scroll" data-tip="Glide the page by moving the mouse to a screen edge">
           <i data-lucide="mouse-pointer-2"></i>
-          <span class="tool-pill-label">Hands-free</span>
+          <span class="tool-pill-label">Auto-scroll</span>
           <span class="tool-pill-state" aria-hidden="true">Off</span>
         </button>
         <button class="nav-toggle" id="navToggle" type="button"
@@ -251,8 +253,8 @@
         <div class="hero-lower">
           <div class="metrics metrics--strip" aria-label="Highlights">
             <div class="metric"><span class="metric-num" data-metric="pubs">3</span><span class="metric-label" data-i18n="m_pubs">Publications</span></div>
-            <div class="metric"><span class="metric-num">11</span><span class="metric-label" data-i18n="m_talks">Talks &amp; posters</span></div>
-            <div class="metric"><span class="metric-num">4</span><span class="metric-label" data-i18n="m_areas">Research areas</span></div>
+            <div class="metric"><span class="metric-num" data-metric="talks">11</span><span class="metric-label" data-i18n="m_talks">Talks &amp; posters</span></div>
+            <div class="metric"><span class="metric-num" data-metric="areas">4</span><span class="metric-label" data-i18n="m_areas">Research areas</span></div>
             <a class="metric metric-link" href="https://scholar.google.com/citations?user=TTVIFykAAAAJ" target="_blank" rel="noopener noreferrer" title="Google Scholar"><span class="metric-num" data-metric="hindex">2</span><span class="metric-label" data-i18n="m_hindex">h-index</span></a>
           </div>
 
@@ -265,15 +267,8 @@
 
           <div class="hero-actions">
             <div class="social-links" aria-label="Profiles & contact">
-              <a href="https://www.cienciavitae.pt/portal/en/8212-CEE3-E928" class="btn btn--cv" target="_blank" rel="noopener noreferrer" title="Curriculum Vitae, CiênciaVitae">
-                <svg class="cv-mark" viewBox="-3 -2 60 30" width="36" height="19" aria-hidden="true" focusable="false">
-                  <rect x="3" y="3" width="20" height="20" rx="4.5" transform="rotate(45 13 13)" fill="#c8d21e"></rect>
-                  <circle cx="16.5" cy="13" r="2" fill="#1f5c34"></circle>
-                  <path d="M13.5 9 L9.5 13 L13.5 17" fill="none" stroke="#1f5c34" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                  <rect x="29" y="3" width="20" height="20" rx="4.5" transform="rotate(45 39 13)" fill="#1f5c34"></rect>
-                  <circle cx="39" cy="9.6" r="2.3" fill="#fff"></circle>
-                  <path d="M34.4 17.2 L39 12.2 L43.6 17.2" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path>
-                </svg>
+              <a href="cv.html" class="btn btn--cv" title="Curriculum Vitae (PDF available)">
+                <i data-lucide="file-user" aria-hidden="true"></i>
                 <span>Curriculum Vitae</span></a>
               <a class="profile-link" href="https://orcid.org/0000-0001-5314-8816" target="_blank" rel="noopener noreferrer" title="ORCID">
                 <img src="images/logos/orcid.png" width="18" height="18" alt=""><span>ORCID</span></a>
@@ -390,11 +385,13 @@
       return null;
     }
     async function loadSections() {
-      const sections = ['highlights','news','publications','presentations','education','experience','courses','awards','funding','tree','map'];
+      const sections = ['highlights','news','publications','presentations','education','experience','courses','awards','funding','tree','blog','map'];
       const c = document.getElementById('mainContent');
-      const [results, news, tree] = await Promise.all([Promise.all(sections.map(fetchSection)), fetchData('news'), fetchData('tree')]);
+      const dataNames = ['news', 'tree', 'presentations', 'education', 'experience', 'courses', 'blog', 'updated'];
+      const [results, datasets] = await Promise.all([Promise.all(sections.map(fetchSection)), Promise.all(dataNames.map(fetchData))]);
+      const data = {}; dataNames.forEach((n, i) => { data[n] = datasets[i]; });
       let html = results.join('');
-      if (window.SiteRender) html = SiteRender.fill(html, { news: news, tree: tree });
+      if (window.SiteRender) html = SiteRender.fill(html, data);
       c.insertAdjacentHTML('beforeend', html);
       if (window.SiteApp && SiteApp.init) SiteApp.init();
     }
@@ -422,5 +419,7 @@
       });
     }
   </script>
+  <!-- Visitor statistics (GoatCounter: no cookies, no personal data) -->
+  <script data-goatcounter="https://gustavopmaia.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>

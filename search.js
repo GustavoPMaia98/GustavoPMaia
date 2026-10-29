@@ -20,7 +20,7 @@
   const LABELS = {
     about: "About", highlights: "Current Work Interests", news: "News", education: "Education", experience: "Experience",
     presentations: "Presentations", funding: "Funding", publications: "Publications",
-    awards: "Awards", tree: "Academic tree", map: "Map", tutoring: "Tutoring", courses: "Courses & Formations"
+    awards: "Awards", blog: "Blog", tree: "Academic tree", map: "Map", tutoring: "Tutoring", courses: "Courses & Formations"
   };
   const labelFor = id => {
     if (id === "about") return ui("about");
@@ -708,6 +708,12 @@
     if (newsList && !newsList.classList.contains("is-all")) {
       const more = document.getElementById("newsAll");
       if (more) more.click(); else newsList.classList.add("is-all");
+    }
+    // talks / experience folded on phones: show the whole list first
+    const folded = el.closest && el.closest(".timeline.is-collapsible:not(.is-all)");
+    if (folded) {
+      folded.classList.add("is-all");
+      const b = folded.nextElementSibling; if (b && b.classList.contains("list-all")) b.hidden = true;
     }
     // results inside a collapsed group (e.g. "Earlier experience") open it first
     let d = el.closest && el.closest("details");

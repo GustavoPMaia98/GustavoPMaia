@@ -18,7 +18,7 @@ import base64, glob, hashlib, html, json, os, re, sys, urllib.parse
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MAX_KB = 600
-PAGES = ["index.html", "cientificamente.html"] + sorted(glob.glob(os.path.join(ROOT, "sections", "*.html")))
+PAGES = ["index.html", "cientificamente.html", "cv.html"] + sorted(glob.glob(os.path.join(ROOT, "sections", "*.html")))
 PAGES = [os.path.relpath(p, ROOT) if os.path.isabs(p) else p for p in PAGES]
 REF = re.compile(r'''(?:src|href|data-src)\s*=\s*(["'])(.*?)\1''')
 JSON_IMG = re.compile(r'"(?:image|src)"\s*:\s*"([^"]+\.(?:jpe?g|png|webp|svg|gif))"')
@@ -84,6 +84,35 @@ if news is not None:
             if n.get("href") and not re.match(r"^https?://", n["href"]):
                 errors.append(f"{where}: href must start with https://")
             need_file(where, (n.get("media") or {}).get("src"))
+
+for name in ("presentations", "education", "experience", "courses"):
+    rel = f"data/{name}.json"
+    d = load_json(rel)
+    if d is None:
+        continue
+    if not isinstance(d.get("items"), list):
+        errors.append(f"{rel}: needs an \"items\": [ ... ] list")
+        continue
+    for i, it in enumerate(d["items"], 1):
+        where = f"{rel} item {i}"
+        if not (it.get("title") or {}).get("en"):
+            errors.append(f"{where}: needs \"title\": {{\"en\": ...}}")
+        if name == "presentations" and it.get("type") not in ("oral", "poster"):
+            errors.append(f"{where}: \"type\" must be oral or poster")
+        need_file(where, (it.get("logo") or {}).get("src"))
+        for ref in [m[1] for m in REF.findall(it.get("details", ""))]:   # pictures and links inside details
+            need_file(where, ref.split("#")[0])
+
+blog = load_json("data/blog.json")
+if blog is not None:
+    for i, post in enumerate(blog.get("posts", []), 1):
+        where = f"data/blog.json post {i}"
+        if not DATE.match(str(post.get("date", ""))):
+            errors.append(f"{where}: date must look like 2026-11-15")
+        if not (post.get("title") or {}).get("en"):
+            errors.append(f"{where}: needs \"title\": {{\"en\": ...}}")
+        for ref in [m[1] for m in REF.findall((post.get("body") or {}).get("en", ""))]:
+            need_file(where, ref.split("#")[0])
 
 tree = load_json("data/tree.json")
 if tree is not None:
