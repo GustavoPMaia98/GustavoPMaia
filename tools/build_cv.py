@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Turn cv.html into cv.pdf (English) and cv-pt.pdf (Portuguese).
+"""Turn cv.html into cv.pdf (English), cv-pt.pdf, cv-fr.pdf and cv-ja.pdf.
 
 Run by .github/workflows/update-data.yml every night, or by hand:
     pip install playwright && python -m playwright install chromium
@@ -15,7 +15,13 @@ from functools import partial
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STATE = os.path.join(ROOT, "data", "cv-build.json")
-OUT = {"en": "cv.pdf", "pt": "cv-pt.pdf"}
+OUT = {"en": "cv.pdf", "pt": "cv-pt.pdf", "fr": "cv-fr.pdf", "ja": "cv-ja.pdf"}
+FONTS = {"en": ["Fraunces", "Manrope"], "pt": ["Fraunces", "Manrope"], "fr": ["Fraunces", "Manrope"], "ja": ["Noto Sans JP"]}
+# page footer: name, then "page / pages" (Chromium fills in the numbers)
+FOOTER = ('<div style="width:100%; font-family:Helvetica, Arial, sans-serif; font-size:7.5pt; color:#6b7280; '
+          'padding:0 15mm; display:flex; justify-content:space-between;">'
+          '<span>Gustavo Pinho Maia · Curriculum Vitae</span>'
+          '<span><span class="pageNumber"></span> / <span class="totalPages"></span></span></div>')
 
 
 class Quiet(http.server.SimpleHTTPRequestHandler):
@@ -52,13 +58,15 @@ def main():
                                            c.querySelectorAll('.cv-foot').forEach(e => e.remove());
                                            return c.innerText; }""")
             # rebuild too if the web fonts were missing last time (e.g. no network)
-            fonts = page.evaluate("""() => ['Fraunces', 'Manrope'].every(n =>
-                [...document.fonts].some(f => f.family.replace(/"/g, '') === n && f.status === 'loaded'))""")
+            fonts = page.evaluate("""names => names.every(n =>
+                [...document.fonts].some(f => f.family.replace(/"/g, '') === n && f.status === 'loaded'))""", FONTS[lang])
             digest = hashlib.sha256((body + f"|fonts={fonts}").encode("utf-8")).hexdigest()
             path = os.path.join(ROOT, out)
             if force or state.get(lang) != digest or not os.path.exists(path):
                 page.emulate_media(media="print")
-                page.pdf(path=path, format="A4", print_background=True, prefer_css_page_size=True)
+                page.pdf(path=path, format="A4", print_background=True, display_header_footer=True,
+                         header_template="<span></span>", footer_template=FOOTER,
+                         margin={"top": "16mm", "bottom": "18mm", "left": "15mm", "right": "15mm"})
                 state[lang] = digest
                 changed = True
                 print(f"Built {out}")

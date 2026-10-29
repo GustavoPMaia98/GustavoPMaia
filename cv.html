@@ -13,18 +13,20 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500..700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500..700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="cv.css">
 </head>
 <body>
   <!-- The CV is assembled by cv.js from the same files as the website
        (data/*.json and sections/*.html), so it is always up to date.
-       A PDF copy (cv.pdf / cv-pt.pdf) is made every night by tools/build_cv.py. -->
+       PDF copies (cv.pdf, cv-pt.pdf, cv-fr.pdf, cv-ja.pdf) are made by tools/build_cv.py. -->
   <nav class="cv-bar" aria-label="CV options">
     <a href="./" class="cv-back">← <span data-l="back">Website</span></a>
     <span class="cv-bar-gap"></span>
     <a href="?lang=en" class="cv-lang" data-set-lang="en">EN</a>
     <a href="?lang=pt" class="cv-lang" data-set-lang="pt">PT</a>
+    <a href="?lang=fr" class="cv-lang" data-set-lang="fr">FR</a>
+    <a href="?lang=ja" class="cv-lang" data-set-lang="ja">JA</a>
     <a href="#" class="cv-btn" id="cvPdf" download><span data-l="pdf">Download PDF</span></a>
   </nav>
   <main class="cv" id="cv" aria-busy="true">

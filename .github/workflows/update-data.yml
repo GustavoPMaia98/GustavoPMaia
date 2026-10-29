@@ -4,7 +4,7 @@
 #   - Academic Tree: new mentors from Chemistry Tree  -> data/tree.json
 #   - News: new LinkedIn posts, if the LINKEDIN_FEED_URL secret is set
 #                                                     -> data/news.json
-#   - CV: cv.html saved as PDF when its content changed -> cv.pdf, cv-pt.pdf
+#   - CV: cv.html saved as PDF when its content changed -> cv.pdf, cv-pt/fr/ja.pdf
 # The site reads these files when it loads, so nothing else needs editing.
 name: Update site data
 
@@ -57,10 +57,10 @@ jobs:
         run: python tools/check_site.py
       - name: Commit if anything changed
         run: |
-          if [ -n "$(git status --porcelain data images/news cv.pdf cv-pt.pdf)" ]; then
+          if [ -n "$(git status --porcelain data images/news cv*.pdf)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add data images/news cv.pdf cv-pt.pdf
+            git add data images/news cv*.pdf
             git commit -m "Update site data (publications, tree, news, CV)"
             # if you pushed while this was running, put this commit on top of yours
             for i in 1 2 3; do git pull --rebase origin main && git push && break; sleep 5; done
