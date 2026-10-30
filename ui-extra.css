@@ -881,10 +881,10 @@ html[data-theme="light"] .path-year{ color:var(--accent-strong); border-color:rg
 .pub-source[hidden], #pub-filter[hidden]{ display:none !important; }
 .pub3d-stage{ position:relative; height:370px; perspective:1300px; perspective-origin:50% 40%; outline:none; touch-action:pan-y; }
 .pub3d-stage:focus-visible{ outline:2px solid var(--accent); outline-offset:4px; border-radius:var(--radius-md); }
-.pub3d-ring{ position:absolute; inset:0; transform-style:preserve-3d; }
+.pub3d-ring{ position:absolute; inset:0; transform-style:preserve-3d; pointer-events:none; }   /* clicks reach the pages set back in depth */
 .pub-page{
   position:absolute; left:50%; top:18px; width:var(--pw); padding:0; margin:0; border:0; background:none; cursor:pointer;
-  font:inherit; color:inherit; text-align:left; transform-style:preserve-3d;
+  font:inherit; color:inherit; text-align:left; transform-style:preserve-3d; pointer-events:auto;
   transform:translateX(-50%) translateX(calc(var(--d, 0) * var(--step))) translateZ(calc(var(--ad, 0) * -190px))
             rotateY(calc(var(--d, 0) * -34deg));
   z-index:calc(10 - var(--ad, 0));
@@ -974,8 +974,18 @@ html[data-theme="light"] .pub-zoom-box{ background:#fff; }
   color:var(--text); background:transparent; border:1px solid var(--border); border-radius:50%; }
 .pub-zoom-close:hover{ background:color-mix(in srgb, var(--accent) 12%, transparent); }
 .pub-zoom-close svg{ width:18px; height:18px; }
-.pub-zoom-grid{ display:grid; grid-template-columns:var(--zp, minmax(260px, 380px)) 1fr; gap:30px; align-items:start; }
+.pub-zoom-grid{ display:grid; grid-template-columns:auto minmax(240px, 1fr); gap:30px; align-items:start; }
+/* the page as large as the window allows, so it can be read */
+.pub-zoom-page{ width:min(62vw, calc((100vh - 110px) * var(--ar, .707)), 760px); }
 .pub-zoom-page{ position:sticky; top:0; }
+.pub-zoom-block{ margin:0 0 18px; }
+.pub-zoom-h{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin:0 0 6px;
+  font-size:.75rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); }
+.pub-zoom-apa{ margin:0; font-size:.92rem; line-height:1.6; color:var(--text); }
+.pub-zoom-bib{ margin:0; padding:10px 12px; max-height:220px; overflow:auto; font-size:.76rem; line-height:1.5; white-space:pre-wrap; word-break:break-word;
+  color:var(--text); background:color-mix(in srgb, var(--text) 5%, transparent); border:1px solid var(--border); border-radius:8px; }
+.pub-zoom-doi{ font-weight:700; word-break:break-all; }
+.pub-zoom .pub-tool-done{ font-size:.82rem; color:var(--accent); }
 .pub-zoom-page .pub-sheet{ font-size:clamp(17px, 2.1vw, 25px); will-change:transform; }
 .pub-zoom-page .pub-sheet-title{ -webkit-line-clamp:7; }
 .pub-zoom-page .pub-sheet-authors{ -webkit-line-clamp:4; }
@@ -1000,7 +1010,7 @@ body.pub-zoom-open{ overflow:hidden; }
   .pub-zoom{ padding:10px; }
   .pub-zoom-box{ padding:20px 16px; max-height:calc(100vh - 20px); }
   .pub-zoom-grid{ grid-template-columns:1fr; gap:18px; }
-  .pub-zoom-page{ position:static; width:min(300px, 100%); margin:26px auto 0; }
+  .pub-zoom-page{ position:static; width:100%; max-width:520px; margin:26px auto 0; }
   .pub-zoom-page .pub-sheet{ font-size:19px; }
   .pub-zoom-title{ font-size:1.15rem; }
 }

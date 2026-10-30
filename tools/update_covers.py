@@ -6,6 +6,10 @@ Run by .github/workflows/update-data.yml every night, or by hand:
     python tools/update_covers.py                 # papers that have no cover yet
     python tools/update_covers.py --force         # rebuild every cover
     python tools/update_covers.py --pdf 10.3390/app15031363 paper.pdf   # from a local PDF
+    python tools/update_covers.py --image DOI page1.png --blur "0.26,0.70,0.97,0.955"   # from an image
+
+Covers already listed are never replaced by the nightly run (only with --force), so a
+cover made by hand stays.
 
 How it works, for every paper on the site (data/publications.json and the hand-written
 list in sections/publications.html):
@@ -118,14 +122,20 @@ def make_cover(pdf, doi, source, lic):
         subprocess.run(["pdftoppm", "-r", "170", "-f", "1", "-l", "1", "-png", pdf, os.path.join(tmp, "p")], check=True)
         png = next(os.path.join(tmp, f) for f in os.listdir(tmp) if f.endswith(".png"))
         im = Image.open(png).convert("RGB")
+    return save_cover(im, [b], doi, source, lic)
+
+
+def save_cover(im, boxes, doi, source, lic):
+    """Blur each box (fractions x0, y0, x1, y1), save the page and list it."""
     if im.width > WIDTH:
         im = im.resize((WIDTH, round(im.height * WIDTH / im.width)), Image.LANCZOS)
     w, h = im.size
-    box = (round(b[0] * w), round(b[1] * h), round(b[2] * w), round(b[3] * h))
-    if box[3] > box[1]:
-        r = max(4, round(w / 120))                   # strong enough that the text cannot be read
-        part = im.crop(box).filter(ImageFilter.GaussianBlur(r)).filter(ImageFilter.GaussianBlur(r))
-        im.paste(part, box)
+    r = max(4, round(w / 120))                       # strong enough that the text cannot be read
+    for b in boxes:
+        box = (round(b[0] * w), round(b[1] * h), round(b[2] * w), round(b[3] * h))
+        if box[3] > box[1] and box[2] > box[0]:
+            part = im.crop(box).filter(ImageFilter.GaussianBlur(r)).filter(ImageFilter.GaussianBlur(r))
+            im.paste(part, box)
     slug = re.sub(r"[^a-z0-9]+", "-", doi.lower()).strip("-")
     rel = f"images/papers/{slug}.webp"
     os.makedirs(os.path.join(ROOT, "images", "papers"), exist_ok=True)
@@ -158,9 +168,19 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--pdf", nargs=2, metavar=("DOI", "FILE"), help="make one cover from a local PDF")
+    ap.add_argument("--image", nargs=2, metavar=("DOI", "FILE"), help="make one cover from an image of page 1")
+    ap.add_argument("--blur", help='with --image: boxes to blur, as fractions "x0,y0,x1,y1;x0,y0,x1,y1"')
+    ap.add_argument("--license", default="", help="with --pdf/--image: the paper's licence, e.g. cc-by")
     a = ap.parse_args()
     if a.pdf:
-        print(make_cover(a.pdf[1], a.pdf[0].lower(), "local file", "given"))
+        print(make_cover(a.pdf[1], a.pdf[0].lower(), "local file", a.license or "given"))
+        return 0
+    if a.image:
+        if not a.blur:
+            sys.exit("--image needs --blur with the boxes to blur (main text, e-mail addresses).")
+        boxes = [tuple(float(v) for v in b.split(",")) for b in a.blur.split(";") if b.strip()]
+        im = Image.open(a.image[1]).convert("RGB")
+        print(save_cover(im, boxes, a.image[0].lower(), "page image", a.license or "given"))
         return 0
     have = load()
     for doi in site_dois():
