@@ -2,8 +2,21 @@
 <section id="experience" class="section">
  
 <h2>Experience</h2>
-<div class="timeline">
-  <!-- The items come from data/experience.json -->
+<!-- Experience path: one step per entry of data/experience.json, oldest to newest,
+     built by render.js. Arrows slide it; it opens on the newest entries. Clicking a
+     step shows that entry's text below (the cards themselves are not shown). -->
+<div class="path-wrap path-wrap--scroll reveal">
+  <button type="button" class="path-arrow path-arrow--prev" data-dir="-1" aria-label="Earlier experience"><i data-lucide="chevron-left"></i></button>
+  <div class="path-scroll">
+  <ol class="path path--scroll" aria-label="Experience path">
+  <!--@path:experience-->
+  </ol>
+  </div>
+  <button type="button" class="path-arrow path-arrow--next" data-dir="1" aria-label="Later experience"><i data-lucide="chevron-right"></i></button>
+  <div class="path-detail" aria-live="polite" hidden></div>
+</div>
+<!-- The entries come from data/experience.json. Not shown as cards: the path shows them. -->
+<div class="timeline path-source" hidden>
   <!--@timeline:experience-->
 </div>
 

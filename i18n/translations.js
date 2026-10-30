@@ -23,6 +23,7 @@ window.TR.fr = {
   "Lisbon": "Lisbonne",
   "MSc Chemistry · Instituto Superior Técnico": "Master en chimie · Instituto Superior Técnico",
   "PhD Chemistry (Astrobiology) · Técnico": "Doctorat en chimie (astrobiologie) · Técnico",
+  "PhD · 2023–2027": "Doctorat · 2023–2027",
   "Greenbelt, USA": "Greenbelt, États-Unis",
   "Back to top": "Haut de page",
   "Show all": "Tout afficher",
@@ -519,6 +520,7 @@ window.TR.ja = {
   "Lisbon": "リスボン",
   "MSc Chemistry · Instituto Superior Técnico": "化学修士 · リスボン高等工科大学",
   "PhD Chemistry (Astrobiology) · Técnico": "化学博士（アストロバイオロジー）· リスボン高等工科大学",
+  "PhD · 2023–2027": "博士課程 · 2023–2027",
   "Greenbelt, USA": "グリーンベルト（米国）",
   "Back to top": "トップへ戻る",
   "Show all": "すべて表示",
@@ -1260,6 +1262,10 @@ Object.assign(window.TR.ja, {
 /* ---- Added Sept 2026 (site refresh): toolbar, news list, experience, skills ---- */
 Object.assign(window.TR.fr, {
   "Research": "Recherche",
+  "Teaching": "Enseignement",
+  "Industry": "Industrie",
+  "Robotics": "Robotique",
+  "Associations": "Vie associative",
   "Skills": "Compétences",
   "More": "Plus",
   "Show all updates": "Afficher toutes les actualités",
@@ -1273,6 +1279,10 @@ Object.assign(window.TR.fr, {
 });
 Object.assign(window.TR.ja, {
   "Research": "研究",
+  "Teaching": "教育",
+  "Industry": "産業",
+  "Robotics": "ロボット工学",
+  "Associations": "学生団体",
   "Skills": "スキル",
   "More": "その他",
   "Show all updates": "すべてのニュースを表示",

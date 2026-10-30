@@ -2,7 +2,9 @@
 <section class="section" id="education">
   <h2>Education</h2>
   <!-- My path: an interactive career line. Each step opens a summary of the matching
-       Education / Experience entry (data-section + data-match = text in its details line). -->
+       Education / Experience entry (data-section + data-match = text in its details line).
+       The steps marked path-phd (the PhD and the research stays done during it) share
+       a light frame labelled "PhD". -->
   <div class="path-wrap reveal">
   <ol class="path" aria-label="Career path">
     <li class="path-step">
@@ -29,7 +31,8 @@
         <span class="path-what" data-pt="Mestrado em Química · Instituto Superior Técnico">MSc Chemistry · Instituto Superior Técnico</span>
       </button>
     </li>
-    <li class="path-step">
+    <li class="path-step path-phd path-phd-first">
+      <span class="path-group-label" data-pt="Doutoramento · 2023–2027">PhD · 2023–2027</span>
       <button type="button" class="path-btn" data-section="education" data-match="2023–2027" aria-pressed="false">
         <span class="path-logo" aria-hidden="true"><i data-lucide="flask-conical"></i></span>
         <span class="path-year">2023</span><span class="path-kind" data-pt="Formação">Education</span>
@@ -37,7 +40,7 @@
         <span class="path-what" data-pt="Doutoramento em Química (Astrobiologia) · Técnico">PhD Chemistry (Astrobiology) · Técnico</span>
       </button>
     </li>
-    <li class="path-step">
+    <li class="path-step path-phd">
       <button type="button" class="path-btn" data-section="experience" data-match="NASA Goddard" aria-pressed="false">
         <span class="path-logo" aria-hidden="true"><i data-lucide="rocket"></i></span>
         <span class="path-year">2024</span><span class="path-kind" data-pt="Investigação">Research</span>
@@ -45,7 +48,7 @@
         <span class="path-what">NASA Goddard Space Flight Center</span>
       </button>
     </li>
-    <li class="path-step path-now">
+    <li class="path-step path-now path-phd path-phd-last">
       <button type="button" class="path-btn" data-section="experience" data-match="MNHN · IMPMC" aria-pressed="false">
         <span class="path-logo" aria-hidden="true"><i data-lucide="microscope"></i></span>
         <span class="path-year">2025</span><span class="path-kind" data-pt="Investigação">Research</span>
@@ -58,7 +61,7 @@
   </div>
   <!-- The items come from data/education.json. They are not shown as cards: each
        Education step of the path above shows its entry's text and photos. -->
-  <div class="timeline edu-source" hidden>
+  <div class="timeline path-source" hidden>
   <!--@timeline:education-->
 </div>
 </section>

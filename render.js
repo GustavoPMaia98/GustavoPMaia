@@ -155,6 +155,35 @@
   }
   const TIMELINES = { presentations: { badges: true }, education: {}, experience: {}, courses: {} };
 
+  // ---------------------------------------------------------------- career paths
+  // <!--@path:experience-->: one step per entry, oldest to newest, in the same
+  // markup as the hand-written Education path. Each step opens its entry (found by
+  // its details line, data-match); script.js puts the logo in and wires the clicks.
+  const MONTHS = "jan feb mar apr may jun jul aug sep oct nov dec".split(" ");
+  function pathSteps(data, section) {
+    if (!data || !Array.isArray(data.items)) return "";
+    const items = data.items.filter(it => it && !it.hidden && it.meta && it.meta.en).map(it => {
+      const parts = it.meta.en.split(/\s+·\s+/), i = parts.findIndex(p => /\b(19|20)\d{2}\b/.test(p));
+      const when = i >= 0 ? parts[i] : "";
+      const y = +(when.match(/\b(19|20)\d{2}\b/) || [0])[0];
+      const mo = MONTHS.indexOf(when.slice(0, 3).toLowerCase()) + 1;
+      const rest = t => { const q = String(t || "").split(/\s+·\s+/); return (q.length === parts.length ? q.filter((_, j) => j !== i) : []).join(" · "); };
+      return { it, y, sort: y * 100 + mo, org: { en: rest(it.meta.en), pt: rest(it.meta.pt) } };
+    }).sort((a, b) => a.sort - b.sort);
+    return items.map(({ it, y, org }) => {
+      const t = it.title || {}, k = it.kind || {};
+      const now = /present|ongoing/i.test(it.meta.en);
+      return '<li class="path-step' + (now ? " path-now" : "") + '">' +
+        '<button type="button" class="path-btn" data-section="' + section + '" data-match="' + attr(it.meta.en) + '" aria-pressed="false">' +
+        '<span class="path-logo" aria-hidden="true"><i data-lucide="briefcase"></i></span>' +
+        '<span class="path-year">' + (y || "") + "</span>" +
+        (k.en ? '<span class="path-kind"' + ptAttr(k) + ">" + k.en + "</span>" : "") +
+        '<span class="path-place"' + ptAttr(t) + ">" + (t.en || "") + "</span>" +
+        (org.en ? '<span class="path-what"' + (org.pt ? ' data-pt="' + attr(org.pt) + '"' : "") + ">" + org.en + "</span>" : "") +
+        "</button></li>";
+    }).join("\n");
+  }
+
   // ---------------------------------------------------------------- blog
   // data/blog.json is edited by hand only, so the post body may contain HTML.
   function blog(data) {
@@ -186,6 +215,7 @@
     Object.keys(TIMELINES).forEach(name => {
       html = html.replace("<!--@timeline:" + name + "-->", () => timeline(data[name], TIMELINES[name]));
     });
+    html = html.replace("<!--@path:experience-->", () => pathSteps(data.experience, "experience"));
     return updatedLabels(html, data.updated);
   }
 

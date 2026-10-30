@@ -153,7 +153,7 @@
     }
 
     function frame(t) {
-      // the 3D dust disk (scenes3d.js) replaces this star field when WebGL works
+      // the 3D universe (scenes3d.js) replaces this star field in the dark theme
       if (document.documentElement.classList.contains("has-space3d")) { raf = null; return; }
       const dt = Math.min((t - last) / 1000, 0.05) || 0;
       last = t;
@@ -181,6 +181,8 @@
     document.addEventListener("visibilitychange", () => {
       if (document.hidden) stop(); else start();
     });
+    // scenes3d.js hands the background back (light theme): run again
+    window.addEventListener("site:starfield", () => { size(); start(); });
 
     size();
     if (prefersReduced) drawStars(false, 0); else start();
@@ -771,6 +773,7 @@
       enrichPublications(db);
       updateMetrics(db);
       applyLang();                       // translate the labels added above
+      setupPubCarousel();
       return;
     }
 
@@ -781,6 +784,231 @@
     buildPublicationFilter();
     decoratePublications();
     updateMetrics();
+    setupPubCarousel();
+  }
+
+  // ============================================================
+  //  PUBLICATIONS — a 3D carousel of floating front pages
+  //  Each paper is drawn as the first page of an article (journal, title, authors,
+  //  abstract), floating in 3D. The axis below is the timeline (newest on the
+  //  left). Clicking the page in front shows its abstract, keywords and citation
+  //  tools; the list of cards stays in the page, hidden, as the source.
+  // ============================================================
+  let pubCarousel = null;
+  const PUB_TXT = {
+    en: { abs: "Abstract", art: "Research article", open: "Click a paper to read it", prev: "Newer paper", next: "Older paper", close: "Close" },
+    pt: { abs: "Resumo", art: "Artigo científico", open: "Clique num artigo para o ler", prev: "Artigo mais recente", next: "Artigo anterior", close: "Fechar" },
+    fr: { abs: "Résumé", art: "Article de recherche", open: "Cliquez sur un article pour le lire", prev: "Article plus récent", next: "Article plus ancien", close: "Fermer" },
+    ja: { abs: "要旨", art: "研究論文", open: "論文をクリックして読む", prev: "新しい論文", next: "古い論文", close: "閉じる" }
+  };
+  function setupPubCarousel() {
+    const sec = document.getElementById("publications");
+    const list = sec && sec.querySelector(".timeline");
+    if (!list) return;
+    const items = Array.from(list.querySelectorAll(".timeline-item.publication"));   // newest first
+    if (!items.length) return;
+    let stage = sec.querySelector(".pub3d");
+    if (!stage) {
+      stage = document.createElement("div");
+      stage.className = "pub3d";
+      stage.innerHTML =
+        '<button type="button" class="pub3d-arrow pub3d-arrow--prev" data-dir="-1"><i data-lucide="chevron-left"></i></button>' +
+        '<div class="pub3d-stage" tabindex="0"><div class="pub3d-ring"></div></div>' +
+        '<button type="button" class="pub3d-arrow pub3d-arrow--next" data-dir="1"><i data-lucide="chevron-right"></i></button>' +
+        '<ol class="pub3d-axis"></ol><p class="pub3d-hint"></p>';
+      list.parentNode.insertBefore(stage, list);
+    }
+    list.classList.add("pub-source");
+    list.hidden = true;
+    const filter = document.getElementById("pub-filter");
+    if (filter) filter.hidden = true;                // the axis below replaces the year filter
+
+    const ring = stage.querySelector(".pub3d-ring"), axis = stage.querySelector(".pub3d-axis");
+    const hint = stage.querySelector(".pub3d-hint");
+    // the zoomed view: the page large on one side, the whole abstract on the other,
+    // keywords, citations and citation tools below
+    let zoom = document.getElementById("pubZoom");
+    if (!zoom) {
+      zoom = document.createElement("div");
+      zoom.id = "pubZoom"; zoom.className = "pub-zoom"; zoom.hidden = true;
+      zoom.setAttribute("role", "dialog"); zoom.setAttribute("aria-modal", "true"); zoom.setAttribute("aria-labelledby", "pubZoomTitle");
+      zoom.innerHTML = '<div class="pub-zoom-backdrop"></div><div class="pub-zoom-box">' +
+        '<button type="button" class="pub-zoom-close"><i data-lucide="x"></i></button>' +
+        '<div class="pub-zoom-grid"><div class="pub-zoom-page"></div><div class="pub-zoom-text"></div></div>' +
+        '<div class="pub-zoom-more"></div></div>';
+      document.body.appendChild(zoom);
+    }
+    const T = () => PUB_TXT[currentLang] || PUB_TXT.en;
+    const txt = (it, sel) => { const e = it.querySelector(sel); return e ? e.textContent.replace(/\s+/g, " ").trim() : ""; };
+    const hue = s => { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) % 360; return h; };
+    const info = it => {
+      const meta = txt(it, ".timeline-header .meta").split(/\s+·\s+/);
+      const absP = Array.from(it.querySelectorAll(".expand-body > p")).find(p => !p.querySelector('a[href*="doi.org/"]'));
+      const a = it.querySelector('.expand-body a[href*="doi.org/"]');
+      return { title: txt(it, ".timeline-header strong"), authors: meta[0] || "", year: it.dataset.year || meta[1] || "",
+               journal: meta.slice(2).join(" · "), abs: absP ? absP.textContent.trim() : "",
+               doi: a ? a.getAttribute("href").replace(/^https?:\/\/(dx\.)?doi\.org\//i, "") : "" };
+    };
+    let active = 0, openIdx = -1;
+    function render() {
+      const t = T();
+      ring.innerHTML = items.map((it, i) => {
+        const p = info(it);
+        const authors = escapeHtml(p.authors).replace(/(Gustavo\s+(?:P\.|Pinho)\s+Maia)/, "<b>$1</b>");
+        return '<button type="button" class="pub-page" data-i="' + i + '" style="--i:' + i + ";--hue:" + hue(p.journal) + '">' +
+          '<span class="pub-float"><span class="pub-sheet">' +
+            '<span class="pub-sheet-band"><span class="pub-sheet-journal">' + escapeHtml(p.journal) + '</span><span class="pub-sheet-year">' + escapeHtml(p.year) + "</span></span>" +
+            '<span class="pub-sheet-kind">' + escapeHtml(t.art) + "</span>" +
+            '<span class="pub-sheet-title">' + escapeHtml(p.title) + "</span>" +
+            '<span class="pub-sheet-authors">' + authors + "</span>" +
+            '<span class="pub-sheet-rule"></span>' +
+            '<span class="pub-sheet-abs-h">' + escapeHtml(t.abs) + "</span>" +
+            '<span class="pub-sheet-abs">' + escapeHtml(p.abs) + "</span>" +
+            (p.doi ? '<span class="pub-sheet-doi">https://doi.org/' + escapeHtml(p.doi) + "</span>" : "") +
+          "</span></span><span class=\"pub-shadow\" aria-hidden=\"true\"></span></button>";
+      }).join("");
+      axis.innerHTML = items.map((it, i) =>
+        '<li><button type="button" class="pub3d-dot" data-i="' + i + '"><span class="pub3d-dot-mark"></span><span class="pub3d-dot-year">' +
+        escapeHtml(info(it).year) + "</span></button></li>").join("");
+      hint.textContent = t.open;
+      stage.querySelector(".pub3d-arrow--prev").setAttribute("aria-label", t.prev);
+      stage.querySelector(".pub3d-arrow--next").setAttribute("aria-label", t.next);
+      ring.querySelectorAll(".pub-page").forEach((b, i) => b.setAttribute("aria-label", info(items[i]).title + " (" + info(items[i]).year + ")"));
+      place();
+      if (openIdx >= 0) showDetail(openIdx);
+    }
+    function place() {
+      ring.querySelectorAll(".pub-page").forEach((b, i) => {
+        const d = i - active, ad = Math.abs(d);
+        b.style.setProperty("--d", d); b.style.setProperty("--ad", ad);
+        b.classList.toggle("is-active", d === 0);
+        b.classList.toggle("is-far", ad > 2);
+        b.tabIndex = d === 0 ? 0 : -1;
+        b.setAttribute("aria-current", String(d === 0));
+      });
+      axis.querySelectorAll(".pub3d-dot").forEach((b, i) => b.setAttribute("aria-current", String(i === active)));
+      stage.querySelector(".pub3d-arrow--prev").disabled = active === 0;
+      stage.querySelector(".pub3d-arrow--next").disabled = active === items.length - 1;
+    }
+    function go(i) {
+      i = Math.max(0, Math.min(items.length - 1, i));
+      if (i !== active) { active = i; place(); if (openIdx >= 0 && openIdx !== i) hideDetail(); }
+    }
+    let lastFocus = null;
+    function showDetail(i) {
+      const it = items[i], p = info(it), t = T();
+      const wasOpen = !zoom.hidden;
+      openIdx = i;
+      const page = ring.querySelectorAll(".pub-page")[i];
+      const sheet = page && page.querySelector(".pub-sheet");
+      const box = zoom.querySelector(".pub-zoom-page");
+      box.innerHTML = sheet ? sheet.outerHTML : "";
+      box.firstElementChild && box.firstElementChild.style.setProperty("--hue", page.style.getPropertyValue("--hue"));
+      const body = it.querySelector(".expand-body");
+      const paras = body ? Array.from(body.querySelectorAll(":scope > p")).filter(x => !x.querySelector('a[href*="doi.org/"]')) : [];
+      zoom.querySelector(".pub-zoom-text").innerHTML =
+        '<h3 class="pub-zoom-title" id="pubZoomTitle"></h3><p class="pub-zoom-meta"></p>' +
+        '<h4 class="pub-zoom-abs-h"></h4><div class="pub-zoom-abs">' + paras.map(x => "<p>" + x.innerHTML + "</p>").join("") + "</div>";
+      zoom.querySelector(".pub-zoom-title").textContent = p.title;
+      zoom.querySelector(".pub-zoom-meta").textContent = [p.authors, p.year, p.journal].filter(Boolean).join(" · ");
+      zoom.querySelector(".pub-zoom-abs-h").textContent = t.abs;
+      const kw = body && body.querySelector(".pub-keywords"), tools = body && body.querySelector(".pub-tools");
+      const cites = it.querySelector(".pub-cites"), doi = body && body.querySelector('a[href*="doi.org/"]');
+      zoom.querySelector(".pub-zoom-more").innerHTML =
+        (kw ? kw.outerHTML : "") +
+        '<div class="pub-zoom-cite">' + (cites ? '<span class="pub-zoom-cites">' + cites.innerHTML + "</span>" : "") +
+        (doi ? '<a class="pub-zoom-doi" href="' + doi.getAttribute("href") + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(doi.textContent.trim()) + "</a>" : "") +
+        "</div>" + (tools ? tools.outerHTML : "");
+      zoom.querySelector(".pub-zoom-close").setAttribute("aria-label", t.close);
+      if (window.lucide && lucide.createIcons) try { lucide.createIcons(); } catch (e) {}
+      if (wasOpen) return;
+      lastFocus = document.activeElement;
+      zoom.hidden = false;
+      document.body.classList.add("pub-zoom-open");
+      // zoom: the big page grows out of the small one in the carousel
+      const big = box.firstElementChild;
+      if (big && sheet && !prefersReduced) {
+        const a = sheet.getBoundingClientRect(), b = big.getBoundingClientRect();
+        big.style.transformOrigin = "0 0";
+        big.style.transition = "none";
+        big.style.transform = "translate(" + (a.left - b.left) + "px," + (a.top - b.top) + "px) scale(" + (a.width / b.width) + ")";
+        zoom.classList.remove("is-in");
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          big.style.transition = "transform .55s cubic-bezier(.22,.61,.36,1)";
+          big.style.transform = "none";
+          zoom.classList.add("is-in");
+        }));
+      } else zoom.classList.add("is-in");
+      zoom.querySelector(".pub-zoom-close").focus({ preventScroll: true });
+    }
+    function hideDetail() {
+      if (zoom.hidden) { openIdx = -1; return; }
+      openIdx = -1; zoom.hidden = true; zoom.classList.remove("is-in");
+      document.body.classList.remove("pub-zoom-open");
+      if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
+    }
+    if (!stage.dataset.wired) {
+      stage.dataset.wired = "1";
+      ring.addEventListener("click", e => {
+        const b = e.target.closest(".pub-page");
+        if (!b) return;
+        const i = +b.dataset.i;
+        if (i !== active) { go(i); return; }               // a side page comes to the front first
+        showDetail(i);
+      });
+      axis.addEventListener("click", e => { const b = e.target.closest(".pub3d-dot"); if (b) { go(+b.dataset.i); } });
+      stage.querySelectorAll(".pub3d-arrow").forEach(a => a.addEventListener("click", () => go(active + +a.dataset.dir)));
+      stage.querySelector(".pub3d-stage").addEventListener("keydown", e => {
+        const d = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
+        if (!d) return;
+        e.preventDefault(); go(active + d);
+        const f = ring.querySelector(".pub-page.is-active"); if (f) f.focus();
+      });
+      // swipe on touch screens
+      let x0 = null;
+      stage.addEventListener("pointerdown", e => { x0 = e.clientX; }, { passive: true });
+      stage.addEventListener("pointerup", e => {
+        if (x0 == null) return;
+        const dx = e.clientX - x0; x0 = null;
+        if (Math.abs(dx) > 45) go(active + (dx < 0 ? 1 : -1));
+      }, { passive: true });
+      // the zoomed view: close with the button, the backdrop or Esc; its citation
+      // buttons use the paper's own (hidden) buttons
+      zoom.addEventListener("click", e => {
+        if (e.target.closest(".pub-zoom-close") || e.target.classList.contains("pub-zoom-backdrop")) { hideDetail(); return; }
+        const b = e.target.closest("[data-cite]");
+        if (!b || openIdx < 0) return;
+        e.stopPropagation();
+        const own = items[openIdx].querySelector('.pub-tools [data-cite="' + b.dataset.cite + '"]');
+        if (!own) return;
+        own.click();
+        setTimeout(() => {
+          const src = items[openIdx] && items[openIdx].querySelector(".pub-tool-done"), dst = zoom.querySelector(".pub-tool-done");
+          if (src && dst) { dst.textContent = src.textContent; setTimeout(() => { dst.textContent = ""; }, 2000); }
+        }, 120);
+      });
+      document.addEventListener("keydown", e => {
+        if (zoom.hidden) return;
+        if (e.key === "Escape") { e.preventDefault(); hideDetail(); return; }
+        if (e.key === "Tab") {                       // keep the focus inside the zoomed view
+          const f = Array.from(zoom.querySelectorAll("button, a[href]")).filter(x => x.offsetParent);
+          if (!f.length) return;
+          if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+          else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+        }
+      });
+      pathLangUpdates.push(render);
+      pathFinders.push({ wrap: stage, open: it => {
+        const i = items.indexOf(it);
+        if (i < 0) return false;
+        stage.scrollIntoView({ behavior: "auto", block: "center" });
+        go(i); showDetail(i);
+        return true;
+      } });
+    }
+    render();
+    if (window.lucide && lucide.createIcons) try { lucide.createIcons(); } catch (e) {}
+    pubCarousel = { open: it => pathFinders.some(f => f.wrap === stage && f.open(it)) };
   }
 
   // ---- Citation counts, free PDF links and a "Cite" button, from the nightly
@@ -1598,6 +1826,7 @@
       const m = a.getAttribute("href").match(/doi\.org\/(.+)$/i);
       if (m && decodeURIComponent(m[1]).trim().toLowerCase() === norm) target = a.closest(".timeline-item");
     });
+    if (target && pubCarousel && pubCarousel.open(target)) return;   // shown in the 3D carousel
     const sec = document.getElementById("publications");
     if (sec) window.scrollTo({ top: sec.getBoundingClientRect().top + window.scrollY - 76, behavior: "smooth" });
     if (target) {
@@ -1958,7 +2187,7 @@
       nav.appendChild(bar);
     }
 
-    [["#presentations .timeline", 4], ["#experience .timeline", 4]].forEach(([sel, n]) => {
+    [["#presentations .timeline", 4]].forEach(([sel, n]) => {
       const tl = document.querySelector(sel);
       if (!tl || tl.dataset.collapse) return;
       const items = tl.querySelectorAll(":scope > .timeline-item");
@@ -2040,9 +2269,22 @@
     } catch (e) { /* unreadable image: keep the default tile */ }
   }
 
+  // Career paths (Education, Experience): each .path-wrap holds a row of steps and a
+  // panel. A step opens the text of its entry (a card kept hidden in .path-source).
+  const pathLangUpdates = [], pathFinders = [];
   function setupCareerPath() {
-    const path = document.querySelector(".path");
-    const panel = document.getElementById("pathDetail");
+    document.querySelectorAll(".path-wrap").forEach(setupOnePath);
+    pathLangUpdate = () => pathLangUpdates.forEach(f => f());
+    // a search result opens its step, preferring the path of the entry's own section
+    showPathFor = it => {
+      const sec = it.closest("section");
+      const order = pathFinders.slice().sort((a, b) => (b.wrap.closest("section") === sec) - (a.wrap.closest("section") === sec));
+      return order.some(f => f.open(it));
+    };
+  }
+  function setupOnePath(wrap) {
+    const path = wrap.querySelector(".path");
+    const panel = wrap.querySelector(".path-detail");
     if (!path || !panel || path.dataset.wired) return;
     path.dataset.wired = "1";
     const steps = Array.from(path.querySelectorAll(".path-btn"));
@@ -2062,9 +2304,9 @@
       if (!it) { panel.hidden = true; return; }
       const txt = sel => { const e = it.querySelector(sel); return e ? e.textContent.trim() : ""; };
       const sum = txt(".timeline-card > p em");
-      // Education lives only in this path: its step shows the entry's whole text and
-      // photos here. Experience steps show a summary and a link to their card.
-      const full = btn.dataset.section === "education" ? it.querySelector(".expand-body") : null;
+      // entries shown only through a path (hidden cards): the whole text and photos
+      // here; any other entry: a summary and a link to its card
+      const full = it.closest(".path-source") ? it.querySelector(".expand-body") : null;
       panel.innerHTML =
         '<span class="path-detail-text"><span class="path-detail-title"></span><span class="path-detail-meta"></span>' +
         (sum ? '<span class="path-detail-sum"></span>' : "") + "</span>" +
@@ -2129,16 +2371,47 @@
       steps.forEach(b => b.setAttribute("aria-pressed", "false"));
       panel.hidden = true; panel.innerHTML = "";
     }
-    pathLangUpdate = () => { if (current) show(current); };
-    // search results for an education entry open its step
-    showPathFor = it => {
+    pathLangUpdates.push(() => { if (current) show(current); });
+    pathFinders.push({ wrap, open: it => {
       const b = steps.find(x => target(x) === it);
       if (!b) return false;
-      show(b);
-      path.closest(".path-wrap").scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "start" });
+      show(b); bringIntoTrack(b);
+      wrap.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "start" });
       return true;
-    };
+    } });
+    // long paths (Experience) slide sideways: arrows move by most of a view and the
+    // path opens on its newest end
+    const track = wrap.querySelector(".path-scroll");
+    const arrows = Array.from(wrap.querySelectorAll(".path-arrow"));
+    function bringIntoTrack(b) {
+      if (!track) return;
+      const t = track.getBoundingClientRect(), r = b.getBoundingClientRect();
+      if (r.left < t.left || r.right > t.right) track.scrollLeft += (r.left + r.width / 2) - (t.left + t.width / 2);
+    }
+    if (track) {
+      const vertical = () => track.scrollWidth <= track.clientWidth + 1;
+      const sync = () => {
+        const max = track.scrollWidth - track.clientWidth;
+        arrows.forEach(a => {
+          const off = vertical() || (a.dataset.dir === "-1" ? track.scrollLeft <= 2 : track.scrollLeft >= max - 2);
+          a.disabled = off; a.hidden = vertical();
+        });
+      };
+      arrows.forEach(a => a.addEventListener("click", () => {
+        track.scrollBy({ left: +a.dataset.dir * track.clientWidth * 0.8, behavior: prefersReduced ? "auto" : "smooth" });
+      }));
+      track.addEventListener("scroll", sync, { passive: true });
+      addEventListener("resize", sync, { passive: true });
+      track.scrollLeft = track.scrollWidth;          // newest first in view
+      sync();
+      steps.forEach(b => b.addEventListener("focus", () => bringIntoTrack(b)));
+    }
     // nothing is open at first: a step's text appears when it is clicked
+    // a click anywhere outside the path box hides the text again (the photo viewer
+    // opened from that text does not count as outside)
+    document.addEventListener("click", e => {
+      if (current && !panel.hidden && !wrap.contains(e.target) && !e.target.closest(".lightbox")) hide();
+    });
     // draw the line when the path scrolls into view
     if (prefersReduced || !("IntersectionObserver" in window)) { path.classList.add("is-drawn"); return; }
     const io = new IntersectionObserver(es => es.forEach(e => {

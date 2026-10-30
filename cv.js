@@ -21,6 +21,13 @@
     return LANGS.indexOf(b) !== -1 ? b : "en";
   })();
   document.documentElement.lang = lang;
+  const root = document.documentElement;
+  const logosOn = (function () {               // ?logos=0|1, else the last choice, else on
+    const q = new URLSearchParams(location.search).get("logos");
+    if (q === "0" || q === "1") return q === "1";
+    try { return localStorage.getItem("cvLogos") !== "0"; } catch (e) { return true; }
+  })();
+  root.classList.toggle("cv-nologos", !logosOn);   // before the CV is drawn (tools/build_cv.py uses ?logos=0)
 
   const L = {
     en: { profile: "Profile", interests: "Research interests", education: "Education",
@@ -29,28 +36,28 @@
           courses: "Courses & training", skills: "Techniques & software", media: "Media & recognition",
           keywords: "Keywords", cited: "Cited by", present: "Present", back: "Website", pdf: "Download PDF",
           print: "Print / save as PDF", generated: "Generated from the website on", oral: "Oral", poster: "Poster",
-          email: "Email", web: "Website" },
+          email: "Email", web: "Website", logos: "Logos" },
     pt: { profile: "Perfil", interests: "Interesses de investigação", education: "Formação académica",
           experience: "Experiência profissional e de investigação", supervisors: "Orientadores", publications: "Publicações com revisão por pares",
           presentations: "Comunicações em conferências", awards: "Prémios e distinções", funding: "Financiamento",
           courses: "Cursos e formações", skills: "Técnicas e software", media: "Comunicação social e reconhecimento",
           keywords: "Palavras-chave", cited: "Citado", present: "presente", back: "Website", pdf: "Descarregar PDF",
           print: "Imprimir / guardar PDF", generated: "Gerado a partir do website em", oral: "Oral", poster: "Póster",
-          email: "Email", web: "Website" },
+          email: "Email", web: "Website", logos: "Logótipos" },
     fr: { profile: "Profil", interests: "Thèmes de recherche", education: "Formation",
           experience: "Expérience professionnelle et de recherche", supervisors: "Encadrants", publications: "Publications à comité de lecture",
           presentations: "Communications en conférence", awards: "Prix et distinctions", funding: "Financements",
           courses: "Cours et formations", skills: "Techniques et logiciels", media: "Médias et reconnaissance",
           keywords: "Mots-clés", cited: "Cité", present: "aujourd’hui", back: "Site web", pdf: "Télécharger le PDF",
           print: "Imprimer / enregistrer en PDF", generated: "Généré à partir du site web le", oral: "Orale", poster: "Poster",
-          email: "Courriel", web: "Site web" },
+          email: "Courriel", web: "Site web", logos: "Logos" },
     ja: { profile: "プロフィール", interests: "研究テーマ", education: "学歴",
           experience: "研究・職務経歴", supervisors: "指導教員", publications: "査読付き論文",
           presentations: "学会発表", awards: "受賞歴", funding: "研究資金",
           courses: "研修・講習", skills: "技術・ソフトウェア", media: "メディア・表彰",
           keywords: "キーワード", cited: "被引用", present: "現在", back: "ウェブサイト", pdf: "PDFをダウンロード",
           print: "印刷 / PDFに保存", generated: "ウェブサイトから生成：", oral: "口頭", poster: "ポスター",
-          email: "メール", web: "ウェブサイト" }
+          email: "メール", web: "ウェブサイト", logos: "ロゴ" }
   }[lang];
 
   // ---------------------------------------------------------------- text
@@ -370,11 +377,30 @@
   // top bar: labels, language, PDF (the print dialog until the nightly PDF exists)
   document.querySelectorAll("[data-l]").forEach(el => { el.textContent = L[el.dataset.l]; });
   document.querySelectorAll("[data-set-lang]").forEach(a => a.setAttribute("aria-current", String(a.dataset.setLang === lang)));
+  // Institution logos on or off (?logos=0, remembered). The PDF button follows:
+  // cv.pdf / cv-pt.pdf ... with logos, cv-nologos.pdf / cv-pt-nologos.pdf ... without.
   const pdf = document.getElementById("cvPdf");
-  pdf.href = lang === "en" ? "cv.pdf" : "cv-" + lang + ".pdf";
-  fetch(pdf.href, { method: "HEAD", cache: "no-cache" }).then(r => { if (!r.ok) throw 0; }).catch(() => {
-    pdf.removeAttribute("download");
-    pdf.querySelector("span").textContent = L.print;
-    pdf.addEventListener("click", e => { e.preventDefault(); window.print(); });
-  });
+  const logoBtn = document.getElementById("cvLogos");
+  function setPdf() {
+    const off = root.classList.contains("cv-nologos");
+    pdf.href = (lang === "en" ? "cv" : "cv-" + lang) + (off ? "-nologos" : "") + ".pdf";
+    pdf.setAttribute("download", "");
+    pdf.querySelector("span").textContent = L.pdf;
+    pdf.dataset.print = "";
+    // the print dialog until the nightly PDF exists
+    fetch(pdf.href, { method: "HEAD", cache: "no-cache" }).then(r => { if (!r.ok) throw 0; }).catch(() => {
+      pdf.removeAttribute("download");
+      pdf.querySelector("span").textContent = L.print;
+      pdf.dataset.print = "1";
+    });
+  }
+  pdf.addEventListener("click", e => { if (pdf.dataset.print === "1") { e.preventDefault(); window.print(); } });
+  function setLogos(on, save) {
+    root.classList.toggle("cv-nologos", !on);
+    logoBtn.setAttribute("aria-checked", String(on));
+    if (save) try { localStorage.setItem("cvLogos", on ? "1" : "0"); } catch (e) {}
+    setPdf();
+  }
+  logoBtn.addEventListener("click", () => setLogos(root.classList.contains("cv-nologos"), true));
+  setLogos(logosOn, false);
 })();
