@@ -795,6 +795,10 @@
   //  tools; the list of cards stays in the page, hidden, as the source.
   // ============================================================
   let pubCarousel = null;
+  // real first pages (data/paper-covers.json, made by tools/make_cover.py), by DOI
+  let pubCovers = {};
+  const pubCoversP = fetch("data/paper-covers.json", { cache: "no-cache" }).then(r => r.ok ? r.json() : {})
+    .then(c => { pubCovers = c || {}; }).catch(() => {});
   const PUB_TXT = {
     en: { abs: "Abstract", art: "Research article", open: "Click a paper to read it", prev: "Newer paper", next: "Older paper", close: "Close" },
     pt: { abs: "Resumo", art: "Artigo científico", open: "Clique num artigo para o ler", prev: "Artigo mais recente", next: "Artigo anterior", close: "Fechar" },
@@ -855,6 +859,14 @@
       ring.innerHTML = items.map((it, i) => {
         const p = info(it);
         const authors = escapeHtml(p.authors).replace(/(Gustavo\s+(?:P\.|Pinho)\s+Maia)/, "<b>$1</b>");
+        const cover = pubCovers[String(p.doi).toLowerCase()];
+        const src = cover && /^images\/papers\/[\w.-]+\.(webp|png|jpe?g)$/.test(cover.src) ? cover.src : "";
+        if (src) {                                   // the page as published (main text blurred)
+          return '<button type="button" class="pub-page" data-i="' + i + '" style="--i:' + i + ";--hue:" + hue(p.journal) + '">' +
+            '<span class="pub-float"><span class="pub-sheet pub-sheet--img" style="aspect-ratio:' + (+cover.width || 210) + "/" + (+cover.height || 297) + '">' +
+            '<img src="' + src + '" alt="" decoding="async"></span></span>' +
+            '<span class="pub-shadow" aria-hidden="true"></span></button>';
+        }
         return '<button type="button" class="pub-page" data-i="' + i + '" style="--i:' + i + ";--hue:" + hue(p.journal) + '">' +
           '<span class="pub-float"><span class="pub-sheet">' +
             '<span class="pub-sheet-band"><span class="pub-sheet-journal">' + escapeHtml(p.journal) + '</span><span class="pub-sheet-year">' + escapeHtml(p.year) + "</span></span>" +
@@ -1007,6 +1019,7 @@
       } });
     }
     render();
+    pubCoversP.then(() => { if (Object.keys(pubCovers).length) render(); });
     if (window.lucide && lucide.createIcons) try { lucide.createIcons(); } catch (e) {}
     pubCarousel = { open: it => pathFinders.some(f => f.wrap === stage && f.open(it)) };
   }
