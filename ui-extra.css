@@ -928,6 +928,10 @@ html[data-theme="light"] .pub-sheet{ box-shadow:0 1px 0 rgba(0,0,0,.04), 0 16px 
   -webkit-mask-image:linear-gradient(#000 70%, transparent); mask-image:linear-gradient(#000 70%, transparent); }
 .pub-sheet-doi{ font-family:var(--font-body, system-ui), sans-serif; font-size:.44em; color:#6b7280; border-top:1px solid #e5e7eb; padding-top:.25em;
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+/* a real first page (image): no padding, the picture fills the rounded sheet */
+.pub-sheet--img{ padding:0; gap:0; background:#fff; }
+.pub-sheet--img img{ display:block; width:100%; height:100%; object-fit:cover; }
+.pub-zoom-page .pub-sheet--img{ font-size:inherit; }
 /* the soft shadow under a floating page */
 .pub-shadow{ display:block; width:70%; height:14px; margin:16px auto 0; border-radius:50%;
   background:radial-gradient(closest-side, rgba(0,0,0,.45), transparent); animation:pubShadow 6.5s ease-in-out infinite alternate;

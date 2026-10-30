@@ -114,6 +114,12 @@ if blog is not None:
         for ref in [m[1] for m in REF.findall((post.get("body") or {}).get("en", ""))]:
             need_file(where, ref.split("#")[0])
 
+covers = load_json("data/paper-covers.json")
+if covers:
+    for doi, cv in covers.items():
+        if not doi.startswith("_"):
+            need_file(f"data/paper-covers.json ({doi})", (cv or {}).get("src"))
+
 tree = load_json("data/tree.json")
 if tree is not None:
     def walk(node, path):
