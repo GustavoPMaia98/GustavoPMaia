@@ -800,10 +800,10 @@
   const pubCoversP = fetch("data/paper-covers.json", { cache: "no-cache" }).then(r => r.ok ? r.json() : {})
     .then(c => { pubCovers = c || {}; }).catch(() => {});
   const PUB_TXT = {
-    en: { abs: "Abstract", art: "Research article", open: "Click a paper to read it", prev: "Newer paper", next: "Older paper", close: "Close" },
-    pt: { abs: "Resumo", art: "Artigo científico", open: "Clique num artigo para o ler", prev: "Artigo mais recente", next: "Artigo anterior", close: "Fechar" },
-    fr: { abs: "Résumé", art: "Article de recherche", open: "Cliquez sur un article pour le lire", prev: "Article plus récent", next: "Article plus ancien", close: "Fermer" },
-    ja: { abs: "要旨", art: "研究論文", open: "論文をクリックして読む", prev: "新しい論文", next: "古い論文", close: "閉じる" }
+    en: { abs: "Abstract", art: "Research article", open: "Click a paper to open it", prev: "Newer paper", next: "Older paper", close: "Close", cite: "Citation (APA)", copy: "Copy", export: "Export citation" },
+    pt: { abs: "Resumo", art: "Artigo científico", open: "Clique num artigo para o abrir", prev: "Artigo mais recente", next: "Artigo anterior", close: "Fechar", cite: "Citação (APA)", copy: "Copiar", export: "Exportar citação" },
+    fr: { abs: "Résumé", art: "Article de recherche", open: "Cliquez sur un article pour l’ouvrir", prev: "Article plus récent", next: "Article plus ancien", close: "Fermer", cite: "Citation (APA)", copy: "Copier", export: "Exporter la citation" },
+    ja: { abs: "要旨", art: "研究論文", open: "論文をクリックして開く", prev: "新しい論文", next: "古い論文", close: "閉じる", cite: "引用 (APA)", copy: "コピー", export: "引用をエクスポート" }
   };
   function setupPubCarousel() {
     const sec = document.getElementById("publications");
@@ -838,8 +838,7 @@
       zoom.setAttribute("role", "dialog"); zoom.setAttribute("aria-modal", "true"); zoom.setAttribute("aria-labelledby", "pubZoomTitle");
       zoom.innerHTML = '<div class="pub-zoom-backdrop"></div><div class="pub-zoom-box">' +
         '<button type="button" class="pub-zoom-close"><i data-lucide="x"></i></button>' +
-        '<div class="pub-zoom-grid"><div class="pub-zoom-page"></div><div class="pub-zoom-text"></div></div>' +
-        '<div class="pub-zoom-more"></div></div>';
+        '<div class="pub-zoom-grid"><div class="pub-zoom-page"></div><div class="pub-zoom-text"></div></div></div>';
       document.body.appendChild(zoom);
     }
     const T = () => PUB_TXT[currentLang] || PUB_TXT.en;
@@ -915,32 +914,35 @@
       const sheet = page && page.querySelector(".pub-sheet");
       const box = zoom.querySelector(".pub-zoom-page");
       box.innerHTML = sheet ? sheet.outerHTML : "";
-      box.firstElementChild && box.firstElementChild.style.setProperty("--hue", page.style.getPropertyValue("--hue"));
-      const body = it.querySelector(".expand-body");
-      const paras = body ? Array.from(body.querySelectorAll(":scope > p")).filter(x => !x.querySelector('a[href*="doi.org/"]')) : [];
+      if (box.firstElementChild) {
+        box.firstElementChild.style.setProperty("--hue", page.style.getPropertyValue("--hue"));
+        box.style.setProperty("--ar", sheet.offsetWidth && sheet.offsetHeight ? sheet.offsetWidth / sheet.offsetHeight : 0.707);
+      }
+      // the page itself can be read: beside it only how to cite the paper
+      const w = pubWork(p);
+      const doiUrl = p.doi ? "https://doi.org/" + p.doi : "";
       zoom.querySelector(".pub-zoom-text").innerHTML =
-        '<h3 class="pub-zoom-title" id="pubZoomTitle"></h3><p class="pub-zoom-meta"></p>' +
-        '<h4 class="pub-zoom-abs-h"></h4><div class="pub-zoom-abs">' + paras.map(x => "<p>" + x.innerHTML + "</p>").join("") + "</div>";
+        '<h3 class="pub-zoom-title" id="pubZoomTitle"></h3>' +
+        '<div class="pub-zoom-block"><div class="pub-zoom-h"><span>' + escapeHtml(t.cite) + '</span><button type="button" class="pub-tool" data-copy="apa"><i data-lucide="copy"></i><span>' + escapeHtml(t.copy) + "</span></button></div>" +
+          '<p class="pub-zoom-apa"></p></div>' +
+        '<div class="pub-zoom-block"><div class="pub-zoom-h"><span>' + escapeHtml(t.export) + "</span></div>" +
+          '<div class="pub-zoom-export">' +
+            '<button type="button" class="pub-tool" data-export="bib"><i data-lucide="braces"></i><span>BibTeX</span></button>' +
+            '<button type="button" class="pub-tool" data-export="ris" title="Zotero · Mendeley · EndNote"><i data-lucide="file-down"></i><span>RIS · Zotero · Mendeley</span></button>' +
+            '<button type="button" class="pub-tool" data-export="enw"><i data-lucide="file-down"></i><span>EndNote</span></button>' +
+          "</div></div>" +
+        (doiUrl ? '<div class="pub-zoom-block"><div class="pub-zoom-h"><span>DOI</span></div><a class="pub-zoom-doi" target="_blank" rel="noopener noreferrer"></a></div>' : "") +
+        '<span class="pub-tool-done" role="status" aria-live="polite"></span>';
       zoom.querySelector(".pub-zoom-title").textContent = p.title;
-      zoom.querySelector(".pub-zoom-meta").textContent = [p.authors, p.year, p.journal].filter(Boolean).join(" · ");
-      zoom.querySelector(".pub-zoom-abs-h").textContent = t.abs;
-      const kw = body && body.querySelector(".pub-keywords"), tools = body && body.querySelector(".pub-tools");
-      const cites = it.querySelector(".pub-cites"), doi = body && body.querySelector('a[href*="doi.org/"]');
-      zoom.querySelector(".pub-zoom-more").innerHTML =
-        (kw ? kw.outerHTML : "") +
-        '<div class="pub-zoom-cite">' + (cites ? '<span class="pub-zoom-cites">' + cites.innerHTML + "</span>" : "") +
-        (doi ? '<a class="pub-zoom-doi" href="' + doi.getAttribute("href") + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(doi.textContent.trim()) + "</a>" : "") +
-        "</div>" + (tools ? tools.outerHTML : "");
+      zoom.querySelector(".pub-zoom-apa").textContent = apa(w);
+      const da = zoom.querySelector(".pub-zoom-doi");
+      if (da) { da.href = doiUrl; da.textContent = doiUrl; }
       zoom.querySelector(".pub-zoom-close").setAttribute("aria-label", t.close);
       if (window.lucide && lucide.createIcons) try { lucide.createIcons(); } catch (e) {}
-      fitZoom();
-      const im = box.querySelector("img");
-      if (im && !im.complete) im.addEventListener("load", fitZoom, { once: true });
       if (wasOpen) return;
       lastFocus = document.activeElement;
       zoom.hidden = false;
       document.body.classList.add("pub-zoom-open");
-      fitZoom();                                     // size first, then zoom into that size
       // zoom: the big page grows out of the small one in the carousel
       const big = box.firstElementChild;
       if (big && sheet && !prefersReduced) {
@@ -957,24 +959,11 @@
       } else zoom.classList.add("is-in");
       zoom.querySelector(".pub-zoom-close").focus({ preventScroll: true });
     }
-    // the page grows to the height of the abstract beside it when the abstract is
-    // longer (never smaller than its usual size, never wider than about half the box)
-    function fitZoom() {
-      const grid = zoom.querySelector(".pub-zoom-grid"), page = zoom.querySelector(".pub-zoom-page"),
-            text = zoom.querySelector(".pub-zoom-text"), sheet = page && page.firstElementChild;
-      if (!grid || !sheet) return;
-      grid.style.removeProperty("--zp");
-      if (getComputedStyle(grid).gridTemplateColumns.split(" ").length < 2) return;   // one column (phones)
-      if (zoom.hidden || !sheet.offsetWidth || !sheet.offsetHeight) return;
-      const ratio = sheet.offsetHeight / sheet.offsetWidth, max = grid.clientWidth * 0.56;
-      let w = page.offsetWidth;
-      for (let k = 0; k < 4; k++) {                  // a wider page narrows the text: settle in a few steps
-        const want = Math.min(max, Math.max(w, text.offsetHeight / ratio));
-        if (!isFinite(want) || Math.abs(want - w) < 2) break;
-        w = want; grid.style.setProperty("--zp", Math.round(w) + "px");
-      }
+    // the paper's record for the citation: the nightly data, else what the page shows
+    function pubWork(p) {
+      const w = pubWorks[String(p.doi).toLowerCase()];
+      return w || { title: p.title, authors: p.authors.replace(/\s+et al\.?$/, ""), year: p.year, journal: p.journal, doi: p.doi };
     }
-    addEventListener("resize", () => { if (!zoom.hidden) fitZoom(); }, { passive: true });
     function hideDetail() {
       if (zoom.hidden) { openIdx = -1; return; }
       openIdx = -1; zoom.hidden = true; zoom.classList.remove("is-in");
@@ -987,8 +976,7 @@
         const b = e.target.closest(".pub-page");
         if (!b) return;
         const i = +b.dataset.i;
-        if (i !== active) { go(i); return; }               // a side page comes to the front first
-        showDetail(i);
+        go(i); showDetail(i);                             // any page opens, and comes to the front
       });
       axis.addEventListener("click", e => { const b = e.target.closest(".pub3d-dot"); if (b) { go(+b.dataset.i); } });
       stage.querySelectorAll(".pub3d-arrow").forEach(a => a.addEventListener("click", () => go(active + +a.dataset.dir)));
@@ -1010,16 +998,18 @@
       // buttons use the paper's own (hidden) buttons
       zoom.addEventListener("click", e => {
         if (e.target.closest(".pub-zoom-close") || e.target.classList.contains("pub-zoom-backdrop")) { hideDetail(); return; }
-        const b = e.target.closest("[data-cite]");
-        if (!b || openIdx < 0) return;
-        e.stopPropagation();
-        const own = items[openIdx].querySelector('.pub-tools [data-cite="' + b.dataset.cite + '"]');
-        if (!own) return;
-        own.click();
-        setTimeout(() => {
-          const src = items[openIdx] && items[openIdx].querySelector(".pub-tool-done"), dst = zoom.querySelector(".pub-tool-done");
-          if (src && dst) { dst.textContent = src.textContent; setTimeout(() => { dst.textContent = ""; }, 2000); }
-        }, 120);
+        if (openIdx < 0) return;
+        const x = e.target.closest("[data-export]");
+        if (x) { exportCitation(pubWork(info(items[openIdx])), x.dataset.export); return; }
+        const b = e.target.closest("[data-copy]");
+        if (!b) return;
+        const w = pubWork(info(items[openIdx]));
+        copyText(b.dataset.copy === "bibtex" ? bibtex(w) : apa(w)).then(ok => {
+          const done = zoom.querySelector(".pub-tool-done");
+          if (!done) return;
+          done.textContent = ok ? ({ pt: "Copiado!", fr: "Copié !", ja: "コピーしました" }[currentLang] || "Copied!") : "";
+          setTimeout(() => { done.textContent = ""; }, 2200);
+        });
       });
       document.addEventListener("keydown", e => {
         if (zoom.hidden) return;
@@ -1049,9 +1039,11 @@
   // ---- Citation counts, free PDF links and a "Cite" button, from the nightly
   //      data in data/publications.json (OpenAlex + Crossref). Papers without an
   //      entry there are simply left as they are.
+  let pubWorks = {};                 // nightly records by DOI (citations in the carousel)
   function enrichPublications(db) {
     const byDoi = {};
     (db.works || []).forEach(w => { if (w.doi) byDoi[w.doi.toLowerCase()] = w; });
+    pubWorks = byDoi;
     document.querySelectorAll("#publications .timeline-item.publication").forEach(it => {
       const a = it.querySelector('a[href*="doi.org/"]');
       const m = a && a.getAttribute("href").match(/doi\.org\/(.+)$/i);
@@ -1124,6 +1116,36 @@
       f("author", authorList(w).map(a => a.family + (a.given ? ", " + a.given : "")).join(" and ")) +
       f("title", w.title) + f("journal", w.journal) + f("year", w.year) + f("volume", w.volume) +
       f("number", w.issue) + f("pages", w.pages) + f("doi", w.doi) + "}";
+  }
+  // RIS: read by Zotero, Mendeley, EndNote and most reference managers
+  function ris(w) {
+    const L = [["TY", "JOUR"]];
+    authorList(w).forEach(a => L.push(["AU", a.family + (a.given ? ", " + a.given : "")]));
+    L.push(["TI", w.title], ["T2", w.journal], ["JO", w.journal], ["PY", w.year], ["VL", w.volume], ["IS", w.issue]);
+    const pg = String(w.pages || "").split(/[-–]/);
+    if (pg[0]) L.push(["SP", pg[0]]);
+    if (pg[1]) L.push(["EP", pg[1]]);
+    L.push(["DO", w.doi], ["UR", w.doi ? "https://doi.org/" + w.doi : ""]);
+    (w.keywords || []).forEach(k => L.push(["KW", k]));
+    return L.filter(([, v]) => v).map(([k, v]) => k + "  - " + v).join("\r\n") + "\r\nER  - \r\n";
+  }
+  // EndNote tagged format (.enw)
+  function enw(w) {
+    const L = [["%0", "Journal Article"]];
+    authorList(w).forEach(a => L.push(["%A", a.family + (a.given ? ", " + a.given : "")]));
+    L.push(["%T", w.title], ["%J", w.journal], ["%D", w.year], ["%V", w.volume], ["%N", w.issue], ["%P", w.pages],
+           ["%R", w.doi], ["%U", w.doi ? "https://doi.org/" + w.doi : ""]);
+    (w.keywords || []).forEach(k => L.push(["%K", k]));
+    return L.filter(([, v]) => v).map(([k, v]) => k + " " + v).join("\n") + "\n";
+  }
+  function exportCitation(w, kind) {
+    const f = { bib: [bibtex, "application/x-bibtex"], ris: [ris, "application/x-research-info-systems"], enw: [enw, "application/x-endnote-refer"] }[kind];
+    if (!f) return;
+    const name = (String(w.doi || "citation").replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "") || "citation") + "." + kind;
+    const url = URL.createObjectURL(new Blob([f[0](w)], { type: f[1] + ";charset=utf-8" }));
+    const a = document.createElement("a");
+    a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
   }
   function copyText(t) {
     if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(t).then(() => true, () => fallback());
