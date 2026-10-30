@@ -1,0 +1,59 @@
+{
+  "_help": "Extra details for the paper sheets in the Publications carousel, keyed by DOI (lower case): the journal logo (images/logos/), the authors with the keys of their affiliations, and the affiliations. Papers without an entry show the authors from the list and no affiliations.",
+  "10.1016/j.epsl.2026.120237": {
+    "logo": "images/logos/epsl.png",
+    "authors": [
+      { "name": "Gustavo P. Maia", "aff": ["a", "b"] },
+      { "name": "Laurent Remusat", "aff": ["b"] },
+      { "name": "Kana Amano", "aff": ["b", "c"] },
+      { "name": "Jean-Christophe Viennet", "aff": ["b"] },
+      { "name": "Jason P. Dworkin", "aff": ["d", "e", "f"] },
+      { "name": "Hannah L. McLain", "aff": ["d", "e", "f"] },
+      { "name": "José A. L. da Silva", "aff": ["a"] }
+    ],
+    "affiliations": [
+      { "key": "a", "text": "Centro de Química Estrutural, Institute of Molecular Sciences, Instituto Superior Técnico, University of Lisbon, Lisbon, Portugal" },
+      { "key": "b", "text": "Institut de Minéralogie, Physique des Matériaux et Cosmochimie, UMR CNRS 7590, Sorbonne Université, Muséum National d’Histoire Naturelle, Paris, France" },
+      { "key": "c", "text": "Institut d’Astrophysique Spatiale (IAS), Université Paris-Saclay, Orsay, France" },
+      { "key": "d", "text": "Solar System Exploration Division, NASA Goddard Space Flight Center, Greenbelt, USA" },
+      { "key": "e", "text": "Center for Space Science and Technology, University of Maryland Baltimore County, Baltimore, Maryland, USA" },
+      { "key": "f", "text": "Center for Research and Exploration in Space Science and Technology, NASA/GSFC, Greenbelt, MD, USA" }
+    ]
+  },
+  "10.3390/app15031363": {
+    "logo": "images/logos/applied_sciences.png",
+    "authors": [
+      { "name": "Gustavo P. Maia", "aff": ["1"] },
+      { "name": "Catarina Gonçalves", "aff": ["1"] },
+      { "name": "Ana J. Carvalho", "aff": ["1"] },
+      { "name": "Vânia André", "aff": ["1", "2"] },
+      { "name": "Adelino Galvão", "aff": ["1"] },
+      { "name": "Ana P. C. Ribeiro", "aff": ["1"] },
+      { "name": "Pedro F. Pinheiro", "aff": ["1"] },
+      { "name": "José Armando Luísa da Silva", "aff": ["1"] }
+    ],
+    "affiliations": [
+      { "key": "1", "text": "Centro de Química Estrutural, Institute of Molecular Sciences, Departamento de Engenharia Química, Instituto Superior Técnico, Universidade de Lisboa, Lisboa, Portugal" },
+      { "key": "2", "text": "Associação do Instituto Superior Técnico para a Investigação e Desenvolvimento (IST-ID), Lisboa, Portugal" }
+    ]
+  },
+  "10.3390/molecules28248006": {
+    "logo": "images/logos/molecules.png",
+    "authors": [
+      { "name": "Gustavo P. Maia", "aff": ["1"] },
+      { "name": "José Armando Luísa da Silva", "aff": ["1"] },
+      { "name": "Vânia André", "aff": ["1"] },
+      { "name": "Adelino M. Galvão", "aff": ["1"] }
+    ],
+    "affiliations": [
+      { "key": "1", "text": "Centro de Química Estrutural, Institute of Molecular Sciences, Departamento de Engenharia Química, Instituto Superior Técnico, Universidade de Lisboa, Lisboa, Portugal" }
+    ]
+  },
+  "10.52590/m3.p708.a30002745": {
+    "authors": [
+      { "name": "Ana Franco" },
+      { "name": "Gustavo P. Maia" },
+      { "name": "José Armando Luísa da Silva" }
+    ]
+  }
+}

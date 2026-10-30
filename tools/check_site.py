@@ -114,11 +114,11 @@ if blog is not None:
         for ref in [m[1] for m in REF.findall((post.get("body") or {}).get("en", ""))]:
             need_file(where, ref.split("#")[0])
 
-covers = load_json("data/paper-covers.json")
-if covers:
-    for doi, cv in covers.items():
+info = load_json("data/paper-info.json")
+if info:
+    for doi, rec in info.items():
         if not doi.startswith("_"):
-            need_file(f"data/paper-covers.json ({doi})", (cv or {}).get("src"))
+            need_file(f"data/paper-info.json ({doi})", (rec or {}).get("logo"))
 
 tree = load_json("data/tree.json")
 if tree is not None:
