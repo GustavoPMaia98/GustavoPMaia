@@ -2393,7 +2393,7 @@
       nav.appendChild(bar);
     }
 
-    [["#presentations .timeline", 4]].forEach(([sel, n]) => {
+    [].forEach(([sel, n]) => {                     // (lists now shown as timelines; kept for future lists)
       const tl = document.querySelector(sel);
       if (!tl || tl.dataset.collapse) return;
       const items = tl.querySelectorAll(":scope > .timeline-item");

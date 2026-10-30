@@ -1,12 +1,25 @@
 <!-- PRESENTATIONS -->
 <section class="section" id="presentations">
   <h2>Presentations</h2>
-  <p class="section-note" data-pt="Comunicações orais e em painel em encontros nacionais e internacionais de astrobiologia e química. Clique para expandir.">Oral and poster communications at national and international astrobiology and chemistry meetings. Click to expand.</p>
+  <p class="section-note" data-pt="Comunicações orais e em painel em encontros nacionais e internacionais de astrobiologia e química. Clique num passo para ler o resumo.">Oral and poster communications at national and international astrobiology and chemistry meetings. Click a step to read it.</p>
 
-  <div id="preso-filter" class="pub-filter"></div>
+  <div id="preso-filter" class="pub-filter" hidden></div>
 
-  <div class="timeline">
-  <!-- The items come from data/presentations.json -->
+  <!-- Timeline: one step per entry of data/presentations.json, oldest to newest, built by
+     render.js; arrows slide it, it opens on the newest entries. Clicking a step shows
+     that entry's text below (the cards themselves are not shown). -->
+<div class="path-wrap path-wrap--scroll reveal">
+  <button type="button" class="path-arrow path-arrow--prev" data-dir="-1" aria-label="Earlier"><i data-lucide="chevron-left"></i></button>
+  <div class="path-scroll">
+  <ol class="path path--scroll" aria-label="Presentations path">
+  <!--@path:presentations-->
+  </ol>
+  </div>
+  <button type="button" class="path-arrow path-arrow--next" data-dir="1" aria-label="Later"><i data-lucide="chevron-right"></i></button>
+  <div class="path-detail" aria-live="polite" hidden></div>
+</div>
+<!-- The entries come from data/presentations.json. Not shown as cards: the timeline shows them. -->
+<div class="timeline path-source" hidden>
   <!--@timeline:presentations-->
 </div>
 </section>

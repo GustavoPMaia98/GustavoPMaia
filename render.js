@@ -160,18 +160,32 @@
   // markup as the hand-written Education path. Each step opens its entry (found by
   // its details line, data-match); script.js puts the logo in and wires the clicks.
   const MONTHS = "jan feb mar apr may jun jul aug sep oct nov dec".split(" ");
+  // what the small label above each step says, per section
+  const PATH_KIND = {
+    experience: it => ({ kind: it.kind }),
+    presentations: it => ({ kind: BADGE[it.type] ? { en: BADGE[it.type][0], pt: BADGE[it.type][1] } : null }),
+    courses: (it, parts) => ({ kind: { en: parts.en[0], pt: parts.pt[0] }, drop: 0 })   // "Summer School", "Course", ...
+  };
   function pathSteps(data, section) {
     if (!data || !Array.isArray(data.items)) return "";
     const items = data.items.filter(it => it && !it.hidden && it.meta && it.meta.en).map(it => {
-      const parts = it.meta.en.split(/\s+·\s+/), i = parts.findIndex(p => /\b(19|20)\d{2}\b/.test(p));
+      const parts = it.meta.en.split(/\s+·\s+/);
+      const ptParts = String(it.meta.pt || "").split(/\s+·\s+/);
+      // the date: a part with a month or day and a year ("Aug 2026", "22–26 June 2026"), else any part with a year
+      const hasYear = p => /\b(19|20)\d{2}\b/.test(p);
+      let i = parts.findIndex(p => hasYear(p) && /^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|\d{1,2}[\s–-])/i.test(p));
+      if (i < 0) i = parts.findIndex(hasYear);
       const when = i >= 0 ? parts[i] : "";
       const y = +(when.match(/\b(19|20)\d{2}\b/) || [0])[0];
-      const mo = MONTHS.indexOf(when.slice(0, 3).toLowerCase()) + 1;
-      const rest = t => { const q = String(t || "").split(/\s+·\s+/); return (q.length === parts.length ? q.filter((_, j) => j !== i) : []).join(" · "); };
-      return { it, y, sort: y * 100 + mo, org: { en: rest(it.meta.en), pt: rest(it.meta.pt) } };
+      const mo = MONTHS.indexOf((when.match(/[a-z]{3,}/i) || [""])[0].slice(0, 3).toLowerCase()) + 1;
+      const k = (PATH_KIND[section] || PATH_KIND.experience)(it, { en: parts, pt: ptParts.length === parts.length ? ptParts : parts });
+      // the place / organisation line: the details without the date (and without the kind, when the kind is one of them)
+      const keep = (q, j) => j !== (/^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|\d{1,2}[\s–-])/i.test(when) ? i : -1) && j !== k.drop;
+      const rest = t => { const q = String(t || "").split(/\s+·\s+/); return (q.length === parts.length ? q.filter(keep) : []).join(" · "); };
+      return { it, y, sort: y * 100 + mo, kind: k.kind, org: { en: rest(it.meta.en), pt: rest(it.meta.pt) } };
     }).sort((a, b) => a.sort - b.sort);
-    return items.map(({ it, y, org }) => {
-      const t = it.title || {}, k = it.kind || {};
+    return items.map(({ it, y, kind, org }) => {
+      const t = it.title || {}, k = kind || {};
       const now = /present|ongoing/i.test(it.meta.en);
       return '<li class="path-step' + (now ? " path-now" : "") + '">' +
         '<button type="button" class="path-btn" data-section="' + section + '" data-match="' + attr(it.meta.en) + '" aria-pressed="false">' +
@@ -215,7 +229,9 @@
     Object.keys(TIMELINES).forEach(name => {
       html = html.replace("<!--@timeline:" + name + "-->", () => timeline(data[name], TIMELINES[name]));
     });
-    html = html.replace("<!--@path:experience-->", () => pathSteps(data.experience, "experience"));
+    ["experience", "presentations", "courses"].forEach(name => {
+      html = html.replace("<!--@path:" + name + "-->", () => pathSteps(data[name], name));
+    });
     return updatedLabels(html, data.updated);
   }
 

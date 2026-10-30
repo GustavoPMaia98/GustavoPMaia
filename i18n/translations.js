@@ -454,7 +454,7 @@ window.TR.fr = {
   "A training session organised by the Library of Instituto Superior Técnico (BIST) on best practices for publishing in international peer-reviewed journals, covering journal selection, manuscript structuring, and the submission and peer-review process. Held by videoconference on 13 February 2025.": "Une session de formation organisée par la Bibliothèque de l'Instituto Superior Técnico (BIST) sur les bonnes pratiques de publication dans les revues internationales à comité de lecture, couvrant le choix de la revue, la structuration du manuscrit et le processus de soumission et d'évaluation par les pairs. Tenue en visioconférence le 13 février 2025.",
 
   // ---- Presentations ----
-  "Oral and poster communications at national and international astrobiology and chemistry meetings. Click to expand.": "Communications orales et posters lors de congrès nationaux et internationaux d'astrobiologie et de chimie. Cliquez pour développer.",
+  "Oral and poster communications at national and international astrobiology and chemistry meetings. Click a step to read it.": "Communications orales et posters lors de congrès nationaux et internationaux d'astrobiologie et de chimie. Cliquez sur une étape pour la lire.",
   "Effect of Mechanochemistry on Organic Matter: Implications for Impact Gardening on Asteroid Surfaces": "Effet de la mécanochimie sur la matière organique : implications pour le remaniement de surface par impacts (impact gardening) des astéroïdes",
   "Oral talk · Maia, Remusat, Amano, Viennet, Dworkin, McLain &amp; da Silva": "Communication orale · Maia, Remusat, Amano, Viennet, Dworkin, McLain &amp; da Silva",
   "Oral talk at the 88th Meeting of the Meteoritical Society (MetSoc 2026, Frankfurt), in the Organics &amp; Ices session. Ball-milling and grinding of hexamethylenetetramine (HMT), with Na-montmorillonite serve as an analogue for the repeated impacts of asteroid gardening. High-energy milling disrupts the clay structure and drives HMT into a diverse suite of new organics (pyrazine, triazine/triazinane derivatives, and oxygen-bearing nitrogen species) even without liquid water, while gentler grinding intercalates HMT-like molecules into the clay interlayers, protecting them. Impact events thus both transform and preserve extraterrestrial organic matter.": "Communication orale à la 88ᵉ Réunion de la Meteoritical Society (MetSoc 2026, Francfort), session Organics &amp; Ices. Le broyage par impact et le broyage doux d'hexaméthylènetétramine (HMT), avec de la montmorillonite sodique servent d'analogue aux impacts répétés du remaniement de surface des astéroïdes (asteroid gardening). Le broyage à haute énergie désorganise la structure de l'argile et transforme la HMT en une variété de nouvelles espèces organiques (pyrazine, dérivés de triazine/triazinane et espèces azotées oxygénées) même en l'absence d'eau liquide, tandis qu'un broyage plus doux intercale des molécules de type HMT entre les feuillets de l'argile, les protégeant. Les événements d'impact transforment et préservent ainsi la matière organique extraterrestre.",
@@ -952,7 +952,7 @@ window.TR.ja = {
   "A training session organised by the Library of Instituto Superior Técnico (BIST) on best practices for publishing in international peer-reviewed journals, covering journal selection, manuscript structuring, and the submission and peer-review process. Held by videoconference on 13 February 2025.": "Instituto Superior Técnico図書館（BIST）が主催した、国際的な査読付き学術誌での出版のベストプラクティスに関する研修で、投稿先の選定、原稿の構成、投稿と査読の過程を扱いました。2025年2月13日にビデオ会議で開催されました。",
 
   // ---- Presentations ----
-  "Oral and poster communications at national and international astrobiology and chemistry meetings. Click to expand.": "国内外のアストロバイオロジー・化学の学会での口頭発表とポスター発表です。クリックで展開します。",
+  "Oral and poster communications at national and international astrobiology and chemistry meetings. Click a step to read it.": "国内外のアストロバイオロジー・化学の学会での口頭発表とポスター発表です。各項目をクリックすると内容が表示されます。",
   "Effect of Mechanochemistry on Organic Matter: Implications for Impact Gardening on Asteroid Surfaces": "有機物に対するメカノケミストリーの影響：小惑星表面のインパクト・ガーデニングへの示唆",
   "Oral talk · Maia, Remusat, Amano, Viennet, Dworkin, McLain &amp; da Silva": "口頭発表 · Maia, Remusat, Amano, Viennet, Dworkin, McLain &amp; da Silva",
   "Oral talk at the 88th Meeting of the Meteoritical Society (MetSoc 2026, Frankfurt), in the Organics &amp; Ices session. Ball-milling and grinding of hexamethylenetetramine (HMT), with Na-montmorillonite serve as an analogue for the repeated impacts of asteroid gardening. High-energy milling disrupts the clay structure and drives HMT into a diverse suite of new organics (pyrazine, triazine/triazinane derivatives, and oxygen-bearing nitrogen species) even without liquid water, while gentler grinding intercalates HMT-like molecules into the clay interlayers, protecting them. Impact events thus both transform and preserve extraterrestrial organic matter.": "第88回メテオリティカル・ソサエティ大会（MetSoc 2026、フランクフルト）のOrganics &amp; Icesセッションでの口頭発表。ヘキサメチレンテトラミン（HMT）とナトリウム型モンモリロナイトのボールミル粉砕と磨砕は、小惑星のインパクト・ガーデニングにおける繰り返しの衝突の類似モデルとなる。高エネルギーの粉砕は粘土構造を破壊し、液体の水がなくてもHMTを多様な新規有機物（ピラジン、トリアジン／トリアジナン誘導体、酸素を含む窒素化学種）へと変化させる一方、より穏やかな磨砕はHMT様分子を粘土層間に取り込み保護する。したがって衝突イベントは地球外有機物を変化させると同時に保存する。",
@@ -1262,6 +1262,9 @@ Object.assign(window.TR.ja, {
 /* ---- Added Sept 2026 (site refresh): toolbar, news list, experience, skills ---- */
 Object.assign(window.TR.fr, {
   "Research": "Recherche",
+  "Excellent Teachers 2024/2025 · Excellence in Teaching": "Enseignants d’excellence 2024/2025 · Excellence dans l’enseignement",
+  "Pedagogical Council · Instituto Superior Técnico, Universidade de Lisboa": "Conseil pédagogique · Instituto Superior Técnico, Universidade de Lisboa",
+  "Diploma of teaching excellence for teaching General Chemistry (LEAN; LEAer21) in the 2024/2025 academic year.": "Diplôme d’excellence pédagogique pour l’enseignement de la Chimie générale (LEAN ; LEAer21) au cours de l’année universitaire 2024/2025.",
   "Teaching": "Enseignement",
   "Industry": "Industrie",
   "Robotics": "Robotique",
@@ -1279,6 +1282,9 @@ Object.assign(window.TR.fr, {
 });
 Object.assign(window.TR.ja, {
   "Research": "研究",
+  "Excellent Teachers 2024/2025 · Excellence in Teaching": "2024/2025年度 優秀教員 · 教育優秀賞",
+  "Pedagogical Council · Instituto Superior Técnico, Universidade de Lisboa": "リスボン大学 高等工科大学（IST）教育評議会",
+  "Diploma of teaching excellence for teaching General Chemistry (LEAN; LEAer21) in the 2024/2025 academic year.": "2024/2025年度の一般化学（LEAN; LEAer21）の授業における教育優秀賞の表彰状。",
   "Teaching": "教育",
   "Industry": "産業",
   "Robotics": "ロボット工学",

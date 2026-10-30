@@ -3,8 +3,21 @@
 
 <h2>Courses &amp; Formations</h2>
 <p class="section-note" data-pt="Escolas de formação e cursos especializados que complementam a minha investigação.">Training schools and specialised courses that complement my research.</p>
-<div class="timeline">
-  <!-- The items come from data/courses.json -->
+<!-- Timeline: one step per entry of data/courses.json, oldest to newest, built by
+     render.js; arrows slide it, it opens on the newest entries. Clicking a step shows
+     that entry's text below (the cards themselves are not shown). -->
+<div class="path-wrap path-wrap--scroll reveal">
+  <button type="button" class="path-arrow path-arrow--prev" data-dir="-1" aria-label="Earlier"><i data-lucide="chevron-left"></i></button>
+  <div class="path-scroll">
+  <ol class="path path--scroll" aria-label="Courses path">
+  <!--@path:courses-->
+  </ol>
+  </div>
+  <button type="button" class="path-arrow path-arrow--next" data-dir="1" aria-label="Later"><i data-lucide="chevron-right"></i></button>
+  <div class="path-detail" aria-live="polite" hidden></div>
+</div>
+<!-- The entries come from data/courses.json. Not shown as cards: the timeline shows them. -->
+<div class="timeline path-source" hidden>
   <!--@timeline:courses-->
 </div>
 </section>
