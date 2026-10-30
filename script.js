@@ -2475,6 +2475,23 @@
     } catch (e) { /* unreadable image: keep the default tile */ }
   }
 
+  // Slide a horizontal track to a position with an ease-out curve (the same in every
+  // browser, unlike smooth scrolling, which some skip or do abruptly)
+  function glide(track, to) {
+    to = Math.max(0, Math.min(track.scrollWidth - track.clientWidth, to));
+    if (track._glide) cancelAnimationFrame(track._glide);
+    const from = track.scrollLeft, d = to - from;
+    if (prefersReduced || Math.abs(d) < 2) { track.scrollLeft = to; return; }
+    const dur = Math.min(900, 420 + Math.abs(d) * 0.35), t0 = performance.now();
+    const ease = x => 1 - Math.pow(1 - x, 3);
+    const step = now => {
+      const k = Math.min(1, (now - t0) / dur);
+      track.scrollLeft = from + d * ease(k);
+      track._glide = k < 1 ? requestAnimationFrame(step) : 0;
+    };
+    track._glide = requestAnimationFrame(step);
+  }
+
   // Career paths (Education, Experience): each .path-wrap holds a row of steps and a
   // panel. A step opens the text of its entry (a card kept hidden in .path-source).
   const pathLangUpdates = [], pathFinders = [];
@@ -2504,6 +2521,15 @@
                     experience: { en: "Open in Experience", pt: "Abrir em Experiência", fr: "Ouvrir dans Expérience", ja: "職歴で開く" } };
     let current = null;
     function show(btn) {
+      const from = panel.hidden ? 0 : panel.offsetHeight;
+      requestAnimationFrame(() => {                  // the panel grows or shrinks to its new text
+        if (prefersReduced || panel.hidden || !panel.animate) return;
+        const to = panel.offsetHeight;
+        if (Math.abs(to - from) < 2) return;
+        panel.style.overflow = "hidden";
+        panel.animate([{ height: from + "px" }, { height: to + "px" }], { duration: 380, easing: "cubic-bezier(.22,.61,.36,1)" })
+          .onfinish = () => { panel.style.overflow = ""; };
+      });
       current = btn;
       steps.forEach(b => b.setAttribute("aria-pressed", String(b === btn)));
       const it = target(btn);
@@ -2562,20 +2588,26 @@
     steps.forEach((b, i) => {
       b.addEventListener("click", () => {        // a second click on the open step closes it
         if (current === b && !panel.hidden) { hide(); return; }
-        show(b); reveal();
+        show(b); reveal(); bringIntoTrack(b, true);
       });
       b.addEventListener("keydown", e => {         // arrow keys move along the path
         const d = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
         if (!d) return;
         e.preventDefault();
         const n = steps[(i + d + steps.length) % steps.length];
-        n.focus(); show(n);
+        n.focus(); show(n); bringIntoTrack(n, true);
       });
     });
     function hide() {
       current = null;
       steps.forEach(b => b.setAttribute("aria-pressed", "false"));
-      panel.hidden = true; panel.innerHTML = "";
+      const from = panel.offsetHeight;
+      if (prefersReduced || !from || !panel.animate) { panel.hidden = true; panel.innerHTML = ""; return; }
+      panel.style.overflow = "hidden";
+      panel.animate([{ height: from + "px", opacity: 1 }, { height: "0px", opacity: 0, marginTop: "0px", paddingTop: "0px" }],
+                    { duration: 320, easing: "cubic-bezier(.22,.61,.36,1)" }).onfinish = () => {
+        panel.style.overflow = ""; if (!current) { panel.hidden = true; panel.innerHTML = ""; }
+      };
     }
     pathLangUpdates.push(() => { if (current) show(current); });
     pathFinders.push({ wrap, open: it => {
@@ -2589,10 +2621,12 @@
     // path opens on its newest end
     const track = wrap.querySelector(".path-scroll");
     const arrows = Array.from(wrap.querySelectorAll(".path-arrow"));
-    function bringIntoTrack(b) {
+    // slide a step to the middle of the track (always when clicked; on focus only if hidden)
+    function bringIntoTrack(b, always) {
       if (!track) return;
       const t = track.getBoundingClientRect(), r = b.getBoundingClientRect();
-      if (r.left < t.left || r.right > t.right) track.scrollLeft += (r.left + r.width / 2) - (t.left + t.width / 2);
+      if (!always && r.left >= t.left && r.right <= t.right) return;
+      glide(track, track.scrollLeft + (r.left + r.width / 2) - (t.left + t.width / 2));
     }
     if (track) {
       const vertical = () => track.scrollWidth <= track.clientWidth + 1;
@@ -2604,7 +2638,7 @@
         });
       };
       arrows.forEach(a => a.addEventListener("click", () => {
-        track.scrollBy({ left: +a.dataset.dir * track.clientWidth * 0.8, behavior: prefersReduced ? "auto" : "smooth" });
+        glide(track, track.scrollLeft + +a.dataset.dir * track.clientWidth * 0.8);
       }));
       track.addEventListener("scroll", sync, { passive: true });
       addEventListener("resize", sync, { passive: true });
@@ -2626,6 +2660,33 @@
     io.observe(path);
   }
 
+  // ============================================================
+  //  RAILS — a row of cards that slides sideways (Awards), with arrows
+  //  when the cards do not all fit
+  // ============================================================
+  function setupRails() {
+    document.querySelectorAll(".rail").forEach(rail => {
+      if (rail.dataset.wired) return;
+      rail.dataset.wired = "1";
+      const track = rail.querySelector(".rail-track"), arrows = Array.from(rail.querySelectorAll(".rail-arrow"));
+      if (!track) return;
+      const sync = () => {
+        const max = track.scrollWidth - track.clientWidth, fits = max <= 2;
+        rail.classList.toggle("rail--fits", fits);
+        arrows.forEach(a => { a.hidden = fits; a.disabled = a.dataset.dir === "-1" ? track.scrollLeft <= 2 : track.scrollLeft >= max - 2; });
+      };
+      arrows.forEach(a => a.addEventListener("click", () => {
+        const card = track.querySelector(".award-card, .rail-item");
+        const step = card ? card.getBoundingClientRect().width + 24 : track.clientWidth * 0.8;
+        glide(track, track.scrollLeft + +a.dataset.dir * Math.max(step, Math.floor(track.clientWidth / step) * step));
+      }));
+      track.addEventListener("scroll", sync, { passive: true });
+      addEventListener("resize", sync, { passive: true });
+      if ("ResizeObserver" in window) new ResizeObserver(sync).observe(track);
+      sync();
+    });
+  }
+
   function init() {
     initStarfield();
     initNav();
@@ -2642,6 +2703,7 @@
     setupNewsList();
     setupPhoneHelpers();
     setupCareerPath();
+    setupRails();
     setupHighlightModal();
     setupTechModal();
     setupThemeToggle();

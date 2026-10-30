@@ -3,7 +3,11 @@
   <h2>Awards</h2>
   <p class="section-note" data-pt="Reconhecimentos e distinções ao longo do percurso. Clique num certificado para o ver em detalhe.">Recognitions and distinctions along the way. Click a certificate to view it in full.</p>
 
-  <div class="awards-grid reveal">
+  <!-- One row of awards that slides sideways; the arrows show when they do not all fit -->
+  <div class="rail reveal">
+  <button type="button" class="rail-arrow rail-arrow--prev" data-dir="-1" aria-label="Previous awards"><i data-lucide="chevron-left"></i></button>
+  <div class="rail-track" tabindex="0" role="region" aria-label="Awards">
+  <div class="awards-grid">
 
     <article class="award-card">
       <div class="award-cert">
@@ -57,5 +61,8 @@
       </div>
     </article>
 
+  </div>
+  </div>
+  <button type="button" class="rail-arrow rail-arrow--next" data-dir="1" aria-label="Next awards"><i data-lucide="chevron-right"></i></button>
   </div>
 </section>

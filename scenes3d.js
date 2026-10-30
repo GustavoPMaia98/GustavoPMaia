@@ -328,20 +328,20 @@ async function startSpace() {
   let mx = 0, my = 0, clock = 0;
   if (!PHONE) addEventListener("pointermove", e => { mx = e.clientX / innerWidth - 0.5; my = e.clientY / innerHeight - 0.5; }, { passive: true });
   // scrolling: read once per scroll event (no layout work inside the frame) and eased
-  // towards in the frame, so the sky glides instead of jumping with the page
-  let scrollTarget = 0, scrollMax = 1, scrollNow = 0;
+  // towards in the frame, so the sky glides with the page. Big jumps (the browser
+  // restoring the scroll position on reload, a link to a section) and the first
+  // seconds are followed at once, so the sky never races to catch up.
+  let scrollTarget = 0, scrollNow = 0;
   const readScroll = () => { scrollTarget = scrollY; };
-  const readMax = () => { scrollMax = Math.max(1, document.documentElement.scrollHeight - innerHeight); };
   addEventListener("scroll", readScroll, { passive: true });
-  addEventListener("resize", readMax, { passive: true });
-  addEventListener("load", readMax);
-  setInterval(readMax, 4000);                        // sections load later and change the page height
-  readScroll(); readMax(); scrollNow = scrollTarget;
+  readScroll(); scrollNow = scrollTarget;
   let lastT = 0;
   function draw(t) {
     const dt = Math.min(0.05, Math.max(0, t - lastT)); lastT = t;
-    scrollNow += (scrollTarget - scrollNow) * (1 - Math.exp(-dt * 4));
-    const sc = scrollNow / scrollMax;
+    const gap = scrollTarget - scrollNow;
+    if (t < 3 || Math.abs(gap) > innerHeight * 1.5) scrollNow = scrollTarget;
+    else scrollNow += gap * (1 - Math.exp(-dt * 4));
+    const sc = scrollNow / 9000;                     // the sky turns a little with the page, in pixels, not page fractions
     skyRig.rotation.set(0.0006 * t * 0.3 + sc * 0.12 - my * 0.02, 0.0009 * t + sc * 0.35 - mx * 0.03, 0);   // the sky turns slowly
     near.rotation.set(skyRig.rotation.x * 0.3, skyRig.rotation.y * 0.3, 0);
     U.uTravel.value = t * 3.2 + scrollNow * 0.06;    // drifting forward, faster while scrolling

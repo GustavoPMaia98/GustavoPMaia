@@ -1058,3 +1058,35 @@ html.space-pending body, html.has-space3d body{ background:#02040a; }
 .has-space3d .hl-card, .has-space3d .news-card{ background:linear-gradient(165deg, rgba(20,30,52,.82), rgba(10,16,30,.78)); }
 /* links inside running text: underlined, not told apart by colour alone */
 .section-note a{ text-decoration:underline; text-underline-offset:2px; text-decoration-thickness:1px; }
+
+/* the text under a timeline opens and closes smoothly (script.js animates its height) */
+.path-detail{ box-sizing:border-box; }
+
+/* Awards: one row that slides sideways, never wrapping below */
+.rail{ position:relative; }
+.rail-track{ overflow-x:auto; scrollbar-width:none; overscroll-behavior-x:contain;
+  margin:0 46px; padding:8px 2px 26px;
+  -webkit-mask-image:linear-gradient(90deg, transparent, #000 18px, #000 calc(100% - 18px), transparent);
+          mask-image:linear-gradient(90deg, transparent, #000 18px, #000 calc(100% - 18px), transparent); }
+.rail-track::-webkit-scrollbar{ display:none; }
+.rail .awards-grid{ display:flex; gap:24px; width:max-content; }
+.rail .award-card{ flex:0 0 clamp(270px, 28vw, 340px); scroll-snap-align:start; }
+.rail--fits .rail-track{ margin:0; -webkit-mask-image:none; mask-image:none; }
+.rail--fits .awards-grid{ width:auto; justify-content:center; }
+.rail-arrow{
+  position:absolute; z-index:3; top:calc(50% - 30px); width:38px; height:38px; display:grid; place-items:center; cursor:pointer;
+  color:var(--accent); background:var(--card); border:1px solid color-mix(in srgb, var(--accent) 40%, transparent); border-radius:50%;
+  box-shadow:0 4px 12px rgba(2,8,23,.25);
+}
+.rail-arrow--prev{ left:0; } .rail-arrow--next{ right:0; }
+.rail-arrow:disabled{ opacity:.3; cursor:default; }
+.rail-arrow[hidden]{ display:none; }
+.rail-arrow svg{ width:19px; height:19px; }
+.rail-arrow:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+@media (max-width:760px){
+  .rail-track{ margin:0 34px; }
+  .rail .award-card{ flex-basis:calc(100vw - 120px); }
+  .rail-arrow{ width:32px; height:32px; }
+}
+@media (hover:none){ .rail-track{ scroll-snap-type:x proximity; } }
+.rail-track:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:12px; }
