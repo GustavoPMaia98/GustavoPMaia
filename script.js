@@ -771,6 +771,7 @@
       enrichPublications(db);
       updateMetrics(db);
       applyLang();                       // translate the labels added above
+      setupPubCarousel();
       return;
     }
 
@@ -781,6 +782,171 @@
     buildPublicationFilter();
     decoratePublications();
     updateMetrics();
+    setupPubCarousel();
+  }
+
+  // ============================================================
+  //  PUBLICATIONS — a 3D carousel of floating front pages
+  //  Each paper is drawn as the first page of an article (journal, title, authors,
+  //  abstract), floating in 3D. The axis below is the timeline (newest on the
+  //  left). Clicking the page in front shows its abstract, keywords and citation
+  //  tools; the list of cards stays in the page, hidden, as the source.
+  // ============================================================
+  let pubCarousel = null;
+  const PUB_TXT = {
+    en: { abs: "Abstract", art: "Research article", open: "Click to read the abstract", prev: "Newer paper", next: "Older paper" },
+    pt: { abs: "Resumo", art: "Artigo científico", open: "Clique para ler o resumo", prev: "Artigo mais recente", next: "Artigo anterior" },
+    fr: { abs: "Résumé", art: "Article de recherche", open: "Cliquez pour lire le résumé", prev: "Article plus récent", next: "Article plus ancien" },
+    ja: { abs: "要旨", art: "研究論文", open: "クリックで要旨を表示", prev: "新しい論文", next: "古い論文" }
+  };
+  function setupPubCarousel() {
+    const sec = document.getElementById("publications");
+    const list = sec && sec.querySelector(".timeline");
+    if (!list) return;
+    const items = Array.from(list.querySelectorAll(".timeline-item.publication"));   // newest first
+    if (!items.length) return;
+    let stage = sec.querySelector(".pub3d");
+    if (!stage) {
+      stage = document.createElement("div");
+      stage.className = "pub3d";
+      stage.innerHTML =
+        '<button type="button" class="pub3d-arrow pub3d-arrow--prev" data-dir="-1"><i data-lucide="chevron-left"></i></button>' +
+        '<div class="pub3d-stage" tabindex="0"><div class="pub3d-ring"></div></div>' +
+        '<button type="button" class="pub3d-arrow pub3d-arrow--next" data-dir="1"><i data-lucide="chevron-right"></i></button>' +
+        '<ol class="pub3d-axis"></ol><p class="pub3d-hint"></p>' +
+        '<div class="pub3d-detail" aria-live="polite" hidden></div>';
+      list.parentNode.insertBefore(stage, list);
+    }
+    list.classList.add("pub-source");
+    list.hidden = true;
+    const filter = document.getElementById("pub-filter");
+    if (filter) filter.hidden = true;                // the axis below replaces the year filter
+
+    const ring = stage.querySelector(".pub3d-ring"), axis = stage.querySelector(".pub3d-axis");
+    const detail = stage.querySelector(".pub3d-detail"), hint = stage.querySelector(".pub3d-hint");
+    const T = () => PUB_TXT[currentLang] || PUB_TXT.en;
+    const txt = (it, sel) => { const e = it.querySelector(sel); return e ? e.textContent.replace(/\s+/g, " ").trim() : ""; };
+    const hue = s => { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) % 360; return h; };
+    const info = it => {
+      const meta = txt(it, ".timeline-header .meta").split(/\s+·\s+/);
+      const absP = Array.from(it.querySelectorAll(".expand-body > p")).find(p => !p.querySelector('a[href*="doi.org/"]'));
+      const a = it.querySelector('.expand-body a[href*="doi.org/"]');
+      return { title: txt(it, ".timeline-header strong"), authors: meta[0] || "", year: it.dataset.year || meta[1] || "",
+               journal: meta.slice(2).join(" · "), abs: absP ? absP.textContent.trim() : "",
+               doi: a ? a.getAttribute("href").replace(/^https?:\/\/(dx\.)?doi\.org\//i, "") : "" };
+    };
+    let active = 0, openIdx = -1;
+    function render() {
+      const t = T();
+      ring.innerHTML = items.map((it, i) => {
+        const p = info(it);
+        const authors = escapeHtml(p.authors).replace(/(Gustavo\s+(?:P\.|Pinho)\s+Maia)/, "<b>$1</b>");
+        return '<button type="button" class="pub-page" data-i="' + i + '" style="--i:' + i + ";--hue:" + hue(p.journal) + '">' +
+          '<span class="pub-float"><span class="pub-sheet">' +
+            '<span class="pub-sheet-band"><span class="pub-sheet-journal">' + escapeHtml(p.journal) + '</span><span class="pub-sheet-year">' + escapeHtml(p.year) + "</span></span>" +
+            '<span class="pub-sheet-kind">' + escapeHtml(t.art) + "</span>" +
+            '<span class="pub-sheet-title">' + escapeHtml(p.title) + "</span>" +
+            '<span class="pub-sheet-authors">' + authors + "</span>" +
+            '<span class="pub-sheet-rule"></span>' +
+            '<span class="pub-sheet-abs-h">' + escapeHtml(t.abs) + "</span>" +
+            '<span class="pub-sheet-abs">' + escapeHtml(p.abs) + "</span>" +
+            (p.doi ? '<span class="pub-sheet-doi">https://doi.org/' + escapeHtml(p.doi) + "</span>" : "") +
+          "</span></span><span class=\"pub-shadow\" aria-hidden=\"true\"></span></button>";
+      }).join("");
+      axis.innerHTML = items.map((it, i) =>
+        '<li><button type="button" class="pub3d-dot" data-i="' + i + '"><span class="pub3d-dot-mark"></span><span class="pub3d-dot-year">' +
+        escapeHtml(info(it).year) + "</span></button></li>").join("");
+      hint.textContent = t.open;
+      stage.querySelector(".pub3d-arrow--prev").setAttribute("aria-label", t.prev);
+      stage.querySelector(".pub3d-arrow--next").setAttribute("aria-label", t.next);
+      ring.querySelectorAll(".pub-page").forEach((b, i) => b.setAttribute("aria-label", info(items[i]).title + " (" + info(items[i]).year + ")"));
+      place();
+      if (openIdx >= 0) showDetail(openIdx);
+    }
+    function place() {
+      ring.querySelectorAll(".pub-page").forEach((b, i) => {
+        const d = i - active, ad = Math.abs(d);
+        b.style.setProperty("--d", d); b.style.setProperty("--ad", ad);
+        b.classList.toggle("is-active", d === 0);
+        b.classList.toggle("is-far", ad > 2);
+        b.tabIndex = d === 0 ? 0 : -1;
+        b.setAttribute("aria-current", String(d === 0));
+      });
+      axis.querySelectorAll(".pub3d-dot").forEach((b, i) => b.setAttribute("aria-current", String(i === active)));
+      stage.querySelector(".pub3d-arrow--prev").disabled = active === 0;
+      stage.querySelector(".pub3d-arrow--next").disabled = active === items.length - 1;
+    }
+    function go(i) {
+      i = Math.max(0, Math.min(items.length - 1, i));
+      if (i !== active) { active = i; place(); if (openIdx >= 0 && openIdx !== i) hideDetail(); }
+    }
+    function showDetail(i) {
+      const it = items[i], p = info(it);
+      openIdx = i;
+      const cites = it.querySelector(".pub-cites");
+      detail.innerHTML = '<div class="pub3d-detail-head"><span class="pub3d-detail-title"></span><span class="pub3d-detail-meta"></span>' +
+        (cites ? '<span class="pub3d-detail-cites">' + cites.innerHTML + "</span>" : "") + "</div>" +
+        '<div class="pub3d-detail-body expand-body">' + (it.querySelector(".expand-body") || {}).innerHTML + "</div>";
+      detail.querySelector(".pub3d-detail-title").textContent = p.title;
+      detail.querySelector(".pub3d-detail-meta").textContent = [p.authors, p.year, p.journal].filter(Boolean).join(" · ");
+      detail.hidden = false;
+      ring.querySelectorAll(".pub-page").forEach((b, j) => b.setAttribute("aria-expanded", String(j === i)));
+      if (window.lucide && lucide.createIcons) try { lucide.createIcons(); } catch (e) {}
+    }
+    function hideDetail() {
+      openIdx = -1; detail.hidden = true; detail.innerHTML = "";
+      ring.querySelectorAll(".pub-page").forEach(b => b.setAttribute("aria-expanded", "false"));
+    }
+    if (!stage.dataset.wired) {
+      stage.dataset.wired = "1";
+      ring.addEventListener("click", e => {
+        const b = e.target.closest(".pub-page");
+        if (!b) return;
+        const i = +b.dataset.i;
+        if (i !== active) { go(i); return; }               // a side page comes to the front first
+        if (openIdx === i) hideDetail(); else showDetail(i);
+      });
+      axis.addEventListener("click", e => { const b = e.target.closest(".pub3d-dot"); if (b) { go(+b.dataset.i); } });
+      stage.querySelectorAll(".pub3d-arrow").forEach(a => a.addEventListener("click", () => go(active + +a.dataset.dir)));
+      stage.querySelector(".pub3d-stage").addEventListener("keydown", e => {
+        const d = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
+        if (!d) return;
+        e.preventDefault(); go(active + d);
+        const f = ring.querySelector(".pub-page.is-active"); if (f) f.focus();
+      });
+      // swipe on touch screens
+      let x0 = null;
+      stage.addEventListener("pointerdown", e => { x0 = e.clientX; }, { passive: true });
+      stage.addEventListener("pointerup", e => {
+        if (x0 == null) return;
+        const dx = e.clientX - x0; x0 = null;
+        if (Math.abs(dx) > 45) go(active + (dx < 0 ? 1 : -1));
+      }, { passive: true });
+      // the citation buttons in the panel use the paper's own (hidden) buttons
+      detail.addEventListener("click", e => {
+        const b = e.target.closest("[data-cite]");
+        if (!b || openIdx < 0) return;
+        e.stopPropagation();
+        const own = items[openIdx].querySelector('.pub-tools [data-cite="' + b.dataset.cite + '"]');
+        if (!own) return;
+        own.click();
+        setTimeout(() => {
+          const src = items[openIdx] && items[openIdx].querySelector(".pub-tool-done"), dst = detail.querySelector(".pub-tool-done");
+          if (src && dst) { dst.textContent = src.textContent; setTimeout(() => { dst.textContent = ""; }, 2000); }
+        }, 120);
+      });
+      pathLangUpdates.push(render);
+      pathFinders.push({ wrap: stage, open: it => {
+        const i = items.indexOf(it);
+        if (i < 0) return false;
+        go(i); showDetail(i);
+        stage.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "start" });
+        return true;
+      } });
+    }
+    render();
+    if (window.lucide && lucide.createIcons) try { lucide.createIcons(); } catch (e) {}
+    pubCarousel = { open: it => pathFinders.some(f => f.wrap === stage && f.open(it)) };
   }
 
   // ---- Citation counts, free PDF links and a "Cite" button, from the nightly
@@ -1598,6 +1764,7 @@
       const m = a.getAttribute("href").match(/doi\.org\/(.+)$/i);
       if (m && decodeURIComponent(m[1]).trim().toLowerCase() === norm) target = a.closest(".timeline-item");
     });
+    if (target && pubCarousel && pubCarousel.open(target)) return;   // shown in the 3D carousel
     const sec = document.getElementById("publications");
     if (sec) window.scrollTo({ top: sec.getBoundingClientRect().top + window.scrollY - 76, behavior: "smooth" });
     if (target) {

@@ -723,8 +723,8 @@
     const item = el.classList && el.classList.contains("timeline-item")
       ? el
       : (el.closest ? el.closest(".timeline-item") : null);
-    // Education and Experience entries are shown in their paths, not as cards
-    if (item && item.closest(".path-source") && window.SiteApp && window.SiteApp.showPathFor &&
+    // Education/Experience entries are shown in their paths, papers in the 3D carousel
+    if (item && item.closest(".path-source, .pub-source") && window.SiteApp && window.SiteApp.showPathFor &&
         window.SiteApp.showPathFor(item)) return;
     const target = item || el;
     if (item) {
