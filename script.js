@@ -153,7 +153,7 @@
     }
 
     function frame(t) {
-      // the 3D dust disk (scenes3d.js) replaces this star field when WebGL works
+      // the 3D universe (scenes3d.js) replaces this star field in the dark theme
       if (document.documentElement.classList.contains("has-space3d")) { raf = null; return; }
       const dt = Math.min((t - last) / 1000, 0.05) || 0;
       last = t;
@@ -181,6 +181,8 @@
     document.addEventListener("visibilitychange", () => {
       if (document.hidden) stop(); else start();
     });
+    // scenes3d.js hands the background back (light theme): run again
+    window.addEventListener("site:starfield", () => { size(); start(); });
 
     size();
     if (prefersReduced) drawStars(false, 0); else start();
@@ -794,10 +796,10 @@
   // ============================================================
   let pubCarousel = null;
   const PUB_TXT = {
-    en: { abs: "Abstract", art: "Research article", open: "Click to read the abstract", prev: "Newer paper", next: "Older paper" },
-    pt: { abs: "Resumo", art: "Artigo científico", open: "Clique para ler o resumo", prev: "Artigo mais recente", next: "Artigo anterior" },
-    fr: { abs: "Résumé", art: "Article de recherche", open: "Cliquez pour lire le résumé", prev: "Article plus récent", next: "Article plus ancien" },
-    ja: { abs: "要旨", art: "研究論文", open: "クリックで要旨を表示", prev: "新しい論文", next: "古い論文" }
+    en: { abs: "Abstract", art: "Research article", open: "Click a paper to read it", prev: "Newer paper", next: "Older paper", close: "Close" },
+    pt: { abs: "Resumo", art: "Artigo científico", open: "Clique num artigo para o ler", prev: "Artigo mais recente", next: "Artigo anterior", close: "Fechar" },
+    fr: { abs: "Résumé", art: "Article de recherche", open: "Cliquez sur un article pour le lire", prev: "Article plus récent", next: "Article plus ancien", close: "Fermer" },
+    ja: { abs: "要旨", art: "研究論文", open: "論文をクリックして読む", prev: "新しい論文", next: "古い論文", close: "閉じる" }
   };
   function setupPubCarousel() {
     const sec = document.getElementById("publications");
@@ -813,8 +815,7 @@
         '<button type="button" class="pub3d-arrow pub3d-arrow--prev" data-dir="-1"><i data-lucide="chevron-left"></i></button>' +
         '<div class="pub3d-stage" tabindex="0"><div class="pub3d-ring"></div></div>' +
         '<button type="button" class="pub3d-arrow pub3d-arrow--next" data-dir="1"><i data-lucide="chevron-right"></i></button>' +
-        '<ol class="pub3d-axis"></ol><p class="pub3d-hint"></p>' +
-        '<div class="pub3d-detail" aria-live="polite" hidden></div>';
+        '<ol class="pub3d-axis"></ol><p class="pub3d-hint"></p>';
       list.parentNode.insertBefore(stage, list);
     }
     list.classList.add("pub-source");
@@ -823,7 +824,20 @@
     if (filter) filter.hidden = true;                // the axis below replaces the year filter
 
     const ring = stage.querySelector(".pub3d-ring"), axis = stage.querySelector(".pub3d-axis");
-    const detail = stage.querySelector(".pub3d-detail"), hint = stage.querySelector(".pub3d-hint");
+    const hint = stage.querySelector(".pub3d-hint");
+    // the zoomed view: the page large on one side, the whole abstract on the other,
+    // keywords, citations and citation tools below
+    let zoom = document.getElementById("pubZoom");
+    if (!zoom) {
+      zoom = document.createElement("div");
+      zoom.id = "pubZoom"; zoom.className = "pub-zoom"; zoom.hidden = true;
+      zoom.setAttribute("role", "dialog"); zoom.setAttribute("aria-modal", "true"); zoom.setAttribute("aria-labelledby", "pubZoomTitle");
+      zoom.innerHTML = '<div class="pub-zoom-backdrop"></div><div class="pub-zoom-box">' +
+        '<button type="button" class="pub-zoom-close"><i data-lucide="x"></i></button>' +
+        '<div class="pub-zoom-grid"><div class="pub-zoom-page"></div><div class="pub-zoom-text"></div></div>' +
+        '<div class="pub-zoom-more"></div></div>';
+      document.body.appendChild(zoom);
+    }
     const T = () => PUB_TXT[currentLang] || PUB_TXT.en;
     const txt = (it, sel) => { const e = it.querySelector(sel); return e ? e.textContent.replace(/\s+/g, " ").trim() : ""; };
     const hue = s => { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) % 360; return h; };
@@ -880,22 +894,58 @@
       i = Math.max(0, Math.min(items.length - 1, i));
       if (i !== active) { active = i; place(); if (openIdx >= 0 && openIdx !== i) hideDetail(); }
     }
+    let lastFocus = null;
     function showDetail(i) {
-      const it = items[i], p = info(it);
+      const it = items[i], p = info(it), t = T();
+      const wasOpen = !zoom.hidden;
       openIdx = i;
-      const cites = it.querySelector(".pub-cites");
-      detail.innerHTML = '<div class="pub3d-detail-head"><span class="pub3d-detail-title"></span><span class="pub3d-detail-meta"></span>' +
-        (cites ? '<span class="pub3d-detail-cites">' + cites.innerHTML + "</span>" : "") + "</div>" +
-        '<div class="pub3d-detail-body expand-body">' + (it.querySelector(".expand-body") || {}).innerHTML + "</div>";
-      detail.querySelector(".pub3d-detail-title").textContent = p.title;
-      detail.querySelector(".pub3d-detail-meta").textContent = [p.authors, p.year, p.journal].filter(Boolean).join(" · ");
-      detail.hidden = false;
-      ring.querySelectorAll(".pub-page").forEach((b, j) => b.setAttribute("aria-expanded", String(j === i)));
+      const page = ring.querySelectorAll(".pub-page")[i];
+      const sheet = page && page.querySelector(".pub-sheet");
+      const box = zoom.querySelector(".pub-zoom-page");
+      box.innerHTML = sheet ? sheet.outerHTML : "";
+      box.firstElementChild && box.firstElementChild.style.setProperty("--hue", page.style.getPropertyValue("--hue"));
+      const body = it.querySelector(".expand-body");
+      const paras = body ? Array.from(body.querySelectorAll(":scope > p")).filter(x => !x.querySelector('a[href*="doi.org/"]')) : [];
+      zoom.querySelector(".pub-zoom-text").innerHTML =
+        '<h3 class="pub-zoom-title" id="pubZoomTitle"></h3><p class="pub-zoom-meta"></p>' +
+        '<h4 class="pub-zoom-abs-h"></h4><div class="pub-zoom-abs">' + paras.map(x => "<p>" + x.innerHTML + "</p>").join("") + "</div>";
+      zoom.querySelector(".pub-zoom-title").textContent = p.title;
+      zoom.querySelector(".pub-zoom-meta").textContent = [p.authors, p.year, p.journal].filter(Boolean).join(" · ");
+      zoom.querySelector(".pub-zoom-abs-h").textContent = t.abs;
+      const kw = body && body.querySelector(".pub-keywords"), tools = body && body.querySelector(".pub-tools");
+      const cites = it.querySelector(".pub-cites"), doi = body && body.querySelector('a[href*="doi.org/"]');
+      zoom.querySelector(".pub-zoom-more").innerHTML =
+        (kw ? kw.outerHTML : "") +
+        '<div class="pub-zoom-cite">' + (cites ? '<span class="pub-zoom-cites">' + cites.innerHTML + "</span>" : "") +
+        (doi ? '<a class="pub-zoom-doi" href="' + doi.getAttribute("href") + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(doi.textContent.trim()) + "</a>" : "") +
+        "</div>" + (tools ? tools.outerHTML : "");
+      zoom.querySelector(".pub-zoom-close").setAttribute("aria-label", t.close);
       if (window.lucide && lucide.createIcons) try { lucide.createIcons(); } catch (e) {}
+      if (wasOpen) return;
+      lastFocus = document.activeElement;
+      zoom.hidden = false;
+      document.body.classList.add("pub-zoom-open");
+      // zoom: the big page grows out of the small one in the carousel
+      const big = box.firstElementChild;
+      if (big && sheet && !prefersReduced) {
+        const a = sheet.getBoundingClientRect(), b = big.getBoundingClientRect();
+        big.style.transformOrigin = "0 0";
+        big.style.transition = "none";
+        big.style.transform = "translate(" + (a.left - b.left) + "px," + (a.top - b.top) + "px) scale(" + (a.width / b.width) + ")";
+        zoom.classList.remove("is-in");
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          big.style.transition = "transform .55s cubic-bezier(.22,.61,.36,1)";
+          big.style.transform = "none";
+          zoom.classList.add("is-in");
+        }));
+      } else zoom.classList.add("is-in");
+      zoom.querySelector(".pub-zoom-close").focus({ preventScroll: true });
     }
     function hideDetail() {
-      openIdx = -1; detail.hidden = true; detail.innerHTML = "";
-      ring.querySelectorAll(".pub-page").forEach(b => b.setAttribute("aria-expanded", "false"));
+      if (zoom.hidden) { openIdx = -1; return; }
+      openIdx = -1; zoom.hidden = true; zoom.classList.remove("is-in");
+      document.body.classList.remove("pub-zoom-open");
+      if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
     }
     if (!stage.dataset.wired) {
       stage.dataset.wired = "1";
@@ -904,7 +954,7 @@
         if (!b) return;
         const i = +b.dataset.i;
         if (i !== active) { go(i); return; }               // a side page comes to the front first
-        if (openIdx === i) hideDetail(); else showDetail(i);
+        showDetail(i);
       });
       axis.addEventListener("click", e => { const b = e.target.closest(".pub3d-dot"); if (b) { go(+b.dataset.i); } });
       stage.querySelectorAll(".pub3d-arrow").forEach(a => a.addEventListener("click", () => go(active + +a.dataset.dir)));
@@ -922,8 +972,10 @@
         const dx = e.clientX - x0; x0 = null;
         if (Math.abs(dx) > 45) go(active + (dx < 0 ? 1 : -1));
       }, { passive: true });
-      // the citation buttons in the panel use the paper's own (hidden) buttons
-      detail.addEventListener("click", e => {
+      // the zoomed view: close with the button, the backdrop or Esc; its citation
+      // buttons use the paper's own (hidden) buttons
+      zoom.addEventListener("click", e => {
+        if (e.target.closest(".pub-zoom-close") || e.target.classList.contains("pub-zoom-backdrop")) { hideDetail(); return; }
         const b = e.target.closest("[data-cite]");
         if (!b || openIdx < 0) return;
         e.stopPropagation();
@@ -931,16 +983,26 @@
         if (!own) return;
         own.click();
         setTimeout(() => {
-          const src = items[openIdx] && items[openIdx].querySelector(".pub-tool-done"), dst = detail.querySelector(".pub-tool-done");
+          const src = items[openIdx] && items[openIdx].querySelector(".pub-tool-done"), dst = zoom.querySelector(".pub-tool-done");
           if (src && dst) { dst.textContent = src.textContent; setTimeout(() => { dst.textContent = ""; }, 2000); }
         }, 120);
+      });
+      document.addEventListener("keydown", e => {
+        if (zoom.hidden) return;
+        if (e.key === "Escape") { e.preventDefault(); hideDetail(); return; }
+        if (e.key === "Tab") {                       // keep the focus inside the zoomed view
+          const f = Array.from(zoom.querySelectorAll("button, a[href]")).filter(x => x.offsetParent);
+          if (!f.length) return;
+          if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+          else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+        }
       });
       pathLangUpdates.push(render);
       pathFinders.push({ wrap: stage, open: it => {
         const i = items.indexOf(it);
         if (i < 0) return false;
+        stage.scrollIntoView({ behavior: "auto", block: "center" });
         go(i); showDetail(i);
-        stage.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "start" });
         return true;
       } });
     }
