@@ -974,7 +974,7 @@ html[data-theme="light"] .pub-zoom-box{ background:#fff; }
   color:var(--text); background:transparent; border:1px solid var(--border); border-radius:50%; }
 .pub-zoom-close:hover{ background:color-mix(in srgb, var(--accent) 12%, transparent); }
 .pub-zoom-close svg{ width:18px; height:18px; }
-.pub-zoom-grid{ display:grid; grid-template-columns:minmax(260px, 380px) 1fr; gap:30px; align-items:start; }
+.pub-zoom-grid{ display:grid; grid-template-columns:var(--zp, minmax(260px, 380px)) 1fr; gap:30px; align-items:start; }
 .pub-zoom-page{ position:sticky; top:0; }
 .pub-zoom-page .pub-sheet{ font-size:clamp(17px, 2.1vw, 25px); will-change:transform; }
 .pub-zoom-page .pub-sheet-title{ -webkit-line-clamp:7; }

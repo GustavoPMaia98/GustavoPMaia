@@ -933,10 +933,14 @@
         "</div>" + (tools ? tools.outerHTML : "");
       zoom.querySelector(".pub-zoom-close").setAttribute("aria-label", t.close);
       if (window.lucide && lucide.createIcons) try { lucide.createIcons(); } catch (e) {}
+      fitZoom();
+      const im = box.querySelector("img");
+      if (im && !im.complete) im.addEventListener("load", fitZoom, { once: true });
       if (wasOpen) return;
       lastFocus = document.activeElement;
       zoom.hidden = false;
       document.body.classList.add("pub-zoom-open");
+      fitZoom();                                     // size first, then zoom into that size
       // zoom: the big page grows out of the small one in the carousel
       const big = box.firstElementChild;
       if (big && sheet && !prefersReduced) {
@@ -953,6 +957,24 @@
       } else zoom.classList.add("is-in");
       zoom.querySelector(".pub-zoom-close").focus({ preventScroll: true });
     }
+    // the page grows to the height of the abstract beside it when the abstract is
+    // longer (never smaller than its usual size, never wider than about half the box)
+    function fitZoom() {
+      const grid = zoom.querySelector(".pub-zoom-grid"), page = zoom.querySelector(".pub-zoom-page"),
+            text = zoom.querySelector(".pub-zoom-text"), sheet = page && page.firstElementChild;
+      if (!grid || !sheet) return;
+      grid.style.removeProperty("--zp");
+      if (getComputedStyle(grid).gridTemplateColumns.split(" ").length < 2) return;   // one column (phones)
+      if (zoom.hidden || !sheet.offsetWidth || !sheet.offsetHeight) return;
+      const ratio = sheet.offsetHeight / sheet.offsetWidth, max = grid.clientWidth * 0.56;
+      let w = page.offsetWidth;
+      for (let k = 0; k < 4; k++) {                  // a wider page narrows the text: settle in a few steps
+        const want = Math.min(max, Math.max(w, text.offsetHeight / ratio));
+        if (!isFinite(want) || Math.abs(want - w) < 2) break;
+        w = want; grid.style.setProperty("--zp", Math.round(w) + "px");
+      }
+    }
+    addEventListener("resize", () => { if (!zoom.hidden) fitZoom(); }, { passive: true });
     function hideDetail() {
       if (zoom.hidden) { openIdx = -1; return; }
       openIdx = -1; zoom.hidden = true; zoom.classList.remove("is-in");

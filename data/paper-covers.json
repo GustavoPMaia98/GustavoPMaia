@@ -1,8 +1,3 @@
 {
-  "_help": "Real first pages of the papers for the Publications carousel (body blurred). Made by tools/make_cover.py; keyed by DOI.",
-  "10.1016/j.epsl.2026.120237": {
-    "src": "images/papers/10-1016-j-epsl-2026-120237.webp",
-    "width": 574,
-    "height": 771
-  }
+  "_help": "First pages of the papers for the Publications carousel, main text blurred. Written by tools/update_covers.py; keyed by DOI."
 }
