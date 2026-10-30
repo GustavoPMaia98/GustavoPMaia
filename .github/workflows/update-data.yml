@@ -2,6 +2,8 @@
 #   - Publications: ORCID + Crossref + OpenAlex, verified, journal articles only
 #     (preprints excluded)                            -> data/publications.json
 #   (The Academic Tree has its own, more frequent job: sync-tree.yml.)
+#   - Paper front pages: page 1 of open-access papers, main text blurred
+#                                                     -> images/papers, data/paper-covers.json
 #   - News: new LinkedIn posts, if the LINKEDIN_FEED_URL secret is set
 #                                                     -> data/news.json
 #   - CV: cv.html saved as PDF when its content changed -> cv.pdf, cv-pt/fr/ja.pdf
@@ -38,6 +40,12 @@ jobs:
         env:
           CONTACT_EMAIL: ${{ secrets.CONTACT_EMAIL }}   # optional, see tools/update_publications.py
         run: python tools/update_publications.py
+      - name: Paper front pages (open-access papers only)
+        env:
+          CONTACT_EMAIL: ${{ secrets.CONTACT_EMAIL }}
+        run: |
+          sudo apt-get install -y -qq poppler-utils >/dev/null
+          python tools/update_covers.py
       - name: News (LinkedIn feed)
         env:
           FEED: ${{ secrets.LINKEDIN_FEED_URL }}
@@ -55,10 +63,10 @@ jobs:
         run: python tools/check_site.py
       - name: Commit if anything changed
         run: |
-          if [ -n "$(git status --porcelain data images/news cv*.pdf)" ]; then
+          if [ -n "$(git status --porcelain data images/news images/papers cv*.pdf)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add data images/news cv*.pdf
+            git add data images/news images/papers cv*.pdf
             git commit -m "Update site data (publications, news, CV)"
             # if you pushed while this was running, put this commit on top of yours
             for i in 1 2 3; do git pull --rebase origin main && git push && break; sleep 5; done
