@@ -795,10 +795,11 @@
   //  tools; the list of cards stays in the page, hidden, as the source.
   // ============================================================
   let pubCarousel = null;
-  // real first pages (data/paper-covers.json, made by tools/make_cover.py), by DOI
-  let pubCovers = {};
-  const pubCoversP = fetch("data/paper-covers.json", { cache: "no-cache" }).then(r => r.ok ? r.json() : {})
-    .then(c => { pubCovers = c || {}; }).catch(() => {});
+  // journal logo, authors with affiliations, affiliations (data/paper-info.json), by DOI
+  let pubInfo = {};
+  const pubInfoP = fetch("data/paper-info.json", { cache: "no-cache" }).then(r => r.ok ? r.json() : {})
+    .then(c => { pubInfo = c || {}; }).catch(() => {});
+
   const PUB_TXT = {
     en: { abs: "Abstract", art: "Research article", open: "Click a paper to open it", prev: "Newer paper", next: "Older paper", close: "Close", cite: "Citation (APA)", copy: "Copy", export: "Export citation" },
     pt: { abs: "Resumo", art: "Artigo científico", open: "Clique num artigo para o abrir", prev: "Artigo mais recente", next: "Artigo anterior", close: "Fechar", cite: "Citação (APA)", copy: "Copiar", export: "Exportar citação" },
@@ -852,31 +853,39 @@
                journal: meta.slice(2).join(" · "), abs: absP ? absP.textContent.trim() : "",
                doi: a ? a.getAttribute("href").replace(/^https?:\/\/(dx\.)?doi\.org\//i, "") : "" };
     };
+    // a paper as a page: journal logo and name, title, authors (with the keys of their
+    // affiliations), affiliations, abstract and DOI
+    const ME = /^(Gustavo\s+(P\.|Pinho)\s+Maia|G\.\s*P\.\s*Maia)$/;
+    function sheetHTML(p, t) {
+      const x = pubInfo[String(p.doi).toLowerCase()] || {};
+      const logo = /^images\/logos\/[\w.-]+\.(png|jpe?g|webp|svg)$/.test(x.logo || "") ? x.logo : "";
+      const names = Array.isArray(x.authors) && x.authors.length ? x.authors
+        : p.authors.replace(/\s+et al\.?$/, "").split(/,\s*|\s+and\s+/).filter(Boolean).map(n => ({ name: n }));
+      const authors = names.map(a => {
+        const n = escapeHtml(a.name), sup = (a.aff || []).length ? "<sup>" + a.aff.map(escapeHtml).join(",") + "</sup>" : "";
+        return (ME.test(a.name) ? "<b>" + n + "</b>" : n) + sup;
+      }).join(", ");
+      const affs = (x.affiliations || []).map(f => '<span class="pub-sheet-aff"><sup>' + escapeHtml(f.key) + "</sup> " + escapeHtml(f.text) + "</span>").join("");
+      return '<span class="pub-sheet">' +
+        '<span class="pub-sheet-head">' + (logo ? '<img class="pub-sheet-logo" src="' + logo + '" alt="">' : "") +
+          '<span class="pub-sheet-journal">' + escapeHtml(p.journal) + '</span><span class="pub-sheet-year">' + escapeHtml(p.year) + "</span></span>" +
+        '<span class="pub-sheet-kind">' + escapeHtml(t.art) + "</span>" +
+        '<span class="pub-sheet-title">' + escapeHtml(p.title) + "</span>" +
+        '<span class="pub-sheet-authors">' + authors + "</span>" +
+        (affs ? '<span class="pub-sheet-affs">' + affs + "</span>" : "") +
+        '<span class="pub-sheet-rule"></span>' +
+        '<span class="pub-sheet-abs-h">' + escapeHtml(t.abs) + "</span>" +
+        '<span class="pub-sheet-abs">' + escapeHtml(p.abs) + "</span>" +
+        (p.doi ? '<span class="pub-sheet-doi">https://doi.org/' + escapeHtml(p.doi) + "</span>" : "") +
+        "</span>";
+    }
     let active = 0, openIdx = -1;
     function render() {
       const t = T();
       ring.innerHTML = items.map((it, i) => {
         const p = info(it);
-        const authors = escapeHtml(p.authors).replace(/(Gustavo\s+(?:P\.|Pinho)\s+Maia)/, "<b>$1</b>");
-        const cover = pubCovers[String(p.doi).toLowerCase()];
-        const src = cover && /^images\/papers\/[\w.-]+\.(webp|png|jpe?g)$/.test(cover.src) ? cover.src : "";
-        if (src) {                                   // the page as published (main text blurred)
-          return '<button type="button" class="pub-page" data-i="' + i + '" style="--i:' + i + ";--hue:" + hue(p.journal) + '">' +
-            '<span class="pub-float"><span class="pub-sheet pub-sheet--img" style="aspect-ratio:' + (+cover.width || 210) + "/" + (+cover.height || 297) + '">' +
-            '<img src="' + src + '" alt="" decoding="async"></span></span>' +
-            '<span class="pub-shadow" aria-hidden="true"></span></button>';
-        }
         return '<button type="button" class="pub-page" data-i="' + i + '" style="--i:' + i + ";--hue:" + hue(p.journal) + '">' +
-          '<span class="pub-float"><span class="pub-sheet">' +
-            '<span class="pub-sheet-band"><span class="pub-sheet-journal">' + escapeHtml(p.journal) + '</span><span class="pub-sheet-year">' + escapeHtml(p.year) + "</span></span>" +
-            '<span class="pub-sheet-kind">' + escapeHtml(t.art) + "</span>" +
-            '<span class="pub-sheet-title">' + escapeHtml(p.title) + "</span>" +
-            '<span class="pub-sheet-authors">' + authors + "</span>" +
-            '<span class="pub-sheet-rule"></span>' +
-            '<span class="pub-sheet-abs-h">' + escapeHtml(t.abs) + "</span>" +
-            '<span class="pub-sheet-abs">' + escapeHtml(p.abs) + "</span>" +
-            (p.doi ? '<span class="pub-sheet-doi">https://doi.org/' + escapeHtml(p.doi) + "</span>" : "") +
-          "</span></span><span class=\"pub-shadow\" aria-hidden=\"true\"></span></button>";
+          '<span class="pub-float">' + sheetHTML(p, t) + '</span><span class="pub-shadow" aria-hidden="true"></span></button>';
       }).join("");
       axis.innerHTML = items.map((it, i) =>
         '<li><button type="button" class="pub3d-dot" data-i="' + i + '"><span class="pub3d-dot-mark"></span><span class="pub3d-dot-year">' +
@@ -925,12 +934,11 @@
         '<h3 class="pub-zoom-title" id="pubZoomTitle"></h3>' +
         '<div class="pub-zoom-block"><div class="pub-zoom-h"><span>' + escapeHtml(t.cite) + '</span><button type="button" class="pub-tool" data-copy="apa"><i data-lucide="copy"></i><span>' + escapeHtml(t.copy) + "</span></button></div>" +
           '<p class="pub-zoom-apa"></p></div>' +
-        '<div class="pub-zoom-block"><div class="pub-zoom-h"><span>' + escapeHtml(t.export) + "</span></div>" +
-          '<div class="pub-zoom-export">' +
-            '<button type="button" class="pub-tool" data-export="bib"><i data-lucide="braces"></i><span>BibTeX</span></button>' +
-            '<button type="button" class="pub-tool" data-export="ris" title="Zotero · Mendeley · EndNote"><i data-lucide="file-down"></i><span>RIS · Zotero · Mendeley</span></button>' +
-            '<button type="button" class="pub-tool" data-export="enw"><i data-lucide="file-down"></i><span>EndNote</span></button>' +
-          "</div></div>" +
+        '<div class="pub-zoom-block"><div class="pub-export">' +
+          '<button type="button" class="pub-export-btn" aria-expanded="false" aria-haspopup="true"><i data-lucide="download"></i><span>' + escapeHtml(t.export) + '</span><i data-lucide="chevron-down"></i></button>' +
+          '<div class="pub-export-menu" hidden>' + EXPORTS.map(f =>
+            '<button type="button" class="pub-export-item" data-export="' + f.id + '"><b>' + f.name + '</b><span class="pub-export-ext">' + f.ext +
+            '</span><span class="pub-export-sw">' + escapeHtml(f.sw) + "</span></button>").join("") + "</div></div></div>" +
         (doiUrl ? '<div class="pub-zoom-block"><div class="pub-zoom-h"><span>DOI</span></div><a class="pub-zoom-doi" target="_blank" rel="noopener noreferrer"></a></div>' : "") +
         '<span class="pub-tool-done" role="status" aria-live="polite"></span>';
       zoom.querySelector(".pub-zoom-title").textContent = p.title;
@@ -962,7 +970,9 @@
     // the paper's record for the citation: the nightly data, else what the page shows
     function pubWork(p) {
       const w = pubWorks[String(p.doi).toLowerCase()];
-      return w || { title: p.title, authors: p.authors.replace(/\s+et al\.?$/, ""), year: p.year, journal: p.journal, doi: p.doi };
+      const x = pubInfo[String(p.doi).toLowerCase()] || {};
+      const names = Array.isArray(x.authors) && x.authors.length ? x.authors.map(a => a.name).join(", ") : p.authors.replace(/\s+et al\.?$/, "");
+      return Object.assign({ title: p.title, authors: names, year: p.year, journal: p.journal, doi: p.doi }, w || {}, { abstract: p.abs });
     }
     function hideDetail() {
       if (zoom.hidden) { openIdx = -1; return; }
@@ -999,8 +1009,19 @@
       zoom.addEventListener("click", e => {
         if (e.target.closest(".pub-zoom-close") || e.target.classList.contains("pub-zoom-backdrop")) { hideDetail(); return; }
         if (openIdx < 0) return;
+        const menuBtn = e.target.closest(".pub-export-btn"), menu = zoom.querySelector(".pub-export-menu");
+        if (menuBtn && menu) {
+          const open = menu.hidden; menu.hidden = !open; menuBtn.setAttribute("aria-expanded", String(open));
+          if (open) { const f = menu.querySelector("button"); if (f) f.focus(); }
+          return;
+        }
         const x = e.target.closest("[data-export]");
-        if (x) { exportCitation(pubWork(info(items[openIdx])), x.dataset.export); return; }
+        if (x) {
+          exportCitation(pubWork(info(items[openIdx])), x.dataset.export);
+          if (menu) { menu.hidden = true; zoom.querySelector(".pub-export-btn").setAttribute("aria-expanded", "false"); }
+          return;
+        }
+        if (menu && !menu.hidden && !e.target.closest(".pub-export")) { menu.hidden = true; zoom.querySelector(".pub-export-btn").setAttribute("aria-expanded", "false"); }
         const b = e.target.closest("[data-copy]");
         if (!b) return;
         const w = pubWork(info(items[openIdx]));
@@ -1013,7 +1034,12 @@
       });
       document.addEventListener("keydown", e => {
         if (zoom.hidden) return;
-        if (e.key === "Escape") { e.preventDefault(); hideDetail(); return; }
+        if (e.key === "Escape") {
+          e.preventDefault();
+          const menu = zoom.querySelector(".pub-export-menu");
+          if (menu && !menu.hidden) { menu.hidden = true; const b = zoom.querySelector(".pub-export-btn"); b.setAttribute("aria-expanded", "false"); b.focus(); return; }
+          hideDetail(); return;
+        }
         if (e.key === "Tab") {                       // keep the focus inside the zoomed view
           const f = Array.from(zoom.querySelectorAll("button, a[href]")).filter(x => x.offsetParent);
           if (!f.length) return;
@@ -1031,7 +1057,7 @@
       } });
     }
     render();
-    pubCoversP.then(() => { if (Object.keys(pubCovers).length) render(); });
+    pubInfoP.then(() => { if (Object.keys(pubInfo).length) render(); });
     if (window.lucide && lucide.createIcons) try { lucide.createIcons(); } catch (e) {}
     pubCarousel = { open: it => pathFinders.some(f => f.wrap === stage && f.open(it)) };
   }
@@ -1117,34 +1143,157 @@
       f("title", w.title) + f("journal", w.journal) + f("year", w.year) + f("volume", w.volume) +
       f("number", w.issue) + f("pages", w.pages) + f("doi", w.doi) + "}";
   }
-  // RIS: read by Zotero, Mendeley, EndNote and most reference managers
+  // ---- citation export: one function per format, all from the same record ----
+  const xml = v => String(v == null ? "" : v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  const pagesOf = w => String(w.pages || "").split(/[-–]/).map(x => x.trim());
+  const doiUrl = w => w.doi ? "https://doi.org/" + w.doi : "";
+  const kws = w => Array.isArray(w.keywords) ? w.keywords : [];
+  function lines(pairs, sep) { return pairs.filter(([, v]) => v != null && v !== "").map(([k, v]) => k + sep + v); }
+  function biblatex(w) {
+    const key = (bibtex(w).match(/^@article\{([^,]+),/) || [, "paper"])[1];
+    const f = (k, v) => v ? "  " + k + " = {" + v + "},\n" : "";
+    return "@article{" + key + ",\n" + f("author", authorList(w).map(a => a.family + (a.given ? ", " + a.given : "")).join(" and ")) +
+      f("title", w.title) + f("journaltitle", w.journal) + f("date", w.year) + f("volume", w.volume) + f("number", w.issue) +
+      f("pages", w.pages) + f("doi", w.doi) + f("url", doiUrl(w)) + f("keywords", kws(w).join(", ")) + f("abstract", w.abstract) + "}\n";
+  }
   function ris(w) {
-    const L = [["TY", "JOUR"]];
-    authorList(w).forEach(a => L.push(["AU", a.family + (a.given ? ", " + a.given : "")]));
-    L.push(["TI", w.title], ["T2", w.journal], ["JO", w.journal], ["PY", w.year], ["VL", w.volume], ["IS", w.issue]);
-    const pg = String(w.pages || "").split(/[-–]/);
-    if (pg[0]) L.push(["SP", pg[0]]);
-    if (pg[1]) L.push(["EP", pg[1]]);
-    L.push(["DO", w.doi], ["UR", w.doi ? "https://doi.org/" + w.doi : ""]);
-    (w.keywords || []).forEach(k => L.push(["KW", k]));
-    return L.filter(([, v]) => v).map(([k, v]) => k + "  - " + v).join("\r\n") + "\r\nER  - \r\n";
+    const [sp, ep] = pagesOf(w);
+    return lines([["TY", "JOUR"], ...authorList(w).map(a => ["AU", a.family + (a.given ? ", " + a.given : "")]),
+      ["TI", w.title], ["T2", w.journal], ["JO", w.journal], ["PY", w.year], ["VL", w.volume], ["IS", w.issue], ["SP", sp], ["EP", ep],
+      ["AB", w.abstract], ...kws(w).map(k => ["KW", k]), ["DO", w.doi], ["UR", doiUrl(w)], ["ER", " "]], "  - ").join("\r\n") + "\r\n";
   }
-  // EndNote tagged format (.enw)
   function enw(w) {
-    const L = [["%0", "Journal Article"]];
-    authorList(w).forEach(a => L.push(["%A", a.family + (a.given ? ", " + a.given : "")]));
-    L.push(["%T", w.title], ["%J", w.journal], ["%D", w.year], ["%V", w.volume], ["%N", w.issue], ["%P", w.pages],
-           ["%R", w.doi], ["%U", w.doi ? "https://doi.org/" + w.doi : ""]);
-    (w.keywords || []).forEach(k => L.push(["%K", k]));
-    return L.filter(([, v]) => v).map(([k, v]) => k + " " + v).join("\n") + "\n";
+    return lines([["%0", "Journal Article"], ...authorList(w).map(a => ["%A", a.family + (a.given ? ", " + a.given : "")]),
+      ["%T", w.title], ["%J", w.journal], ["%D", w.year], ["%V", w.volume], ["%N", w.issue], ["%P", w.pages],
+      ["%X", w.abstract], ...kws(w).map(k => ["%K", k]), ["%R", w.doi], ["%U", doiUrl(w)]], " ").join("\n") + "\n";
   }
-  function exportCitation(w, kind) {
-    const f = { bib: [bibtex, "application/x-bibtex"], ris: [ris, "application/x-research-info-systems"], enw: [enw, "application/x-endnote-refer"] }[kind];
+  function endnoteXml(w) {
+    return '<?xml version="1.0" encoding="UTF-8"?>\n<xml><records><record>' +
+      '<ref-type name="Journal Article">17</ref-type><contributors><authors>' +
+      authorList(w).map(a => "<author>" + xml(a.family + (a.given ? ", " + a.given : "")) + "</author>").join("") + "</authors></contributors>" +
+      "<titles><title>" + xml(w.title) + "</title><secondary-title>" + xml(w.journal) + "</secondary-title></titles>" +
+      "<periodical><full-title>" + xml(w.journal) + "</full-title></periodical>" +
+      (w.pages ? "<pages>" + xml(w.pages) + "</pages>" : "") + (w.volume ? "<volume>" + xml(w.volume) + "</volume>" : "") +
+      (w.issue ? "<number>" + xml(w.issue) + "</number>" : "") +
+      (kws(w).length ? "<keywords>" + kws(w).map(k => "<keyword>" + xml(k) + "</keyword>").join("") + "</keywords>" : "") +
+      "<dates><year>" + xml(w.year) + "</year></dates>" + (w.doi ? "<electronic-resource-num>" + xml(w.doi) + "</electronic-resource-num>" : "") +
+      (w.abstract ? "<abstract>" + xml(w.abstract) + "</abstract>" : "") +
+      (w.doi ? "<urls><related-urls><url>" + xml(doiUrl(w)) + "</url></related-urls></urls>" : "") +
+      "</record></records></xml>\n";
+  }
+  function cslJson(w) {
+    const o = { id: w.doi || w.title, type: "article-journal", title: w.title, "container-title": w.journal,
+      author: authorList(w).map(a => ({ family: a.family, given: a.given })), issued: { "date-parts": [[+w.year || w.year]] },
+      volume: w.volume, issue: w.issue, page: w.pages, DOI: w.doi, URL: doiUrl(w), abstract: w.abstract,
+      keyword: kws(w).join(", ") || undefined };
+    Object.keys(o).forEach(k => (o[k] == null || o[k] === "") && delete o[k]);
+    return JSON.stringify([o], null, 2) + "\n";
+  }
+  function medline(w) {
+    const t = (k, v) => [(k + "    ").slice(0, 4) + "- " + v];
+    const ini = g => String(g || "").split(/[\s.-]+/).filter(Boolean).map(x => x[0].toUpperCase()).join("");
+    const out = [];
+    const add = (k, v) => { if (v != null && v !== "") out.push(t(k, v)[0]); };
+    add("TI", w.title);
+    authorList(w).forEach(a => { add("FAU", a.family + (a.given ? ", " + a.given : "")); add("AU", a.family + (a.given ? " " + ini(a.given) : "")); });
+    add("AB", w.abstract); add("TA", w.journal); add("JT", w.journal); add("DP", w.year); add("VI", w.volume); add("IP", w.issue); add("PG", w.pages);
+    kws(w).forEach(k => add("OT", k)); add("PT", "Journal Article");
+    if (w.doi) { add("LID", w.doi + " [doi]"); add("AID", w.doi + " [doi]"); }
+    return out.join("\n") + "\n";
+  }
+  function refworks(w) {
+    const [sp, ep] = pagesOf(w);
+    return lines([["RT", "Journal Article"], ...authorList(w).map(a => ["A1", a.family + (a.given ? ", " + a.given : "")]),
+      ["T1", w.title], ["JF", w.journal], ["YR", w.year], ["VO", w.volume], ["IS", w.issue], ["SP", sp], ["OP", ep],
+      ["AB", w.abstract], ...kws(w).map(k => ["K1", k]), ["DO", w.doi], ["LK", doiUrl(w)]], " ").join("\n") + "\n";
+  }
+  function refworksXml(w) {
+    const [sp, ep] = pagesOf(w), e = (k, v) => v ? "<" + k + ">" + xml(v) + "</" + k + ">" : "";
+    return '<?xml version="1.0" encoding="UTF-8"?>\n<refworks><reference><rt>Journal Article</rt>' +
+      authorList(w).map(a => e("a1", a.family + (a.given ? ", " + a.given : ""))).join("") +
+      e("t1", w.title) + e("jf", w.journal) + e("yr", w.year) + e("vo", w.volume) + e("is", w.issue) + e("sp", sp) + e("op", ep) +
+      e("ab", w.abstract) + kws(w).map(k => e("k1", k)).join("") + e("do", w.doi) + e("lk", doiUrl(w)) + "</reference></refworks>\n";
+  }
+  function mods(w) {
+    const [sp, ep] = pagesOf(w);
+    return '<?xml version="1.0" encoding="UTF-8"?>\n<mods xmlns="http://www.loc.gov/mods/v3" version="3.7">' +
+      "<titleInfo><title>" + xml(w.title) + "</title></titleInfo>" +
+      authorList(w).map(a => '<name type="personal">' + (a.given ? '<namePart type="given">' + xml(a.given) + "</namePart>" : "") +
+        '<namePart type="family">' + xml(a.family) + '</namePart><role><roleTerm authority="marcrelator" type="text">author</roleTerm></role></name>').join("") +
+      '<typeOfResource>text</typeOfResource><genre authority="marcgt">article</genre>' +
+      '<relatedItem type="host"><titleInfo><title>' + xml(w.journal) + '</title></titleInfo><genre authority="marcgt">periodical</genre><part>' +
+      (w.volume ? '<detail type="volume"><number>' + xml(w.volume) + "</number></detail>" : "") +
+      (w.issue ? '<detail type="issue"><number>' + xml(w.issue) + "</number></detail>" : "") +
+      (sp ? '<extent unit="pages"><start>' + xml(sp) + "</start>" + (ep ? "<end>" + xml(ep) + "</end>" : "") + "</extent>" : "") +
+      "<date>" + xml(w.year) + "</date></part></relatedItem>" +
+      (w.abstract ? "<abstract>" + xml(w.abstract) + "</abstract>" : "") +
+      kws(w).map(k => "<subject><topic>" + xml(k) + "</topic></subject>").join("") +
+      (w.doi ? '<identifier type="doi">' + xml(w.doi) + '</identifier><location><url>' + xml(doiUrl(w)) + "</url></location>" : "") +
+      "</mods>\n";
+  }
+  function dublinCore(w) {
+    const src = [w.journal, w.volume ? w.volume + (w.issue ? "(" + w.issue + ")" : "") : "", w.pages].filter(Boolean).join(", ");
+    return '<?xml version="1.0" encoding="UTF-8"?>\n<oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" ' +
+      'xmlns:dc="http://purl.org/dc/elements/1.1/">' + "<dc:title>" + xml(w.title) + "</dc:title>" +
+      authorList(w).map(a => "<dc:creator>" + xml(a.family + (a.given ? ", " + a.given : "")) + "</dc:creator>").join("") +
+      kws(w).map(k => "<dc:subject>" + xml(k) + "</dc:subject>").join("") +
+      (w.abstract ? "<dc:description>" + xml(w.abstract) + "</dc:description>" : "") +
+      "<dc:date>" + xml(w.year) + "</dc:date><dc:type>Text</dc:type><dc:type>Journal article</dc:type>" +
+      (w.doi ? "<dc:identifier>" + xml(doiUrl(w)) + "</dc:identifier>" : "") +
+      (src ? "<dc:source>" + xml(src) + "</dc:source>" : "") + "</oai_dc:dc>\n";
+  }
+  // MARC 21 in its exchange format (ISO 2709), UTF-8
+  function marc(w) {
+    const enc = new TextEncoder(), FT = "\x1e", SF = "\x1f", RT = "\x1d";
+    const sub = (code, v) => v ? SF + code + v : "";
+    const au = authorList(w).map(a => a.family + (a.given ? ", " + a.given : ""));
+    const host = [w.volume ? w.volume + (w.issue ? "(" + w.issue + ")" : "") : "", w.pages ? "p. " + w.pages : ""].filter(Boolean).join(", ");
+    const y = String(w.year || "").slice(0, 4).padEnd(4, " ");
+    const f = [
+      ["008", ("      s" + y + "    xx            000 0 eng d").slice(0, 40).padEnd(40, " ")],
+      w.doi ? ["024", "7 " + sub("a", w.doi) + sub("2", "doi")] : null,
+      au[0] ? ["100", "1 " + sub("a", au[0]) + sub("e", "author")] : null,
+      ["245", "10" + sub("a", w.title)],
+      ["264", " 1" + sub("c", w.year)],
+      w.abstract ? ["520", "  " + sub("a", w.abstract)] : null,
+      ...kws(w).map(k => ["653", "  " + sub("a", k)]),
+      ...au.slice(1).map(n => ["700", "1 " + sub("a", n) + sub("e", "author")]),
+      ["773", "0 " + sub("t", w.journal) + sub("g", host) + sub("d", w.year)],
+      w.doi ? ["856", "40" + sub("u", doiUrl(w))] : null
+    ].filter(Boolean);
+    let dir = "", data = "", pos = 0;
+    f.forEach(([tag, body]) => {
+      const bytes = enc.encode(body + FT).length;
+      dir += tag + String(bytes).padStart(4, "0") + String(pos).padStart(5, "0");
+      data += body + FT; pos += bytes;
+    });
+    dir += FT;
+    const base = 24 + enc.encode(dir).length, total = base + enc.encode(data + RT).length;
+    const leader = String(total).padStart(5, "0") + "nab a22" + String(base).padStart(5, "0") + " u 4500";
+    return leader + dir + data + RT;
+  }
+  const EXPORTS = [
+    { id: "bib", name: "BibTeX", ext: ".bib", sw: "Zotero, Mendeley, EndNote, JabRef", fn: w => bibtex(w) + "\n", type: "application/x-bibtex" },
+    { id: "biblatex", name: "BibLaTeX", ext: ".bib", sw: "Zotero, JabRef, Overleaf", fn: biblatex, type: "application/x-bibtex" },
+    { id: "ris", name: "RIS", ext: ".ris", sw: "Zotero, Mendeley, EndNote, RefWorks", fn: ris, type: "application/x-research-info-systems" },
+    { id: "enxml", name: "EndNote XML", ext: ".xml", sw: "EndNote, Zotero", fn: endnoteXml, type: "application/xml" },
+    { id: "enw", name: "EndNote Tagged", ext: ".enw", sw: "EndNote, Zotero", fn: enw, type: "application/x-endnote-refer" },
+    { id: "csl", name: "CSL JSON", ext: ".json", sw: "Zotero, CSL tools", fn: cslJson, type: "application/vnd.citationstyles.csl+json" },
+    { id: "nbib", name: "Medline / PubMed", ext: ".nbib", sw: "Zotero, EndNote, Mendeley", fn: medline, type: "application/nbib" },
+    { id: "rwt", name: "RefWorks Tagged", ext: ".txt", sw: "RefWorks", fn: refworks, type: "text/plain" },
+    { id: "rwxml", name: "RefWorks XML", ext: ".xml", sw: "RefWorks", fn: refworksXml, type: "application/xml" },
+    { id: "mods", name: "MODS", ext: ".xml", sw: "Zotero, library systems", fn: mods, type: "application/mods+xml" },
+    { id: "marc", name: "MARC", ext: ".mrc", sw: "Zotero, library catalogues", fn: marc, type: "application/marc" },
+    { id: "dc", name: "Dublin Core", ext: ".xml", sw: "Repositories, libraries", fn: dublinCore, type: "application/xml" }
+  ];
+  function exportCitation(w, id) {
+    const f = EXPORTS.find(x => x.id === id);
     if (!f) return;
-    const name = (String(w.doi || "citation").replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "") || "citation") + "." + kind;
-    const url = URL.createObjectURL(new Blob([f[0](w)], { type: f[1] + ";charset=utf-8" }));
+    const base = String(w.doi || "citation").replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "") || "citation";
+    const suffix = { enxml: "-endnote", rwxml: "-refworks", mods: "-mods", dc: "-dublin-core", biblatex: "-biblatex", rwt: "-refworks" }[id] || "";
+    const url = URL.createObjectURL(new Blob([f.fn(w)], { type: f.type + ";charset=utf-8" }));
     const a = document.createElement("a");
-    a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    a.href = url; a.download = base + suffix + f.ext; document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 2000);
   }
   function copyText(t) {
