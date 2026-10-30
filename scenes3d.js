@@ -42,7 +42,8 @@ const onThemeChange = fn => new MutationObserver(fn).observe(root, { attributes:
    ========================================================================= */
 const KM_S = [11, 72];
 async function startSpace() {
-  if (!hasWebGL()) return;                          // keep the 2D star field
+  const fallback = () => { root.classList.remove("space-pending"); window.dispatchEvent(new Event("site:starfield")); };
+  if (!hasWebGL()) { fallback(); return; }          // keep the 2D star field
   const THREE = await loadThree();
   const canvas = document.createElement("canvas");
   canvas.id = "space3d";
@@ -50,7 +51,7 @@ async function startSpace() {
   document.body.insertBefore(canvas, document.body.firstChild);
   let renderer;
   try { renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: "low-power" }); }
-  catch (e) { canvas.remove(); return; }
+  catch (e) { canvas.remove(); fallback(); return; }
   renderer.autoClear = false;
   renderer.setClearColor(0x02040a, 1);
   const PHONE = small();
@@ -326,27 +327,45 @@ async function startSpace() {
 
   let mx = 0, my = 0, clock = 0;
   if (!PHONE) addEventListener("pointermove", e => { mx = e.clientX / innerWidth - 0.5; my = e.clientY / innerHeight - 0.5; }, { passive: true });
+  // scrolling: read once per scroll event (no layout work inside the frame) and eased
+  // towards in the frame, so the sky glides instead of jumping with the page
+  let scrollTarget = 0, scrollMax = 1, scrollNow = 0;
+  const readScroll = () => { scrollTarget = scrollY; };
+  const readMax = () => { scrollMax = Math.max(1, document.documentElement.scrollHeight - innerHeight); };
+  addEventListener("scroll", readScroll, { passive: true });
+  addEventListener("resize", readMax, { passive: true });
+  addEventListener("load", readMax);
+  setInterval(readMax, 4000);                        // sections load later and change the page height
+  readScroll(); readMax(); scrollNow = scrollTarget;
+  let lastT = 0;
   function draw(t) {
-    const sc = scrollY / Math.max(1, document.documentElement.scrollHeight - innerHeight);
+    const dt = Math.min(0.05, Math.max(0, t - lastT)); lastT = t;
+    scrollNow += (scrollTarget - scrollNow) * (1 - Math.exp(-dt * 4));
+    const sc = scrollNow / scrollMax;
     skyRig.rotation.set(0.0006 * t * 0.3 + sc * 0.12 - my * 0.02, 0.0009 * t + sc * 0.35 - mx * 0.03, 0);   // the sky turns slowly
     near.rotation.set(skyRig.rotation.x * 0.3, skyRig.rotation.y * 0.3, 0);
-    U.uTravel.value = t * 3.2 + scrollY * 0.06;      // drifting forward, faster while scrolling
+    U.uTravel.value = t * 3.2 + scrollNow * 0.06;    // drifting forward, faster while scrolling
     renderer.clear();
     renderer.render(sky, camera);
     if (!reduced) { schedule(t); updateMeteors(t); renderer.render(overlay, ortho); }
   }
 
   // ---- dark theme only: the light theme keeps the 2D star field ----
-  let raf = 0, t0 = performance.now();
-  const loop = now => { clock = (now - t0) / 1000; draw(clock); raf = requestAnimationFrame(loop); };
+  let raf = 0, prev = 0;
+  const loop = now => {
+    clock += prev ? Math.min(0.05, (now - prev) / 1000) : 0;   // a slow frame never makes the sky jump
+    prev = now; draw(clock);
+    if (!root.classList.contains("space-ready")) { root.classList.add("space-ready"); root.classList.remove("space-pending"); }
+    raf = requestAnimationFrame(loop);
+  };
   const run = () => { if (!raf && !reduced && !document.hidden && !light()) raf = requestAnimationFrame(loop); };
-  const halt = () => { cancelAnimationFrame(raf); raf = 0; };
+  const halt = () => { cancelAnimationFrame(raf); raf = 0; prev = 0; };
   function theme() {
     const on = !light();
     canvas.style.display = on ? "" : "none";
     root.classList.toggle("has-space3d", on);         // hides and stops the 2D star field
-    if (on) { if (reduced) draw(30); else run(); }
-    else { halt(); window.dispatchEvent(new Event("site:starfield")); }
+    if (on) { if (reduced) { draw(30); root.classList.add("space-ready"); root.classList.remove("space-pending"); } else run(); }
+    else { halt(); root.classList.remove("space-pending"); window.dispatchEvent(new Event("site:starfield")); }
   }
   // try it from the browser console: SiteSpace.meteor() or SiteSpace.shower()
   window.SiteSpace = { meteor: () => spawn(null, clock), shower: () => { nextAt = 0; schedule.force = true; } };
@@ -663,7 +682,7 @@ async function startGlobe(el, data) {
 }
 
 /* ---- start-up ---------------------------------------------------------- */
-startSpace().catch(() => root.classList.remove("has-space3d"));
+startSpace().catch(() => { root.classList.remove("has-space3d", "space-pending"); window.dispatchEvent(new Event("site:starfield")); });
 
 function whenGlobeNear(data) {
   const el = document.getElementById("presoMap");

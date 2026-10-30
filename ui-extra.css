@@ -750,7 +750,8 @@ html[data-theme="light"] .path-year{ color:var(--accent-strong); border-color:rg
   -webkit-mask-image:linear-gradient(90deg, transparent, #000 28px, #000 calc(100% - 28px), transparent);
           mask-image:linear-gradient(90deg, transparent, #000 28px, #000 calc(100% - 28px), transparent); }
 .path-scroll::-webkit-scrollbar{ display:none; }
-.path--scroll{ grid-template-columns:none; grid-auto-flow:column; grid-auto-columns:158px; width:max-content; min-width:100%; padding-top:2px; }
+.path--scroll{ grid-template-columns:none; grid-auto-flow:column; grid-auto-columns:158px; width:max-content; min-width:100%; padding-top:2px; justify-content:center; }
+#preso-filter[hidden]{ display:none !important; }
 .path--scroll::before{ left:79px; right:79px; }
 .path--scroll .path-place{ font-size:.88rem; line-height:1.3; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
 .path--scroll .path-what{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
@@ -988,16 +989,15 @@ html[data-theme="light"] .pub-zoom-box{ background:#fff; }
 .pub-zoom-doi{ font-weight:700; word-break:break-all; }
 /* "Export citation": one button, a menu of formats */
 .pub-export{ position:relative; }
-.pub-export-btn{ display:inline-flex; align-items:center; gap:8px; padding:9px 16px; cursor:pointer; font:inherit; font-weight:700; font-size:.9rem;
+.pub-export-btn{ display:inline-flex; align-items:center; gap:8px; white-space:nowrap; padding:9px 16px; cursor:pointer; font:inherit; font-weight:700; font-size:.9rem;
   color:#fff; background:var(--accent-strong, var(--accent)); border:0; border-radius:var(--radius-pill); }
 .pub-export-btn:hover{ filter:brightness(1.08); }
 .pub-export-btn svg{ width:17px; height:17px; }
 .pub-export-btn[aria-expanded="true"] svg:last-child{ transform:rotate(180deg); }
-.pub-export-menu{ position:absolute; z-index:5; top:calc(100% + 6px); left:0; width:min(420px, 80vw); max-height:min(60vh, 520px); overflow:auto;
-  padding:6px; background:var(--card); border:1px solid var(--border); border-radius:12px; box-shadow:0 18px 40px rgba(2,8,23,.4); }
-html[data-theme="light"] .pub-export-menu{ background:#fff; }
+.pub-export-menu{ margin-top:10px; padding:6px; display:grid; grid-template-columns:repeat(auto-fill, minmax(190px, 1fr)); gap:2px;
+  background:color-mix(in srgb, var(--text) 4%, transparent); border:1px solid var(--border); border-radius:12px; }   /* opens in place: pushes the DOI down */
 .pub-export-menu[hidden]{ display:none; }
-.pub-export-item{ display:grid; grid-template-columns:1fr auto; gap:0 10px; width:100%; padding:8px 10px; text-align:left; cursor:pointer;
+.pub-export-item{ display:grid; grid-template-columns:minmax(0,1fr) auto; gap:1px 10px; align-content:start; width:100%; padding:8px 10px; text-align:left; cursor:pointer;
   font:inherit; color:var(--text); background:none; border:0; border-radius:8px; }
 .pub-export-item:hover, .pub-export-item:focus-visible{ background:color-mix(in srgb, var(--accent) 12%, transparent); outline:none; }
 .pub-export-item b{ font-size:.9rem; }
@@ -1044,6 +1044,17 @@ body.pub-zoom-open{ overflow:hidden; }
   .pub-sheet-authors{ -webkit-line-clamp:2; }
 }
 
-/* 3D universe behind the page (scenes3d.js, dark theme) */
-#space3d{ position:fixed; inset:0; width:100%; height:100%; z-index:-1; pointer-events:none; display:block; }
-.has-space3d #starfield{ display:none; }
+/* 3D universe behind the page (scenes3d.js, dark theme). Until it draws its first
+   frame the page shows the same deep-space colour (no flash of the old background),
+   then the universe fades in. */
+#space3d{ position:fixed; inset:0; width:100%; height:100%; z-index:-1; pointer-events:none; display:block;
+  opacity:0; transition:opacity .9s ease; contain:strict; }
+.space-ready #space3d{ opacity:1; }
+html.space-pending body, html.has-space3d body{ background:#02040a; }
+.space-pending #starfield, .has-space3d #starfield{ display:none; }
+/* over a moving 3D background, glass blur would be recomputed every frame and make
+   scrolling stutter: the cards get a slightly denser fill instead */
+.has-space3d main *, .has-space3d main{ -webkit-backdrop-filter:none !important; backdrop-filter:none !important; }
+.has-space3d .hl-card, .has-space3d .news-card{ background:linear-gradient(165deg, rgba(20,30,52,.82), rgba(10,16,30,.78)); }
+/* links inside running text: underlined, not told apart by colour alone */
+.section-note a{ text-decoration:underline; text-underline-offset:2px; text-decoration-thickness:1px; }
