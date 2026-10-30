@@ -1,0 +1,43 @@
+# Every 3 hours: copies changes made on Chemistry Tree (academictree.org, pid 972410)
+# into the website's Academic Tree (data/tree.json), then commits it. GitHub Pages
+# republishes the site on that commit, so an edit on Chemistry Tree reaches the
+# website within about 3 hours. See tools/update_tree.py for what is copied.
+name: Sync academic tree
+
+on:
+  schedule:
+    - cron: "41 */3 * * *"        # every 3 hours, at minute 41
+  workflow_dispatch:               # "Run workflow" button in the Actions tab: sync now
+
+permissions:
+  contents: write
+
+concurrency:
+  group: site-data                 # shared with the other data updates
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - run: pip install pillow==10.4.0
+      - name: Academic tree (Chemistry Tree)
+        run: python tools/update_tree.py
+      - name: Check the site still builds
+        run: python tools/check_site.py
+      - name: Commit if the tree changed
+        run: |
+          if [ -n "$(git status --porcelain data/tree.json)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add data/tree.json
+            git commit -m "Update academic tree from Chemistry Tree"
+            for i in 1 2 3; do git pull --rebase origin main && git push && break; sleep 5; done
+          else
+            echo "Chemistry Tree: no changes."
+          fi
