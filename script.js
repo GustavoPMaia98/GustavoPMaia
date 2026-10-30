@@ -2112,7 +2112,10 @@
     // a step tapped on a phone: bring its text into view (it sits below the list)
     const reveal = () => { if (innerWidth <= 760) panel.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "start" }); };
     steps.forEach((b, i) => {
-      b.addEventListener("click", () => { show(b); reveal(); });
+      b.addEventListener("click", () => {        // a second click on the open step closes it
+        if (current === b && !panel.hidden) { hide(); return; }
+        show(b); reveal();
+      });
       b.addEventListener("keydown", e => {         // arrow keys move along the path
         const d = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
         if (!d) return;
@@ -2121,6 +2124,11 @@
         n.focus(); show(n);
       });
     });
+    function hide() {
+      current = null;
+      steps.forEach(b => b.setAttribute("aria-pressed", "false"));
+      panel.hidden = true; panel.innerHTML = "";
+    }
     pathLangUpdate = () => { if (current) show(current); };
     // search results for an education entry open its step
     showPathFor = it => {
@@ -2130,8 +2138,7 @@
       path.closest(".path-wrap").scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "start" });
       return true;
     };
-    const edu = steps.filter(b => b.dataset.section === "education");
-    show(edu[edu.length - 1] || steps[steps.length - 1]);   // start on the latest degree
+    // nothing is open at first: a step's text appears when it is clicked
     // draw the line when the path scrolls into view
     if (prefersReduced || !("IntersectionObserver" in window)) { path.classList.add("is-drawn"); return; }
     const io = new IntersectionObserver(es => es.forEach(e => {

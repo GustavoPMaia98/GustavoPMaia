@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Keep the Academic Tree (data/tree.json) in step with Chemistry Tree.
 
-Run by .github/workflows/update-data.yml every night, or by hand:
+Run by .github/workflows/sync-tree.yml every 3 hours, or by hand:
     python tools/update_tree.py            # update data/tree.json
     python tools/update_tree.py --dry-run  # only print what would change
 
@@ -15,10 +15,13 @@ an "academictree" number, and:
     both in English and Portuguese) and their institution, so they get the same
     card, colours and layout as everybody else. New people are only added up to
     MAX_NEW_GENERATION (2 = my mentors and their mentors) so the tree does not grow
-    a century of ancestors on its own; deeper generations stay hand-picked.
+    a century of ancestors on its own; deeper generations stay hand-picked;
+  * keeps the people it added itself ("source": "academictree") in step: a new
+    name, relationship or institution on Chemistry Tree is copied over, and one
+    removed from Chemistry Tree is removed here too.
 
-It never deletes anybody and never changes what is already written by hand
-(names, photos, roles, links). To get rid of an added person for good, set
+People written by hand (no "source") are never changed or removed: only linked to
+their Chemistry Tree number. To get rid of an added person for good, set
 "hidden": true on them in data/tree.json; to give them a photo, add
 "photo": "images/tree/<file>". If academictree.org cannot be reached or its page
 layout changes, the file is left exactly as it is. Standard-library Python only.
@@ -45,8 +48,12 @@ def plain(s):
     return unicodedata.normalize("NFD", s or "").encode("ascii", "ignore").decode().lower()
 
 
+TITLES = {"prof", "profa", "dr", "dra", "eng", "engo", "mr", "mrs", "ms"}
+
+
 def words(name):
-    return [w for w in re.split(r"[\s.\-]+", plain(name)) if w]
+    """Name words without titles ("Eng. Carlos Amorim" -> carlos, amorim)."""
+    return [w for w in re.split(r"[\s.\-]+", plain(name)) if w and w not in TITLES]
 
 
 def same_person(a, b):
@@ -146,9 +153,26 @@ def sync(node, depth, get, log, visited):
             if not match.get("academictree"):
                 match["academictree"] = ppid
                 log.append(f"  linked {match['name']} -> Chemistry Tree {ppid}")
+            if match.get("source") == "academictree":      # added by this script: follow Chemistry Tree
+                fresh = new_node(ppid, name, rel, inst, node["name"], depth + 1)
+                for k in ("name", "role", "institution"):
+                    if k == "role" and not rel or k == "institution" and not inst:
+                        continue                            # nothing on the page: keep what we have
+                    if fresh.get(k) and fresh[k] != match.get(k) and \
+                       not (k == "institution" and fresh[k]["name"] == (match.get(k) or {}).get("name")):
+                        match[k] = fresh[k]
+                        log.append(f"  updated the {k} of {match['name']}")
         elif depth + 1 <= MAX_NEW_GENERATION:
             mentors.append(new_node(ppid, name, rel, inst, node["name"], depth + 1))
             log.append(f"  added {name} ({rel or 'mentor'}) as mentor of {node['name']}")
+    # mentors this script added that are no longer on Chemistry Tree (hidden ones stay:
+    # "hidden" is a hand-made decision)
+    on_page = {p[0] for p in parents}
+    if parents:
+        for m in [m for m in mentors if m.get("source") == "academictree" and not m.get("hidden")
+                  and m.get("academictree") and m["academictree"] not in on_page]:
+            mentors.remove(m)
+            log.append(f"  removed {m['name']}: no longer a mentor of {node['name']} on Chemistry Tree")
     if not mentors:
         del node["mentors"]
     for m in node.get("mentors", []):
