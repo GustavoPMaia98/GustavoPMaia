@@ -1,5 +1,5 @@
 {
-  "_help": "Positions, newest first. Items with \"earlier\": true go into the folded 'Earlier experience' group (its count is automatic). \"title\", \"meta\" and \"summary\" take \"en\" and \"pt\"; \"details\" is HTML. Set \"hidden\": true to hide an item.",
+  "_help": "Positions, newest first. Items with \"earlier\": true go into the folded 'Earlier experience' group (its count is automatic). \"title\", \"meta\" and \"summary\" take \"en\" and \"pt\"; \"details\" is HTML. Set \"hidden\": true to hide an item. \"kind\" ({\"en\",\"pt\"}) is the small label on the entry's step in the experience timeline.",
   "items": [
     {
       "logo": {
@@ -9,6 +9,10 @@
       "title": {
         "en": "Visiting Scientist",
         "pt": "Cientista Visitante"
+      },
+      "kind": {
+        "en": "Research",
+        "pt": "Investigação"
       },
       "meta": {
         "en": "Jan 2025 – Present · MNHN · IMPMC, France",
@@ -26,6 +30,10 @@
         "en": "Visiting Scientist",
         "pt": "Cientista Visitante"
       },
+      "kind": {
+        "en": "Research",
+        "pt": "Investigação"
+      },
       "meta": {
         "en": "Nov 2024 – Dec 2024 · NASA Goddard Space Flight Center, USA",
         "pt": "nov. 2024 – dez. 2024 · NASA Goddard Space Flight Center, EUA"
@@ -40,6 +48,10 @@
       "title": {
         "en": "Invited Assistant (University Teacher)",
         "pt": "Assistente Convidado (Docente Universitário)"
+      },
+      "kind": {
+        "en": "Teaching",
+        "pt": "Ensino"
       },
       "meta": {
         "en": "Sep 2024 – Oct 2024 · Instituto Superior Técnico, Portugal",
@@ -56,6 +68,10 @@
         "en": "President of the Fiscal Council",
         "pt": "Presidente do Conselho Fiscal"
       },
+      "kind": {
+        "en": "Associations",
+        "pt": "Associativismo"
+      },
       "meta": {
         "en": "Jun 2021 – May 2022 · ANEQ, Portugal",
         "pt": "jun. 2021 – mai. 2022 · ANEQ, Portugal"
@@ -70,6 +86,10 @@
       "title": {
         "en": "Vice President",
         "pt": "Vice-Presidente"
+      },
+      "kind": {
+        "en": "Associations",
+        "pt": "Associativismo"
       },
       "meta": {
         "en": "Jun 2020 – Jun 2021 · ANEQ, Portugal",
@@ -86,6 +106,10 @@
         "en": "Vice-President, UBIQUÍMICA",
         "pt": "Vice-Presidente, UBIQUÍMICA"
       },
+      "kind": {
+        "en": "Associations",
+        "pt": "Associativismo"
+      },
       "meta": {
         "en": "Sep 2019 – Dec 2020 · University of Beira Interior",
         "pt": "set. 2019 – dez. 2020 · Universidade da Beira Interior"
@@ -100,6 +124,10 @@
       "title": {
         "en": "Research Intern",
         "pt": "Estagiário de Investigação"
+      },
+      "kind": {
+        "en": "Research",
+        "pt": "Investigação"
       },
       "meta": {
         "en": "Jul 2020 – Sep 2020 · Universidade da Beira Interior",
@@ -116,6 +144,10 @@
         "en": "Delegate of Industrial Chemistry Students",
         "pt": "Delegado dos Estudantes de Química Industrial"
       },
+      "kind": {
+        "en": "Associations",
+        "pt": "Associativismo"
+      },
       "meta": {
         "en": "Oct 2019 – Sep 2020 · Universidade da Beira Interior",
         "pt": "out. 2019 – set. 2020 · Universidade da Beira Interior"
@@ -130,6 +162,10 @@
       "title": {
         "en": "Factory Worker",
         "pt": "Operário Fabril"
+      },
+      "kind": {
+        "en": "Industry",
+        "pt": "Indústria"
       },
       "meta": {
         "en": "Aug 2019 – Sep 2019 · Nestlé Portugal",
@@ -147,6 +183,10 @@
         "en": "Scientific Committee Member, UBIQUÍMICA",
         "pt": "Membro da Comissão Científica, UBIQUÍMICA"
       },
+      "kind": {
+        "en": "Associations",
+        "pt": "Associativismo"
+      },
       "meta": {
         "en": "Aug 2018 – Aug 2019 · University of Beira Interior",
         "pt": "ago. 2018 – ago. 2019 · Universidade da Beira Interior"
@@ -162,6 +202,10 @@
       "title": {
         "en": "Professional Internship",
         "pt": "Estágio Profissional"
+      },
+      "kind": {
+        "en": "Industry",
+        "pt": "Indústria"
       },
       "meta": {
         "en": "Jun 2014 – Jul 2014 · Ramada Aços, S.A.",
@@ -179,6 +223,10 @@
         "en": "Participant, RoboCup 2016 World Championship (Junior Rescue League)",
         "pt": "Participante, RoboCup 2016 Campeonato Mundial (Junior Rescue League)"
       },
+      "kind": {
+        "en": "Robotics",
+        "pt": "Robótica"
+      },
       "meta": {
         "en": "Jun 2016 – Jul 2016 · World robotics championship · Leipzig, Germany",
         "pt": "jun. 2016 – jul. 2016 · Campeonato mundial de robótica · Leipzig, Alemanha"
@@ -194,6 +242,10 @@
       "title": {
         "en": "Participant, XVI RoboCup Portugal Open",
         "pt": "Participante, XVI RoboCup Portugal Open"
+      },
+      "kind": {
+        "en": "Robotics",
+        "pt": "Robótica"
       },
       "meta": {
         "en": "May 2016 · National robotics competition · Bragança, Portugal",
@@ -211,6 +263,10 @@
         "en": "Participant, XV RoboCup Portugal Open",
         "pt": "Participante, XV RoboCup Portugal Open"
       },
+      "kind": {
+        "en": "Robotics",
+        "pt": "Robótica"
+      },
       "meta": {
         "en": "2015 · National robotics competition · Vila Real, Portugal",
         "pt": "2015 · Competição nacional de robótica · Vila Real, Portugal"
@@ -226,6 +282,10 @@
       "title": {
         "en": "Participant, XIV RoboCup Portugal Open",
         "pt": "Participante, XIV RoboCup Portugal Open"
+      },
+      "kind": {
+        "en": "Robotics",
+        "pt": "Robótica"
       },
       "meta": {
         "en": "May 2014 · National robotics competition · Espinho, Portugal",

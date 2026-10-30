@@ -1958,7 +1958,7 @@
       nav.appendChild(bar);
     }
 
-    [["#presentations .timeline", 4], ["#experience .timeline", 4]].forEach(([sel, n]) => {
+    [["#presentations .timeline", 4]].forEach(([sel, n]) => {
       const tl = document.querySelector(sel);
       if (!tl || tl.dataset.collapse) return;
       const items = tl.querySelectorAll(":scope > .timeline-item");
@@ -2040,9 +2040,22 @@
     } catch (e) { /* unreadable image: keep the default tile */ }
   }
 
+  // Career paths (Education, Experience): each .path-wrap holds a row of steps and a
+  // panel. A step opens the text of its entry (a card kept hidden in .path-source).
+  const pathLangUpdates = [], pathFinders = [];
   function setupCareerPath() {
-    const path = document.querySelector(".path");
-    const panel = document.getElementById("pathDetail");
+    document.querySelectorAll(".path-wrap").forEach(setupOnePath);
+    pathLangUpdate = () => pathLangUpdates.forEach(f => f());
+    // a search result opens its step, preferring the path of the entry's own section
+    showPathFor = it => {
+      const sec = it.closest("section");
+      const order = pathFinders.slice().sort((a, b) => (b.wrap.closest("section") === sec) - (a.wrap.closest("section") === sec));
+      return order.some(f => f.open(it));
+    };
+  }
+  function setupOnePath(wrap) {
+    const path = wrap.querySelector(".path");
+    const panel = wrap.querySelector(".path-detail");
     if (!path || !panel || path.dataset.wired) return;
     path.dataset.wired = "1";
     const steps = Array.from(path.querySelectorAll(".path-btn"));
@@ -2062,9 +2075,9 @@
       if (!it) { panel.hidden = true; return; }
       const txt = sel => { const e = it.querySelector(sel); return e ? e.textContent.trim() : ""; };
       const sum = txt(".timeline-card > p em");
-      // Education lives only in this path: its step shows the entry's whole text and
-      // photos here. Experience steps show a summary and a link to their card.
-      const full = btn.dataset.section === "education" ? it.querySelector(".expand-body") : null;
+      // entries shown only through a path (hidden cards): the whole text and photos
+      // here; any other entry: a summary and a link to its card
+      const full = it.closest(".path-source") ? it.querySelector(".expand-body") : null;
       panel.innerHTML =
         '<span class="path-detail-text"><span class="path-detail-title"></span><span class="path-detail-meta"></span>' +
         (sum ? '<span class="path-detail-sum"></span>' : "") + "</span>" +
@@ -2129,16 +2142,47 @@
       steps.forEach(b => b.setAttribute("aria-pressed", "false"));
       panel.hidden = true; panel.innerHTML = "";
     }
-    pathLangUpdate = () => { if (current) show(current); };
-    // search results for an education entry open its step
-    showPathFor = it => {
+    pathLangUpdates.push(() => { if (current) show(current); });
+    pathFinders.push({ wrap, open: it => {
       const b = steps.find(x => target(x) === it);
       if (!b) return false;
-      show(b);
-      path.closest(".path-wrap").scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "start" });
+      show(b); bringIntoTrack(b);
+      wrap.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "start" });
       return true;
-    };
+    } });
+    // long paths (Experience) slide sideways: arrows move by most of a view and the
+    // path opens on its newest end
+    const track = wrap.querySelector(".path-scroll");
+    const arrows = Array.from(wrap.querySelectorAll(".path-arrow"));
+    function bringIntoTrack(b) {
+      if (!track) return;
+      const t = track.getBoundingClientRect(), r = b.getBoundingClientRect();
+      if (r.left < t.left || r.right > t.right) track.scrollLeft += (r.left + r.width / 2) - (t.left + t.width / 2);
+    }
+    if (track) {
+      const vertical = () => track.scrollWidth <= track.clientWidth + 1;
+      const sync = () => {
+        const max = track.scrollWidth - track.clientWidth;
+        arrows.forEach(a => {
+          const off = vertical() || (a.dataset.dir === "-1" ? track.scrollLeft <= 2 : track.scrollLeft >= max - 2);
+          a.disabled = off; a.hidden = vertical();
+        });
+      };
+      arrows.forEach(a => a.addEventListener("click", () => {
+        track.scrollBy({ left: +a.dataset.dir * track.clientWidth * 0.8, behavior: prefersReduced ? "auto" : "smooth" });
+      }));
+      track.addEventListener("scroll", sync, { passive: true });
+      addEventListener("resize", sync, { passive: true });
+      track.scrollLeft = track.scrollWidth;          // newest first in view
+      sync();
+      steps.forEach(b => b.addEventListener("focus", () => bringIntoTrack(b)));
+    }
     // nothing is open at first: a step's text appears when it is clicked
+    // a click anywhere outside the path box hides the text again (the photo viewer
+    // opened from that text does not count as outside)
+    document.addEventListener("click", e => {
+      if (current && !panel.hidden && !wrap.contains(e.target) && !e.target.closest(".lightbox")) hide();
+    });
     // draw the line when the path scrolls into view
     if (prefersReduced || !("IntersectionObserver" in window)) { path.classList.add("is-drawn"); return; }
     const io = new IntersectionObserver(es => es.forEach(e => {

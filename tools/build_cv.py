@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Turn cv.html into cv.pdf (English), cv-pt.pdf, cv-fr.pdf and cv-ja.pdf.
+"""Turn cv.html into cv.pdf (English), cv-pt.pdf, cv-fr.pdf and cv-ja.pdf, and the same
+without institution logos: cv-nologos.pdf, cv-pt-nologos.pdf, ... (the CV page's
+"Logos" switch chooses which one is downloaded).
 
 Run by .github/workflows/update-data.yml every night, or by hand:
     pip install playwright && python -m playwright install chromium
@@ -48,9 +50,11 @@ def main():
     with sync_playwright() as p:
         exe = os.environ.get("CHROMIUM_PATH")             # optional: use an already installed Chromium
         browser = p.chromium.launch(**({"executable_path": exe} if exe else {}))
-        for lang, out in OUT.items():
+        jobs = [(lang, out, "1", lang) for lang, out in OUT.items()] + \
+               [(lang, out.replace(".pdf", "-nologos.pdf"), "0", lang + "-nologos") for lang, out in OUT.items()]
+        for lang, out, logos, key in jobs:
             page = browser.new_page()
-            page.goto(f"{base}?lang={lang}", wait_until="networkidle")
+            page.goto(f"{base}?lang={lang}&logos={logos}", wait_until="networkidle")
             page.wait_for_function("document.documentElement.dataset.cvReady === '1'", timeout=30000)
             page.evaluate("document.fonts.ready")
             # the "Generated on <date>" line is left out of the fingerprint
@@ -62,12 +66,12 @@ def main():
                 [...document.fonts].some(f => f.family.replace(/"/g, '') === n && f.status === 'loaded'))""", FONTS[lang])
             digest = hashlib.sha256((body + f"|fonts={fonts}").encode("utf-8")).hexdigest()
             path = os.path.join(ROOT, out)
-            if force or state.get(lang) != digest or not os.path.exists(path):
+            if force or state.get(key) != digest or not os.path.exists(path):
                 page.emulate_media(media="print")
                 page.pdf(path=path, format="A4", print_background=True, display_header_footer=True,
                          header_template="<span></span>", footer_template=FOOTER,
                          margin={"top": "16mm", "bottom": "18mm", "left": "15mm", "right": "15mm"})
-                state[lang] = digest
+                state[key] = digest
                 changed = True
                 print(f"Built {out}")
             else:

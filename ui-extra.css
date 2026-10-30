@@ -697,6 +697,21 @@ html[data-theme="light"] .path-year{ color:var(--accent-strong); border-color:rg
 .path-kind{ font-size:.66rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
 .path-place{ font-weight:700; font-size:.95rem; color:var(--text); }
 .path-what{ font-size:.78rem; line-height:1.35; color:var(--muted); }
+/* the PhD and the research stays made during it: one light frame around those steps.
+   Each step paints its part of the frame, reaching into the gap so the parts join. */
+.path-phd::before{
+  content:""; position:absolute; z-index:0; top:-8px; bottom:-6px; left:-5px; right:-5px;
+  background:color-mix(in srgb, var(--accent) 5%, transparent);
+  border:1px dashed color-mix(in srgb, var(--accent) 40%, transparent); border-left:0; border-right:0;
+  pointer-events:none;
+}
+.path-phd-first::before{ left:-2px; border-left:1px dashed color-mix(in srgb, var(--accent) 40%, transparent); border-radius:14px 0 0 14px; }
+.path-phd-last::before{ right:-2px; border-right:1px dashed color-mix(in srgb, var(--accent) 40%, transparent); border-radius:0 14px 14px 0; }
+.path-group-label{
+  position:absolute; z-index:2; top:-17px; left:12px; padding:1px 8px; border-radius:var(--radius-pill);
+  font-size:.64rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; white-space:nowrap;
+  color:var(--accent); background:var(--card); border:1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+}
 .path-now .path-year::before{               /* "now": the green status dot used in the intro */
   content:""; display:inline-block; width:7px; height:7px; margin-right:6px; vertical-align:1px; border-radius:50%;
   background:var(--status-live); box-shadow:0 0 0 3px rgba(40,200,64,.18);
@@ -717,7 +732,7 @@ html[data-theme="light"] .path-year{ color:var(--accent-strong); border-color:rg
 .path-detail-body{ flex:1 1 100%; min-width:0; font-size:.95rem; line-height:1.65; color:var(--text); }
 .path-detail-body > p{ margin:0 0 10px; }
 .path-detail-body .expand-gallery{ margin-top:12px; }
-.edu-source[hidden]{ display:none !important; }
+.path-source[hidden]{ display:none !important; }
 .path-detail-go{
   display:inline-flex; align-items:center; gap:6px; cursor:pointer; white-space:nowrap;
   font:inherit; font-size:.86rem; font-weight:700; color:var(--accent);
@@ -727,6 +742,29 @@ html[data-theme="light"] .path-year{ color:var(--accent-strong); border-color:rg
 }
 .path-detail-go:hover{ background:color-mix(in srgb, var(--accent) 18%, transparent); }
 .path-detail-go svg{ width:15px; height:15px; }
+
+/* long path (Experience): a sliding track with arrows; opens on the newest end */
+.path-wrap--scroll{ position:relative; }
+.path-scroll{ overflow-x:auto; margin:0 38px; scrollbar-width:none; overscroll-behavior-x:contain;
+  /* soft edges: steps slide in and out instead of being cut */
+  -webkit-mask-image:linear-gradient(90deg, transparent, #000 28px, #000 calc(100% - 28px), transparent);
+          mask-image:linear-gradient(90deg, transparent, #000 28px, #000 calc(100% - 28px), transparent); }
+.path-scroll::-webkit-scrollbar{ display:none; }
+.path--scroll{ grid-template-columns:none; grid-auto-flow:column; grid-auto-columns:158px; width:max-content; min-width:100%; padding-top:2px; }
+.path--scroll::before{ left:79px; right:79px; }
+.path--scroll .path-place{ font-size:.88rem; line-height:1.3; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+.path--scroll .path-what{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.path-arrow{
+  position:absolute; z-index:3; top:40px; width:34px; height:34px; display:grid; place-items:center; cursor:pointer;
+  color:var(--accent); background:var(--card); border:1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  border-radius:50%; box-shadow:0 4px 12px rgba(2,8,23,.25); transition:background .18s ease, opacity .18s ease;
+}
+.path-arrow--prev{ left:10px; } .path-arrow--next{ right:10px; }
+.path-arrow:hover:not(:disabled){ background:color-mix(in srgb, var(--accent) 14%, var(--card)); }
+.path-arrow:disabled{ opacity:.3; cursor:default; }
+.path-arrow[hidden]{ display:none; }
+.path-arrow svg{ width:18px; height:18px; }
+.path-arrow:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
 
 @media (max-width:760px){                    /* phones: steps as rows, line on the left */
   .path-wrap{ padding:14px 12px; }
@@ -738,6 +776,26 @@ html[data-theme="light"] .path-year{ color:var(--accent-strong); border-color:rg
   .path-btn:hover{ transform:none; }
   .path-logo{ grid-row:1 / span 4; margin:0; }
   .path-btn > :not(.path-logo){ grid-column:2; justify-self:start; }
+  /* phones: the PhD frame runs down the column */
+  .path-phd::before{ top:-2px; bottom:-2px; left:-4px; right:-4px; border:1px dashed color-mix(in srgb, var(--accent) 40%, transparent);
+    border-top:0; border-bottom:0; border-radius:0; }
+  .path-phd-first::before{ top:-12px; border-top:1px dashed color-mix(in srgb, var(--accent) 40%, transparent); border-radius:14px 14px 0 0; }
+  .path-phd-last::before{ bottom:-4px; border-bottom:1px dashed color-mix(in srgb, var(--accent) 40%, transparent); border-radius:0 0 14px 14px; }
+  .path-phd-first{ margin-top:16px; }
+  .path-group-label{ top:-21px; left:auto; right:12px; }
+  /* the Experience path stays a horizontal track on phones too (swipe or arrows) */
+  .path-scroll{ margin:0 30px;
+    -webkit-mask-image:linear-gradient(90deg, transparent, #000 10px, #000 calc(100% - 10px), transparent);
+            mask-image:linear-gradient(90deg, transparent, #000 10px, #000 calc(100% - 10px), transparent); }
+  .path--scroll{ grid-template-columns:none; grid-auto-flow:column; grid-auto-columns:136px; width:max-content; gap:4px; }
+  .path--scroll::before{ top:31px; bottom:auto; left:68px; right:68px; width:auto; height:2px; transform:scaleX(0); transform-origin:left center;
+    background:color-mix(in srgb, var(--accent) 45%, transparent); }
+  .path--scroll.is-drawn::before{ transform:scaleX(1); }
+  .path--scroll .path-btn{ display:flex; flex-direction:column; align-items:center; text-align:center; padding:8px 4px 10px; }
+  .path--scroll .path-logo{ margin:0 0 4px; }
+  .path--scroll .path-btn > :not(.path-logo){ grid-column:auto; justify-self:auto; }
+  .path-arrow{ width:30px; height:30px; top:36px; }
+  .path-arrow--prev{ left:2px; } .path-arrow--next{ right:2px; }
 }
 @media (prefers-reduced-motion:reduce){
   .path::before, .path-btn{ transition:none; } .path-detail{ animation:none; }
