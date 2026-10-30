@@ -800,10 +800,10 @@
   const pubCoversP = fetch("data/paper-covers.json", { cache: "no-cache" }).then(r => r.ok ? r.json() : {})
     .then(c => { pubCovers = c || {}; }).catch(() => {});
   const PUB_TXT = {
-    en: { abs: "Abstract", art: "Research article", open: "Click a paper to open it", prev: "Newer paper", next: "Older paper", close: "Close", cite: "Citation (APA)", copy: "Copy" },
-    pt: { abs: "Resumo", art: "Artigo científico", open: "Clique num artigo para o abrir", prev: "Artigo mais recente", next: "Artigo anterior", close: "Fechar", cite: "Citação (APA)", copy: "Copiar" },
-    fr: { abs: "Résumé", art: "Article de recherche", open: "Cliquez sur un article pour l’ouvrir", prev: "Article plus récent", next: "Article plus ancien", close: "Fermer", cite: "Citation (APA)", copy: "Copier" },
-    ja: { abs: "要旨", art: "研究論文", open: "論文をクリックして開く", prev: "新しい論文", next: "古い論文", close: "閉じる", cite: "引用 (APA)", copy: "コピー" }
+    en: { abs: "Abstract", art: "Research article", open: "Click a paper to open it", prev: "Newer paper", next: "Older paper", close: "Close", cite: "Citation (APA)", copy: "Copy", export: "Export citation" },
+    pt: { abs: "Resumo", art: "Artigo científico", open: "Clique num artigo para o abrir", prev: "Artigo mais recente", next: "Artigo anterior", close: "Fechar", cite: "Citação (APA)", copy: "Copiar", export: "Exportar citação" },
+    fr: { abs: "Résumé", art: "Article de recherche", open: "Cliquez sur un article pour l’ouvrir", prev: "Article plus récent", next: "Article plus ancien", close: "Fermer", cite: "Citation (APA)", copy: "Copier", export: "Exporter la citation" },
+    ja: { abs: "要旨", art: "研究論文", open: "論文をクリックして開く", prev: "新しい論文", next: "古い論文", close: "閉じる", cite: "引用 (APA)", copy: "コピー", export: "引用をエクスポート" }
   };
   function setupPubCarousel() {
     const sec = document.getElementById("publications");
@@ -925,13 +925,16 @@
         '<h3 class="pub-zoom-title" id="pubZoomTitle"></h3>' +
         '<div class="pub-zoom-block"><div class="pub-zoom-h"><span>' + escapeHtml(t.cite) + '</span><button type="button" class="pub-tool" data-copy="apa"><i data-lucide="copy"></i><span>' + escapeHtml(t.copy) + "</span></button></div>" +
           '<p class="pub-zoom-apa"></p></div>' +
-        '<div class="pub-zoom-block"><div class="pub-zoom-h"><span>BibTeX</span><button type="button" class="pub-tool" data-copy="bibtex"><i data-lucide="copy"></i><span>' + escapeHtml(t.copy) + "</span></button></div>" +
-          '<pre class="pub-zoom-bib"></pre></div>' +
+        '<div class="pub-zoom-block"><div class="pub-zoom-h"><span>' + escapeHtml(t.export) + "</span></div>" +
+          '<div class="pub-zoom-export">' +
+            '<button type="button" class="pub-tool" data-export="bib"><i data-lucide="braces"></i><span>BibTeX</span></button>' +
+            '<button type="button" class="pub-tool" data-export="ris" title="Zotero · Mendeley · EndNote"><i data-lucide="file-down"></i><span>RIS · Zotero · Mendeley</span></button>' +
+            '<button type="button" class="pub-tool" data-export="enw"><i data-lucide="file-down"></i><span>EndNote</span></button>' +
+          "</div></div>" +
         (doiUrl ? '<div class="pub-zoom-block"><div class="pub-zoom-h"><span>DOI</span></div><a class="pub-zoom-doi" target="_blank" rel="noopener noreferrer"></a></div>' : "") +
         '<span class="pub-tool-done" role="status" aria-live="polite"></span>';
       zoom.querySelector(".pub-zoom-title").textContent = p.title;
       zoom.querySelector(".pub-zoom-apa").textContent = apa(w);
-      zoom.querySelector(".pub-zoom-bib").textContent = bibtex(w);
       const da = zoom.querySelector(".pub-zoom-doi");
       if (da) { da.href = doiUrl; da.textContent = doiUrl; }
       zoom.querySelector(".pub-zoom-close").setAttribute("aria-label", t.close);
@@ -995,8 +998,11 @@
       // buttons use the paper's own (hidden) buttons
       zoom.addEventListener("click", e => {
         if (e.target.closest(".pub-zoom-close") || e.target.classList.contains("pub-zoom-backdrop")) { hideDetail(); return; }
+        if (openIdx < 0) return;
+        const x = e.target.closest("[data-export]");
+        if (x) { exportCitation(pubWork(info(items[openIdx])), x.dataset.export); return; }
         const b = e.target.closest("[data-copy]");
-        if (!b || openIdx < 0) return;
+        if (!b) return;
         const w = pubWork(info(items[openIdx]));
         copyText(b.dataset.copy === "bibtex" ? bibtex(w) : apa(w)).then(ok => {
           const done = zoom.querySelector(".pub-tool-done");
@@ -1110,6 +1116,36 @@
       f("author", authorList(w).map(a => a.family + (a.given ? ", " + a.given : "")).join(" and ")) +
       f("title", w.title) + f("journal", w.journal) + f("year", w.year) + f("volume", w.volume) +
       f("number", w.issue) + f("pages", w.pages) + f("doi", w.doi) + "}";
+  }
+  // RIS: read by Zotero, Mendeley, EndNote and most reference managers
+  function ris(w) {
+    const L = [["TY", "JOUR"]];
+    authorList(w).forEach(a => L.push(["AU", a.family + (a.given ? ", " + a.given : "")]));
+    L.push(["TI", w.title], ["T2", w.journal], ["JO", w.journal], ["PY", w.year], ["VL", w.volume], ["IS", w.issue]);
+    const pg = String(w.pages || "").split(/[-–]/);
+    if (pg[0]) L.push(["SP", pg[0]]);
+    if (pg[1]) L.push(["EP", pg[1]]);
+    L.push(["DO", w.doi], ["UR", w.doi ? "https://doi.org/" + w.doi : ""]);
+    (w.keywords || []).forEach(k => L.push(["KW", k]));
+    return L.filter(([, v]) => v).map(([k, v]) => k + "  - " + v).join("\r\n") + "\r\nER  - \r\n";
+  }
+  // EndNote tagged format (.enw)
+  function enw(w) {
+    const L = [["%0", "Journal Article"]];
+    authorList(w).forEach(a => L.push(["%A", a.family + (a.given ? ", " + a.given : "")]));
+    L.push(["%T", w.title], ["%J", w.journal], ["%D", w.year], ["%V", w.volume], ["%N", w.issue], ["%P", w.pages],
+           ["%R", w.doi], ["%U", w.doi ? "https://doi.org/" + w.doi : ""]);
+    (w.keywords || []).forEach(k => L.push(["%K", k]));
+    return L.filter(([, v]) => v).map(([k, v]) => k + " " + v).join("\n") + "\n";
+  }
+  function exportCitation(w, kind) {
+    const f = { bib: [bibtex, "application/x-bibtex"], ris: [ris, "application/x-research-info-systems"], enw: [enw, "application/x-endnote-refer"] }[kind];
+    if (!f) return;
+    const name = (String(w.doi || "citation").replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "") || "citation") + "." + kind;
+    const url = URL.createObjectURL(new Blob([f[0](w)], { type: f[1] + ";charset=utf-8" }));
+    const a = document.createElement("a");
+    a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
   }
   function copyText(t) {
     if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(t).then(() => true, () => fallback());

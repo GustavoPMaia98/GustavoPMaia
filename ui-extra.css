@@ -982,9 +982,8 @@ html[data-theme="light"] .pub-zoom-box{ background:#fff; }
 .pub-zoom-h{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin:0 0 6px;
   font-size:.75rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); }
 .pub-zoom-apa{ margin:0; font-size:.92rem; line-height:1.6; color:var(--text); }
-.pub-zoom-bib{ margin:0; padding:10px 12px; max-height:220px; overflow:auto; font-size:.76rem; line-height:1.5; white-space:pre-wrap; word-break:break-word;
-  color:var(--text); background:color-mix(in srgb, var(--text) 5%, transparent); border:1px solid var(--border); border-radius:8px; }
 .pub-zoom-doi{ font-weight:700; word-break:break-all; }
+.pub-zoom-export{ display:flex; flex-wrap:wrap; gap:8px; }
 .pub-zoom .pub-tool-done{ font-size:.82rem; color:var(--accent); }
 .pub-zoom-page .pub-sheet{ font-size:clamp(17px, 2.1vw, 25px); will-change:transform; }
 .pub-zoom-page .pub-sheet-title{ -webkit-line-clamp:7; }
