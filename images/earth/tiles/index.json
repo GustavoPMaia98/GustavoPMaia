@@ -1,0 +1,5 @@
+{
+ "_help": "High-resolution Earth tiles for the globe (scenes3d.js). Empty until the 'Make Earth tiles' workflow (tools/make_earth_tiles.py) is run once; then this file lists the 16 x 8 tiles.",
+ "cols": 0,
+ "rows": 0
+}

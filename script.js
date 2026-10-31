@@ -788,11 +788,7 @@
   }
 
   // ============================================================
-  //  PUBLICATIONS — a 3D carousel of floating front pages
-  //  Each paper is drawn as the first page of an article (journal, title, authors,
-  //  abstract), floating in 3D. The timeline below (oldest to newest) is linked to it; the
-  //  left). Clicking the page in front shows its abstract, keywords and citation
-  //  tools; the list of cards stays in the page, hidden, as the source.
+  //  PUBLICATIONS — a timeline of the papers (see setupPubCarousel)
   // ============================================================
   let pubCarousel = null;
   // journal logo, authors with affiliations, affiliations (data/paper-info.json), by DOI
@@ -806,48 +802,34 @@
     fr: { abs: "Résumé", art: "Article de recherche", open: "Cliquez sur un article pour l’ouvrir", prev: "Article plus récent", next: "Article plus ancien", older: "Articles plus anciens", newer: "Articles plus récents", close: "Fermer", cite: "Citation (APA)", copy: "Copier", export: "Exporter la citation" },
     ja: { abs: "要旨", art: "研究論文", open: "論文をクリックして開く", prev: "新しい論文", next: "古い論文", older: "古い論文", newer: "新しい論文", close: "閉じる", cite: "引用 (APA)", copy: "コピー", export: "引用をエクスポート" }
   };
+  // Publications as a timeline (oldest to newest), like Education and Experience.
+  // Clicking a paper opens it below: the paper (journal logo, title, authors with their
+  // affiliations, abstract) and how to cite it (APA, export in 12 formats, DOI). The
+  // list of cards stays in the page, hidden, as the source.
   function setupPubCarousel() {
     const sec = document.getElementById("publications");
     const list = sec && sec.querySelector(".timeline");
     if (!list) return;
     const items = Array.from(list.querySelectorAll(".timeline-item.publication"));   // newest first
     if (!items.length) return;
-    let stage = sec.querySelector(".pub3d");
+    let stage = sec.querySelector(".pub-tl");
     if (!stage) {
       stage = document.createElement("div");
-      stage.className = "pub3d";
+      stage.className = "pub-tl path-wrap path-wrap--scroll";
       stage.innerHTML =
-        '<button type="button" class="pub3d-arrow pub3d-arrow--prev" data-dir="-1"><i data-lucide="chevron-left"></i></button>' +
-        '<div class="pub3d-stage" tabindex="0"><div class="pub3d-ring"></div></div>' +
-        '<button type="button" class="pub3d-arrow pub3d-arrow--next" data-dir="1"><i data-lucide="chevron-right"></i></button>' +
-        '<p class="pub3d-hint"></p>' +
-        // the timeline under the carousel, in the same style as Education and Experience
-        '<div class="path-wrap path-wrap--scroll pub3d-path">' +
-          '<button type="button" class="path-arrow path-arrow--prev" data-dir="-1"><i data-lucide="chevron-left"></i></button>' +
-          '<div class="path-scroll"><ol class="path path--scroll" aria-label="Publications timeline"></ol></div>' +
-          '<button type="button" class="path-arrow path-arrow--next" data-dir="1"><i data-lucide="chevron-right"></i></button></div>';
+        '<button type="button" class="path-arrow path-arrow--prev" data-dir="-1"><i data-lucide="chevron-left"></i></button>' +
+        '<div class="path-scroll"><ol class="path path--scroll" aria-label="Publications timeline"></ol></div>' +
+        '<button type="button" class="path-arrow path-arrow--next" data-dir="1"><i data-lucide="chevron-right"></i></button>' +
+        '<div class="path-detail pub-detail-panel" aria-live="polite" hidden></div>';
       list.parentNode.insertBefore(stage, list);
     }
     list.classList.add("pub-source");
     list.hidden = true;
     const filter = document.getElementById("pub-filter");
-    if (filter) filter.hidden = true;                // the axis below replaces the year filter
+    if (filter) filter.hidden = true;                // the timeline replaces the year filter
 
-    const ring = stage.querySelector(".pub3d-ring"), axis = stage.querySelector(".pub3d-path .path");
-    const ptrack = stage.querySelector(".pub3d-path .path-scroll"), parrows = Array.from(stage.querySelectorAll(".pub3d-path .path-arrow"));
-    const hint = stage.querySelector(".pub3d-hint");
-    // the zoomed view: the page large on one side, the whole abstract on the other,
-    // keywords, citations and citation tools below
-    let zoom = document.getElementById("pubZoom");
-    if (!zoom) {
-      zoom = document.createElement("div");
-      zoom.id = "pubZoom"; zoom.className = "pub-zoom"; zoom.hidden = true;
-      zoom.setAttribute("role", "dialog"); zoom.setAttribute("aria-modal", "true"); zoom.setAttribute("aria-labelledby", "pubZoomTitle");
-      zoom.innerHTML = '<div class="pub-zoom-backdrop"></div><div class="pub-zoom-box">' +
-        '<button type="button" class="pub-zoom-close"><i data-lucide="x"></i></button>' +
-        '<div class="pub-zoom-grid"><div class="pub-zoom-page"></div><div class="pub-zoom-text"></div></div></div>';
-      document.body.appendChild(zoom);
-    }
+    const axis = stage.querySelector(".path"), track = stage.querySelector(".path-scroll");
+    const arrows = Array.from(stage.querySelectorAll(".path-arrow")), panel = stage.querySelector(".pub-detail-panel");
     const T = () => PUB_TXT[currentLang] || PUB_TXT.en;
     const txt = (it, sel) => { const e = it.querySelector(sel); return e ? e.textContent.replace(/\s+/g, " ").trim() : ""; };
     const hue = s => { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) % 360; return h; };
@@ -859,12 +841,12 @@
                journal: meta.slice(2).join(" · "), abs: absP ? absP.textContent.trim() : "",
                doi: a ? a.getAttribute("href").replace(/^https?:\/\/(dx\.)?doi\.org\//i, "") : "" };
     };
-    // a paper as a page: journal logo and name, title, authors (with the keys of their
-    // affiliations), affiliations, abstract and DOI
     const ME = /^(Gustavo\s+(P\.|Pinho)\s+Maia|G\.\s*P\.\s*Maia)$/;
-    function sheetHTML(p, t) {
-      const x = pubInfo[String(p.doi).toLowerCase()] || {};
-      const logo = /^images\/logos\/[\w.-]+\.(png|jpe?g|webp|svg)$/.test(x.logo || "") ? x.logo : "";
+    const logoOf = p => { const x = pubInfo[String(p.doi).toLowerCase()] || {};
+      return /^images\/logos\/[\w.-]+\.(png|jpe?g|webp|svg)$/.test(x.logo || "") ? x.logo : ""; };
+    // the paper itself: journal, title, authors (with the keys of their affiliations), affiliations, abstract
+    function paperHTML(p, t) {
+      const x = pubInfo[String(p.doi).toLowerCase()] || {}, logo = logoOf(p);
       const names = Array.isArray(x.authors) && x.authors.length ? x.authors
         : p.authors.replace(/\s+et al\.?$/, "").split(/,\s*|\s+and\s+/).filter(Boolean).map(n => ({ name: n }));
       const authors = names.map(a => {
@@ -872,122 +854,16 @@
         return (ME.test(a.name) ? "<b>" + n + "</b>" : n) + sup;
       }).join(", ");
       const affs = (x.affiliations || []).map(f => '<span class="pub-sheet-aff"><sup>' + escapeHtml(f.key) + "</sup> " + escapeHtml(f.text) + "</span>").join("");
-      return '<span class="pub-sheet">' +
+      return '<div class="pub-sheet" style="--hue:' + hue(p.journal) + '">' +
         '<span class="pub-sheet-head">' + (logo ? '<img class="pub-sheet-logo" src="' + logo + '" alt="">' : "") +
           '<span class="pub-sheet-journal">' + escapeHtml(p.journal) + '</span><span class="pub-sheet-year">' + escapeHtml(p.year) + "</span></span>" +
         '<span class="pub-sheet-kind">' + escapeHtml(t.art) + "</span>" +
-        '<span class="pub-sheet-title">' + escapeHtml(p.title) + "</span>" +
+        '<h3 class="pub-sheet-title">' + escapeHtml(p.title) + "</h3>" +
         '<span class="pub-sheet-authors">' + authors + "</span>" +
         (affs ? '<span class="pub-sheet-affs">' + affs + "</span>" : "") +
         '<span class="pub-sheet-rule"></span>' +
         '<span class="pub-sheet-abs-h">' + escapeHtml(t.abs) + "</span>" +
-        '<span class="pub-sheet-abs">' + escapeHtml(p.abs) + "</span>" +
-        (p.doi ? '<span class="pub-sheet-doi">https://doi.org/' + escapeHtml(p.doi) + "</span>" : "") +
-        "</span>";
-    }
-    function syncPath() {
-      const max = ptrack.scrollWidth - ptrack.clientWidth, fits = max <= 2;
-      parrows.forEach(a => { a.hidden = fits; a.disabled = a.dataset.dir === "-1" ? ptrack.scrollLeft <= 2 : ptrack.scrollLeft >= max - 2; });
-    }
-    let active = 0, openIdx = -1;
-    function render() {
-      const t = T();
-      ring.innerHTML = items.map((it, i) => {
-        const p = info(it);
-        return '<button type="button" class="pub-page" data-i="' + i + '" style="--i:' + i + ";--hue:" + hue(p.journal) + '">' +
-          '<span class="pub-float">' + sheetHTML(p, t) + '</span><span class="pub-shadow" aria-hidden="true"></span></button>';
-      }).join("");
-      // oldest on the left, newest on the right (the carousel shows the newest first)
-      axis.innerHTML = items.map((it, i) => ({ it, i })).reverse().map(({ it, i }) => {
-        const p = info(it), x = pubInfo[String(p.doi).toLowerCase()] || {};
-        const logo = /^images\/logos\/[\w.-]+\.(png|jpe?g|webp|svg)$/.test(x.logo || "") ? x.logo : "";
-        return '<li class="path-step"><button type="button" class="path-btn pub3d-step" data-i="' + i + '" aria-pressed="false">' +
-          '<span class="path-logo" aria-hidden="true">' + (logo ? '<img src="' + logo + '" alt="">' : '<i data-lucide="book-open"></i>') + "</span>" +
-          '<span class="path-year">' + escapeHtml(p.year) + '</span><span class="path-kind">' + escapeHtml(t.art) + "</span>" +
-          '<span class="path-place">' + escapeHtml(p.title) + '</span><span class="path-what">' + escapeHtml(p.journal) + "</span></button></li>";
-      }).join("");
-      axis.querySelectorAll(".path-logo img").forEach(im => im.addEventListener("load", () => matchLogoBackground(im, im.parentNode)));
-      if (window.lucide && lucide.createIcons) try { lucide.createIcons(); } catch (e) {}
-      parrows.forEach(a => a.setAttribute("aria-label", a.dataset.dir === "-1" ? t.older : t.newer));
-      syncPath();
-      hint.textContent = t.open;
-      stage.querySelector(".pub3d-arrow--prev").setAttribute("aria-label", t.prev);
-      stage.querySelector(".pub3d-arrow--next").setAttribute("aria-label", t.next);
-      ring.querySelectorAll(".pub-page").forEach((b, i) => b.setAttribute("aria-label", info(items[i]).title + " (" + info(items[i]).year + ")"));
-      place();
-      if (openIdx >= 0) showDetail(openIdx);
-    }
-    function place(pos) {
-      const at = pos == null ? active : pos;
-      ring.querySelectorAll(".pub-page").forEach((b, i) => {
-        const d = i - at, ad = Math.abs(d);
-        if (pos != null) { b.style.setProperty("--d", d); b.style.setProperty("--ad", ad); b.classList.toggle("is-far", ad > 2.6); return; }
-        b.style.setProperty("--d", d); b.style.setProperty("--ad", ad);
-        b.classList.toggle("is-active", d === 0);
-        b.classList.toggle("is-far", ad > 2);
-        b.tabIndex = d === 0 ? 0 : -1;
-        b.setAttribute("aria-current", String(d === 0));
-      });
-      axis.querySelectorAll(".pub3d-step").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.i === active)));
-      stage.querySelector(".pub3d-arrow--prev").disabled = active === 0;
-      stage.querySelector(".pub3d-arrow--next").disabled = active === items.length - 1;
-    }
-    function go(i) {
-      i = Math.max(0, Math.min(items.length - 1, i));
-      if (i !== active) { active = i; place(); if (openIdx >= 0 && openIdx !== i) hideDetail(); }
-    }
-    let lastFocus = null;
-    function showDetail(i) {
-      const it = items[i], p = info(it), t = T();
-      const wasOpen = !zoom.hidden;
-      openIdx = i;
-      const page = ring.querySelectorAll(".pub-page")[i];
-      const sheet = page && page.querySelector(".pub-sheet");
-      const box = zoom.querySelector(".pub-zoom-page");
-      box.innerHTML = sheet ? sheet.outerHTML : "";
-      if (box.firstElementChild) {
-        box.firstElementChild.style.setProperty("--hue", page.style.getPropertyValue("--hue"));
-        box.style.setProperty("--ar", sheet.offsetWidth && sheet.offsetHeight ? sheet.offsetWidth / sheet.offsetHeight : 0.707);
-      }
-      // the page itself can be read: beside it only how to cite the paper
-      const w = pubWork(p);
-      const doiUrl = p.doi ? "https://doi.org/" + p.doi : "";
-      zoom.querySelector(".pub-zoom-text").innerHTML =
-        '<h3 class="pub-zoom-title" id="pubZoomTitle"></h3>' +
-        '<div class="pub-zoom-block"><div class="pub-zoom-h"><span>' + escapeHtml(t.cite) + '</span><button type="button" class="pub-tool" data-copy="apa"><i data-lucide="copy"></i><span>' + escapeHtml(t.copy) + "</span></button></div>" +
-          '<p class="pub-zoom-apa"></p></div>' +
-        '<div class="pub-zoom-block"><div class="pub-export">' +
-          '<button type="button" class="pub-export-btn" aria-expanded="false" aria-haspopup="true"><i data-lucide="download"></i><span>' + escapeHtml(t.export) + '</span><i data-lucide="chevron-down"></i></button>' +
-          '<div class="pub-export-menu" hidden>' + EXPORTS.map(f =>
-            '<button type="button" class="pub-export-item" data-export="' + f.id + '"><b>' + f.name + '</b><span class="pub-export-ext">' + f.ext +
-            '</span><span class="pub-export-sw">' + escapeHtml(f.sw) + "</span></button>").join("") + "</div></div></div>" +
-        (doiUrl ? '<div class="pub-zoom-block"><div class="pub-zoom-h"><span>DOI</span></div><a class="pub-zoom-doi" target="_blank" rel="noopener noreferrer"></a></div>' : "") +
-        '<span class="pub-tool-done" role="status" aria-live="polite"></span>';
-      zoom.querySelector(".pub-zoom-title").textContent = p.title;
-      zoom.querySelector(".pub-zoom-apa").textContent = apa(w);
-      const da = zoom.querySelector(".pub-zoom-doi");
-      if (da) { da.href = doiUrl; da.textContent = doiUrl; }
-      zoom.querySelector(".pub-zoom-close").setAttribute("aria-label", t.close);
-      if (window.lucide && lucide.createIcons) try { lucide.createIcons(); } catch (e) {}
-      if (wasOpen) return;
-      lastFocus = document.activeElement;
-      zoom.hidden = false;
-      document.body.classList.add("pub-zoom-open");
-      // zoom: the big page grows out of the small one in the carousel
-      const big = box.firstElementChild;
-      if (big && sheet && !prefersReduced) {
-        const a = sheet.getBoundingClientRect(), b = big.getBoundingClientRect();
-        big.style.transformOrigin = "0 0";
-        big.style.transition = "none";
-        big.style.transform = "translate(" + (a.left - b.left) + "px," + (a.top - b.top) + "px) scale(" + (a.width / b.width) + ")";
-        zoom.classList.remove("is-in");
-        requestAnimationFrame(() => requestAnimationFrame(() => {
-          big.style.transition = "transform .55s cubic-bezier(.22,.61,.36,1)";
-          big.style.transform = "none";
-          zoom.classList.add("is-in");
-        }));
-      } else zoom.classList.add("is-in");
-      zoom.querySelector(".pub-zoom-close").focus({ preventScroll: true });
+        '<p class="pub-sheet-abs">' + escapeHtml(p.abs) + "</p></div>";
     }
     // the paper's record for the citation: the nightly data, else what the page shows
     function pubWork(p) {
@@ -996,128 +872,132 @@
       const names = Array.isArray(x.authors) && x.authors.length ? x.authors.map(a => a.name).join(", ") : p.authors.replace(/\s+et al\.?$/, "");
       return Object.assign({ title: p.title, authors: names, year: p.year, journal: p.journal, doi: p.doi }, w || {}, { abstract: p.abs });
     }
-    function hideDetail() {
-      if (zoom.hidden) { openIdx = -1; return; }
-      openIdx = -1; zoom.hidden = true; zoom.classList.remove("is-in");
-      document.body.classList.remove("pub-zoom-open");
-      if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
+    let openIdx = -1;
+    function render() {
+      const t = T();
+      axis.innerHTML = items.map((it, i) => ({ it, i })).reverse().map(({ it, i }) => {
+        const p = info(it), logo = logoOf(p);
+        return '<li class="path-step"><button type="button" class="path-btn pub-step" data-i="' + i + '" aria-pressed="' + (i === openIdx) + '">' +
+          '<span class="path-logo" aria-hidden="true">' + (logo ? '<img src="' + logo + '" alt="">' : '<i data-lucide="book-open"></i>') + "</span>" +
+          '<span class="path-year">' + escapeHtml(p.year) + '</span><span class="path-kind">' + escapeHtml(t.art) + "</span>" +
+          '<span class="path-place">' + escapeHtml(p.title) + '</span><span class="path-what">' + escapeHtml(p.journal) + "</span></button></li>";
+      }).join("");
+      axis.querySelectorAll(".path-logo img").forEach(im => im.addEventListener("load", () => matchLogoBackground(im, im.parentNode)));
+      arrows.forEach(a => a.setAttribute("aria-label", a.dataset.dir === "-1" ? t.older : t.newer));
+      if (window.lucide && lucide.createIcons) try { lucide.createIcons(); } catch (e) {}
+      if (openIdx >= 0) fill(openIdx);
+      sync();
+    }
+    function fill(i) {
+      const t = T(), p = info(items[i]), w = pubWork(p), doiUrl = p.doi ? "https://doi.org/" + p.doi : "";
+      panel.innerHTML = '<div class="pub-detail">' + '<div class="pub-detail-paper">' + paperHTML(p, t) + "</div>" +
+        '<div class="pub-detail-side">' +
+          '<div class="pub-zoom-block"><div class="pub-zoom-h"><span>' + escapeHtml(t.cite) + '</span><button type="button" class="pub-tool" data-copy="apa"><i data-lucide="copy"></i><span>' + escapeHtml(t.copy) + "</span></button></div>" +
+            '<p class="pub-zoom-apa"></p></div>' +
+          '<div class="pub-zoom-block"><div class="pub-export">' +
+            '<button type="button" class="pub-export-btn" aria-expanded="false" aria-haspopup="true"><i data-lucide="download"></i><span>' + escapeHtml(t.export) + '</span><i data-lucide="chevron-down"></i></button>' +
+            '<div class="pub-export-menu" hidden>' + EXPORTS.map(f =>
+              '<button type="button" class="pub-export-item" data-export="' + f.id + '"><b>' + f.name + '</b><span class="pub-export-ext">' + f.ext +
+              '</span><span class="pub-export-sw">' + escapeHtml(f.sw) + "</span></button>").join("") + "</div></div></div>" +
+          (doiUrl ? '<div class="pub-zoom-block"><div class="pub-zoom-h"><span>DOI</span></div><a class="pub-zoom-doi" target="_blank" rel="noopener noreferrer"></a></div>' : "") +
+          '<span class="pub-tool-done" role="status" aria-live="polite"></span>' +
+        "</div></div>";
+      panel.querySelector(".pub-zoom-apa").textContent = apa(w);
+      const da = panel.querySelector(".pub-zoom-doi");
+      if (da) { da.href = doiUrl; da.textContent = doiUrl; }
+      if (window.lucide && lucide.createIcons) try { lucide.createIcons(); } catch (e) {}
+    }
+    // open / close with the same smooth height change as the other timelines
+    function animateTo(fromH) {
+      if (prefersReduced || panel.hidden || !panel.animate) return;
+      const to = panel.offsetHeight;
+      if (Math.abs(to - fromH) < 2) return;
+      panel.style.overflow = "hidden";
+      panel.animate([{ height: fromH + "px" }, { height: to + "px" }], { duration: 380, easing: "cubic-bezier(.22,.61,.36,1)" })
+        .onfinish = () => { panel.style.overflow = ""; };
+    }
+    function open(i) {
+      const from = panel.hidden ? 0 : panel.offsetHeight;
+      openIdx = i; fill(i); panel.hidden = false; animateTo(from);
+      axis.querySelectorAll(".pub-step").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.i === i)));
+    }
+    function close() {
+      openIdx = -1;
+      axis.querySelectorAll(".pub-step").forEach(b => b.setAttribute("aria-pressed", "false"));
+      const from = panel.offsetHeight;
+      if (prefersReduced || !from || !panel.animate) { panel.hidden = true; panel.innerHTML = ""; return; }
+      panel.style.overflow = "hidden";
+      panel.animate([{ height: from + "px", opacity: 1 }, { height: "0px", opacity: 0, marginTop: "0px", paddingTop: "0px" }],
+                    { duration: 320, easing: "cubic-bezier(.22,.61,.36,1)" }).onfinish = () => {
+        panel.style.overflow = ""; if (openIdx < 0) { panel.hidden = true; panel.innerHTML = ""; } };
+    }
+    function center(b) {
+      const r = track.getBoundingClientRect(), q = b.getBoundingClientRect();
+      glide(track, track.scrollLeft + (q.left + q.width / 2) - (r.left + r.width / 2));
+    }
+    function sync() {
+      const max = track.scrollWidth - track.clientWidth, fits = max <= 2;
+      arrows.forEach(a => { a.hidden = fits; a.disabled = a.dataset.dir === "-1" ? track.scrollLeft <= 2 : track.scrollLeft >= max - 2; });
     }
     if (!stage.dataset.wired) {
       stage.dataset.wired = "1";
-      ring.addEventListener("click", e => {
-        const b = e.target.closest(".pub-page");
-        if (!b) return;
+      axis.addEventListener("click", e => {
+        const b = e.target.closest(".pub-step"); if (!b) return;
         const i = +b.dataset.i;
-        go(i); showDetail(i);                             // any page opens, and comes to the front
+        if (i === openIdx) { close(); return; }
+        open(i); center(b);
+        if (innerWidth <= 760) panel.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "start" });
       });
-      axis.addEventListener("click", e => {             // a step brings its paper to the front and opens it
-        const b = e.target.closest(".pub3d-step"); if (!b) return;
-        go(+b.dataset.i); showDetail(+b.dataset.i);
+      arrows.forEach(a => a.addEventListener("click", () => glide(track, track.scrollLeft + +a.dataset.dir * track.clientWidth * 0.8)));
+      track.addEventListener("scroll", sync, { passive: true });
+      addEventListener("resize", sync, { passive: true });
+      makeDraggable(track);
+      // a click outside the timeline closes the paper
+      document.addEventListener("click", e => {
+        if (openIdx >= 0 && !stage.contains(e.target) && !e.target.closest(".lightbox, a[download]")) close();   // (a download link is the export)
       });
-      parrows.forEach(a => a.addEventListener("click", () => glide(ptrack, ptrack.scrollLeft + +a.dataset.dir * ptrack.clientWidth * 0.8)));
-      ptrack.addEventListener("scroll", syncPath, { passive: true });
-      addEventListener("resize", syncPath, { passive: true });
-      makeDraggable(ptrack);
-      stage.querySelectorAll(".pub3d-arrow").forEach(a => a.addEventListener("click", () => go(active + +a.dataset.dir)));
-      stage.querySelector(".pub3d-stage").addEventListener("keydown", e => {
-        const d = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
-        if (!d) return;
-        e.preventDefault(); go(active + d);
-        const f = ring.querySelector(".pub-page.is-active"); if (f) f.focus();
-      });
-      // drag the pages sideways (mouse or touch): they follow the pointer, then settle on
-      // the nearest paper, further for a quick flick; a drag does not open a paper
-      const st3 = stage.querySelector(".pub3d-stage");
-      let dg = null, dragged = false;
-      const stepPx = () => parseFloat(getComputedStyle(stage).getPropertyValue("--step")) || 200;
-      st3.addEventListener("pointerdown", e => {
-        if (e.button !== 0) return;
-        dg = { x: e.clientX, t: performance.now(), from: active, id: e.pointerId, v: 0, lx: e.clientX, lt: performance.now() }; dragged = false;
-      });
-      st3.addEventListener("pointermove", e => {
-        if (!dg || e.pointerId !== dg.id) return;
-        const dx = e.clientX - dg.x;
-        if (!dragged && Math.abs(dx) < 6) return;
-        if (!dragged) { dragged = true; stage.classList.add("is-dragging"); try { st3.setPointerCapture(e.pointerId); } catch (err) {} }
-        const now = performance.now();
-        dg.v = 0.75 * dg.v + 0.25 * ((e.clientX - dg.lx) / Math.max(1, now - dg.lt)); dg.lx = e.clientX; dg.lt = now;
-        place(Math.max(-0.4, Math.min(items.length - 0.6, dg.from - dx / stepPx())));
-      });
-      const endDrag = e => {
-        if (!dg || (e && e.pointerId !== dg.id)) return;
-        const dx = (e ? e.clientX : dg.lx) - dg.x, v = dg.v; dg = null;
-        stage.classList.remove("is-dragging");
-        if (!dragged) return;
-        const to = Math.round(active - dx / stepPx() - v * 2.2);      // a flick carries on a little
-        const n = Math.max(0, Math.min(items.length - 1, to));
-        active = -1; go(n); if (active !== n) { active = n; place(); }
-      };
-      st3.addEventListener("pointerup", endDrag);
-      st3.addEventListener("pointercancel", endDrag);
-      st3.addEventListener("click", e => { if (dragged) { e.preventDefault(); e.stopPropagation(); dragged = false; } }, true);
-      // the zoomed view: close with the button, the backdrop or Esc; its citation
-      // buttons use the paper's own (hidden) buttons
-      zoom.addEventListener("click", e => {
-        if (e.target.closest(".pub-zoom-close") || e.target.classList.contains("pub-zoom-backdrop")) { hideDetail(); return; }
+      // in the open paper: copy the APA citation, the export menu
+      panel.addEventListener("click", e => {
         if (openIdx < 0) return;
-        const menuBtn = e.target.closest(".pub-export-btn"), menu = zoom.querySelector(".pub-export-menu");
+        const menuBtn = e.target.closest(".pub-export-btn"), menu = panel.querySelector(".pub-export-menu");
         if (menuBtn && menu) {
-          const open = menu.hidden; menu.hidden = !open; menuBtn.setAttribute("aria-expanded", String(open));
-          if (open) { const f = menu.querySelector("button"); if (f) f.focus(); }
+          const from = panel.offsetHeight, show = menu.hidden;
+          menu.hidden = !show; menuBtn.setAttribute("aria-expanded", String(show)); animateTo(from);
+          if (show) { const f = menu.querySelector("button"); if (f) f.focus({ preventScroll: true }); }
           return;
         }
         const x = e.target.closest("[data-export]");
-        if (x) {
-          exportCitation(pubWork(info(items[openIdx])), x.dataset.export);
-          if (menu) { menu.hidden = true; zoom.querySelector(".pub-export-btn").setAttribute("aria-expanded", "false"); }
-          return;
-        }
-        if (menu && !menu.hidden && !e.target.closest(".pub-export")) { menu.hidden = true; zoom.querySelector(".pub-export-btn").setAttribute("aria-expanded", "false"); }
-        const b = e.target.closest("[data-copy]");
-        if (!b) return;
-        const w = pubWork(info(items[openIdx]));
-        copyText(b.dataset.copy === "bibtex" ? bibtex(w) : apa(w)).then(ok => {
-          const done = zoom.querySelector(".pub-tool-done");
-          if (!done) return;
-          done.textContent = ok ? ({ pt: "Copiado!", fr: "Copié !", ja: "コピーしました" }[currentLang] || "Copied!") : "";
-          setTimeout(() => { done.textContent = ""; }, 2200);
-        });
-      });
-      document.addEventListener("keydown", e => {
-        if (zoom.hidden) return;
-        if (e.key === "Escape") {
-          e.preventDefault();
-          const menu = zoom.querySelector(".pub-export-menu");
-          if (menu && !menu.hidden) { menu.hidden = true; const b = zoom.querySelector(".pub-export-btn"); b.setAttribute("aria-expanded", "false"); b.focus(); return; }
-          hideDetail(); return;
-        }
-        if (e.key === "Tab") {                       // keep the focus inside the zoomed view
-          const f = Array.from(zoom.querySelectorAll("button, a[href]")).filter(x => x.offsetParent);
-          if (!f.length) return;
-          if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
-          else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+        if (x) { exportCitation(pubWork(info(items[openIdx])), x.dataset.export); return; }
+        const c = e.target.closest("[data-copy]");
+        if (c) {
+          copyText(apa(pubWork(info(items[openIdx])))).then(ok => {
+            const done = panel.querySelector(".pub-tool-done");
+            if (!done) return;
+            done.textContent = ok ? ({ pt: "Copiado!", fr: "Copié !", ja: "コピーしました" }[currentLang] || "Copied!") : "";
+            setTimeout(() => { done.textContent = ""; }, 2200);
+          });
         }
       });
       pathLangUpdates.push(render);
       pathFinders.push({ wrap: stage, open: it => {
         const i = items.indexOf(it);
         if (i < 0) return false;
-        stage.scrollIntoView({ behavior: "auto", block: "center" });
-        go(i); showDetail(i);
+        open(i);
+        const b = axis.querySelector('.pub-step[data-i="' + i + '"]'); if (b) center(b);
+        stage.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "start" });
         return true;
       } });
     }
     render();
-    ptrack.scrollLeft = ptrack.scrollWidth; syncPath();
-    pubInfoP.then(() => { if (Object.keys(pubInfo).length) { render(); ptrack.scrollLeft = ptrack.scrollWidth; syncPath(); } });
-    if (window.lucide && lucide.createIcons) try { lucide.createIcons(); } catch (e) {}
+    track.scrollLeft = track.scrollWidth; sync();                  // newest in view
+    pubInfoP.then(() => { if (Object.keys(pubInfo).length) { render(); track.scrollLeft = track.scrollWidth; sync(); } });
     pubCarousel = { open: it => pathFinders.some(f => f.wrap === stage && f.open(it)) };
   }
 
   // ---- Citation counts, free PDF links and a "Cite" button, from the nightly
   //      data in data/publications.json (OpenAlex + Crossref). Papers without an
   //      entry there are simply left as they are.
-  let pubWorks = {};                 // nightly records by DOI (citations in the carousel)
+  let pubWorks = {};                 // nightly records by DOI (citations in the publications timeline)
   function enrichPublications(db) {
     const byDoi = {};
     (db.works || []).forEach(w => { if (w.doi) byDoi[w.doi.toLowerCase()] = w; });
@@ -1906,6 +1786,19 @@
     const wrap = document.querySelector(".at-wrap");
     if (!wrap || wrap.__panWired) return;
     wrap.__panWired = true;
+    // the tree tilts a little towards the mouse (3D, see ui-extra.css)
+    const treeEl = wrap.querySelector(".at-tree");
+    if (treeEl && !prefersReduced && matchMedia("(hover:hover) and (pointer:fine)").matches) {
+      let tiltRaf = 0, px = 0.5, py = 0.5;
+      const tilt = () => { tiltRaf = 0;
+        treeEl.style.setProperty("--at-rx", (8 - (py - 0.5) * 7).toFixed(2) + "deg");
+        treeEl.style.setProperty("--at-ry", ((px - 0.5) * 9).toFixed(2) + "deg"); };
+      wrap.addEventListener("pointermove", e => {
+        const r = wrap.getBoundingClientRect(); px = (e.clientX - r.left) / r.width; py = (e.clientY - r.top) / r.height;
+        if (!tiltRaf) tiltRaf = requestAnimationFrame(tilt);
+      });
+      wrap.addEventListener("pointerleave", () => { treeEl.style.removeProperty("--at-rx"); treeEl.style.removeProperty("--at-ry"); });
+    }
 
     // When the tree is wider than the screen (phones), start centred on me rather
     // than at its far-left edge, so the first thing seen is the focal card.
@@ -2549,37 +2442,51 @@
   function makeDraggable(track) {
     if (!track || track.dataset.drag) return;
     track.dataset.drag = "1";
-    let down = null, moved = false, v = 0, coast = 0, lastX = 0, lastT = 0;
+    let down = null, moved = false, v = 0, coast = 0, raf = 0, want = 0, samples = [];
+    const apply = () => { raf = 0; track.scrollLeft = want; };
+    // no native picture dragging or text selection getting in the way
+    track.addEventListener("dragstart", e => e.preventDefault());
     track.addEventListener("pointerdown", e => {
       if (e.pointerType === "touch" || e.button !== 0 || track.scrollWidth <= track.clientWidth + 2) return;
       cancelAnimationFrame(coast); if (track._glide) { cancelAnimationFrame(track._glide); track._glide = 0; }
-      down = { x: e.clientX, left: track.scrollLeft, id: e.pointerId }; moved = false; v = 0; lastX = e.clientX; lastT = performance.now();
+      down = { x: e.clientX, left: track.scrollLeft, id: e.pointerId }; moved = false; v = 0; samples = [];
     });
     track.addEventListener("pointermove", e => {
       if (!down || e.pointerId !== down.id) return;
-      const dx = e.clientX - down.x;
-      if (!moved && Math.abs(dx) < 5) return;
-      if (!moved) { moved = true; track.classList.add("is-dragging"); try { track.setPointerCapture(e.pointerId); } catch (err) {} }
-      track.scrollLeft = down.left - dx;
-      const now = performance.now(), dt = Math.max(1, now - lastT);
-      v = 0.8 * v + 0.2 * ((lastX - e.clientX) / dt);    // px per ms, smoothed
-      lastX = e.clientX; lastT = now;
+      if (!moved) {
+        if (Math.abs(e.clientX - down.x) < 4) return;
+        moved = true; track.classList.add("is-dragging");
+        down.x = e.clientX; down.left = track.scrollLeft;   // start from here: no jump
+        try { track.setPointerCapture(e.pointerId); } catch (err) {}
+      }
+      e.preventDefault();
+      want = down.left - (e.clientX - down.x);            // the track follows the pointer 1:1
+      if (!raf) raf = requestAnimationFrame(apply);
+      const now = performance.now();
+      samples.push([now, e.clientX]);
+      while (samples.length > 2 && now - samples[0][0] > 90) samples.shift();
     });
     const end = e => {
       if (!down || (e && e.pointerId !== down.id)) return;
       down = null;
       track.classList.remove("is-dragging");
-      if (!moved || prefersReduced) return;
+      if (!moved) return;
+      if (raf) { cancelAnimationFrame(raf); apply(); }
+      // the speed of the last ~90 ms of the drag carries on, slowing down evenly
+      const a = samples[0], b = samples[samples.length - 1];
+      v = a && b && b[0] > a[0] ? -(b[1] - a[1]) / (b[0] - a[0]) : 0;   // px per ms
+      if (prefersReduced || Math.abs(v) < 0.05) return;
       let last = performance.now();
-      const step = now => {                            // momentum with friction
-        const dt = now - last; last = now;
-        track.scrollLeft += v * dt; v *= Math.pow(0.94, dt / 16);
+      const step = now => {
+        const dt = Math.min(32, now - last); last = now;
+        track.scrollLeft += v * dt; v *= Math.pow(0.95, dt / 16);
         if (Math.abs(v) > 0.02) coast = requestAnimationFrame(step);
       };
       coast = requestAnimationFrame(step);
     };
     track.addEventListener("pointerup", end);
     track.addEventListener("pointercancel", end);
+    track.addEventListener("lostpointercapture", end);
     track.addEventListener("click", e => { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
   }
 
