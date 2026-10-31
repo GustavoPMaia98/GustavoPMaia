@@ -1,0 +1,36 @@
+# Run once (Actions tab -> "Make Earth tiles" -> "Run workflow"): downloads NASA's Blue
+# Marble (public domain, ~2 km per pixel), cuts it into the high-resolution tiles the
+# globe shows when zoomed in (images/earth/tiles), and commits them.
+name: Make Earth tiles
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: site-data
+  cancel-in-progress: false
+
+jobs:
+  tiles:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - run: pip install pillow==10.4.0
+      - name: Make the tiles
+        run: python tools/make_earth_tiles.py
+      - name: Check the site still builds
+        run: python tools/check_site.py
+      - name: Commit the tiles
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add images/earth/tiles
+          git commit -m "Add high-resolution Earth tiles (NASA Blue Marble, public domain)" || echo "No changes."
+          for i in 1 2 3; do git pull --rebase origin main && git push && break; sleep 5; done

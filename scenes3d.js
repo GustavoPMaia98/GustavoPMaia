@@ -669,6 +669,53 @@ async function startGlobe(el, data) {
     borderMat.opacity += (want - borderMat.opacity) * 0.15;
     if (borders) borders.visible = borderMat.opacity > 0.01;
   }
+  // close up: high-resolution tiles (NASA Blue Marble, images/earth/tiles, made by
+  // tools/make_earth_tiles.py) laid over the part of the Earth in view; they fade in as
+  // the camera comes down. Without the tiles the 4K map is used as before.
+  let tileIdx = null;
+  fetch("images/earth/tiles/index.json").then(r => r.ok ? r.json() : null).then(d => { if (d && d.cols && d.rows) tileIdx = d; }).catch(() => {});
+  const tiles = new Map(), qInv = new THREE.Quaternion(), facing = new THREE.Vector3();
+  const D2R = Math.PI / 180;
+  function updateTiles() {
+    if (!tileIdx) return;
+    const want = new Set();
+    if (zoom < 2.3) {
+      qInv.copy(globe.quaternion).invert();
+      facing.set(0, 0, 1).applyQuaternion(qInv);       // the point of the Earth facing the camera
+      const lat0 = Math.asin(Math.max(-1, Math.min(1, facing.y))), lng0 = Math.atan2(facing.z, -facing.x) - Math.PI;
+      const reach = Math.acos(Math.min(1, 1 / zoom)) + 0.3;   // as far as the horizon, plus a margin
+      const dLat = 180 / tileIdx.rows, dLng = 360 / tileIdx.cols, near = [];
+      for (let r = 0; r < tileIdx.rows; r++) for (let c = 0; c < tileIdx.cols; c++) {
+        const la = (90 - (r + 0.5) * dLat) * D2R, lo = (-180 + (c + 0.5) * dLng) * D2R;
+        const d = Math.acos(Math.max(-1, Math.min(1, Math.sin(lat0) * Math.sin(la) + Math.cos(lat0) * Math.cos(la) * Math.cos(lo - lng0))));
+        if (d < reach + 0.28) near.push([d, r + "-" + c]);
+      }
+      near.sort((x, y) => x[0] - y[0]).slice(0, 12).forEach(n => want.add(n[1]));
+    }
+    want.forEach(k => {
+      if (tiles.has(k)) return;
+      const [r, c] = k.split("-").map(Number), dLat = 180 / tileIdx.rows, dLng = 360 / tileIdx.cols;
+      const mat = new THREE.MeshPhongMaterial({ transparent: true, opacity: 0, depthWrite: false, specular: new THREE.Color(0x223344), shininess: 12 });
+      const geo = new THREE.SphereGeometry(1.0006, 40, 40, c * dLng * D2R, dLng * D2R, r * dLat * D2R, dLat * D2R);
+      const mesh = new THREE.Mesh(geo, mat); mesh.renderOrder = 1; mesh.visible = false;
+      const t = { mesh, mat, ready: false, used: performance.now() };
+      tiles.set(k, t); globe.add(mesh);
+      tex.load("images/earth/tiles/" + k + ".webp", tx => {
+        tx.colorSpace = THREE.SRGBColorSpace; tx.anisotropy = aniso;
+        mat.map = tx; mat.needsUpdate = true; t.ready = true;
+      }, undefined, () => { t.failed = true; });
+    });
+    tiles.forEach((t, k) => {
+      const on = want.has(k) && t.ready;
+      if (want.has(k)) t.used = performance.now();
+      const goal = on ? Math.min(1, (2.3 - zoom) * 2.2) : 0;
+      t.mat.opacity += (goal - t.mat.opacity) * 0.12;
+      t.mesh.visible = t.mat.opacity > 0.005;
+      if (!want.has(k) && performance.now() - t.used > 20000) {       // forget tiles not seen for a while
+        globe.remove(t.mesh); t.mesh.geometry.dispose(); if (t.mat.map) t.mat.map.dispose(); t.mat.dispose(); tiles.delete(k);
+      }
+    });
+  }
   const labels = (data.cities || []).map(c => {
     const d = document.createElement("span");
     d.className = "globe-label"; d.setAttribute("aria-hidden", "true");
@@ -723,6 +770,7 @@ async function startGlobe(el, data) {
     arcMat.opacity = 0.9 * Math.max(0.12, Math.min(1, (zoom - 1.25) / 1.2));   // the routes fade out close up
     camera.near = Math.max(0.01, (zoom - 1) * 0.3); camera.updateProjectionMatrix();
     zoomedIn(zoom < 2.7);
+    updateTiles();
     placeLabels();
     // arcs draw in one after another, then a light runs along the whole path
     const draw = reduced ? 1 : Math.min(1, t / 3.2);
