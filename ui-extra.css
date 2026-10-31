@@ -983,28 +983,3 @@ html.space-pending body, html.has-space3d body{ background:#02040a; }
 }
 .is-dragging{ cursor:grabbing !important; }
 .is-dragging .path-btn, .is-dragging img{ pointer-events:none; }
-
-/* Academic tree floating in 3D: the tree is seen in perspective and tilts towards the
-   mouse (script.js, setupTreePan), each older generation sits a little further back,
-   and the cards float gently. With "reduce motion" it stays flat. */
-@media (prefers-reduced-motion:no-preference){
-  .at-wrap{ perspective:1500px; perspective-origin:50% 70%; }
-  .at-tree{ transform-style:preserve-3d;
-    transform:rotateX(var(--at-rx, 8deg)) rotateY(var(--at-ry, 0deg)) scaleY(-1);
-    transition:transform .9s cubic-bezier(.22,.61,.36,1); }
-  .at-tree ul, .at-tree li{ transform-style:preserve-3d; }
-  .at-tree ul ul{ transform:translateZ(-44px); }            /* one step back per generation */
-  .at-node{ animation:atFloat 7s ease-in-out infinite alternate; box-shadow:0 22px 34px -16px rgba(0,0,0,.6); }
-  .at-tree li:nth-child(2n) > .at-node{ animation-delay:-2.4s; animation-duration:8s; }
-  .at-tree li:nth-child(3n) > .at-node{ animation-delay:-4.6s; animation-duration:6.5s; }
-  .at-node:hover{ animation:none; transform:scaleY(-1) translateZ(26px); box-shadow:0 30px 44px -14px rgba(0,0,0,.65); }
-  .at-self{ animation-duration:9s; }
-}
-@keyframes atFloat{
-  from{ transform:scaleY(-1) translate3d(0, -4px, 0); }
-  to{ transform:scaleY(-1) translate3d(0, 5px, 12px); }
-}
-@media (max-width:760px) and (prefers-reduced-motion:no-preference){
-  .at-tree{ transform:rotateX(5deg) scaleY(-1); }
-  .at-tree ul ul{ transform:translateZ(-28px); }
-}
