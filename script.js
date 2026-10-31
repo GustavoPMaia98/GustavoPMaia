@@ -790,7 +790,7 @@
   // ============================================================
   //  PUBLICATIONS — a 3D carousel of floating front pages
   //  Each paper is drawn as the first page of an article (journal, title, authors,
-  //  abstract), floating in 3D. The axis below is the timeline (newest on the
+  //  abstract), floating in 3D. The timeline below (oldest to newest) is linked to it; the
   //  left). Clicking the page in front shows its abstract, keywords and citation
   //  tools; the list of cards stays in the page, hidden, as the source.
   // ============================================================
@@ -801,10 +801,10 @@
     .then(c => { pubInfo = c || {}; }).catch(() => {});
 
   const PUB_TXT = {
-    en: { abs: "Abstract", art: "Research article", open: "Click a paper to open it", prev: "Newer paper", next: "Older paper", close: "Close", cite: "Citation (APA)", copy: "Copy", export: "Export citation" },
-    pt: { abs: "Resumo", art: "Artigo científico", open: "Clique num artigo para o abrir", prev: "Artigo mais recente", next: "Artigo anterior", close: "Fechar", cite: "Citação (APA)", copy: "Copiar", export: "Exportar citação" },
-    fr: { abs: "Résumé", art: "Article de recherche", open: "Cliquez sur un article pour l’ouvrir", prev: "Article plus récent", next: "Article plus ancien", close: "Fermer", cite: "Citation (APA)", copy: "Copier", export: "Exporter la citation" },
-    ja: { abs: "要旨", art: "研究論文", open: "論文をクリックして開く", prev: "新しい論文", next: "古い論文", close: "閉じる", cite: "引用 (APA)", copy: "コピー", export: "引用をエクスポート" }
+    en: { abs: "Abstract", art: "Research article", open: "Click a paper to open it", prev: "Newer paper", next: "Older paper", older: "Older papers", newer: "Newer papers", close: "Close", cite: "Citation (APA)", copy: "Copy", export: "Export citation" },
+    pt: { abs: "Resumo", art: "Artigo científico", open: "Clique num artigo para o abrir", prev: "Artigo mais recente", next: "Artigo anterior", older: "Artigos anteriores", newer: "Artigos mais recentes", close: "Fechar", cite: "Citação (APA)", copy: "Copiar", export: "Exportar citação" },
+    fr: { abs: "Résumé", art: "Article de recherche", open: "Cliquez sur un article pour l’ouvrir", prev: "Article plus récent", next: "Article plus ancien", older: "Articles plus anciens", newer: "Articles plus récents", close: "Fermer", cite: "Citation (APA)", copy: "Copier", export: "Exporter la citation" },
+    ja: { abs: "要旨", art: "研究論文", open: "論文をクリックして開く", prev: "新しい論文", next: "古い論文", older: "古い論文", newer: "新しい論文", close: "閉じる", cite: "引用 (APA)", copy: "コピー", export: "引用をエクスポート" }
   };
   function setupPubCarousel() {
     const sec = document.getElementById("publications");
@@ -820,7 +820,12 @@
         '<button type="button" class="pub3d-arrow pub3d-arrow--prev" data-dir="-1"><i data-lucide="chevron-left"></i></button>' +
         '<div class="pub3d-stage" tabindex="0"><div class="pub3d-ring"></div></div>' +
         '<button type="button" class="pub3d-arrow pub3d-arrow--next" data-dir="1"><i data-lucide="chevron-right"></i></button>' +
-        '<ol class="pub3d-axis"></ol><p class="pub3d-hint"></p>';
+        '<p class="pub3d-hint"></p>' +
+        // the timeline under the carousel, in the same style as Education and Experience
+        '<div class="path-wrap path-wrap--scroll pub3d-path">' +
+          '<button type="button" class="path-arrow path-arrow--prev" data-dir="-1"><i data-lucide="chevron-left"></i></button>' +
+          '<div class="path-scroll"><ol class="path path--scroll" aria-label="Publications timeline"></ol></div>' +
+          '<button type="button" class="path-arrow path-arrow--next" data-dir="1"><i data-lucide="chevron-right"></i></button></div>';
       list.parentNode.insertBefore(stage, list);
     }
     list.classList.add("pub-source");
@@ -828,7 +833,8 @@
     const filter = document.getElementById("pub-filter");
     if (filter) filter.hidden = true;                // the axis below replaces the year filter
 
-    const ring = stage.querySelector(".pub3d-ring"), axis = stage.querySelector(".pub3d-axis");
+    const ring = stage.querySelector(".pub3d-ring"), axis = stage.querySelector(".pub3d-path .path");
+    const ptrack = stage.querySelector(".pub3d-path .path-scroll"), parrows = Array.from(stage.querySelectorAll(".pub3d-path .path-arrow"));
     const hint = stage.querySelector(".pub3d-hint");
     // the zoomed view: the page large on one side, the whole abstract on the other,
     // keywords, citations and citation tools below
@@ -879,6 +885,10 @@
         (p.doi ? '<span class="pub-sheet-doi">https://doi.org/' + escapeHtml(p.doi) + "</span>" : "") +
         "</span>";
     }
+    function syncPath() {
+      const max = ptrack.scrollWidth - ptrack.clientWidth, fits = max <= 2;
+      parrows.forEach(a => { a.hidden = fits; a.disabled = a.dataset.dir === "-1" ? ptrack.scrollLeft <= 2 : ptrack.scrollLeft >= max - 2; });
+    }
     let active = 0, openIdx = -1;
     function render() {
       const t = T();
@@ -887,9 +897,19 @@
         return '<button type="button" class="pub-page" data-i="' + i + '" style="--i:' + i + ";--hue:" + hue(p.journal) + '">' +
           '<span class="pub-float">' + sheetHTML(p, t) + '</span><span class="pub-shadow" aria-hidden="true"></span></button>';
       }).join("");
-      axis.innerHTML = items.map((it, i) =>
-        '<li><button type="button" class="pub3d-dot" data-i="' + i + '"><span class="pub3d-dot-mark"></span><span class="pub3d-dot-year">' +
-        escapeHtml(info(it).year) + "</span></button></li>").join("");
+      // oldest on the left, newest on the right (the carousel shows the newest first)
+      axis.innerHTML = items.map((it, i) => ({ it, i })).reverse().map(({ it, i }) => {
+        const p = info(it), x = pubInfo[String(p.doi).toLowerCase()] || {};
+        const logo = /^images\/logos\/[\w.-]+\.(png|jpe?g|webp|svg)$/.test(x.logo || "") ? x.logo : "";
+        return '<li class="path-step"><button type="button" class="path-btn pub3d-step" data-i="' + i + '" aria-pressed="false">' +
+          '<span class="path-logo" aria-hidden="true">' + (logo ? '<img src="' + logo + '" alt="">' : '<i data-lucide="book-open"></i>') + "</span>" +
+          '<span class="path-year">' + escapeHtml(p.year) + '</span><span class="path-kind">' + escapeHtml(t.art) + "</span>" +
+          '<span class="path-place">' + escapeHtml(p.title) + '</span><span class="path-what">' + escapeHtml(p.journal) + "</span></button></li>";
+      }).join("");
+      axis.querySelectorAll(".path-logo img").forEach(im => im.addEventListener("load", () => matchLogoBackground(im, im.parentNode)));
+      if (window.lucide && lucide.createIcons) try { lucide.createIcons(); } catch (e) {}
+      parrows.forEach(a => a.setAttribute("aria-label", a.dataset.dir === "-1" ? t.older : t.newer));
+      syncPath();
       hint.textContent = t.open;
       stage.querySelector(".pub3d-arrow--prev").setAttribute("aria-label", t.prev);
       stage.querySelector(".pub3d-arrow--next").setAttribute("aria-label", t.next);
@@ -897,16 +917,18 @@
       place();
       if (openIdx >= 0) showDetail(openIdx);
     }
-    function place() {
+    function place(pos) {
+      const at = pos == null ? active : pos;
       ring.querySelectorAll(".pub-page").forEach((b, i) => {
-        const d = i - active, ad = Math.abs(d);
+        const d = i - at, ad = Math.abs(d);
+        if (pos != null) { b.style.setProperty("--d", d); b.style.setProperty("--ad", ad); b.classList.toggle("is-far", ad > 2.6); return; }
         b.style.setProperty("--d", d); b.style.setProperty("--ad", ad);
         b.classList.toggle("is-active", d === 0);
         b.classList.toggle("is-far", ad > 2);
         b.tabIndex = d === 0 ? 0 : -1;
         b.setAttribute("aria-current", String(d === 0));
       });
-      axis.querySelectorAll(".pub3d-dot").forEach((b, i) => b.setAttribute("aria-current", String(i === active)));
+      axis.querySelectorAll(".pub3d-step").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.i === active)));
       stage.querySelector(".pub3d-arrow--prev").disabled = active === 0;
       stage.querySelector(".pub3d-arrow--next").disabled = active === items.length - 1;
     }
@@ -988,7 +1010,14 @@
         const i = +b.dataset.i;
         go(i); showDetail(i);                             // any page opens, and comes to the front
       });
-      axis.addEventListener("click", e => { const b = e.target.closest(".pub3d-dot"); if (b) { go(+b.dataset.i); } });
+      axis.addEventListener("click", e => {             // a step brings its paper to the front and opens it
+        const b = e.target.closest(".pub3d-step"); if (!b) return;
+        go(+b.dataset.i); showDetail(+b.dataset.i);
+      });
+      parrows.forEach(a => a.addEventListener("click", () => glide(ptrack, ptrack.scrollLeft + +a.dataset.dir * ptrack.clientWidth * 0.8)));
+      ptrack.addEventListener("scroll", syncPath, { passive: true });
+      addEventListener("resize", syncPath, { passive: true });
+      makeDraggable(ptrack);
       stage.querySelectorAll(".pub3d-arrow").forEach(a => a.addEventListener("click", () => go(active + +a.dataset.dir)));
       stage.querySelector(".pub3d-stage").addEventListener("keydown", e => {
         const d = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
@@ -996,14 +1025,36 @@
         e.preventDefault(); go(active + d);
         const f = ring.querySelector(".pub-page.is-active"); if (f) f.focus();
       });
-      // swipe on touch screens
-      let x0 = null;
-      stage.addEventListener("pointerdown", e => { x0 = e.clientX; }, { passive: true });
-      stage.addEventListener("pointerup", e => {
-        if (x0 == null) return;
-        const dx = e.clientX - x0; x0 = null;
-        if (Math.abs(dx) > 45) go(active + (dx < 0 ? 1 : -1));
-      }, { passive: true });
+      // drag the pages sideways (mouse or touch): they follow the pointer, then settle on
+      // the nearest paper, further for a quick flick; a drag does not open a paper
+      const st3 = stage.querySelector(".pub3d-stage");
+      let dg = null, dragged = false;
+      const stepPx = () => parseFloat(getComputedStyle(stage).getPropertyValue("--step")) || 200;
+      st3.addEventListener("pointerdown", e => {
+        if (e.button !== 0) return;
+        dg = { x: e.clientX, t: performance.now(), from: active, id: e.pointerId, v: 0, lx: e.clientX, lt: performance.now() }; dragged = false;
+      });
+      st3.addEventListener("pointermove", e => {
+        if (!dg || e.pointerId !== dg.id) return;
+        const dx = e.clientX - dg.x;
+        if (!dragged && Math.abs(dx) < 6) return;
+        if (!dragged) { dragged = true; stage.classList.add("is-dragging"); try { st3.setPointerCapture(e.pointerId); } catch (err) {} }
+        const now = performance.now();
+        dg.v = 0.75 * dg.v + 0.25 * ((e.clientX - dg.lx) / Math.max(1, now - dg.lt)); dg.lx = e.clientX; dg.lt = now;
+        place(Math.max(-0.4, Math.min(items.length - 0.6, dg.from - dx / stepPx())));
+      });
+      const endDrag = e => {
+        if (!dg || (e && e.pointerId !== dg.id)) return;
+        const dx = (e ? e.clientX : dg.lx) - dg.x, v = dg.v; dg = null;
+        stage.classList.remove("is-dragging");
+        if (!dragged) return;
+        const to = Math.round(active - dx / stepPx() - v * 2.2);      // a flick carries on a little
+        const n = Math.max(0, Math.min(items.length - 1, to));
+        active = -1; go(n); if (active !== n) { active = n; place(); }
+      };
+      st3.addEventListener("pointerup", endDrag);
+      st3.addEventListener("pointercancel", endDrag);
+      st3.addEventListener("click", e => { if (dragged) { e.preventDefault(); e.stopPropagation(); dragged = false; } }, true);
       // the zoomed view: close with the button, the backdrop or Esc; its citation
       // buttons use the paper's own (hidden) buttons
       zoom.addEventListener("click", e => {
@@ -1057,7 +1108,8 @@
       } });
     }
     render();
-    pubInfoP.then(() => { if (Object.keys(pubInfo).length) render(); });
+    ptrack.scrollLeft = ptrack.scrollWidth; syncPath();
+    pubInfoP.then(() => { if (Object.keys(pubInfo).length) { render(); ptrack.scrollLeft = ptrack.scrollWidth; syncPath(); } });
     if (window.lucide && lucide.createIcons) try { lucide.createIcons(); } catch (e) {}
     pubCarousel = { open: it => pathFinders.some(f => f.wrap === stage && f.open(it)) };
   }
@@ -2492,6 +2544,45 @@
     track._glide = requestAnimationFrame(step);
   }
 
+  // Drag a horizontal track with the mouse (touch screens scroll it natively): it follows
+  // the pointer and, when let go, coasts to a stop. A drag does not count as a click.
+  function makeDraggable(track) {
+    if (!track || track.dataset.drag) return;
+    track.dataset.drag = "1";
+    let down = null, moved = false, v = 0, coast = 0, lastX = 0, lastT = 0;
+    track.addEventListener("pointerdown", e => {
+      if (e.pointerType === "touch" || e.button !== 0 || track.scrollWidth <= track.clientWidth + 2) return;
+      cancelAnimationFrame(coast); if (track._glide) { cancelAnimationFrame(track._glide); track._glide = 0; }
+      down = { x: e.clientX, left: track.scrollLeft, id: e.pointerId }; moved = false; v = 0; lastX = e.clientX; lastT = performance.now();
+    });
+    track.addEventListener("pointermove", e => {
+      if (!down || e.pointerId !== down.id) return;
+      const dx = e.clientX - down.x;
+      if (!moved && Math.abs(dx) < 5) return;
+      if (!moved) { moved = true; track.classList.add("is-dragging"); try { track.setPointerCapture(e.pointerId); } catch (err) {} }
+      track.scrollLeft = down.left - dx;
+      const now = performance.now(), dt = Math.max(1, now - lastT);
+      v = 0.8 * v + 0.2 * ((lastX - e.clientX) / dt);    // px per ms, smoothed
+      lastX = e.clientX; lastT = now;
+    });
+    const end = e => {
+      if (!down || (e && e.pointerId !== down.id)) return;
+      down = null;
+      track.classList.remove("is-dragging");
+      if (!moved || prefersReduced) return;
+      let last = performance.now();
+      const step = now => {                            // momentum with friction
+        const dt = now - last; last = now;
+        track.scrollLeft += v * dt; v *= Math.pow(0.94, dt / 16);
+        if (Math.abs(v) > 0.02) coast = requestAnimationFrame(step);
+      };
+      coast = requestAnimationFrame(step);
+    };
+    track.addEventListener("pointerup", end);
+    track.addEventListener("pointercancel", end);
+    track.addEventListener("click", e => { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
+  }
+
   // Career paths (Education, Experience): each .path-wrap holds a row of steps and a
   // panel. A step opens the text of its entry (a card kept hidden in .path-source).
   const pathLangUpdates = [], pathFinders = [];
@@ -2643,6 +2734,7 @@
       track.addEventListener("scroll", sync, { passive: true });
       addEventListener("resize", sync, { passive: true });
       track.scrollLeft = track.scrollWidth;          // newest first in view
+      makeDraggable(track);
       sync();
       steps.forEach(b => b.addEventListener("focus", () => bringIntoTrack(b)));
     }
@@ -2684,6 +2776,7 @@
       addEventListener("resize", sync, { passive: true });
       if ("ResizeObserver" in window) new ResizeObserver(sync).observe(track);
       sync();
+      makeDraggable(track);
     });
   }
 
