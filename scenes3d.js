@@ -122,7 +122,7 @@ async function startSpace() {
     float fbm(vec3 p){ float s = 0.0, a = 0.5; for (int i = 0; i < 5; i++){ s += a * n3(p); p = p * 2.03 + 1.7; a *= 0.5; } return s; }`;
   const mwMat = new THREE.ShaderMaterial({
     uniforms: { uG: { value: G }, uC: { value: C }, uI: { value: PHONE ? 0.8 : 1 } },
-    side: THREE.BackSide, depthWrite: false, transparent: true, blending: THREE.AdditiveBlending,
+    side: THREE.BackSide, depthWrite: false, blending: THREE.NoBlending,
     vertexShader: `varying vec3 vD; void main(){ vD = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
     fragmentShader: NOISE + `
       uniform vec3 uG, uC; uniform float uI; varying vec3 vD;
@@ -138,7 +138,15 @@ async function startSpace() {
         I += 0.05 * fbm(n * 3.0 + 2.0);                // faint light all over the sky
         vec3 col = mix(vec3(0.55, 0.62, 0.82), vec3(1.0, 0.82, 0.62), clamp(core * 1.3, 0.0, 1.0));
         col = mix(col, vec3(0.95, 0.55, 0.65), 0.18 * smoothstep(0.55, 0.8, fine) * band);  // a touch of H-alpha
-        gl_FragColor = vec4(col, 1.0) * (I * 0.26 * uI); }`
+        float k = I * 0.26 * uI;
+        // a few very faint, large fades of dark purple and dark blue (distant gas), barely
+        // above the black of space
+        vec3 neb = vec3(0.0);
+        neb += vec3(0.055, 0.020, 0.085) * exp(-pow(acos(clamp(dot(n, normalize(vec3(-0.62, 0.38, -0.68))), -1.0, 1.0)) / 0.55, 2.0)) * (0.35 + 0.9 * fbm(n * 3.6 + 11.0));
+        neb += vec3(0.016, 0.030, 0.085) * exp(-pow(acos(clamp(dot(n, normalize(vec3(0.72, -0.28, -0.62))), -1.0, 1.0)) / 0.7, 2.0)) * (0.35 + 0.9 * fbm(n * 3.2 + 5.0));
+        neb += vec3(0.040, 0.016, 0.070) * exp(-pow(acos(clamp(dot(n, normalize(vec3(0.15, 0.82, -0.52))), -1.0, 1.0)) / 0.45, 2.0)) * (0.3 + fbm(n * 4.6 + 2.0));
+        neb += vec3(0.012, 0.024, 0.068) * exp(-pow(acos(clamp(dot(n, normalize(vec3(-0.35, -0.72, -0.58))), -1.0, 1.0)) / 0.5, 2.0)) * (0.3 + fbm(n * 4.0 + 7.0));
+        gl_FragColor = vec4(col * k * k * k * k + neb * uI, 1.0); }`
   });
   // drawn once into a cube map (the noise is costly), then shown as a cheap texture
   const mwRT = new THREE.WebGLCubeRenderTarget(PHONE ? 384 : 768, { type: THREE.HalfFloatType });
@@ -152,7 +160,7 @@ async function startSpace() {
     uniforms: { uCube: { value: mwRT.texture } }, side: THREE.BackSide, depthWrite: false, transparent: true, blending: THREE.AdditiveBlending,
     vertexShader: `varying vec3 vD; void main(){ vD = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
     fragmentShader: `uniform samplerCube uCube; varying vec3 vD;
-      void main(){ vec3 d = normalize(vD); gl_FragColor = textureCube(uCube, d); }`
+      void main(){ vec3 d = normalize(vD); gl_FragColor = vec4(textureCube(uCube, d).rgb, 1.0); }`
   })));
 
   // a few distant galaxies: faint, tilted ellipses with a bright core
@@ -198,6 +206,7 @@ async function startSpace() {
         if (a < 0.004) discard; gl_FragColor = vec4(vC, a); }`
   }));
   sky.add(near);
+
 
   // ---- meteors, drawn in screen space over the sky ----
   const overlay = new THREE.Scene();
@@ -380,8 +389,8 @@ async function startSpace() {
    ========================================================================= */
 function lang() { return root.getAttribute("lang") || "en"; }
 const TEXT = {
-  hint: { en: "Drag to rotate · pinch or Ctrl + scroll to zoom", pt: "Arraste para rodar · aperte ou Ctrl + roda para ampliar",
-          fr: "Glissez pour tourner · pincez ou Ctrl + molette pour zoomer", ja: "ドラッグで回転 · ピンチまたは Ctrl + スクロールで拡大" },
+  hint: { en: "Drag to rotate · scroll or pinch to zoom in to cities", pt: "Arraste para rodar · role ou aperte para ampliar até às cidades",
+          fr: "Glissez pour tourner · molette ou pincement pour zoomer jusqu’aux villes", ja: "ドラッグで回転 · スクロールまたはピンチで都市まで拡大" },
   reset: { en: "Reset view", pt: "Repor vista", fr: "Réinitialiser la vue", ja: "表示をリセット" }
 };
 const tt = k => TEXT[k][lang()] || TEXT[k].en;
@@ -479,12 +488,12 @@ async function startGlobe(el, data) {
     if (!groups.has(k)) groups.set(k, []);
     groups.get(k).push(p);
   });
-  const hits = [], halos = [];
+  const hits = [], halos = [], dots = [];
   groups.forEach(entries => {
     const p0 = entries[0];
     const where = vec(p0.lat, p0.lng, 1.008);
     const dot = new THREE.Mesh(new THREE.SphereGeometry(0.017, 16, 12), new THREE.MeshBasicMaterial({ color: p0.color }));
-    dot.position.copy(where); globe.add(dot);
+    dot.position.copy(where); globe.add(dot); dots.push(dot);
     const halo = new THREE.Mesh(new THREE.RingGeometry(0.024, 0.032, 32),
       new THREE.MeshBasicMaterial({ color: p0.color, transparent: true, opacity: 0.6, side: THREE.DoubleSide, depthWrite: false }));
     halo.position.copy(where); halo.lookAt(where.clone().multiplyScalar(2)); globe.add(halo); halos.push(halo);
@@ -530,6 +539,7 @@ async function startGlobe(el, data) {
   }
   globe.rotation.order = "XYZ";
   aim(HOME.lat, HOME.lng); cur.x = target.x; cur.y = target.y;
+  const ZMIN = 1.09, ZMAX = 6;                         // ZMIN: about 570 km above the ground
   let zoom = HOME_Z, zoomTarget = HOME_Z;
   reset.addEventListener("click", () => { aim(HOME.lat, HOME.lng); zoomTarget = HOME_Z; unpin(); });
 
@@ -540,7 +550,7 @@ async function startGlobe(el, data) {
   let pinnedHit = null;
   function unpin() { pinnedHit = null; tip.hidden = true; tip.__pinned = false; bar.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", "false")); }
   function flyTo(c, btn) {
-    aim(c.lat, c.lng); zoomTarget = small() ? 2.55 : 3.1; idleSince = performance.now() + 60000;
+    aim(c.lat, c.lng); zoomTarget = small() ? 1.9 : 1.75; idleSince = performance.now() + 60000;
     pinnedHit = hits.reduce((best, h) => {               // the marker nearest to this place
       const d = h.position.distanceTo(vec(c.lat, c.lng, 1.008));
       return !best || d < best.d ? { h, d } : best;
@@ -580,13 +590,14 @@ async function startGlobe(el, data) {
         pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
         const [q1, q2] = [...pointers.values()];
         const after = Math.hypot(q1.x - q2.x, q1.y - q2.y);
-        zoomTarget = Math.min(6, Math.max(1.9, zoomTarget * before / Math.max(after, 1)));
+        zoomTarget = Math.min(ZMAX, Math.max(ZMIN, 1 + (zoomTarget - 1) * before / Math.max(after, 1)));
         return;
       }
       const dx = e.clientX - prev.x, dy = e.clientY - prev.y;
       pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-      target.y += dx * 0.006 * (zoom / HOME_Z);
-      target.x = Math.max(-1.2, Math.min(1.2, target.x + dy * 0.006 * (zoom / HOME_Z)));
+      const k = 0.006 * (zoom - 1) / (HOME_Z - 1);          // close to the ground, turn slowly
+      target.y += dx * k;
+      target.x = Math.max(-1.35, Math.min(1.35, target.x + dy * k));
       if (drag) drag.moved += Math.abs(dx) + Math.abs(dy);
       idleSince = performance.now();
     } else hover(e);
@@ -599,17 +610,22 @@ async function startGlobe(el, data) {
   canvas.addEventListener("pointerup", up);
   canvas.addEventListener("pointercancel", up);
   canvas.addEventListener("pointerleave", () => { if (!tip.__pinned) tip.hidden = true; });
+  // the wheel zooms (towards the ground, in proportion to the height above it); at the
+  // closest and farthest zoom the page scrolls on as usual
   canvas.addEventListener("wheel", e => {
-    if (!e.ctrlKey && !e.metaKey) return;                  // plain scrolling keeps scrolling the page
+    const out = e.deltaY > 0;
+    if ((out && zoomTarget >= ZMAX - 0.01) || (!out && zoomTarget <= ZMIN + 0.001)) return;
     e.preventDefault();
-    zoomTarget = Math.min(6, Math.max(2.1, zoomTarget * (1 + Math.sign(e.deltaY) * 0.12)));
+    const f = Math.min(0.35, Math.abs(e.deltaY) / 400 + 0.08);
+    zoomTarget = Math.min(ZMAX, Math.max(ZMIN, 1 + (zoomTarget - 1) * (out ? 1 + f : 1 / (1 + f))));
+    idleSince = performance.now() + 20000;
   }, { passive: false });
   el.tabIndex = 0;
   el.addEventListener("keydown", e => {
     const step = { ArrowLeft: [0, -0.15], ArrowRight: [0, 0.15], ArrowUp: [-0.15, 0], ArrowDown: [0.15, 0] }[e.key];
     if (step) { e.preventDefault(); target.x = Math.max(-1.2, Math.min(1.2, target.x + step[0])); target.y += step[1]; }
-    if (e.key === "+" || e.key === "=") zoomTarget = Math.max(2.1, zoomTarget * 0.88);
-    if (e.key === "-") zoomTarget = Math.min(6, zoomTarget * 1.12);
+    if (e.key === "+" || e.key === "=") zoomTarget = Math.max(ZMIN, 1 + (zoomTarget - 1) * 0.8);
+    if (e.key === "-") zoomTarget = Math.min(ZMAX, 1 + (zoomTarget - 1) * 1.25);
   });
   const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
   function hover(e, tap) {
@@ -630,6 +646,54 @@ async function startGlobe(el, data) {
     tip.style.left = x + "px"; tip.style.top = y + "px";
   }
 
+  // close up: country borders (Natural Earth, loaded the first time the globe is zoomed
+  // in) and the names of the places
+  let borders = null, bordersAsked = false;
+  const borderMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0, depthWrite: false });
+  function zoomedIn(on) {
+    if (on && !bordersAsked) {
+      bordersAsked = true;
+      fetch("data/borders.json").then(r => r.ok ? r.json() : null).then(d => {
+        if (!d || !Array.isArray(d.lines)) return;
+        const pos = [];
+        d.lines.forEach(l => { for (let i = 0; i + 3 < l.length; i += 2) {
+          const a = vec(l[i + 1], l[i], 1.0012), b = vec(l[i + 3], l[i + 2], 1.0012);
+          pos.push(a.x, a.y, a.z, b.x, b.y, b.z);
+        } });
+        const g = new THREE.BufferGeometry();
+        g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+        borders = new THREE.LineSegments(g, borderMat); borders.renderOrder = 2; globe.add(borders);
+      }).catch(() => {});
+    }
+    const want = on ? Math.min(0.55, (2.7 - zoom) * 0.5) : 0;
+    borderMat.opacity += (want - borderMat.opacity) * 0.15;
+    if (borders) borders.visible = borderMat.opacity > 0.01;
+  }
+  const labels = (data.cities || []).map(c => {
+    const d = document.createElement("span");
+    d.className = "globe-label"; d.setAttribute("aria-hidden", "true");
+    el.appendChild(d);
+    return { c, d, p: vec(c.lat, c.lng, 1.01) };
+  });
+  const labelText = () => labels.forEach(L => { L.d.textContent = L.c.name(lang()); });
+  labelText();
+  window.addEventListener("site:lang", labelText);
+  const wpos = new THREE.Vector3(), camDir = new THREE.Vector3();
+  function placeLabels() {
+    globe.updateMatrixWorld();
+    const show = zoom < 2.4, w = el.clientWidth, h = el.clientHeight;
+    camDir.copy(camera.position).normalize();
+    labels.forEach(L => {
+      wpos.copy(L.p).applyMatrix4(globe.matrixWorld);
+      const facing = wpos.clone().normalize().dot(camDir) > 0.25;
+      if (!show || !facing) { L.d.style.opacity = "0"; return; }
+      const sp = wpos.project(camera);
+      if (Math.abs(sp.x) > 1.05 || Math.abs(sp.y) > 1.05) { L.d.style.opacity = "0"; return; }
+      L.d.style.opacity = String(Math.min(1, (2.4 - zoom) * 2.5));
+      L.d.style.transform = "translate(" + Math.round((sp.x + 1) / 2 * w + 9) + "px," + Math.round((1 - sp.y) / 2 * h - 9) + "px)";
+    });
+  }
+
   // render loop (only while the globe is on screen)
   function layout() {
     const w = el.clientWidth, h = el.clientHeight;
@@ -645,11 +709,21 @@ async function startGlobe(el, data) {
   let raf = 0;
   function frame(now) {
     const t = (now - t0) / 1000;
-    if (!reduced && !pointers.size && now - idleSince > 4000) target.y += 0.0009;   // slow drift when idle
+    if (!reduced && !pointers.size && now - idleSince > 4000 && zoom > 2.6) target.y += 0.0009;   // slow drift when idle (not close up)
     cur.x += (target.x - cur.x) * 0.08; cur.y += (target.y - cur.y) * 0.08;
     zoom += (zoomTarget - zoom) * 0.1;
     globe.rotation.x = cur.x; globe.rotation.y = cur.y;
     camera.position.z = zoom;
+    // markers keep a sensible size on screen as the camera comes down, so places a few
+    // tens of km apart (Espinho, Covilhã, Lisbon) stay apart
+    const ms = Math.max(0.06, Math.min(1, (zoom - 1) / (HOME_Z - 1)));
+    dots.forEach(d => d.scale.setScalar(ms)); hits.forEach(h => h.scale.setScalar(ms));
+    halos.forEach(h => h.userData.ms = ms);
+    spark.scale.setScalar(ms);
+    arcMat.opacity = 0.9 * Math.max(0.12, Math.min(1, (zoom - 1.25) / 1.2));   // the routes fade out close up
+    camera.near = Math.max(0.01, (zoom - 1) * 0.3); camera.updateProjectionMatrix();
+    zoomedIn(zoom < 2.7);
+    placeLabels();
     // arcs draw in one after another, then a light runs along the whole path
     const draw = reduced ? 1 : Math.min(1, t / 3.2);
     arcs.forEach((a, i) => {
@@ -669,7 +743,7 @@ async function startGlobe(el, data) {
       tip.style.left = Math.min(w - tip.offsetWidth - 8, Math.max(8, (sp.x + 1) / 2 * w + 16)) + "px";
       tip.style.top = Math.min(h - tip.offsetHeight - 8, Math.max(8, (1 - sp.y) / 2 * h - tip.offsetHeight / 2)) + "px";
     } else tip.style.visibility = "visible";
-    halos.forEach((h, i) => { const s = 1 + 0.35 * Math.sin(t * 2.2 + i); h.scale.setScalar(reduced ? 1 : s); h.material.opacity = reduced ? 0.6 : 0.75 - 0.3 * s + 0.3; });
+    halos.forEach((h, i) => { const s = 1 + 0.35 * Math.sin(t * 2.2 + i); h.scale.setScalar((reduced ? 1 : s) * (h.userData.ms || 1)); h.material.opacity = reduced ? 0.6 : 0.75 - 0.3 * s + 0.3; });
     renderer.render(scene, camera);
     raf = requestAnimationFrame(frame);
   }

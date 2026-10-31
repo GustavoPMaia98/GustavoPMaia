@@ -784,19 +784,11 @@ html[data-theme="light"] .path-year{ color:var(--accent-strong); border-color:rg
   .path-phd-last::before{ bottom:-4px; border-bottom:1px dashed color-mix(in srgb, var(--accent) 40%, transparent); border-radius:0 0 14px 14px; }
   .path-phd-first{ margin-top:16px; }
   .path-group-label{ top:-21px; left:auto; right:12px; }
-  /* the Experience path stays a horizontal track on phones too (swipe or arrows) */
-  .path-scroll{ margin:0 30px;
-    -webkit-mask-image:linear-gradient(90deg, transparent, #000 10px, #000 calc(100% - 10px), transparent);
-            mask-image:linear-gradient(90deg, transparent, #000 10px, #000 calc(100% - 10px), transparent); }
-  .path--scroll{ grid-template-columns:none; grid-auto-flow:column; grid-auto-columns:136px; width:max-content; gap:4px; }
-  .path--scroll::before{ top:31px; bottom:auto; left:68px; right:68px; width:auto; height:2px; transform:scaleX(0); transform-origin:left center;
-    background:color-mix(in srgb, var(--accent) 45%, transparent); }
-  .path--scroll.is-drawn::before{ transform:scaleX(1); }
-  .path--scroll .path-btn{ display:flex; flex-direction:column; align-items:center; text-align:center; padding:8px 4px 10px; }
-  .path--scroll .path-logo{ margin:0 0 4px; }
-  .path--scroll .path-btn > :not(.path-logo){ grid-column:auto; justify-self:auto; }
-  .path-arrow{ width:30px; height:30px; top:36px; }
-  .path-arrow--prev{ left:2px; } .path-arrow--next{ right:2px; }
+  /* phones: every timeline is a vertical list (no sideways track, no arrows) */
+  .path-scroll{ margin:0; overflow:visible; -webkit-mask-image:none; mask-image:none; }
+  .path--scroll{ grid-auto-flow:row; grid-auto-columns:auto; width:auto; min-width:0; }
+  .path--scroll::before{ left:35px; right:auto; }
+  .path-arrow{ display:none !important; }
 }
 @media (prefers-reduced-motion:reduce){
   .path::before, .path-btn{ transition:none; } .path-detail{ animation:none; }
@@ -950,16 +942,6 @@ html[data-theme="light"] .pub-shadow{ background:radial-gradient(closest-side, r
 .pub3d-arrow--prev{ left:0; } .pub3d-arrow--next{ right:0; }
 .pub3d-arrow:disabled{ opacity:.3; cursor:default; }
 .pub3d-arrow svg{ width:19px; height:19px; }
-/* the timeline under the carousel: one dot per paper, newest on the left */
-.pub3d-axis{ list-style:none; display:flex; justify-content:center; gap:0; margin:2px auto 0; padding:0; position:relative; max-width:640px; }
-.pub3d-axis::before{ content:""; position:absolute; left:10%; right:10%; top:9px; height:2px; background:color-mix(in srgb, var(--accent) 35%, transparent); }
-.pub3d-axis li{ flex:1; display:flex; justify-content:center; }
-.pub3d-dot{ position:relative; display:flex; flex-direction:column; align-items:center; gap:4px; padding:0 6px; cursor:pointer; background:none; border:0; font:inherit; color:var(--muted); }
-.pub3d-dot-mark{ width:12px; height:12px; margin-top:4px; border-radius:50%; background:var(--card); border:2px solid color-mix(in srgb, var(--accent) 55%, transparent); transition:transform .2s, background .2s; }
-.pub3d-dot[aria-current="true"] .pub3d-dot-mark{ background:var(--accent); transform:scale(1.35); box-shadow:0 0 0 4px color-mix(in srgb, var(--accent) 20%, transparent); }
-.pub3d-dot-year{ font-size:.76rem; font-weight:700; }
-.pub3d-dot[aria-current="true"] .pub3d-dot-year{ color:var(--accent); }
-.pub3d-dot:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; border-radius:6px; }
 .pub3d-hint{ text-align:center; font-size:.8rem; color:var(--muted); margin:8px 0 0; }
 /* the zoomed paper: the page large, the whole abstract beside it, the rest below */
 .pub-zoom{ position:fixed; inset:0; z-index:1000; display:grid; place-items:center; padding:24px; }
@@ -1090,3 +1072,19 @@ html.space-pending body, html.has-space3d body{ background:#02040a; }
 }
 @media (hover:none){ .rail-track{ scroll-snap-type:x proximity; } }
 .rail-track:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:12px; }
+
+/* globe close up: the names of the places */
+.globe-label{ position:absolute; left:0; top:0; z-index:2; pointer-events:none; white-space:nowrap; opacity:0;
+  font-size:.78rem; font-weight:700; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,.9), 0 0 8px rgba(0,0,0,.6);
+  transition:opacity .25s ease; will-change:transform; }
+
+/* timelines, awards and the publications carousel can be dragged with the mouse */
+@media (hover:hover) and (pointer:fine){
+  .path-scroll, .rail-track, .pub3d-stage{ cursor:grab; }
+}
+.is-dragging, .pub3d.is-dragging .pub3d-stage{ cursor:grabbing !important; user-select:none; -webkit-user-select:none; }
+.is-dragging .path-btn, .is-dragging img{ pointer-events:none; }
+.pub3d.is-dragging .pub-page{ transition:none; }
+/* the publications timeline, under the carousel */
+.pub3d-path{ margin-top:8px; }
+.pub3d-path .path-place{ -webkit-line-clamp:3; }
