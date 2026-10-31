@@ -52,7 +52,31 @@
         "institution": {
           "name": "Muséum national d’Histoire naturelle",
           "url": "https://www.mnhn.fr/en"
-        }
+        },
+        "mentors": [
+          {
+            "name": "François Robert",
+            "role": {
+              "en": "Doctoral advisor of L. Remusat",
+              "pt": "Orientador de doutoramento de L. Remusat"
+            },
+            "institution": {
+              "name": "Muséum national d’Histoire naturelle",
+              "url": "https://www.mnhn.fr/en"
+            }
+          },
+          {
+            "name": "Sylvie Derenne",
+            "role": {
+              "en": "Doctoral co-advisor of L. Remusat",
+              "pt": "Coorientadora de doutoramento de L. Remusat"
+            },
+            "institution": {
+              "name": "École Nationale Supérieure de Chimie de Paris",
+              "url": "https://www.chimieparistech.psl.eu/en/"
+            }
+          }
+        ]
       },
       {
         "name": "Jason P. Dworkin",
@@ -66,6 +90,60 @@
           "url": "https://www.nasa.gov/goddard/"
         },
         "mentors": [
+          {
+            "name": "Joan Oró",
+            "url": "https://en.wikipedia.org/wiki/Joan_Or%C3%B3",
+            "photo": "images/tree/oro.webp",
+            "role": {
+              "en": "Origin-of-life chemistry lineage",
+              "pt": "Linhagem da química da origem da vida"
+            },
+            "institution": {
+              "name": "University of Houston",
+              "url": "https://www.uh.edu/"
+            },
+            "mentors": [
+              {
+                "name": "Donald A. Rappoport",
+                "url": "https://academictree.org/chemistry/peopleinfo.php?pid=83723",
+                "role": {
+                  "en": "Advisor of Joan Oró",
+                  "pt": "Orientador de Joan Oró"
+                },
+                "institution": {
+                  "name": "UT Medical Branch, Galveston",
+                  "url": "https://www.utmb.edu/"
+                },
+                "academictree": 83723,
+                "mentors": [
+                  {
+                    "name": "Horace Albert Barker",
+                    "url": "https://en.wikipedia.org/wiki/Horace_Barker",
+                    "role": {
+                      "en": "Advisor of D. A. Rappoport",
+                      "pt": "Orientador de D. A. Rappoport"
+                    },
+                    "institution": {
+                      "name": "University of California, Berkeley",
+                      "url": "https://chemistry.berkeley.edu/"
+                    }
+                  },
+                  {
+                    "name": "William Zev Hassid",
+                    "url": "https://en.wikipedia.org/wiki/William_Zev_Hassid",
+                    "role": {
+                      "en": "Advisor of D. A. Rappoport",
+                      "pt": "Orientador de D. A. Rappoport"
+                    },
+                    "institution": {
+                      "name": "University of California, Berkeley",
+                      "url": "https://chemistry.berkeley.edu/"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
           {
             "name": "Stanley Lloyd Miller",
             "url": "https://en.wikipedia.org/wiki/Stanley_Miller",
@@ -125,34 +203,6 @@
             ]
           },
           {
-            "name": "Joan Oró",
-            "url": "https://en.wikipedia.org/wiki/Joan_Or%C3%B3",
-            "photo": "images/tree/oro.webp",
-            "role": {
-              "en": "Origin-of-life chemistry lineage",
-              "pt": "Linhagem da química da origem da vida"
-            },
-            "institution": {
-              "name": "University of Houston",
-              "url": "https://www.uh.edu/"
-            },
-            "mentors": [
-              {
-                "name": "Donald A. Rappoport",
-                "url": "https://academictree.org/chemistry/peopleinfo.php?pid=83723",
-                "role": {
-                  "en": "Advisor of Joan Oró",
-                  "pt": "Orientador de Joan Oró"
-                },
-                "institution": {
-                  "name": "UT Medical Branch, Galveston",
-                  "url": "https://www.utmb.edu/"
-                },
-                "academictree": 83723
-              }
-            ]
-          },
-          {
             "name": "Louis J. Allamandola",
             "url": "https://www.nasa.gov/people/louis-allamandola",
             "role": {
@@ -164,18 +214,6 @@
               "url": "https://www.nasa.gov/ames/"
             },
             "mentors": [
-              {
-                "name": "J. Mayo Greenberg",
-                "url": "https://link.springer.com/rwe/10.1007/978-1-0716-0738-1_100715-1",
-                "role": {
-                  "en": "Advisor of L. J. Allamandola",
-                  "pt": "Orientador de L. J. Allamandola"
-                },
-                "institution": {
-                  "name": "Leiden University",
-                  "url": "https://www.universiteitleiden.nl/en"
-                }
-              },
               {
                 "name": "George C. Pimentel",
                 "url": "https://en.wikipedia.org/wiki/George_C._Pimentel",
@@ -212,7 +250,46 @@
                 "institution": {
                   "name": "Oregon State University",
                   "url": "https://oregonstate.edu/"
-                }
+                },
+                "mentors": [
+                  {
+                    "name": "George C. Pimentel",
+                    "url": "https://en.wikipedia.org/wiki/George_C._Pimentel",
+                    "role": {
+                      "en": "Doctoral advisor of J. W. Nibler",
+                      "pt": "Orientador de doutoramento de J. W. Nibler"
+                    },
+                    "institution": {
+                      "name": "University of California, Berkeley",
+                      "url": "https://chemistry.berkeley.edu/"
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "Jerome Mayo Greenberg",
+                "url": "https://link.springer.com/rwe/10.1007/978-1-0716-0738-1_100715-1",
+                "role": {
+                  "en": "Advisor of L. J. Allamandola",
+                  "pt": "Orientador de L. J. Allamandola"
+                },
+                "institution": {
+                  "name": "Leiden University",
+                  "url": "https://www.universiteitleiden.nl/en"
+                },
+                "mentors": [
+                  {
+                    "name": "Theodore H. Berlin",
+                    "role": {
+                      "en": "Advisor of J. M. Greenberg",
+                      "pt": "Orientador de J. M. Greenberg"
+                    },
+                    "institution": {
+                      "name": "Rockefeller University",
+                      "url": "https://www.rockefeller.edu/"
+                    }
+                  }
+                ]
               }
             ]
           },
@@ -238,7 +315,70 @@
                 "institution": {
                   "name": "Washington University in St. Louis",
                   "url": "https://wustl.edu/"
-                }
+                },
+                "mentors": [
+                  {
+                    "name": "Earle Cabell Fowler",
+                    "role": {
+                      "en": "Advisor of R. M. Walker",
+                      "pt": "Orientador de R. M. Walker"
+                    },
+                    "institution": {
+                      "name": "Purdue University",
+                      "url": "https://www.purdue.edu/"
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "Louis J. Allamandola",
+                "url": "https://www.nasa.gov/people/louis-allamandola",
+                "role": {
+                  "en": "Mentor of S. A. Sandford",
+                  "pt": "Mentor de S. A. Sandford"
+                },
+                "institution": {
+                  "name": "NASA Ames Research Center",
+                  "url": "https://www.nasa.gov/ames/"
+                },
+                "mentors": [
+                  {
+                    "name": "George C. Pimentel",
+                    "url": "https://en.wikipedia.org/wiki/George_C._Pimentel",
+                    "role": {
+                      "en": "Mentor of L. J. Allamandola",
+                      "pt": "Mentor de L. J. Allamandola"
+                    },
+                    "institution": {
+                      "name": "University of California, Berkeley",
+                      "url": "https://chemistry.berkeley.edu/"
+                    }
+                  },
+                  {
+                    "name": "Joseph W. Nibler",
+                    "url": "https://science.oregonstate.edu/directory/joseph-w-nibler",
+                    "role": {
+                      "en": "Postdoctoral mentor of L. J. Allamandola",
+                      "pt": "Mentor de pós-doutoramento de L. J. Allamandola"
+                    },
+                    "institution": {
+                      "name": "Oregon State University",
+                      "url": "https://oregonstate.edu/"
+                    }
+                  },
+                  {
+                    "name": "Jerome Mayo Greenberg",
+                    "url": "https://link.springer.com/rwe/10.1007/978-1-0716-0738-1_100715-1",
+                    "role": {
+                      "en": "Advisor of L. J. Allamandola",
+                      "pt": "Orientador de L. J. Allamandola"
+                    },
+                    "institution": {
+                      "name": "Leiden University",
+                      "url": "https://www.universiteitleiden.nl/en"
+                    }
+                  }
+                ]
               }
             ]
           }

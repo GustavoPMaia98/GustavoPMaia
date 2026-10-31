@@ -1786,19 +1786,6 @@
     const wrap = document.querySelector(".at-wrap");
     if (!wrap || wrap.__panWired) return;
     wrap.__panWired = true;
-    // the tree tilts a little towards the mouse (3D, see ui-extra.css)
-    const treeEl = wrap.querySelector(".at-tree");
-    if (treeEl && !prefersReduced && matchMedia("(hover:hover) and (pointer:fine)").matches) {
-      let tiltRaf = 0, px = 0.5, py = 0.5;
-      const tilt = () => { tiltRaf = 0;
-        treeEl.style.setProperty("--at-rx", (8 - (py - 0.5) * 7).toFixed(2) + "deg");
-        treeEl.style.setProperty("--at-ry", ((px - 0.5) * 9).toFixed(2) + "deg"); };
-      wrap.addEventListener("pointermove", e => {
-        const r = wrap.getBoundingClientRect(); px = (e.clientX - r.left) / r.width; py = (e.clientY - r.top) / r.height;
-        if (!tiltRaf) tiltRaf = requestAnimationFrame(tilt);
-      });
-      wrap.addEventListener("pointerleave", () => { treeEl.style.removeProperty("--at-rx"); treeEl.style.removeProperty("--at-ry"); });
-    }
 
     // When the tree is wider than the screen (phones), start centred on me rather
     // than at its far-left edge, so the first thing seen is the focal card.
