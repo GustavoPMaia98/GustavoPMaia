@@ -1,15 +1,14 @@
-<!-- ACADEMIC TREE -->
+<!-- ACADEMIC TREE & COLLABORATIONS (hub.js): my academic lineage above me
+     (data/tree.json, synced with Chemistry Tree) and my co-authors below me
+     (data/publications.json), one network -->
 <section class="section" id="tree">
-  <h2>Academic Tree</h2>
-  <p class="section-note" data-pt="A minha linhagem académica: os meus orientadores, do curso profissional ao doutoramento, os meus mentores de investigação e os mentores destes, traçada a partir do <a href=&quot;https://academictree.org/chemistry/tree.php?pid=972410&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;>Chemistry Tree</a> (dados CC&#8209;BY 3.0)">My academic lineage: my advisors from the professional course to the PhD, my research mentors and their own mentors, drawn as on
+  <h2>Academic Tree &amp; Collaborations</h2>
+  <p class="section-note" data-pt="Acima de mim, a minha linhagem académica: orientadores e os orientadores destes, como no <a href=&quot;https://academictree.org/chemistry/tree.php?pid=972410&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;>Chemistry Tree</a> (dados CC&#8209;BY 3.0). Abaixo de mim, os meus coautores, que se atualizam a cada novo artigo. Selecione alguém para ver quem é; arraste para explorar.">Above me, my academic lineage: advisors and their own advisors, as on
     <a href="https://academictree.org/chemistry/tree.php?pid=972410" target="_blank" rel="noopener noreferrer">Chemistry Tree</a>
-    (data CC&#8209;BY 3.0)</p>
-  <p class="at-hint" data-pt="Arraste ou desloque horizontalmente para explorar gerações anteriores &#8596;">Drag or scroll horizontally to explore older generations &#8596;</p>
-
-  <div class="at-wrap reveal">
-    <div class="at-tree">
-      <!-- The tree comes from data/tree.json (see tools/update_tree.py) -->
-      <!--@tree-->
-    </div>
+    (data CC&#8209;BY 3.0). Below me, my co-authors, updated with every new paper. Select anyone to see who they are; drag to explore.</p>
+  <div class="tn reveal">
+    <div class="tn-legend" aria-hidden="true"><span class="tn-leg tn-leg--mentor" data-pt="Orientação">Mentorship</span><span class="tn-leg tn-leg--co" data-pt="Coautoria">Co-authorship</span></div>
+    <div class="tn-wrap" tabindex="0" role="region" aria-label="Academic tree and co-authors"><div class="tn-stage" id="tnStage"></div></div>
+    <aside class="tn-side" id="tnSide" aria-live="polite"></aside>
   </div>
 </section>

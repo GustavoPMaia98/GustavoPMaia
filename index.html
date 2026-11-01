@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Security: only this site, GoatCounter and Google Fonts may run code or load styles here.
        After editing an inline script, run: python tools/check_site.py --fix -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://gc.zgo.at 'sha256-8amGrSvoFL2IAIB0fs686DpmPU9SudQaOsy8b968DmI=' 'sha256-K/4r2ad2UiV9aFuSRPjndML0c+Zs0Vmsyyu63L6HZAs=' 'sha256-4q2xuongV1yIe//jKK9VhIfoTj8TRdiwk12UI+5uJRk='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://gustavopmaia.goatcounter.com; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://gc.zgo.at 'sha256-8amGrSvoFL2IAIB0fs686DpmPU9SudQaOsy8b968DmI=' 'sha256-PZ5O0bbsjJKpkA4SFG3Xu+SNBNxw064oDcgkdmhYMtQ=' 'sha256-4q2xuongV1yIe//jKK9VhIfoTj8TRdiwk12UI+5uJRk='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://gustavopmaia.goatcounter.com; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="referrer" content="strict-origin-when-cross-origin">
 
   <!-- ============ PRIMARY / SEO ============ -->
@@ -159,9 +159,7 @@
         <a href="#courses" data-i18n="nav_courses">Courses</a>
         <a href="#awards" data-i18n="nav_awards">Awards</a>
         <a href="#funding" data-i18n="nav_funding">Funding</a>
-        <a href="#datacode" data-i18n="nav_datacode">Data &amp; code</a>
         <a href="#tree" data-i18n="nav_tree">Tree</a>
-        <a href="#network" data-i18n="nav_network">Collaborations</a>
         <a href="#map" data-i18n="nav_map">Map</a>
         <a href="#missions" data-i18n="nav_missions">Missions</a>
         <a href="blog.html" data-i18n="nav_blog">Blog</a>
@@ -186,8 +184,6 @@
                 <a href="#awards" role="menuitem"><i data-lucide="award"></i><span data-i18n="nav_awards">Awards</span></a>
                 <a href="#funding" role="menuitem"><i data-lucide="banknote"></i><span data-i18n="nav_funding">Funding</span></a>
                 <a href="#tree" role="menuitem"><i data-lucide="git-fork"></i><span data-i18n="nav_tree">Tree</span></a>
-                <a href="#network" role="menuitem"><i data-lucide="share-2"></i><span data-i18n="nav_network">Collaborations</span></a>
-                <a href="#datacode" role="menuitem"><i data-lucide="database"></i><span data-i18n="nav_datacode">Data &amp; code</span></a>
                 <a href="#map" role="menuitem"><i data-lucide="map-pin"></i><span data-i18n="nav_map">Map</span></a>
                 <a href="#missions" role="menuitem"><i data-lucide="orbit"></i><span data-i18n="nav_missions">Missions</span></a>
                 <a href="blog.html" role="menuitem"><i data-lucide="pen-line"></i><span data-i18n="nav_blog">Blog</span></a>
@@ -376,7 +372,7 @@
   <script type="module" src="scenes3d.js"></script>
   <!-- Builds News and the Academic Tree from data/news.json and data/tree.json -->
   <script src="render.js"></script>
-  <!-- Co-author network, data & code (from data/*.json) -->
+  <!-- Academic tree & collaborations network (from data/tree.json and data/publications.json) -->
   <script src="hub.js"></script>
   <!-- Email links: the address is only assembled when clicked (keeps it away from spam bots) -->
   <script src="mail.js"></script>
@@ -398,9 +394,9 @@
     }
     async function loadSections() {
       // (the Blog has its own page, blog.html)
-      const sections = ['highlights','news','publications','presentations','education','experience','courses','awards','funding','datacode','tree','network','map','missions'];
+      const sections = ['highlights','news','publications','presentations','education','experience','courses','awards','funding','tree','map','missions'];
       const c = document.getElementById('mainContent');
-      const dataNames = ['news', 'tree', 'presentations', 'education', 'experience', 'courses', 'updated', 'publications', 'paper-info', 'datasets', 'repos'];
+      const dataNames = ['news', 'tree', 'presentations', 'education', 'experience', 'courses', 'updated', 'publications', 'paper-info'];
       const [results, datasets] = await Promise.all([Promise.all(sections.map(fetchSection)), Promise.all(dataNames.map(fetchData))]);
       const data = {}; dataNames.forEach((n, i) => { data[n] = datasets[i]; });
       let html = results.join('');

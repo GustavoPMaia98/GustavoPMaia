@@ -1349,3 +1349,13 @@ Object.assign(window.TR.ja, {
   "The missions that brought pieces of asteroids, comets and the Moon back to Earth, those that studied them up close, and those on their way (NASA, ESA, JAXA, CNSA): the worlds that test the chemistry I study in the lab. Orbits have their real shapes, distances are compressed and positions approximate; drag to turn.": "小惑星・彗星・月のかけらを地球に持ち帰ったミッション、それらを間近で調べたミッション、そしてこれからのミッション（NASA、ESA、JAXA、CNSA）。私が実験室で研究する化学を検証する天体です。軌道の形は実際のもの、距離は圧縮、位置はおおよそです。ドラッグで回転できます。",
   "Pause / play": "一時停止／再生",
 });
+Object.assign(window.TR.fr, {
+  "Academic Tree & Collaborations": "Arbre académique et collaborations",
+  "Above me, my academic lineage: advisors and their own advisors, as on <a href=\"https://academictree.org/chemistry/tree.php?pid=972410\" target=\"_blank\" rel=\"noopener noreferrer\">Chemistry Tree</a> (data CC‑BY 3.0). Below me, my co-authors, updated with every new paper. Select anyone to see who they are; drag to explore.": "Au-dessus de moi, ma lignée académique : mes directeurs et leurs propres directeurs, comme sur <a href=\"https://academictree.org/chemistry/tree.php?pid=972410\" target=\"_blank\" rel=\"noopener noreferrer\">Chemistry Tree</a> (données CC‑BY 3.0). En dessous, mes co-auteurs, mis à jour à chaque nouvel article. Sélectionnez quelqu’un pour le découvrir ; faites glisser pour explorer.",
+  "Mentorship": "Encadrement", "Co-authorship": "Co-autorat",
+});
+Object.assign(window.TR.ja, {
+  "Academic Tree & Collaborations": "学術系譜と共同研究",
+  "Above me, my academic lineage: advisors and their own advisors, as on <a href=\"https://academictree.org/chemistry/tree.php?pid=972410\" target=\"_blank\" rel=\"noopener noreferrer\">Chemistry Tree</a> (data CC‑BY 3.0). Below me, my co-authors, updated with every new paper. Select anyone to see who they are; drag to explore.": "上は私の学術系譜（指導教員とその指導教員）で、<a href=\"https://academictree.org/chemistry/tree.php?pid=972410\" target=\"_blank\" rel=\"noopener noreferrer\">Chemistry Tree</a>（データ CC‑BY 3.0）に基づきます。下は共著者で、新しい論文ごとに更新されます。選択すると詳細を表示、ドラッグで移動できます。",
+  "Mentorship": "指導", "Co-authorship": "共著",
+});

@@ -594,9 +594,9 @@
       index.push({ id, label, title: heading, text: norm(sec.textContent).toLowerCase(), el: sec });
 
       // Granular entries for individual items inside the section
-      const items = sec.querySelectorAll(".timeline-item, .news-slide, .at-node, .skill-item");
+      const items = sec.querySelectorAll(".timeline-item, .news-slide, .at-node, .tn-node, .skill-item");
       items.forEach(item => {
-        const titleEl = item.querySelector("strong, h3, .at-name, .blog-title, .skill-item-name");
+        const titleEl = item.querySelector("strong, h3, .at-name, .blog-title, .skill-item-name") || (item.classList.contains("tn-node") ? { textContent: item.getAttribute("aria-label") } : null);
         const title = norm(titleEl ? titleEl.textContent : item.textContent);
         const text = norm(item.textContent);
         if (text.length < 3) return;
@@ -748,7 +748,26 @@
     }, 80);
   }
 
+  // The search lives in the "Ask my research" chat (ask.js): the search button and the
+  // "/" and Ctrl/⌘+K shortcuts open the chat, which uses SiteSearch.find for its
+  // "On this site" links and short definitions. The palette below stays as a fallback.
+  window.SiteSearch = {
+    find(q) {
+      buildIndex();
+      const query = String(q || "").trim().toLowerCase();
+      const terms = query.split(/\s+/).filter(w => w.length > 2 && !STOP.has(w));
+      const ans = answerFor(query);
+      const seen = new Set();
+      const hits = terms.length ? index.map(e => ({ e, s: score(e, terms) })).filter(x => x.s > 1 && x.e.el !== x.e.el.closest("section"))
+        .sort((a, b) => b.s - a.s)
+        .filter(x => { const k = x.e.label + "|" + x.e.title; if (seen.has(k)) return false; seen.add(k); return true; })
+        .slice(0, 4).map(x => ({ label: x.e.label, title: x.e.title, snippet: snippet(x.e, terms), entry: x.e })) : [];
+      return { answer: ans ? { term: ans.term[lang()] || ans.term.en, text: ans.a[lang()] || ans.a.en } : null, results: hits };
+    },
+    go(entry) { go(entry); }
+  };
   function open() {
+    if (window.AskChat && AskChat.open) { AskChat.open(); return; }
     input.placeholder = ui("placeholder");
     buildIndex();
     overlay.hidden = false;
