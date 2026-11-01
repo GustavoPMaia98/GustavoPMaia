@@ -1326,7 +1326,7 @@ Object.assign(window.TR.fr, {
   "Datasets": "Jeux de données", "Code": "Code",
   "Datasets appear here by themselves once they are published on Zenodo with my ORCID.": "Les jeux de données apparaîtront ici d’eux-mêmes dès qu’ils seront publiés sur Zenodo avec mon ORCID.",
   "This website: data, automation and code, open source.": "Ce site : données, automatisation et code, en open source.",
-  "The missions that brought pieces of asteroids, comets and the Moon back to Earth, those that studied them up close, and those on their way (NASA, ESA, JAXA, CNSA): the worlds that test the chemistry I study in the lab. Orbits have their real shapes, distances are compressed and positions approximate; drag to turn.": "Les missions qui ont rapporté sur Terre des morceaux d’astéroïdes, de comètes et de la Lune, celles qui les ont étudiés de près et celles en route (NASA, ESA, JAXA, CNSA) : les mondes qui mettent à l’épreuve la chimie que j’étudie au laboratoire. Les orbites ont leur forme réelle, les distances sont comprimées et les positions approximatives ; faites glisser pour tourner.",
+  "The missions that brought pieces of asteroids, comets and the Moon back to Earth, those that studied them up close, and those on their way (NASA, ESA, JAXA, CNSA). Orbits have their real shapes, distances are compressed and positions approximate; drag to turn.": "Les missions qui ont rapporté sur Terre des morceaux d’astéroïdes, de comètes et de la Lune, celles qui les ont étudiés de près et celles en route (NASA, ESA, JAXA, CNSA). Les orbites ont leur forme réelle, les distances sont comprimées et les positions approximatives ; faites glisser pour tourner.",
   "Pause / play": "Pause / lecture",
 });
 Object.assign(window.TR.ja, {
@@ -1346,7 +1346,7 @@ Object.assign(window.TR.ja, {
   "Datasets": "データセット", "Code": "コード",
   "Datasets appear here by themselves once they are published on Zenodo with my ORCID.": "ORCID 付きで Zenodo に公開されたデータセットは、ここに自動で表示されます。",
   "This website: data, automation and code, open source.": "このウェブサイト：データ、自動化、コード（オープンソース）。",
-  "The missions that brought pieces of asteroids, comets and the Moon back to Earth, those that studied them up close, and those on their way (NASA, ESA, JAXA, CNSA): the worlds that test the chemistry I study in the lab. Orbits have their real shapes, distances are compressed and positions approximate; drag to turn.": "小惑星・彗星・月のかけらを地球に持ち帰ったミッション、それらを間近で調べたミッション、そしてこれからのミッション（NASA、ESA、JAXA、CNSA）。私が実験室で研究する化学を検証する天体です。軌道の形は実際のもの、距離は圧縮、位置はおおよそです。ドラッグで回転できます。",
+  "The missions that brought pieces of asteroids, comets and the Moon back to Earth, those that studied them up close, and those on their way (NASA, ESA, JAXA, CNSA). Orbits have their real shapes, distances are compressed and positions approximate; drag to turn.": "小惑星・彗星・月のかけらを地球に持ち帰ったミッション、それらを間近で調べたミッション、そしてこれからのミッション（NASA、ESA、JAXA、CNSA）。軌道の形は実際のもの、距離は圧縮、位置はおおよそです。ドラッグで回転できます。",
   "Pause / play": "一時停止／再生",
 });
 Object.assign(window.TR.fr, {

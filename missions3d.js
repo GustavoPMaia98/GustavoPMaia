@@ -47,7 +47,7 @@ if (stage && !stage.__wired) {
     card.innerHTML = '<p class="ms-agency"><span>' + esc(m.agency) + '</span><span class="ms-status ms-status--' + m.status + '">' + lt(ST[m.status] || "visited") + "</span></p>" +
       '<h3 class="ms-title">' + esc(m.mission) + "</h3>" +
       '<dl class="ms-facts">' + row("target", m.target) + row("when", m.when) + row("sample", m.sample) + "</dl>" +
-      para("what", m.what) + para("found", m.found) + para("why", m.why) +
+      para("what", m.what) + para("found", m.found) +
       '<a class="ms-link" href="' + esc(m.url) + '" target="_blank" rel="noopener noreferrer">' + lt("more") + " ↗</a>";
     if (scene) scene.select(sel);
   }
