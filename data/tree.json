@@ -63,6 +63,12 @@
             "institution": {
               "name": "Muséum national d’Histoire naturelle",
               "url": "https://www.mnhn.fr/en"
+            },
+            "photo": "images/tree/francois-robert.jpg",
+            "photoCredit": {
+              "author": "François Robert",
+              "license": "CC BY-SA 3.0",
+              "source": "https://commons.wikimedia.org/wiki/File:Francois_robert_mnhn.jpg"
             }
           },
           {
@@ -289,9 +295,21 @@
                       "url": "https://www.rockefeller.edu/"
                     }
                   }
-                ]
+                ],
+                "photo": "images/tree/jerome-mayo-greenberg.jpg",
+                "photoCredit": {
+                  "author": "Holvast, Jan (Primaire vervaardiger)",
+                  "license": "CC0",
+                  "source": "https://commons.wikimedia.org/wiki/File:Zonder_titel,_Objectnr_PV_PV51135.1.jpg"
+                }
               }
-            ]
+            ],
+            "photo": "images/tree/louis-j-allamandola.jpg",
+            "photoCredit": {
+              "author": "Alex P. Kok",
+              "license": "CC BY-SA 4.0",
+              "source": "https://commons.wikimedia.org/wiki/File:Lou_Allamandola_-_Leiden_University_-_1980s.jpg"
+            }
           },
           {
             "name": "Scott A. Sandford",
@@ -376,9 +394,21 @@
                     "institution": {
                       "name": "Leiden University",
                       "url": "https://www.universiteitleiden.nl/en"
+                    },
+                    "photo": "images/tree/jerome-mayo-greenberg.jpg",
+                    "photoCredit": {
+                      "author": "Holvast, Jan (Primaire vervaardiger)",
+                      "license": "CC0",
+                      "source": "https://commons.wikimedia.org/wiki/File:Zonder_titel,_Objectnr_PV_PV51135.1.jpg"
                     }
                   }
-                ]
+                ],
+                "photo": "images/tree/louis-j-allamandola.jpg",
+                "photoCredit": {
+                  "author": "Alex P. Kok",
+                  "license": "CC BY-SA 4.0",
+                  "source": "https://commons.wikimedia.org/wiki/File:Lou_Allamandola_-_Leiden_University_-_1980s.jpg"
+                }
               }
             ]
           }
