@@ -45,7 +45,8 @@ if (form && !form.__wired) {
       publications: { en: "Paper", pt: "Artigo", fr: "Article", ja: "論文" }, highlights: { en: "Research", pt: "Investigação", fr: "Recherche", ja: "研究" },
       projects: { en: "Project", pt: "Projeto", fr: "Projet", ja: "プロジェクト" }, presentations: { en: "Talk", pt: "Comunicação", fr: "Présentation", ja: "発表" },
       courses: { en: "Course", pt: "Curso", fr: "Cours", ja: "講習" }, experience: { en: "Experience", pt: "Experiência", fr: "Expérience", ja: "経歴" },
-      education: { en: "Education", pt: "Educação", fr: "Formation", ja: "学歴" }, news: { en: "News", pt: "Novidades", fr: "Actualités", ja: "ニュース" }, blog: { en: "Blog", pt: "Blog", fr: "Blog", ja: "ブログ" } }
+      education: { en: "Education", pt: "Educação", fr: "Formation", ja: "学歴" }, news: { en: "News", pt: "Novidades", fr: "Actualités", ja: "ニュース" },
+      funding: { en: "Funding", pt: "Financiamento", fr: "Financement", ja: "資金" }, awards: { en: "Award", pt: "Prémio", fr: "Prix", ja: "受賞" }, blog: { en: "Blog", pt: "Blog", fr: "Blog", ja: "ブログ" } }
   };
   const t = (k, o) => { let s = T[k][lang()] || T[k].en; for (const x in o || {}) s = s.replace("{" + x + "}", o[x]); return s; };
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));

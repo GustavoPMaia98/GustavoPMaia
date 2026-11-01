@@ -93,6 +93,17 @@ for (const [file, sec] of [["presentations", "presentations"], ["courses", "cour
   }
 }
 
+// ---- funding (grants) and awards, from their section HTML
+for (const m of read("sections/funding.html").matchAll(/<div class="timeline-item">([\s\S]*?)(?=<div class="timeline-item">|<\/section>)/g)) {
+  const b = m[1], title = text((b.match(/<strong>([\s\S]*?)<\/strong>/) || [])[1]);
+  if (title) add("funding", title, "Funding: " + title + ". " + text(b.replace(/<strong>[\s\S]*?<\/strong>/, "")), {});
+}
+for (const m of read("sections/awards.html").matchAll(/<article class="award-card">([\s\S]*?)<\/article>/g)) {
+  const b = m[1], title = text((b.match(/<h3 class="award-title"[^>]*>([\s\S]*?)<\/h3>/) || [])[1]);
+  const pick = c => text((b.match(new RegExp('<[a-z0-9]+ class="' + c + '"[^>]*>([\\s\\S]*?)</[a-z0-9]+>')) || [])[1]);
+  if (title) add("awards", title, "Award: " + title + " (" + pick("award-year") + "). " + pick("award-issuer") + ". " + pick("award-desc"), {});
+}
+
 // ---- news and blog
 for (const n of (json("data/news.json") || []).filter(n => !n.hidden).slice(0, 40))
   add("news", text(en(n.text)).slice(0, 90), (n.date ? n.date + ": " : "") + text(en(n.text)), { url: n.href || "", ptBody: text(pt(n.text)) });
