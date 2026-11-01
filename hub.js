@@ -56,8 +56,14 @@
     //      my co-authors on the inner rings of their own part of the circle
     const nodes = [], links = [];
     let maxGen = 0;
+    // each person appears once: someone who mentored several people in the tree (e.g. one
+    // mentor of two of my mentors) keeps one place and gets a line to each of them
+    const seen = new Map();
     function grow(n, gen, parent) {
-      const node = { id: nodes.length, n, gen, parent, name: n.name, key: keyOf(n.name), tree: true, kids: [] };
+      const k = keyOf(n.name);
+      if (parent && seen.has(k)) { const at = seen.get(k); links.push({ a: at, b: parent, kind: "mentor", cross: true }); return at; }
+      const node = { id: nodes.length, n, gen, parent, name: n.name, key: k, tree: true, kids: [] };
+      seen.set(k, node);
       nodes.push(node);
       if (parent) { links.push({ a: node, b: parent, kind: "mentor" }); parent.kids.push(node); }
       maxGen = Math.max(maxGen, gen);
@@ -117,6 +123,12 @@
     const P = (ang, r) => [C + Math.cos(ang) * r, C + Math.sin(ang) * r];
     const path = l => {
       const { a, b } = l;                              // a: further out, b: nearer the centre
+      if (l.cross) {                                   // an extra line to a person already placed elsewhere
+        const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2, cx = C + (mx - C) * 0.82, cy = C + (my - C) * 0.82;
+        const d = Math.hypot(a.x - b.x, a.y - b.y) || 1, ux = (a.x - b.x) / d, uy = (a.y - b.y) / d;
+        const s0 = [b.x + ux * R(b), b.y + uy * R(b)], e0 = [a.x - ux * R(a), a.y - uy * R(a)];
+        return "M" + s0.map(v => v.toFixed(1)).join(" ") + " Q" + cx.toFixed(1) + " " + cy.toFixed(1) + " " + e0.map(v => v.toFixed(1)).join(" ");
+      }
       if (b.self) { const m = (a.r0) * 0.5; const p1 = P(a.ang, m), p2 = P(a.ang, a.r0 - R(a));
         return "M" + C + " " + C + " Q" + p1[0].toFixed(1) + " " + p1[1].toFixed(1) + " " + p2[0].toFixed(1) + " " + p2[1].toFixed(1); }
       const mid = (a.r0 + b.r0) / 2, s = P(b.ang, b.r0 + R(b)), c1 = P(b.ang, mid), c2 = P(a.ang, mid), e = P(a.ang, a.r0 - R(a));

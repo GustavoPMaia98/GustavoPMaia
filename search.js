@@ -14,7 +14,7 @@
   const hint = document.getElementById("searchHint");
   const toggle = document.getElementById("searchToggle");
   const closeBtn = document.getElementById("searchClose");
-  if (!overlay || !input || !results || !toggle) return;
+  if (!overlay || !input || !results) return;      // (the search button is gone: the chat and the "/" key open search)
 
   // Friendly labels for the section badges
   const LABELS = {
@@ -780,7 +780,7 @@
     overlay.hidden = true;
     document.body.classList.remove("search-open");
     results.innerHTML = "";
-    toggle.focus();
+    if (toggle) toggle.focus();
   }
 
   function setActive(n) {
@@ -792,7 +792,7 @@
   }
 
   // Events
-  toggle.addEventListener("click", open);
+  if (toggle) toggle.addEventListener("click", open);
   closeBtn.addEventListener("click", close);
   input.addEventListener("input", () => run(input.value));
   overlay.addEventListener("mousedown", e => { if (e.target === overlay) close(); });

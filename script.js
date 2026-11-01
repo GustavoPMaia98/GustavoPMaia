@@ -1486,6 +1486,7 @@
     document.documentElement.setAttribute("lang", lang);
     document.documentElement.setAttribute("data-lang", lang);
     const code = document.getElementById("langCode"); if (code) code.textContent = lang.toUpperCase();
+    const flag = document.getElementById("langFlag"); if (flag) flag.textContent = { en: "🇬🇧", pt: "🇵🇹", fr: "🇫🇷", ja: "🇯🇵" }[lang] || "🌐";
     document.querySelectorAll("#langPop .lang-opt").forEach(b => {
       const on = b.dataset.lang === lang;
       b.classList.toggle("active", on);
