@@ -26,10 +26,6 @@
     coauthor: { en: "Co-author", pt: "Coautor(a)", fr: "Co-auteur", ja: "共著者" },
     colleague: { en: "Research colleague", pt: "Colega de investigação", fr: "Collègue de recherche", ja: "研究仲間" },
     mentorCo: { en: "Mentor and co-author", pt: "Mentor(a) e coautor(a)", fr: "Mentor et co-auteur", ja: "指導者・共著者" },
-    me: { en: "{g} generations of mentors around me, ring after ring, {n} co-authors on {p} papers (orange) and {m} research colleagues (green). Select anyone to see who they are.",
-          pt: "{g} gerações de mentores à minha volta, anel após anel, {n} coautores em {p} artigos (laranja) e {m} colegas de investigação (verde). Selecione alguém para ver quem é.",
-          fr: "{g} générations de mentors autour de moi, anneau après anneau, {n} co-auteurs sur {p} articles (orange) et {m} collègues de recherche (vert). Sélectionnez quelqu’un pour le découvrir.",
-          ja: "周囲の輪に {g} 世代の指導者、{p} 本の論文の共著者 {n} 人（オレンジ）、研究仲間 {m} 人（緑）。選択すると詳細を表示します。" },
     profile: { en: "Profile", pt: "Perfil", fr: "Profil", ja: "プロフィール" },
     photo: { en: "Photo", pt: "Foto", fr: "Photo", ja: "写真" },
     homeView: { en: "Standard view", pt: "Vista normal", fr: "Vue d’ensemble", ja: "標準表示" },
@@ -213,8 +209,7 @@
         (photo ? '<img src="' + esc(photo) + '" alt="">' : esc(n.n && n.n.initials || ini(n.name))) + "</span>" +
         '<div><p class="tn-who">' + esc(n.name) + "</p>" + (n.n && n.n.nobel ? '<span class="tn-badge tn-badge--nobel">' + esc(t("nobel")) + "</span>" : "") + "</div></div>";
       if (n.self) {
-        side.innerHTML = head + '<p class="tn-role">' + esc(tr(n.n.role)) + '</p><p class="tn-hint">' +
-          esc(t("me", { g: maxGen, n: coCount, p: pubs.length, m: mates.length })) + "</p>";
+        side.innerHTML = head + '<p class="tn-role">' + esc(tr(n.n.role)) + "</p>";
         return;
       }
       const role = n.n ? tr(n.n.role) : "", inst = n.n && n.n.institution;
