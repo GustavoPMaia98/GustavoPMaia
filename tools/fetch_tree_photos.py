@@ -3,7 +3,8 @@
 
 For every person in data/tree.json without a "photo", this looks for their Wikipedia
 article (the "url" when it is a Wikipedia link, otherwise their name), checks that
-the article is about a scientist, takes the article's main picture, and keeps it only
+the article is about a scientist, takes their portrait on Wikidata or the article's
+main picture, and keeps it only
 if it is on Wikimedia Commons under a free licence (public domain or Creative
 Commons). The picture is saved as images/tree/<name>.jpg (square, 320 px) and the
 person gets "photo" and "photoCredit" (author, licence, source page) in data/tree.json;
@@ -13,7 +14,7 @@ find with certainty.
 Run by .github/workflows/tree-photos.yml ("Run workflow"), or by hand:
     python tools/fetch_tree_photos.py            # find and save
     python tools/fetch_tree_photos.py --dry-run  # only report
-Needs Pillow; network access to wikipedia.org and wikimedia.org.
+Needs Pillow; network access to wikipedia.org, wikidata.org and wikimedia.org.
 """
 import argparse, html, io, json, os, re, sys, time, unicodedata, urllib.parse, urllib.request
 
@@ -64,37 +65,65 @@ def same_person(node_name, title):
     return bool(a and b) and a[-1] == b[-1] and a[0][0] == b[0][0]
 
 
+def wikidata_image(qid):
+    """The portrait recorded on Wikidata (property P18): always a file on Commons."""
+    if not qid:
+        return None
+    r = api("www.wikidata.org", action="wbgetclaims", entity=qid, property="P18")
+    claims = r.get("claims", {}).get("P18") or []
+    return claims[0]["mainsnak"]["datavalue"]["value"] if claims else None
+
+
 def find(node):
+    url_title = titles_for(node)[0] if re.match(r"https?://en\.wikipedia\.org/wiki/", node.get("url") or "") else None
     for title in titles_for(node):
         try:
-            r = api("en.wikipedia.org", action="query", titles=title, redirects=1, prop="pageimages|description", piprop="name")
+            r = api("en.wikipedia.org", action="query", titles=title, redirects=1, prop="pageimages|description|pageprops", piprop="name", ppprop="wikibase_item")
         except Exception as e:
             print("   wikipedia unreachable:", e)
             return None
         page = (r.get("query", {}).get("pages") or [{}])[0]
-        if page.get("missing") or not page.get("pageimage"):
+        if page.get("missing"):
             continue
         if not same_person(node["name"], page.get("title", "")):
             continue
-        if not SCIENCE.search(page.get("description", "")):
+        # a Wikipedia link written in the tree that leads straight to its page is trusted;
+        # otherwise the article must describe a scientist
+        trusted = url_title and title == url_title and page.get("title") == url_title
+        if not trusted and not SCIENCE.search(page.get("description", "")):
             print("   skip (not a scientist?):", page.get("title"), "-", page.get("description"))
             continue
-        file = "File:" + page["pageimage"]
+        files = []
+        try:
+            wd = wikidata_image((page.get("pageprops") or {}).get("wikibase_item"))
+            if wd:
+                files.append("File:" + wd)
+        except Exception as e:
+            print("   wikidata unreachable:", e)
+        if page.get("pageimage"):
+            files.append("File:" + page["pageimage"])
+        for file in dict.fromkeys(files):
+            hit = commons(file, page)
+            if hit:
+                return hit
+    return None
+
+
+def commons(file, page):
         info = api("commons.wikimedia.org", action="query", titles=file, prop="imageinfo", iiprop="url|extmetadata", iiurlwidth=480)
         fp = (info.get("query", {}).get("pages") or [{}])[0]
         if fp.get("missing") or not fp.get("imageinfo"):
             print("   skip (picture not on Commons, may be non-free):", file)
-            continue
+            return None
         ii = fp["imageinfo"][0]
         meta = ii.get("extmetadata", {})
         lic = (meta.get("LicenseShortName", {}).get("value") or "").strip()
         if not FREE.search(lic):
             print("   skip (licence):", lic, file)
-            continue
+            return None
         artist = re.sub(r"<[^>]+>", "", html.unescape(meta.get("Artist", {}).get("value") or "")).strip() or "unknown"
         return {"thumb": ii.get("thumburl") or ii["url"], "page": ii.get("descriptionurl", ""), "license": lic,
                 "author": artist[:120], "title": page["title"]}
-    return None
 
 
 def square(data, size=320):
