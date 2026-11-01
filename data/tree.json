@@ -475,6 +475,9 @@
         "license": "© IMPMC",
         "source": ""
       }
+    },
+    "Ana P. C. Ribeiro": {
+      "photo": "images/tree/ribeiro.jpg"
     }
   },
   "colleagues": [
@@ -524,7 +527,8 @@
       "institution": {
         "name": "IMPMC · Sorbonne Université / MNHN",
         "url": "https://impmc.sorbonne-universite.fr/en/index.html"
-      }
+      },
+      "photo": "images/tree/bouquet.jpg"
     },
     {
       "name": "Nadezda Khodorova",
@@ -574,6 +578,12 @@
       "institution": {
         "name": "IMPMC · Sorbonne Université / MNHN",
         "url": "https://impmc.sorbonne-universite.fr/en/index.html"
+      },
+      "photo": "images/tree/charlier.jpg",
+      "photoCredit": {
+        "author": "Cécile Duflot",
+        "license": "© IMPMC",
+        "source": ""
       }
     },
     {
