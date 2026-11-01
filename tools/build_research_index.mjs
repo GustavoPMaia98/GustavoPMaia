@@ -55,6 +55,7 @@ const EXPAND = [[/\bUSA\b/g, "USA (United States, America)"], [/\bFCT\b/g, "FCT 
   [/\bIST\b|\bTécnico\b/g, "$& (Lisbon university)"], [/\bMNHN\b/g, "MNHN (Paris natural history museum, France)"],
   [/\bIMPMC\b/g, "IMPMC (Paris, France)"], [/\bUBI\b/g, "UBI (Covilhã university, Portugal)"]];
 const expand = s => EXPAND.reduce((t, [re, to]) => t.replace(re, to), s);
+const keys = s => [...new Set(EXPAND.filter(([re]) => s.search(re) !== -1).map(([, to]) => to.replace(/^.*\(|\)$/g, "")))].join("; ");
 
 const passages = [];
 function add(sec, title, body, extra = {}) {
@@ -62,6 +63,7 @@ function add(sec, title, body, extra = {}) {
   const ptParts = chunks(extra.ptBody || "");
   delete extra.ptBody;
   parts.forEach((x, i) => passages.push({ id: passages.length, sec, title: text(title), text: x,
+    ...(keys(x) ? { k: keys(x) } : {}),
     ...(ptParts[i] ? { pt: ptParts[i] } : {}), ...extra }));
 }
 

@@ -62,7 +62,7 @@ if (form && !form.__wired) {
       for (let i = 0; i < bin.length; i++) b[i] = (bin.charCodeAt(i) << 24) >> 24;
       if (b.length === idx.passages.length * idx.dim) vecs = b;
     }
-    idx.passages.forEach(p => { p._t = toks(p.title + " " + p.text + " " + (p.pt || "")); p._len = p._t.length; });
+    idx.passages.forEach(p => { p._t = toks(p.title + " " + p.text + " " + (p.pt || "") + " " + (p.k || "")); p._len = p._t.length; });
     idx._df = {}; idx.passages.forEach(p => new Set(p._t).forEach(w => { idx._df[w] = (idx._df[w] || 0) + 1; }));
     idx._avg = idx.passages.reduce((s, p) => s + p._len, 0) / Math.max(1, idx.passages.length);
     return idx;
