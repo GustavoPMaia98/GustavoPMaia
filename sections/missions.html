@@ -1,0 +1,17 @@
+<!-- SAMPLE-RETURN MISSIONS (missions3d.js, from data/missions.json): a 3D inner Solar System -->
+<section class="section" id="missions">
+  <h2>Sample-return missions</h2>
+  <p class="section-note" data-pt="As missões que trouxeram para a Terra pedaços de asteroides e de um cometa: as amostras que permitem testar a química que estudo no laboratório. Órbitas com a forma real, distâncias comprimidas e posições aproximadas; arraste para rodar.">The missions that brought pieces of asteroids and a comet back to Earth: the samples that test the chemistry I study in the lab. Orbits have their real shapes, distances are compressed and positions approximate; drag to turn.</p>
+  <div class="ms reveal">
+    <div class="ms-stage" id="msStage">
+      <canvas id="msCanvas" aria-hidden="true"></canvas>
+      <div class="ms-hud"><span class="ms-date" id="msDate"></span>
+        <button type="button" class="ms-play" id="msPlay" aria-pressed="true"><i data-lucide="pause" aria-hidden="true"></i><span class="sr-only" data-pt="Pausar / continuar">Pause / play</span></button></div>
+      <div class="ms-labels" id="msLabels" aria-hidden="true"></div>
+    </div>
+    <div class="ms-side">
+      <div class="ms-tabs" id="msTabs" role="tablist" aria-label="Missions"></div>
+      <article class="ms-card" id="msCard" role="tabpanel" aria-live="polite"></article>
+    </div>
+  </div>
+</section>

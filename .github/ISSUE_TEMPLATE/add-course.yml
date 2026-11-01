@@ -1,0 +1,36 @@
+name: Add a course or training
+description: Adds a course, school or training to Courses & Formations on the website.
+title: "Add course: "
+labels: [add-course]
+body:
+  - type: input
+    id: title_en
+    attributes: { label: Title (English) }
+    validations: { required: true }
+  - type: input
+    id: title_pt
+    attributes: { label: Title (Portuguese) }
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options: [Course, Summer School, Formation, Workshop]
+    validations: { required: true }
+  - type: input
+    id: organiser
+    attributes: { label: Organiser, placeholder: "Institut Origines (Aix-Marseille Université)" }
+  - type: input
+    id: place
+    attributes: { label: Place, placeholder: "Saint-Michel-l'Observatoire, France" }
+  - type: input
+    id: date
+    attributes: { label: Date, placeholder: "June 2026" }
+  - type: textarea
+    id: details_en
+    attributes: { label: Description (English) }
+  - type: textarea
+    id: details_pt
+    attributes: { label: Description (Portuguese) }
+  - type: textarea
+    id: logo
+    attributes: { label: Logo or photo (optional), description: Drag a PNG or JPG here. }

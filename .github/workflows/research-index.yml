@@ -1,0 +1,46 @@
+# Builds the index "Ask my research" searches (data/research-index.json) from the site's
+# own content, with meaning vectors from a small open model (all-MiniLM-L6-v2, Apache 2.0)
+# whose files are saved in vendor/models so visitors load them from this site.
+# Runs every night (after "Update site data"), from the Actions tab, and when the
+# builder itself changes on a branch other than main.
+name: Build research index
+
+on:
+  schedule:
+    - cron: "47 4 * * *"          # every day at 04:47 UTC
+  workflow_dispatch:
+  push:
+    branches-ignore: [main]
+    paths: [tools/build_research_index.mjs]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: site-data
+  cancel-in-progress: false
+
+jobs:
+  index:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+      - name: Install transformers.js (Apache 2.0)
+        run: npm install --no-save --prefix "$RUNNER_TEMP/ai" @huggingface/transformers@3.8.1
+      - name: Build the index
+        run: TRANSFORMERS="$RUNNER_TEMP/ai/node_modules/@huggingface/transformers/dist/transformers.node.mjs" node tools/build_research_index.mjs
+      - name: Commit if anything changed
+        run: |
+          if [ -n "$(git status --porcelain data/research-index.json vendor/models)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add data/research-index.json vendor/models
+            git commit -m "Update the research index"
+            for i in 1 2 3; do git pull --rebase origin "$GITHUB_REF_NAME" && git push origin "HEAD:$GITHUB_REF_NAME" && break; sleep 5; done
+          else
+            echo "No changes."
+          fi

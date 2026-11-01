@@ -1,0 +1,29 @@
+name: Add an award
+description: Adds an award to Awards on the website.
+title: "Add award: "
+labels: [add-award]
+body:
+  - type: input
+    id: title_en
+    attributes: { label: Award (English) }
+    validations: { required: true }
+  - type: input
+    id: title_pt
+    attributes: { label: Award (Portuguese) }
+  - type: input
+    id: issuer
+    attributes: { label: Given by, placeholder: "EANA 2025 · Lisbon, Portugal" }
+    validations: { required: true }
+  - type: input
+    id: year
+    attributes: { label: Year, placeholder: "2026" }
+    validations: { required: true }
+  - type: textarea
+    id: details_en
+    attributes: { label: Description (English) }
+  - type: textarea
+    id: details_pt
+    attributes: { label: Description (Portuguese) }
+  - type: textarea
+    id: image
+    attributes: { label: Certificate or photo (optional), description: Drag a JPG or PNG here. }

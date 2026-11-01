@@ -1,0 +1,43 @@
+name: Add a talk or poster
+description: Adds a talk or poster to Presentations on the website (the site updates by itself a minute later).
+title: "Add talk: "
+labels: [add-talk]
+body:
+  - type: markdown
+    attributes:
+      value: Fill in what you know; only the English title and the event are required. Portuguese fields fall back to English when left empty.
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type
+      options: [Oral talk, Poster]
+    validations: { required: true }
+  - type: input
+    id: title_en
+    attributes: { label: Title (English) }
+    validations: { required: true }
+  - type: input
+    id: title_pt
+    attributes: { label: Title (Portuguese) }
+  - type: input
+    id: event
+    attributes: { label: Event, placeholder: "MetSoc 2026" }
+    validations: { required: true }
+  - type: input
+    id: date
+    attributes: { label: Date, placeholder: "Aug 2026" }
+  - type: input
+    id: city
+    attributes: { label: City, placeholder: "Frankfurt" }
+  - type: input
+    id: authors
+    attributes: { label: Authors (surnames), placeholder: "Maia, Remusat, Dworkin & da Silva" }
+  - type: textarea
+    id: details_en
+    attributes: { label: Description (English), description: A few sentences shown when the card is opened. }
+  - type: textarea
+    id: details_pt
+    attributes: { label: Description (Portuguese) }
+  - type: textarea
+    id: logo
+    attributes: { label: Event logo (optional), description: Drag a PNG or JPG here. }

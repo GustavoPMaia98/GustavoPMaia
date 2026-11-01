@@ -1,0 +1,20 @@
+name: Blog draft from notes (AI)
+description: An open AI model (Mistral 7B, Apache 2.0, run on GitHub's machines) turns your notes into a blog draft in English and Portuguese. The draft is saved hidden; nothing is published until you add the "publish" label.
+title: "Blog draft: "
+labels: [blog-draft]
+body:
+  - type: input
+    id: topic
+    attributes: { label: Topic or working title }
+    validations: { required: true }
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Bullet points, a paper abstract, what you want to say. The draft uses only what you write here.
+    validations: { required: true }
+  - type: dropdown
+    id: tone
+    attributes:
+      label: Audience
+      options: [General public, Scientists]

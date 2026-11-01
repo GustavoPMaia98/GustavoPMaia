@@ -1,0 +1,56 @@
+# Issues -> New issue -> "Add a talk or poster" / "Add a course or training" / "Add an award":
+# adds the entry to the website, commits it and closes the issue with a note.
+# Only issues opened by the owner of the repository are used.
+name: Add to the website from an issue
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: site-data
+  cancel-in-progress: false
+
+jobs:
+  add:
+    if: >-
+      github.event.issue.user.login == github.repository_owner &&
+      github.event.issue.state == 'open' &&
+      (contains(github.event.issue.labels.*.name, 'add-talk') ||
+       contains(github.event.issue.labels.*.name, 'add-course') ||
+       contains(github.event.issue.labels.*.name, 'add-award'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - run: pip install pillow==10.4.0
+      - name: Add the entry
+        id: add
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python tools/add_from_issue.py "$GITHUB_EVENT_PATH" | tee out.txt
+          echo "summary=$(tail -n 1 out.txt)" >> "$GITHUB_OUTPUT"
+          rm out.txt
+      - name: Check the site still builds
+        run: python tools/check_site.py --fix && python tools/check_site.py
+      - name: Commit and close the issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SUMMARY: ${{ steps.add.outputs.summary }}
+          NUMBER: ${{ github.event.issue.number }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data sections images index.html
+          git commit -m "$SUMMARY (#$NUMBER)" || { echo "No changes."; exit 0; }
+          for i in 1 2 3; do git pull --rebase origin main && git push && break; sleep 5; done
+          gh issue comment "$NUMBER" --body "$SUMMARY It will be on the website in a minute or two. To change it, edit the data file in the commit above, or revert that commit to undo it."
+          gh issue close "$NUMBER"

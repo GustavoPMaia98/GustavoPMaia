@@ -325,7 +325,51 @@ def main():
     with open(OUT, "w", encoding="utf-8") as f:
         f.write(json.dumps(data, ensure_ascii=False, indent=1) + "\n")
     print(f"Wrote {len(works)} verified works to {OUT}")
+    if prev:                                         # not on the very first run
+        announce([w for w in works if w["doi"].lower() not in prev])
     return 0
+
+
+NEWS = os.path.join(os.path.dirname(OUT), "news.json")
+PAPER_INFO = os.path.join(os.path.dirname(OUT), "paper-info.json")
+
+
+def announce(new_works):
+    """Add a News item for each newly found paper (unless News already mentions it)."""
+    if not new_works:
+        return
+    try:
+        with open(NEWS, encoding="utf-8") as f:
+            news = json.load(f)
+    except Exception:
+        return
+    try:
+        with open(PAPER_INFO, encoding="utf-8") as f:
+            info = json.load(f)
+    except Exception:
+        info = {}
+    said = json.dumps(news, ensure_ascii=False).lower()
+    added = 0
+    for w in new_works:
+        doi, title = w["doi"].lower(), w["title"]
+        if doi in said or plain(title)[:60] in plain(said):
+            continue
+        journal = w.get("journal") or ""
+        t = html.escape(title, quote=False)
+        j = html.escape(journal, quote=False)
+        item = {"date": time.strftime("%Y-%m"), "href": "https://doi.org/" + doi,
+                "text": {"en": f"New paper published{' in <em>' + j + '</em>' if j else ''}: <strong>{t}</strong>.",
+                         "pt": f"Novo artigo publicado{' na <em>' + j + '</em>' if j else ''}: <strong>{t}</strong>."},
+                "link": {"en": "Paper", "pt": "Artigo"}, "auto": "new-publication"}
+        logo = (info.get(doi) or {}).get("logo")
+        if logo:
+            item["media"] = {"kind": "logo", "src": logo, "alt": journal}
+        news.insert(0, item)
+        added += 1
+    if added:
+        with open(NEWS, "w", encoding="utf-8") as f:
+            f.write(json.dumps(news, ensure_ascii=False, indent=2) + "\n")
+        print(f"Added {added} news item(s) for new papers")
 
 
 if __name__ == "__main__":
