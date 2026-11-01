@@ -26,10 +26,6 @@
     coauthor: { en: "Co-author", pt: "Coautor(a)", fr: "Co-auteur", ja: "共著者" },
     colleague: { en: "Research colleague", pt: "Colega de investigação", fr: "Collègue de recherche", ja: "研究仲間" },
     mentorCo: { en: "Mentor and co-author", pt: "Mentor(a) e coautor(a)", fr: "Mentor et co-auteur", ja: "指導者・共著者" },
-    me: { en: "{g} generations of mentors around me, ring after ring, {n} co-authors on {p} papers (orange) and {m} research colleagues (green). Select anyone to see who they are.",
-          pt: "{g} gerações de mentores à minha volta, anel após anel, {n} coautores em {p} artigos (laranja) e {m} colegas de investigação (verde). Selecione alguém para ver quem é.",
-          fr: "{g} générations de mentors autour de moi, anneau après anneau, {n} co-auteurs sur {p} articles (orange) et {m} collègues de recherche (vert). Sélectionnez quelqu’un pour le découvrir.",
-          ja: "周囲の輪に {g} 世代の指導者、{p} 本の論文の共著者 {n} 人（オレンジ）、研究仲間 {m} 人（緑）。選択すると詳細を表示します。" },
     profile: { en: "Profile", pt: "Perfil", fr: "Profil", ja: "プロフィール" },
     photo: { en: "Photo", pt: "Foto", fr: "Photo", ja: "写真" },
     homeView: { en: "Standard view", pt: "Vista normal", fr: "Vue d’ensemble", ja: "標準表示" },
@@ -117,7 +113,7 @@
     });
 
     // ---- drawing
-    const R = n => n.self ? 36 : 23;
+    const R = n => (n.self || (n.n && n.n.phd)) ? 36 : 23;   // me and my PhD supervisors are drawn larger
     const ini = nm => { const w = nm.replace(/^(Eng|Prof|Dr)\.?\s+/i, "").replace(/[.\-]/g, " ").split(/\s+/).filter(Boolean); return (w[0][0] + (w.length > 1 ? w[w.length - 1][0] : "")).toUpperCase(); };
     const short = nm => { const w = nm.replace(/^(Eng)\.?\s+/i, "").split(/\s+/); return w.length > 2 ? w[0] + " " + w[w.length - 1] : w.join(" "); };
     const P = (ang, r) => [C + Math.cos(ang) * r, C + Math.sin(ang) * r];
@@ -134,6 +130,22 @@
       const mid = (a.r0 + b.r0) / 2, s = P(b.ang, b.r0 + R(b)), c1 = P(b.ang, mid), c2 = P(a.ang, mid), e = P(a.ang, a.r0 - R(a));
       return "M" + s.map(v => v.toFixed(1)).join(" ") + " C" + c1.map(v => v.toFixed(1)).join(" ") + " " + c2.map(v => v.toFixed(1)).join(" ") + " " + e.map(v => v.toFixed(1)).join(" ");
     };
+    // ---- no circle on top of another: people on the same ring that touch are slid apart
+    //      along it (the larger PhD supervisors need more room)
+    for (let it = 0; it < 80; it++) {
+      let moved = false;
+      for (let i = 0; i < nodes.length; i++) for (let j = i + 1; j < nodes.length; j++) {
+        const p = nodes[i], q = nodes[j];
+        if (p.self || q.self || Math.abs(p.r0 - q.r0) > 30) continue;
+        const need = R(p) + R(q) + 10, d = Math.hypot(p.x - q.x, p.y - q.y);
+        if (d >= need) continue;
+        const da = Math.min(0.06, (need - d) / Math.max(60, (p.r0 + q.r0) / 2) / 2), sgn = Math.sign(((q.ang - p.ang + 3 * Math.PI) % (2 * Math.PI)) - Math.PI) || 1;
+        p.ang -= sgn * da; q.ang += sgn * da; moved = true;
+        [p, q].forEach(n => { n.x = C + Math.cos(n.ang) * n.r0; n.y = C + Math.sin(n.ang) * n.r0; });
+      }
+      if (!moved) break;
+    }
+
     // ---- names: each goes to the first free spot around its circle (outward first),
     //      never on top of another name or another person's circle
     const FS = 15.5, FS_SELF = 18, LH = 1.2;
@@ -213,8 +225,7 @@
         (photo ? '<img src="' + esc(photo) + '" alt="">' : esc(n.n && n.n.initials || ini(n.name))) + "</span>" +
         '<div><p class="tn-who">' + esc(n.name) + "</p>" + (n.n && n.n.nobel ? '<span class="tn-badge tn-badge--nobel">' + esc(t("nobel")) + "</span>" : "") + "</div></div>";
       if (n.self) {
-        side.innerHTML = head + '<p class="tn-role">' + esc(tr(n.n.role)) + '</p><p class="tn-hint">' +
-          esc(t("me", { g: maxGen, n: coCount, p: pubs.length, m: mates.length })) + "</p>";
+        side.innerHTML = head + '<p class="tn-role">' + esc(tr(n.n.role)) + "</p>";
         return;
       }
       const role = n.n ? tr(n.n.role) : "", inst = n.n && n.n.institution;
