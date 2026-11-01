@@ -1416,7 +1416,7 @@
   };
   const HEADINGS = {
     "Education":"Educação", "Experience":"Experiência", "Presentations":"Apresentações",
-    "Funding":"Financiamento", "Publications":"Publicações", "Academic Tree":"Árvore Académica",
+    "Funding":"Financiamento", "Publications":"Publicações", "Academic Tree":"Árvore Académica", "Academic Tree & Collaborations":"Árvore Académica e Colaborações",
     "News":"Novidades", "Where I have been":"Por onde andei",
     "Current Work Interests":"Interesses de Trabalho Atuais", "Awards":"Prémios", "Courses & Formations":"Cursos e Formações",
     "Ask my research":"Pergunte à minha investigação", "Research projects":"Projetos de investigação", "Collaborations":"Colaborações",

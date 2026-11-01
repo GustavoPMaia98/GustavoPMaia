@@ -19,12 +19,13 @@ if (!window.__askChat) {
   const lang = () => { const l = root.getAttribute("lang"); return ["pt", "fr", "ja"].includes(l) ? l : "en"; };
   const T = {
     title: { en: "Ask my research", pt: "Pergunte à minha investigação", fr: "Interrogez mes recherches", ja: "研究に質問する" },
-    sub: { en: "Answers from my papers, talks and projects · runs on your device", pt: "Respostas dos meus artigos, comunicações e projetos · corre no seu dispositivo",
-           fr: "Réponses tirées de mes articles, présentations et projets · fonctionne sur votre appareil", ja: "論文・発表・プロジェクトから回答 · 端末内で動作" },
+    sub: { en: "Search the site or ask about my research", pt: "Pesquise no site ou pergunte sobre a minha investigação",
+           fr: "Cherchez sur le site ou posez une question sur mes recherches", ja: "サイト内検索、または研究について質問" },
     open: { en: "Ask my research", pt: "Perguntar", fr: "Poser une question", ja: "質問する" },
     hide: { en: "Hide the chat", pt: "Esconder o chat", fr: "Masquer le chat", ja: "チャットを隠す" },
     clear: { en: "Clear the conversation", pt: "Apagar a conversa", fr: "Effacer la conversation", ja: "会話を消去" },
-    ph: { en: "Ask about my research…", pt: "Pergunte sobre a minha investigação…", fr: "Une question sur mes recherches…", ja: "研究について質問…" },
+    ph: { en: "Search or ask about my research…", pt: "Pesquise ou pergunte sobre a minha investigação…", fr: "Cherchez ou posez une question…", ja: "検索・研究について質問…" },
+    onsite: { en: "On this site", pt: "Neste site", fr: "Sur ce site", ja: "サイト内" },
     send: { en: "Send", pt: "Enviar", fr: "Envoyer", ja: "送信" },
     hello: { en: "Hi! Ask me anything about my research: asteroid gardening, mechanochemistry, my papers, talks, where I have worked… I answer from the content of this site and show where it comes from.",
              pt: "Olá! Pergunte-me o que quiser sobre a minha investigação: reprocessamento de asteroides, mecanoquímica, os meus artigos, comunicações, onde trabalhei… Respondo a partir do conteúdo deste site e mostro de onde vem.",
@@ -35,8 +36,6 @@ if (!window.__askChat) {
           fr: ["Qu’est-ce que l’asteroid gardening ?", "Les ribonucléosides survivent-ils à la mécanochimie ?", "Qui finance votre doctorat ?"],
           ja: ["小惑星表面の撹拌（asteroid gardening）とは？", "リボヌクレオシドはメカノケミストリーに耐える？", "博士課程の資金は？"] },
     thinking: { en: "Looking through my work…", pt: "A procurar no meu trabalho…", fr: "Je cherche dans mon travail…", ja: "研究内容を検索中…" },
-    loading: { en: "Loading the search model (about 34 MB, only the first time)…", pt: "A carregar o modelo de pesquisa (cerca de 34 MB, só da primeira vez)…",
-               fr: "Chargement du modèle de recherche (environ 34 Mo, la première fois seulement)…", ja: "検索モデルを読み込み中（約 34 MB、初回のみ）…" },
     none: { en: "I could not find that on this site. Try other words, or ask about my papers, talks, projects or career.", pt: "Não encontrei isso neste site. Experimente outras palavras, ou pergunte sobre os meus artigos, comunicações, projetos ou percurso.",
             fr: "Je n’ai pas trouvé cela sur ce site. Essayez d’autres mots, ou posez une question sur mes articles, présentations ou mon parcours.", ja: "このサイトには見つかりませんでした。別の言葉で、または論文・発表・経歴について質問してください。" },
     sources: { en: "Sources", pt: "Fontes", fr: "Sources", ja: "出典" },
@@ -99,13 +98,17 @@ if (!window.__askChat) {
     const hello = '<li class="askc-msg askc-msg--bot"><p>' + esc(t("hello")) + "</p></li>";
     log.innerHTML = hello + chat.map((m, i) => m.role === "user"
       ? '<li class="askc-msg askc-msg--me"><p>' + esc(m.text) + "</p></li>"
-      : '<li class="askc-msg askc-msg--bot">' + (m.pending ? '<p class="askc-wait">' + esc(m.status || t("thinking")) + "</p>"
+      : '<li class="askc-msg askc-msg--bot">' + (m.pending ? '<p class="askc-wait">' + esc(t("thinking")) + "</p>"
         : (m.none ? "<p>" + esc(t("none")) + "</p>" :
+          (m.def ? '<p class="askc-def"><b>' + esc(m.def.term) + "</b>: " + esc(m.def.text) + "</p>" : "") +
+          (!m.parts || !m.parts.length ? "" :
           "<p>" + m.parts.map(x => esc(x.s) + ' <a class="askc-cite" href="#" data-m="' + i + '" data-n="' + x.n + '">[' + x.n + "]</a>").join(" ") + "</p>" +
           '<p class="askc-src-h">' + esc(t("sources")) + '</p><ol class="askc-src">' + m.src.map((s, k) =>
             '<li><button type="button" class="askc-open" data-m="' + i + '" data-n="' + (k + 1) + '"><span class="askc-n">' + (k + 1) + "</span>" +
             '<span class="askc-tag">' + esc((T.sec[s.sec] && (T.sec[s.sec][lang()] || T.sec[s.sec].en)) || s.sec) + '</span><span class="askc-st">' + esc(s.title) + "</span></button></li>").join("") +
-          '</ol><p class="askc-note">' + esc(t("note")) + "</p>")) + "</li>").join("");
+          '</ol><p class="askc-note">' + esc(t("note")) + "</p>") +
+          (m.links && m.links.length ? '<p class="askc-src-h">' + esc(t("onsite")) + '</p><ul class="askc-src askc-site">' + m.links.map((l, k) =>
+            '<li><button type="button" class="askc-go" data-m="' + i + '" data-k="' + k + '"><span class="askc-tag">' + esc(l.label) + '</span><span class="askc-st">' + esc(l.title) + "</span></button></li>").join("") + "</ul>" : ""))) + "</li>").join("");
     exBox.hidden = chat.length > 0;
     log.scrollTop = log.scrollHeight;
   }
@@ -119,6 +122,7 @@ if (!window.__askChat) {
     else if (focus) fab.focus();
   }
   fab.addEventListener("click", () => setOpen(true, true));
+  window.AskChat = { open: () => setOpen(true, true) };
   box.querySelector(".askc-min").addEventListener("click", () => setOpen(false, true));
   box.querySelector(".askc-clear").addEventListener("click", () => { chat = []; save(); render(); input.focus(); });
   panel.addEventListener("keydown", e => { if (e.key === "Escape") { e.stopPropagation(); setOpen(false, true); } });
@@ -187,7 +191,7 @@ if (!window.__askChat) {
   let warmed = false;
   function warm() { if (warmed) return; warmed = true; loadIndex().then(idx => embed(["hello"], idx, "").catch(() => {})).catch(() => {}); }   // start loading in the background
 
-  const sentences = s => String(s).split(/(?<=[.!?])\s+(?=[A-Z0-9“"(À-Ý])/).map(x => x.trim()).filter(x => x.length > 25);
+  const sentences = s => String(s).split(/(?<=[.!?])\s+(?=[A-Z0-9“"(À-Ý])/).map(x => x.trim()).filter(x => x.length > 40);
   let busy = false;
   async function ask(q) {
     if (busy) return; busy = true;
@@ -200,9 +204,8 @@ if (!window.__askChat) {
       const qt = [...new Set(toks(q))], lex = bm25(idx, qt), lmax = Math.max(...lex, 1e-9);
       let score = lex.map(s => s / lmax), qv = null;
       if (vecs) {
-        if (!embedReady) { me.status = t("loading"); render(); }
         try {
-          qv = (await embed([q], idx, idx.queryPrefix || ""))[0]; embedReady = true;
+          qv = (await embed([q], idx, idx.queryPrefix || ""))[0];
           const d = idx.dim;
           const cos = idx.passages.map((p, i) => { let c = 0; for (let k = 0; k < d; k++) c += qv[k] * vecs[i * d + k]; return c / 127; });
           const sorted = cos.slice().sort((a, b) => a - b), med = sorted[sorted.length >> 1], top = sorted[sorted.length - 1];
@@ -213,7 +216,7 @@ if (!window.__askChat) {
       const order = idx.passages.map((p, i) => ({ p, s: score[i] })).filter(x => x.s > cut).sort((a, b) => b.s - a.s);
       const seen = new Set(), src = [];
       for (const x of order) { const k = x.p.sec + "|" + x.p.title; if (seen.has(k)) continue; seen.add(k); src.push(x.p); if (src.length === 3) break; }
-      if (!src.length) { Object.assign(me, { pending: false, none: true }); return; }
+      if (!src.length) { Object.assign(me, { pending: false, none: true, parts: [], src: [] }); return; }
       // answer: the sentences of these sources closest to the question
       const L = lang();
       const cands = [];
@@ -233,12 +236,29 @@ if (!window.__askChat) {
         src: src.map(p => ({ sec: p.sec, title: p.title, doi: p.doi || "", hl: p.hl || "", url: p.url || "" })) });
     } catch (e) {
       console.warn(e); Object.assign(me, { pending: false, none: true });
-    } finally { delete me.status; busy = false; save(); render(); }
+    } finally {
+      // the site search (search.js): a short definition and links to the places that mention it
+      try {
+        const f = window.SiteSearch ? SiteSearch.find(q) : null;
+        if (f) {
+          if (f.answer) me.def = f.answer;
+          if (f.results.length) { me.q = q; me.links = f.results.map(r => ({ label: r.label, title: r.title })); }
+          if (me.none && (me.def || me.links)) delete me.none;
+        }
+      } catch (e) {}
+      busy = false; save(); render();
+    }
   }
-  let embedReady = false;
 
   // ------------------------------------------------------------------ open a source on the page
   log.addEventListener("click", e => {
+    const g = e.target.closest(".askc-go");
+    if (g) {
+      const m = chat[+g.dataset.m]; if (!m || !window.SiteSearch) return;
+      const r = SiteSearch.find(m.q).results[+g.dataset.k];
+      if (r) { if (innerWidth <= 760) setOpen(false, false); SiteSearch.go(r.entry); }
+      return;
+    }
     const b = e.target.closest(".askc-open, .askc-cite"); if (!b) return;
     e.preventDefault();
     const m = chat[+b.dataset.m], s = m && m.src && m.src[+b.dataset.n - 1]; if (!s) return;

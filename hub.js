@@ -1,130 +1,180 @@
 /* =====================================================================
-   hub.js: the data-driven research sections
-     - Collaborations     (co-author network from data/publications.json and
-                           data/paper-info.json; updates itself with new papers)
-     - Data & code        (data/datasets.json from Zenodo, data/repos.json from GitHub;
-                           both refreshed every night by tools/update_outputs.py)
+   hub.js: "Academic Tree & Collaborations", one network in two directions.
+     - Up from me: my academic lineage (data/tree.json, kept in step with Chemistry
+       Tree by tools/update_tree.py): advisors, their advisors, and so on, one row
+       per generation.
+     - Down from me: my co-authors (data/publications.json + data/paper-info.json),
+       so the network grows by itself with every new paper. Mentors who are also
+       co-authors keep their place in the tree and get a co-author ring.
+   Click (or Enter on) a person to see who they are and, for co-authors, the papers
+   we share; their line back to me lights up. Drag sideways to explore.
    index.html calls Hub.render(data) after loading the sections and before
-   SiteApp.init(), so the [data-pt] texts made here are translated with the rest.
+   SiteApp.init().
    ===================================================================== */
 (function () {
   "use strict";
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const strip = s => String(s || "").replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;/g, "'");
-  const en = v => (v && typeof v === "object" ? v.en : v) || "";
-  const ptAttr = v => (v && typeof v === "object" && v.pt ? ' data-pt="' + esc(v.pt) + '"' : "");
   const lang = () => { const l = document.documentElement.getAttribute("lang"); return ["pt", "fr", "ja"].includes(l) ? l : "en"; };
-  const T = {   // words made in JS (the rest is translated through data-pt / translations.js)
+  const tr = (v) => { if (!v || typeof v !== "object") return v || ""; const l = lang(); if (v[l]) return v[l];
+    if ((l === "fr" || l === "ja") && window.TR && TR[l] && TR[l][v.en]) return TR[l][v.en]; return v.en || ""; };
+  const T = {
     papers1: { en: "1 paper together", pt: "1 artigo em conjunto", fr: "1 article ensemble", ja: "共著論文 1 本" },
     papersN: { en: "{n} papers together", pt: "{n} artigos em conjunto", fr: "{n} articles ensemble", ja: "共著論文 {n} 本" },
-    me: { en: "{n} co-authors on {p} papers. Tap a name to see the papers you share.", pt: "{n} coautores em {p} artigos. Toque num nome para ver os artigos em comum.",
-          fr: "{n} co-auteurs sur {p} articles. Touchez un nom pour voir les articles communs.", ja: "{p} 本の論文に {n} 人の共著者。名前をタップすると共著論文を表示します。" },
+    coauthor: { en: "Co-author", pt: "Coautor(a)", fr: "Co-auteur", ja: "共著者" },
+    mentorCo: { en: "Mentor and co-author", pt: "Mentor(a) e coautor(a)", fr: "Mentor et co-auteur", ja: "指導者・共著者" },
+    me: { en: "{g} generations of mentors above me, {n} co-authors on {p} papers below. Select anyone to see who they are.",
+          pt: "{g} gerações de mentores acima de mim, {n} coautores em {p} artigos abaixo. Selecione alguém para ver quem é.",
+          fr: "{g} générations de mentors au-dessus de moi, {n} co-auteurs sur {p} articles en dessous. Sélectionnez quelqu’un pour le découvrir.",
+          ja: "上に {g} 世代の指導者、下に {p} 本の論文の共著者 {n} 人。選択すると詳細を表示します。" },
+    profile: { en: "Profile", pt: "Perfil", fr: "Profil", ja: "プロフィール" },
+    nobel: { en: "Nobel laureate", pt: "Prémio Nobel", fr: "Prix Nobel", ja: "ノーベル賞受賞者" }
   };
-  const t = (k, o) => { let s = (T[k][lang()] || T[k].en); for (const x in o || {}) s = s.replace("{" + x + "}", o[x]); return s; };
+  const t = (k, o) => { let s = T[k][lang()] || T[k].en; for (const x in o || {}) s = s.replace("{" + x + "}", o[x]); return s; };
   const plain = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
-
-  // ------------------------------------------------------------- co-author network
+  const keyOf = name => {
+    const w = plain(name).replace(/[.\-]/g, " ").split(/\s+/).filter(w => w && !["eng", "prof", "dr"].includes(w));
+    return w.length ? w[w.length - 1] + "|" + w[0][0] : "";
+  };
+  const safe = u => /^(https?:\/\/|images\/)/.test(String(u || "")) ? String(u) : "";
   function authorsOf(w, info) {
     const i = info && info[String(w.doi).toLowerCase()];
     if (i && i.authors && i.authors.length) return i.authors.map(a => a.name);
     return String(w.authors || "").split(/,\s*|\s+and\s+|\s*&\s*/).map(s => s.trim()).filter(Boolean);
   }
-  const keyOf = name => {
-    const w = plain(name).replace(/[.\-]/g, " ").split(/\s+/).filter(Boolean);
-    return w.length ? w[w.length - 1] + "|" + w[0][0] : "";
-  };
 
-  function network(pubs, info) {
-    const stage = document.getElementById("netStage"), side = document.getElementById("netSide");
-    if (!stage || !side || !(pubs || []).length) return;
-    const people = new Map(), links = new Map();
-    const SELF = "maia|g";
-    pubs.forEach((w, pi) => {
-      const keys = [];
-      authorsOf(w, info).forEach(n => {
-        const k = keyOf(n); if (!k || keys.includes(k)) return;
-        keys.push(k);
-        const p = people.get(k) || { k, name: n, papers: [] };
-        if (n.length > p.name.length) p.name = n;          // keep the fullest spelling
-        p.papers.push(pi); people.set(k, p);
-      });
-      for (let a = 0; a < keys.length; a++) for (let b = a + 1; b < keys.length; b++) {
-        const id = [keys[a], keys[b]].sort().join("~");
-        links.set(id, (links.get(id) || 0) + 1);
-      }
+  function treeNet(tree, pubs, info) {
+    const stage = document.getElementById("tnStage"), side = document.getElementById("tnSide");
+    if (!stage || !side || !tree || !tree.root) return;
+    pubs = pubs || [];
+    const SX = 112, SY = 128, PAD = 70;
+    // ---- the lineage, laid out as a tidy tree (leaves side by side, parents above the middle of their mentees... here: mentors above)
+    const nodes = [], links = [];
+    let leafX = 0, maxGen = 0;
+    function place(n, gen, parent) {
+      const node = { id: nodes.length, n, gen, parent, name: n.name, key: keyOf(n.name), tree: true };
+      nodes.push(node);
+      if (parent) links.push({ a: node, b: parent, kind: "mentor" });
+      maxGen = Math.max(maxGen, gen);
+      const kids = (n.mentors || []).filter(m => m && m.name && !m.hidden && !m.cvOnly);
+      if (!kids.length) { node.x = leafX; leafX += SX; }
+      else { const xs = kids.map(k => place(k, gen + 1, node).x); node.x = (xs[0] + xs[xs.length - 1]) / 2; }
+      return node;
+    }
+    const me = place(tree.root, 0, null);
+    me.self = true;
+    // ---- co-authors
+    const SELF = keyOf(tree.root.name);
+    const byKey = new Map();
+    pubs.forEach((w, pi) => authorsOf(w, info).forEach(nm => {
+      const k = keyOf(nm); if (!k || k === SELF) return;
+      const c = byKey.get(k) || { key: k, name: nm, papers: [] };
+      if (nm.length > c.name.length) c.name = nm;
+      if (!c.papers.includes(pi)) c.papers.push(pi);
+      byKey.set(k, c);
+    }));
+    const below = [];
+    byKey.forEach(c => {
+      const inTree = nodes.find(n => n.tree && !n.self && n.gen === 1 && n.key === c.key) || nodes.find(n => n.tree && !n.self && n.key === c.key);
+      if (inTree) { inTree.papers = c.papers; inTree.co = true; return; }
+      below.push({ id: nodes.length + below.length, name: c.name, key: c.key, papers: c.papers, co: true, gen: -1 });
     });
-    if (!people.has(SELF)) return;
-    const nodes = [...people.values()];
-    const W = 760, H = 460, cx = W / 2, cy = H / 2;
-    // deterministic layout: me in the centre; co-authors evenly around an ellipse,
-    // grouped by paper, closer to the centre when we share more papers
-    const others = nodes.filter(n => n.k !== SELF).sort((p, q) => (p.papers[0] - q.papers[0]) || (q.papers.length - p.papers.length) || p.name.localeCompare(q.name));
-    nodes.forEach(n => { n.self = n.k === SELF; n.r = n.self ? 30 : 9 + 5 * Math.min(4, n.papers.length); });
-    const me = people.get(SELF); me.x = cx; me.y = cy;
-    others.forEach((n, i) => {
-      const ang = -Math.PI / 2 + (i + 0.5) / others.length * Math.PI * 2;
-      const ring = 1 - 0.22 * Math.min(2, n.papers.length - 1);
-      n.x = cx + Math.cos(ang) * 300 * ring; n.y = cy + Math.sin(ang) * 175 * ring;
+    below.sort((p, q) => (p.papers[0] - q.papers[0]) || (q.papers.length - p.papers.length));
+    const perRow = Math.max(4, Math.min(9, Math.ceil(leafX / SX)));
+    below.forEach((c, i) => {
+      const row = Math.floor(i / perRow), inRow = Math.min(perRow, below.length - row * perRow), col = i % perRow;
+      c.x = me.x + (col - (inRow - 1) / 2) * SX; c.row = row; nodes.push(c);
+      links.push({ a: c, b: me, kind: "co" });
     });
-    const L = [...links.entries()].map(([id, w]) => { const [a, b] = id.split("~"); return { a: people.get(a), b: people.get(b), w }; });
-    const ini = n => { const w = n.name.replace(/[.\-]/g, " ").split(/\s+/).filter(Boolean); return (w[0][0] + (w.length > 1 ? w[w.length - 1][0] : "")).toUpperCase(); };
-    const short = n => { const w = n.name.split(/\s+/); return w.length > 2 ? w[0] + " " + w[w.length - 1] : n.name; };
-    stage.innerHTML = '<svg class="net-svg" viewBox="0 0 ' + W + " " + H + '" role="group" aria-label="Co-author network">' +
-      L.map(l => '<line class="net-link" data-a="' + l.a.k + '" data-b="' + l.b.k + '" x1="' + l.a.x.toFixed(1) + '" y1="' + l.a.y.toFixed(1) +
-        '" x2="' + l.b.x.toFixed(1) + '" y2="' + l.b.y.toFixed(1) + '" stroke-width="' + (0.8 + l.w * 0.9).toFixed(1) + '"/>').join("") +
-      nodes.map(n => '<g class="net-node' + (n.self ? " is-self" : "") + '" data-k="' + n.k + '" tabindex="0" role="button" aria-label="' + esc(n.name) + '" transform="translate(' + n.x.toFixed(1) + " " + n.y.toFixed(1) + ')">' +
-        '<circle r="' + n.r + '"/><text class="net-ini" dy="0.35em">' + esc(ini(n)) + '</text><text class="net-name" dy="' + (n.r + 13) + '">' + esc(short(n)) + "</text></g>").join("") +
-      "</svg>";
-    const coauthors = nodes.length - 1;
-    const showMe = () => {
-      side.innerHTML = '<p class="net-who">' + esc(people.get(SELF).name) + '</p><p class="net-hint">' + esc(t("me", { n: coauthors, p: pubs.length })) + "</p>";
-    };
-    const show = k => {
-      const p = people.get(k); if (!p) return;
-      stage.querySelectorAll(".net-node").forEach(g => g.classList.toggle("is-on", g.dataset.k === k));
-      stage.querySelectorAll(".net-link").forEach(l => l.classList.toggle("is-on", l.dataset.a === k || l.dataset.b === k));
-      if (p.k === SELF) { showMe(); return; }
-      const shared = p.papers.filter(i => people.get(SELF).papers.includes(i));
-      side.innerHTML = '<p class="net-who">' + esc(p.name) + '</p><p class="net-count">' + esc(shared.length === 1 ? t("papers1") : t("papersN", { n: shared.length })) + "</p>" +
-        '<ul class="net-papers">' + shared.map(i => '<li><button type="button" class="net-paper" data-doi="' + esc(pubs[i].doi) + '"><span class="net-pt">' + esc(strip(pubs[i].title)) +
-          '</span><span class="net-pm">' + esc(pubs[i].journal + " · " + pubs[i].year) + "</span></button></li>").join("") + "</ul>";
-    };
-    showMe();
-    stage.addEventListener("click", e => { const g = e.target.closest(".net-node"); if (g) show(g.dataset.k); });
-    stage.addEventListener("keydown", e => { const g = e.target.closest(".net-node"); if (g && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); show(g.dataset.k); } });
-    side.addEventListener("click", e => {
-      const b = e.target.closest(".net-paper"); if (!b) return;
-      if (window.SiteApp && SiteApp.openPublication) SiteApp.openPublication(b.dataset.doi);
-    });
-    new MutationObserver(() => { const on = stage.querySelector(".net-node.is-on"); on ? show(on.dataset.k) : showMe(); })
-      .observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
-  }
+    nodes.filter(n => n.tree && n.co && !n.self).forEach(n => { if (n.parent !== me) links.push({ a: n, b: me, kind: "co" }); });
+    // ---- coordinates
+    const minX = Math.min(...nodes.map(n => n.x)) - PAD, maxX = Math.max(...nodes.map(n => n.x)) + PAD;
+    const rows = below.length ? Math.floor((below.length - 1) / perRow) + 1 : 0;
+    const top = 40, meY = top + maxGen * SY + 30;
+    nodes.forEach(n => { n.x -= minX; n.y = n.gen >= 0 ? meY - n.gen * SY : meY + 150 + n.row * SY; });
+    const W = maxX - minX, H = meY + (rows ? 150 + (rows - 1) * SY + 70 : 80);
 
-  // ------------------------------------------------------------- data & code
-  function datacode(datasets, repos) {
-    const dl = document.getElementById("dcData"), cl = document.getElementById("dcCode");
-    if (!dl || !cl) return;
-    const ds = (datasets && datasets.items) || [];
-    dl.innerHTML = ds.length ? ds.map(d =>
-      '<li class="dc-item"><a href="' + esc(d.doi ? "https://doi.org/" + d.doi : d.url) + '" target="_blank" rel="noopener noreferrer">' +
-      '<span class="dc-title">' + esc(d.title) + '</span><span class="dc-meta">' + esc([d.type, (d.date || "").slice(0, 4), d.doi ? "DOI " + d.doi : "", d.license].filter(Boolean).join(" · ")) + "</span></a></li>").join("")
-      : '<li class="dc-empty" data-pt="Os conjuntos de dados aparecem aqui sozinhos quando forem publicados no Zenodo com o meu ORCID.">Datasets appear here by themselves once they are published on Zenodo with my ORCID.</li>';
-    const rs = (repos && repos.items) || [];
-    cl.innerHTML = rs.map(r => {
-      const site = /\.github\.io/i.test(r.homepage || "") && /gustavopmaia/i.test(r.name);
-      return '<li class="dc-item"><a href="' + esc(r.url) + '" target="_blank" rel="noopener noreferrer">' +
-        '<span class="dc-title">' + esc(r.name) + "</span>" +
-        (site ? '<span class="dc-desc" data-pt="Este site: dados, automatização e código, de código aberto.">This website: data, automation and code, open source.</span>'
-              : (r.description ? '<span class="dc-desc">' + esc(r.description) + "</span>" : "")) +
-        '<span class="dc-meta">' + esc([r.language, r.pushed ? r.pushed.slice(0, 7) : "", r.stars ? "★ " + r.stars : ""].filter(Boolean).join(" · ")) + "</span></a></li>";
+    // ---- drawing
+    const R = n => n.self ? 30 : 21;
+    const ini = nm => { const w = nm.replace(/^(Eng|Prof|Dr)\.?\s+/i, "").replace(/[.\-]/g, " ").split(/\s+/).filter(Boolean); return (w[0][0] + (w.length > 1 ? w[w.length - 1][0] : "")).toUpperCase(); };
+    const lines = nm => { const w = nm.split(/\s+/); if (nm.length <= 16 || w.length < 2) return [nm]; const h = Math.ceil(w.length / 2); return [w.slice(0, h).join(" "), w.slice(h).join(" ")]; };
+    const path = l => {
+      const { a, b } = l;
+      if (l.kind === "mentor") { const my = (a.y + b.y) / 2; return "M" + b.x + " " + (b.y - R(b)) + " C" + b.x + " " + my + " " + a.x + " " + my + " " + a.x + " " + (a.y + R(a) + 26); }
+      return "M" + b.x + " " + (b.y + R(b) + 26) + " C" + b.x + " " + (b.y + 90) + " " + a.x + " " + (a.y - 80) + " " + a.x + " " + (a.y - R(a));
+    };
+    let defs = "";
+    const svgNodes = nodes.map(n => {
+      const r = R(n), photo = n.n && safe(n.n.photo);
+      if (photo) defs += '<clipPath id="tnc' + n.id + '"><circle r="' + r + '"/></clipPath>';
+      const ln = lines(n.name), inst = n.n && n.n.institution ? n.n.institution.name : "";
+      return '<g class="tn-node' + (n.self ? " is-self" : "") + (n.co ? " is-co" : "") + (n.tree ? " is-tree" : " is-coonly") + '" data-id="' + n.id + '" tabindex="0" role="button" aria-label="' + esc(n.name) + '" transform="translate(' + n.x.toFixed(1) + " " + n.y.toFixed(1) + ')">' +
+        (n.co && !n.self ? '<circle class="tn-co-ring" r="' + (r + 5) + '"/>' : "") +
+        '<circle class="tn-dot" r="' + r + '"/>' +
+        (photo ? '<image href="' + esc(photo) + '" x="' + -r + '" y="' + -r + '" width="' + 2 * r + '" height="' + 2 * r + '" preserveAspectRatio="xMidYMid slice" clip-path="url(#tnc' + n.id + ')"/>'
+               : '<text class="tn-ini" dy="0.35em">' + esc(n.n && n.n.initials || ini(n.name)) + "</text>") +
+        (n.n && n.n.nobel ? '<g class="tn-nobel" transform="translate(' + (r * 0.72) + " " + (-r * 0.72) + ')"><circle r="7"/><text dy="0.35em">★</text></g>' : "") +
+        ln.map((s, i) => '<text class="tn-name" dy="' + (r + 15 + i * 13) + '">' + esc(s) + "</text>").join("") +
+        (inst ? '<text class="tn-inst" dy="' + (r + 15 + ln.length * 13) + '">' + esc(inst.length > 24 ? inst.slice(0, 23) + "…" : inst) + "</text>" : "") +
+        "</g>";
     }).join("");
+    stage.innerHTML = '<svg class="tn-svg" width="' + Math.round(W) + '" height="' + Math.round(H) + '" viewBox="0 0 ' + Math.round(W) + " " + Math.round(H) + '" role="group" aria-label="Academic tree and co-authors">' +
+      "<defs>" + defs + "</defs>" +
+      links.map(l => '<path class="tn-link tn-link--' + l.kind + '" data-a="' + l.a.id + '" data-b="' + l.b.id + '" d="' + path(l) + '"/>').join("") + svgNodes + "</svg>";
+
+    // ---- details
+    const coCount = nodes.filter(n => n.co && !n.self).length;
+    function chain(n) { const ids = new Set(); let c = n; while (c) { ids.add(c.id); c = c.parent; } return ids; }
+    function show(id) {
+      const n = nodes[id]; if (!n) return;
+      const on = n.self ? new Set([n.id]) : chain(n);
+      stage.querySelectorAll(".tn-node").forEach(g => g.classList.toggle("is-on", on.has(+g.dataset.id) || +g.dataset.id === n.id));
+      stage.querySelectorAll(".tn-link").forEach(p => {
+        const a = +p.dataset.a, b = +p.dataset.b;
+        p.classList.toggle("is-on", (p.classList.contains("tn-link--mentor") && on.has(a) && on.has(b)) || (p.classList.contains("tn-link--co") && a === n.id));
+      });
+      if (n.self) {
+        side.innerHTML = '<p class="tn-who">' + esc(n.name) + '</p><p class="tn-role">' + esc(tr(n.n.role)) + '</p><p class="tn-hint">' +
+          esc(t("me", { g: maxGen, n: coCount, p: pubs.length })) + "</p>";
+        return;
+      }
+      const role = n.n ? tr(n.n.role) : "", inst = n.n && n.n.institution;
+      const shared = (n.papers || []);
+      side.innerHTML = '<p class="tn-who">' + esc(n.name) + (n.n && n.n.nobel ? ' <span class="tn-badge tn-badge--nobel">' + esc(t("nobel")) + "</span>" : "") + "</p>" +
+        (role ? '<p class="tn-role">' + esc(strip(role)) + "</p>" : "") +
+        (n.co ? '<p class="tn-badge">' + esc(n.tree ? t("mentorCo") : t("coauthor")) + "</p>" : "") +
+        (inst && inst.name ? '<p class="tn-inst-line">' + (safe(inst.url) ? '<a href="' + esc(inst.url) + '" target="_blank" rel="noopener noreferrer">' + esc(inst.name) + " ↗</a>" : esc(inst.name)) + "</p>" : "") +
+        (n.n && safe(n.n.url) ? '<p><a class="tn-link-out" href="' + esc(n.n.url) + '" target="_blank" rel="noopener noreferrer">' + esc(t("profile")) + " ↗</a></p>" : "") +
+        (shared.length ? '<p class="tn-count">' + esc(shared.length === 1 ? t("papers1") : t("papersN", { n: shared.length })) + '</p><ul class="tn-papers">' +
+          shared.map(i => '<li><button type="button" class="tn-paper" data-doi="' + esc(pubs[i].doi) + '"><span class="tn-pt">' + esc(strip(pubs[i].title)) +
+            '</span><span class="tn-pm">' + esc(pubs[i].journal + " · " + pubs[i].year) + "</span></button></li>").join("") + "</ul>" : "");
+    }
+    let current = me.id;
+    show(me.id);
+    stage.addEventListener("click", e => { if (stage.__dragged) return; const g = e.target.closest(".tn-node"); if (g) { current = +g.dataset.id; show(current); } });
+    stage.addEventListener("keydown", e => { const g = e.target.closest(".tn-node"); if (g && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); current = +g.dataset.id; show(current); } });
+    side.addEventListener("click", e => { const b = e.target.closest(".tn-paper"); if (b && window.SiteApp && SiteApp.openPublication) SiteApp.openPublication(b.dataset.doi); });
+    new MutationObserver(() => show(current)).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
+
+    // ---- drag sideways to explore; starts centred on me
+    const wrap = stage.parentElement;
+    requestAnimationFrame(() => { wrap.scrollLeft = Math.max(0, me.x - wrap.clientWidth / 2); wrap.scrollTop = Math.max(0, me.y - wrap.clientHeight * 0.55); });
+    let down = null;
+    wrap.addEventListener("pointerdown", e => { if (e.pointerType !== "mouse" || e.button !== 0) return; down = { x: e.clientX, y: e.clientY, l: wrap.scrollLeft, t: wrap.scrollTop, moved: false }; stage.__dragged = false; });
+    addEventListener("pointermove", e => {
+      if (!down) return;
+      const dx = e.clientX - down.x, dy = e.clientY - down.y;
+      if (!down.moved && Math.hypot(dx, dy) < 5) return;
+      down.moved = true; stage.__dragged = true; wrap.classList.add("is-dragging");
+      wrap.scrollLeft = down.l - dx; wrap.scrollTop = down.t - dy;
+    });
+    addEventListener("pointerup", () => { if (!down) return; down = null; wrap.classList.remove("is-dragging"); setTimeout(() => { stage.__dragged = false; }, 0); });
   }
 
   window.Hub = {
     render(data) {
       const pubs = ((data.publications && data.publications.works) || []).slice();
-      try { network(pubs, data["paper-info"]); } catch (e) { console.warn("network", e); }
-      try { datacode(data.datasets, data.repos); } catch (e) { console.warn("data & code", e); }
+      try { treeNet(data.tree, pubs, data["paper-info"]); } catch (e) { console.warn("tree & collaborations", e); }
     }
   };
 })();

@@ -1,7 +1,7 @@
 /* Service worker: app-shell caching + offline fallback.
    Network-first for HTML, CSS, JS and data (so new content shows at once),
    cache-then-refresh for pictures and other static files. */
-const CACHE = "gpm-v61";
+const CACHE = "gpm-v62";
 const CORE = [
   "./", "index.html", "cientificamente.html",
   "design-system/styles.css", "design-system/tokens/fonts.css", "design-system/tokens/colors.css",
@@ -10,7 +10,7 @@ const CORE = [
   "sections/highlights.html", "sections/news.html", "sections/publications.html", "sections/presentations.html",
   "sections/education.html", "sections/experience.html", "sections/courses.html", "sections/awards.html",
   "sections/funding.html", "sections/tree.html", "sections/map.html",
-  "sections/network.html", "sections/datacode.html", "sections/missions.html",
+  "sections/missions.html",
   "hub.js", "ask.js", "ask-worker.js", "missions3d.js", "blog.html", "blog.js",
   "data/news.json", "data/tree.json", "data/publications.json", "data/missions.json"
 ];
