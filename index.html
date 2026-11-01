@@ -168,7 +168,6 @@
       <div class="nav-tools">
         <div class="nav-jump" id="navJump">
           <span class="nav-sec-strip" id="navSecStrip">
-            <a href="#highlights" class="nav-sec-ico nav-sec-main" data-tip="Research"><i data-lucide="sparkles"></i><span class="nav-sec-label" data-i18n="nav_research">Research</span></a>
             <a href="#publications" class="nav-sec-ico nav-sec-main" data-tip="Publications"><i data-lucide="book-open"></i><span class="nav-sec-label" data-i18n="nav_publications">Publications</span></a>
             <a href="#presentations" class="nav-sec-ico nav-sec-main" data-tip="Presentations"><i data-lucide="presentation"></i><span class="nav-sec-label" data-i18n="nav_presentations">Presentations</span></a>
             <a href="#experience" class="nav-sec-ico nav-sec-main" data-tip="Experience"><i data-lucide="briefcase"></i><span class="nav-sec-label" data-i18n="nav_experience">Experience</span></a>
@@ -176,6 +175,7 @@
             <span class="nav-more" id="navMore">
               <button type="button" class="nav-sec-ico nav-sec-main nav-more-btn" id="navMoreBtn" data-tip="More" aria-haspopup="true" aria-expanded="false" aria-controls="navMoreMenu"><i data-lucide="layout-grid"></i><span class="nav-sec-label" data-i18n="nav_more">More</span></button>
               <span class="nav-more-menu" id="navMoreMenu" role="menu" hidden>
+                <a href="#highlights" role="menuitem"><i data-lucide="sparkles"></i><span data-i18n="nav_research">Research</span></a>
                 <a href="#ask" role="menuitem"><i data-lucide="message-circle-question"></i><span data-i18n="nav_ask">Ask</span></a>
                 <a href="#news" role="menuitem"><i data-lucide="newspaper"></i><span data-i18n="nav_news">News</span></a>
                 <a href="#techniques" role="menuitem"><i data-lucide="microscope"></i><span data-i18n="nav_skills">Skills</span></a>
@@ -195,12 +195,13 @@
           <i data-lucide="search"></i>
         </button>
         <div class="lang-menu" id="langMenu">
-          <button class="icon-btn" id="langToggle" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Language" title="Language  ·  L" data-tip="Language"><i data-lucide="globe"></i></button>
+          <button class="icon-btn lang-btn" id="langToggle" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Language" title="Language  ·  L" data-tip="Language"><i data-lucide="globe"></i><span class="lang-code" id="langCode" aria-hidden="true">EN</span></button>
           <div class="lang-pop" id="langPop" role="menu" aria-label="Choose language" hidden>
-            <button class="lang-opt" type="button" role="menuitemradio" data-lang="en"><span class="lang-flag" aria-hidden="true">🇬🇧</span><span class="lang-name">English</span></button>
-            <button class="lang-opt" type="button" role="menuitemradio" data-lang="pt"><span class="lang-flag" aria-hidden="true">🇵🇹</span><span class="lang-name">Português</span></button>
-            <button class="lang-opt" type="button" role="menuitemradio" data-lang="fr"><span class="lang-flag" aria-hidden="true">🇫🇷</span><span class="lang-name">Français</span></button>
-            <button class="lang-opt" type="button" role="menuitemradio" data-lang="ja"><span class="lang-flag" aria-hidden="true">🇯🇵</span><span class="lang-name">日本語</span></button>
+            <p class="lang-pop-h" aria-hidden="true"><span>Hello</span> · <span>Olá</span> · <span>Bonjour</span> · <span>こんにちは</span></p>
+            <button class="lang-opt" type="button" role="menuitemradio" data-lang="en"><span class="lang-flag" aria-hidden="true">🇬🇧</span><span class="lang-name">English</span><span class="lang-hello" aria-hidden="true">Hello</span></button>
+            <button class="lang-opt" type="button" role="menuitemradio" data-lang="pt"><span class="lang-flag" aria-hidden="true">🇵🇹</span><span class="lang-name">Português</span><span class="lang-hello" aria-hidden="true">Olá</span></button>
+            <button class="lang-opt" type="button" role="menuitemradio" data-lang="fr"><span class="lang-flag" aria-hidden="true">🇫🇷</span><span class="lang-name">Français</span><span class="lang-hello" aria-hidden="true">Bonjour</span></button>
+            <button class="lang-opt" type="button" role="menuitemradio" data-lang="ja"><span class="lang-flag" aria-hidden="true">🇯🇵</span><span class="lang-name">日本語</span><span class="lang-hello" aria-hidden="true">こんにちは</span></button>
           </div>
         </div>
         <span class="nav-sep" aria-hidden="true"></span>

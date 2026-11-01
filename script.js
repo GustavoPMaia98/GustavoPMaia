@@ -1485,6 +1485,7 @@
     });
     document.documentElement.setAttribute("lang", lang);
     document.documentElement.setAttribute("data-lang", lang);
+    const code = document.getElementById("langCode"); if (code) code.textContent = lang.toUpperCase();
     document.querySelectorAll("#langPop .lang-opt").forEach(b => {
       const on = b.dataset.lang === lang;
       b.classList.toggle("active", on);
@@ -1510,7 +1511,9 @@
     if (btn && pop && !langWired) {
       langWired = true;
       const open = o => { pop.hidden = !o; btn.setAttribute("aria-expanded", o ? "true" : "false"); };
-      btn.addEventListener("click", e => { e.stopPropagation(); open(pop.hidden); });
+      // with a mouse the menu already opens on hover, so a click keeps it open
+      const hoverOpens = window.matchMedia && window.matchMedia("(hover: hover)").matches;
+      btn.addEventListener("click", e => { e.stopPropagation(); open(hoverOpens ? true : pop.hidden); });
       // Open automatically on hover; close shortly after the pointer leaves.
       const menu = document.getElementById("langMenu");
       let hideT = null;
