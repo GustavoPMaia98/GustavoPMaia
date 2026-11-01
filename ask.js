@@ -117,11 +117,10 @@ if (form && !form.__wired) {
         const emb = await loadEmbedder(idx.model);
         if (my !== run) return;
         const out = await emb((idx.queryPrefix || "") + q, { pooling: idx.pooling || "mean", normalize: true }), v = out.data, d = idx.dim;
-        score = idx.passages.map((p, i) => {
-          let c = 0; for (let k = 0; k < d; k++) c += v[k] * vecs[i * d + k];
-          c /= 127;
-          return 0.72 * Math.max(0, (c - 0.15) / 0.6) + 0.28 * lex[i] / lmax;
-        });
+        // cosine similarities, rescaled between the typical (median) and the best passage
+        const cos = idx.passages.map((p, i) => { let c = 0; for (let k = 0; k < d; k++) c += v[k] * vecs[i * d + k]; return c / 127; });
+        const sorted = cos.slice().sort((a, b) => a - b), med = sorted[sorted.length >> 1], top = sorted[sorted.length - 1];
+        score = cos.map((c, i) => 0.75 * Math.max(0, (c - med) / Math.max(1e-6, top - med)) + 0.25 * lex[i] / lmax);
         semantic = true;
       } catch (e) { console.warn("meaning search unavailable", e); }
     }
@@ -129,7 +128,7 @@ if (form && !form.__wired) {
   }
 
   function show(q, idx, score, semantic, my, final) {
-    const order = idx.passages.map((p, i) => ({ p, s: score[i] })).filter(x => x.s > (semantic ? 0.18 : 0.05)).sort((a, b) => b.s - a.s);
+    const order = idx.passages.map((p, i) => ({ p, s: score[i] })).filter(x => x.s > (semantic ? 0.42 : 0.05)).sort((a, b) => b.s - a.s);
     const seen = new Set(), hits = [];
     for (const x of order) { const k = x.p.sec + "|" + x.p.title; if (seen.has(k)) continue; seen.add(k); hits.push(x.p); if (hits.length === 5) break; }
     last = { q, hits };

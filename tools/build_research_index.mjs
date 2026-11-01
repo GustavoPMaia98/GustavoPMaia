@@ -49,6 +49,13 @@ function chunks(s, max = 550) {
   return out;
 }
 
+// spelled-out forms of abbreviations, added only to what the model reads, so a question
+// in plain words ("worked in the United States?", "who funds...") finds them
+const EXPAND = [[/\bUSA\b/g, "USA (United States, America)"], [/\bFCT\b/g, "FCT (Portuguese science funding agency)"],
+  [/\bIST\b|\bTécnico\b/g, "$& (Lisbon university)"], [/\bMNHN\b/g, "MNHN (Paris natural history museum, France)"],
+  [/\bIMPMC\b/g, "IMPMC (Paris, France)"], [/\bUBI\b/g, "UBI (Covilhã university, Portugal)"]];
+const expand = s => EXPAND.reduce((t, [re, to]) => t.replace(re, to), s);
+
 const passages = [];
 function add(sec, title, body, extra = {}) {
   const parts = chunks(body);
@@ -123,7 +130,7 @@ if (embed) {
     const extractor = await tf.pipeline("feature-extraction", MODEL, { dtype: "q8" });
     const dim = 384, all = new Int8Array(passages.length * dim);
     for (let i = 0; i < passages.length; i += 16) {
-      const batch = passages.slice(i, i + 16).map(p => p.title + ". " + p.text);
+      const batch = passages.slice(i, i + 16).map(p => expand(p.title + ". " + p.text));
       const out = await extractor(batch, { pooling: POOLING, normalize: true });
       const v = out.data;
       for (let k = 0; k < v.length; k++) all[i * dim + k] = Math.max(-127, Math.min(127, Math.round(v[k] * 127)));
