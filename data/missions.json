@@ -1,0 +1,60 @@
+{
+  "_help": "Sample-return missions shown in 'Sample-return missions' (missions3d.js). Orbits: a (AU), e, i, node, peri (argument of perihelion) and M0 (mean anomaly at 1 Jan 2000) in degrees; approximate, for illustration. Text takes \"en\" and \"pt\".",
+  "planets": [
+    { "name": { "en": "Mercury", "pt": "Mercúrio" }, "color": "#9a9a9a", "size": 0.035, "a": 0.3871, "e": 0.2056, "i": 7.0, "node": 48.33, "peri": 29.12, "M0": 174.8 },
+    { "name": { "en": "Venus", "pt": "Vénus" }, "color": "#e8cf9a", "size": 0.05, "a": 0.7233, "e": 0.0068, "i": 3.39, "node": 76.68, "peri": 54.88, "M0": 50.1 },
+    { "name": { "en": "Earth", "pt": "Terra" }, "color": "#4f8fe0", "size": 0.055, "a": 1.0, "e": 0.0167, "i": 0.0, "node": 0.0, "peri": 102.94, "M0": 357.5 },
+    { "name": { "en": "Mars", "pt": "Marte" }, "color": "#d0603a", "size": 0.042, "a": 1.5237, "e": 0.0934, "i": 1.85, "node": 49.56, "peri": 286.5, "M0": 19.4 },
+    { "name": { "en": "Jupiter", "pt": "Júpiter" }, "color": "#d8b48a", "size": 0.11, "a": 5.2034, "e": 0.0484, "i": 1.3, "node": 100.47, "peri": 274.3, "M0": 19.7 }
+  ],
+  "missions": [
+    {
+      "id": "osiris-rex",
+      "mission": "OSIRIS-REx",
+      "agency": "NASA",
+      "target": { "en": "Asteroid (101955) Bennu", "pt": "Asteroide (101955) Bennu" },
+      "body": { "name": "Bennu", "kind": "asteroid", "color": "#c7b8a6", "a": 1.1264, "e": 0.2037, "i": 6.035, "node": 2.061, "peri": 66.22, "M0": 101.7 },
+      "launch": "2016", "returned": { "en": "24 September 2023 · Utah, USA", "pt": "24 de setembro de 2023 · Utah, EUA" },
+      "sample": { "en": "121.6 g of rocks and dust", "pt": "121,6 g de rochas e poeira" },
+      "found": { "en": "A carbon-rich, water-altered asteroid: 14 of the 20 amino acids used by life on Earth, all five nucleobases of DNA and RNA, and salts left by evaporating brines.", "pt": "Um asteroide rico em carbono e alterado pela água: 14 dos 20 aminoácidos usados pela vida na Terra, as cinco nucleobases do DNA e do RNA e sais deixados pela evaporação de salmouras." },
+      "why": { "en": "Bennu's surface is a rubble pile constantly reworked by small impacts, exactly the asteroid gardening I reproduce in the lab. Jason Dworkin, my supervisor at NASA Goddard, is the mission's project scientist.", "pt": "A superfície de Bennu é um aglomerado de detritos continuamente remodelado por pequenos impactos, exatamente o asteroid gardening que reproduzo no laboratório. Jason Dworkin, o meu supervisor no NASA Goddard, é o cientista do projeto da missão." },
+      "url": "https://science.nasa.gov/mission/osiris-rex/"
+    },
+    {
+      "id": "hayabusa2",
+      "mission": "Hayabusa2",
+      "agency": "JAXA",
+      "target": { "en": "Asteroid (162173) Ryugu", "pt": "Asteroide (162173) Ryugu" },
+      "body": { "name": "Ryugu", "kind": "asteroid", "color": "#a39788", "a": 1.1896, "e": 0.1902, "i": 5.866, "node": 251.6, "peri": 211.4, "M0": 21.5 },
+      "launch": "2014", "returned": { "en": "6 December 2020 · Woomera, Australia", "pt": "6 de dezembro de 2020 · Woomera, Austrália" },
+      "sample": { "en": "5.4 g, partly from below the surface, collected next to a crater the spacecraft made", "pt": "5,4 g, em parte de baixo da superfície, recolhidos junto a uma cratera feita pela sonda" },
+      "found": { "en": "Material like the most primitive (CI) carbonaceous chondrites, with amino acids and the RNA nucleobase uracil.", "pt": "Material semelhante aos condritos carbonáceos mais primitivos (CI), com aminoácidos e a nucleobase uracilo do RNA." },
+      "why": { "en": "Comparing the organics at Ryugu's surface with those just below it shows what space exposure and impacts do to them, the question behind my mechanochemistry experiments.", "pt": "Comparar a matéria orgânica da superfície de Ryugu com a de logo abaixo mostra o que a exposição ao espaço e os impactos lhe fazem, a questão por detrás das minhas experiências de mecanoquímica." },
+      "url": "https://www.hayabusa2.jaxa.jp/en/"
+    },
+    {
+      "id": "hayabusa",
+      "mission": "Hayabusa",
+      "agency": "JAXA",
+      "target": { "en": "Asteroid (25143) Itokawa", "pt": "Asteroide (25143) Itokawa" },
+      "body": { "name": "Itokawa", "kind": "asteroid", "color": "#b9ab95", "a": 1.3241, "e": 0.2801, "i": 1.621, "node": 69.08, "peri": 162.8, "M0": 254.0 },
+      "launch": "2003", "returned": { "en": "13 June 2010 · Woomera, Australia", "pt": "13 de junho de 2010 · Woomera, Austrália" },
+      "sample": { "en": "About 1,500 tiny grains", "pt": "Cerca de 1500 grãos minúsculos" },
+      "found": { "en": "The first asteroid sample ever returned: a stony (S-type) asteroid made of the same rock as the most common meteorites, ordinary chondrites, its grains marked by space weathering.", "pt": "A primeira amostra de um asteroide trazida para a Terra: um asteroide rochoso (tipo S) feito da mesma rocha que os meteoritos mais comuns, os condritos ordinários, com grãos marcados pela meteorização espacial." },
+      "why": { "en": "It proved that meteorites in our collections come from asteroids we can see, and that their surfaces are altered by the space environment.", "pt": "Provou que os meteoritos das nossas coleções vêm de asteroides que conseguimos observar, e que as suas superfícies são alteradas pelo ambiente espacial." },
+      "url": "https://global.jaxa.jp/projects/sas/muses_c/"
+    },
+    {
+      "id": "stardust",
+      "mission": "Stardust",
+      "agency": "NASA",
+      "target": { "en": "Comet 81P/Wild 2", "pt": "Cometa 81P/Wild 2" },
+      "body": { "name": "Wild 2", "kind": "comet", "color": "#bfe3ff", "a": 3.45, "e": 0.538, "i": 3.24, "node": 136.1, "peri": 41.7, "M0": 330.0 },
+      "launch": "1999", "returned": { "en": "15 January 2006 · Utah, USA", "pt": "15 de janeiro de 2006 · Utah, EUA" },
+      "sample": { "en": "Comet dust caught in aerogel during a fly-by", "pt": "Poeira de cometa apanhada em aerogel durante um sobrevoo" },
+      "found": { "en": "Grains formed close to the young Sun mixed with icy material, and the amino acid glycine.", "pt": "Grãos formados perto do Sol jovem misturados com material gelado, e o aminoácido glicina." },
+      "why": { "en": "Comets and their dust also deliver organic matter to planets, and the dust is processed by impacts on the way.", "pt": "Os cometas e as suas poeiras também entregam matéria orgânica aos planetas, e essas poeiras são processadas por impactos pelo caminho." },
+      "url": "https://science.nasa.gov/mission/stardust/"
+    }
+  ]
+}

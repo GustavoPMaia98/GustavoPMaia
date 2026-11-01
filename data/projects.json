@@ -1,0 +1,40 @@
+{
+  "_help": "Research projects, newest first, shown in 'Research projects'. \"status\" is ongoing or completed; \"title\", \"summary\" and \"details\" take \"en\" and \"pt\" (French and Japanese fall back to English unless added as \"fr\"/\"ja\"); \"papers\" lists DOIs from Publications (the cards link to them); \"partners\" are short names; \"funding\" is free text. Set \"hidden\": true to hide a project.",
+  "items": [
+    {
+      "id": "asteroid-gardening",
+      "status": "ongoing",
+      "years": "2024 –",
+      "icon": "orbit",
+      "title": { "en": "Asteroid gardening and the fate of extraterrestrial organic matter", "pt": "Reprocessamento de asteroides e o destino da matéria orgânica extraterrestre" },
+      "summary": { "en": "How repeated micrometeorite and dust impacts on asteroid surfaces transform, or protect, the organic matter that asteroids deliver to planets.", "pt": "Como os impactos repetidos de micrometeoritos e poeiras nas superfícies dos asteroides transformam, ou protegem, a matéria orgânica que os asteroides entregam aos planetas." },
+      "details": { "en": "Ball milling and grinding of hexamethylenetetramine (HMT) with sodium-rich montmorillonite, an analogue of the clays in carbonaceous chondrites, stand in for the impacts. High-energy milling disrupts the clay and turns HMT into new species (pyrazine, triazine/triazinane derivatives, oxygen-bearing N-rich molecules) even without liquid water; gentler grinding pushes HMT-like molecules between the clay layers, where they are protected.", "pt": "A moagem e a trituração de hexametilenotetramina (HMT) com montmorilonite sódica, um análogo das argilas dos condritos carbonáceos, reproduzem os impactos. A moagem de alta energia desorganiza a argila e transforma a HMT em novas espécies (pirazina, derivados de triazina/triazinano, moléculas azotadas com oxigénio) mesmo sem água líquida; a trituração mais suave introduz moléculas do tipo HMT entre as camadas da argila, onde ficam protegidas." },
+      "partners": ["CQE · IST", "IMPMC · MNHN", "NASA Goddard"],
+      "funding": "FCT doctoral grant 2023.01099.BD",
+      "papers": ["10.1016/j.epsl.2026.120237"]
+    },
+    {
+      "id": "ribonucleosides",
+      "status": "ongoing",
+      "years": "2022 –",
+      "icon": "atom",
+      "title": { "en": "Mechanochemistry of ribonucleosides", "pt": "Mecanoquímica de ribonucleósidos" },
+      "summary": { "en": "Can ribonucleosides, building blocks of RNA, survive the mechanical energy of impacts, or are they broken back down into nucleobases and ribose?", "pt": "Poderão os ribonucleósidos, blocos de construção do RNA, sobreviver à energia mecânica dos impactos, ou são decompostos de novo em nucleobases e ribose?" },
+      "details": { "en": "Guanosine, uridine and other ribonucleosides are milled with metal species and carbonate, minerals common on rocky extraterrestrial bodies. The experiments show that they degrade into their nucleobases, with consequences for how organic matter in meteorites is interpreted.", "pt": "A guanosina, a uridina e outros ribonucleósidos são moídos com espécies metálicas e carbonato, minerais comuns em corpos rochosos extraterrestres. As experiências mostram que se degradam nas suas nucleobases, com consequências para a interpretação da matéria orgânica dos meteoritos." },
+      "partners": ["CQE · IST"],
+      "funding": "FCT doctoral grant 2023.01099.BD",
+      "papers": ["10.3390/app15031363", "10.3390/molecules28248006"]
+    },
+    {
+      "id": "rna-nanosensor",
+      "status": "completed",
+      "years": "2023",
+      "icon": "microscope",
+      "title": { "en": "Gold nanosensor for single-molecule detection of RNA biomarkers", "pt": "Nanossensor de ouro para deteção de biomarcadores de RNA em molécula única" },
+      "summary": { "en": "Research fellowship on a gold nanosensor for detecting single RNA biomarker molecules in a miniaturised microscope.", "pt": "Bolsa de investigação sobre um nanossensor de ouro para detetar moléculas únicas de biomarcadores de RNA num microscópio miniaturizado." },
+      "partners": ["CQE · IST"],
+      "funding": "FCT · Research Fellow, Jun – Nov 2023",
+      "papers": []
+    }
+  ]
+}

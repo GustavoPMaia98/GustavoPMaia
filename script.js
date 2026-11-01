@@ -954,7 +954,7 @@
       makeDraggable(track);
       // a click outside the timeline closes the paper
       document.addEventListener("click", e => {
-        if (openIdx >= 0 && !stage.contains(e.target) && !e.target.closest(".lightbox, a[download]")) close();   // (a download link is the export)
+        if (openIdx >= 0 && !stage.contains(e.target) && !e.target.closest(".lightbox, a[download], .proj-paper, .net-paper, .ask-open")) close();   // (a download link is the export; the others open a paper)
       });
       // in the open paper: copy the APA citation, the export menu
       panel.addEventListener("click", e => {
@@ -1401,6 +1401,8 @@
     nav_experience:{en:"Experience",pt:"Experiência"}, nav_presentations:{en:"Presentations",pt:"Apresentações"},
     nav_funding:{en:"Funding",pt:"Financiamento"}, nav_publications:{en:"Publications",pt:"Publicações"},
     nav_tree:{en:"Tree",pt:"Árvore"}, nav_map:{en:"Map",pt:"Mapa"}, nav_blog:{en:"Blog",pt:"Blog"}, nav_tutoring:{en:"Tutoring",pt:"Explicações"}, nav_courses:{en:"Courses",pt:"Cursos"},
+    nav_ask:{en:"Ask",pt:"Perguntar"}, nav_projects:{en:"Projects",pt:"Projetos"}, nav_network:{en:"Collaborations",pt:"Colaborações"},
+    nav_datacode:{en:"Data & code",pt:"Dados e código"}, nav_missions:{en:"Missions",pt:"Missões"},
     nav_research:{en:"Research",pt:"Investigação"}, nav_skills:{en:"Skills",pt:"Competências"}, nav_more:{en:"More",pt:"Mais"},
     role:{en:"PhD Researcher in Chemistry · Astrobiology",pt:"Investigador de Doutoramento em Química · Astrobiologia"},
     bio:{en:"My research explores the origins and evolution of life in the universe, using chemistry to uncover the processes that may have led to life's emergence. A key focus is mechanochemistry: chemical reactions driven by mechanical forces. I investigate how mechanical energy, from parent-body formation, asteroid gardening, or meteorite impacts, could have promoted the synthesis and transformation of organic molecules on the early Earth and other planetary bodies, revealing alternative pathways for prebiotic chemistry under extreme and extraterrestrial environments.",
@@ -1416,14 +1418,17 @@
     "Education":"Educação", "Experience":"Experiência", "Presentations":"Apresentações",
     "Funding":"Financiamento", "Publications":"Publicações", "Academic Tree":"Árvore Académica",
     "News":"Novidades", "Where I have been":"Por onde andei",
-    "Current Work Interests":"Interesses de Trabalho Atuais", "Awards":"Prémios", "Courses & Formations":"Cursos e Formações"
+    "Current Work Interests":"Interesses de Trabalho Atuais", "Awards":"Prémios", "Courses & Formations":"Cursos e Formações",
+    "Ask my research":"Pergunte à minha investigação", "Research projects":"Projetos de investigação", "Collaborations":"Colaborações",
+    "Data & code":"Dados e código", "Sample-return missions":"Missões de recolha de amostras", "Blog":"Blog"
   };
 
   // Section heading icons (Lucide)
   function injectHeadingIcons() {
     const ICONS = { highlights:"sparkles", news:"newspaper", education:"graduation-cap", experience:"briefcase", courses:"book-marked",
       presentations:"presentation", funding:"banknote", publications:"book-open",
-      awards:"award", tree:"git-fork", blog:"pen-line", map:"map-pin", tutoring:"flask-conical" };
+      awards:"award", tree:"git-fork", blog:"pen-line", map:"map-pin", tutoring:"flask-conical",
+      ask:"message-circle-question", projects:"flask-conical", network:"share-2", datacode:"database", missions:"orbit" };
     document.querySelectorAll(".section > h2").forEach(h => {
       if (h.querySelector(".h2-label")) return;
       const sec = h.closest("section"); const id = sec ? sec.id : "";
@@ -2705,7 +2710,7 @@
   }
 
   // Exposed so the section loader can re-run init() after injecting content.
-  window.SiteApp = { init: init, openItem: openTimelineItem, showPathFor: it => showPathFor(it) };
+  window.SiteApp = { init: init, openItem: openTimelineItem, showPathFor: it => showPathFor(it), openPublication: doi => openPublication(doi) };
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);

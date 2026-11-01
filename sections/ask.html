@@ -1,0 +1,27 @@
+<!-- ASK MY RESEARCH (ask.js): questions answered from my own papers, talks and projects -->
+<section class="section" id="ask">
+  <h2>Ask my research</h2>
+  <p class="section-note" data-pt="Faça uma pergunta sobre o meu trabalho. A resposta é procurada nos meus artigos, comunicações e projetos por um pequeno modelo de IA aberto que corre no seu navegador: o que escreve não sai do seu dispositivo.">Ask a question about my work. The answer is looked up in my papers, talks and projects by a small open AI model that runs in your browser: what you type never leaves your device.</p>
+
+  <div class="ask reveal">
+    <form class="ask-form" id="askForm" role="search" autocomplete="off">
+      <i data-lucide="sparkles" class="ask-ico" aria-hidden="true"></i>
+      <input id="askInput" class="ask-input" type="search" enterkeyhint="search" maxlength="300"
+             placeholder="e.g. What happens to organic matter when asteroids are hit by small impacts?" aria-label="Your question">
+      <button class="ask-go" type="submit"><span data-pt="Perguntar">Ask</span><i data-lucide="arrow-right" aria-hidden="true"></i></button>
+    </form>
+    <div class="ask-chips" role="group" aria-label="Example questions">
+      <button type="button" class="ask-chip" data-pt="O que é o reprocessamento de asteroides (asteroid gardening)?">What is asteroid gardening?</button>
+      <button type="button" class="ask-chip" data-pt="Os ribonucleósidos sobrevivem à mecanoquímica?">Do ribonucleosides survive mechanochemistry?</button>
+      <button type="button" class="ask-chip" data-pt="Que técnicas usa no laboratório?">Which lab techniques do you use?</button>
+      <button type="button" class="ask-chip" data-pt="Onde apresentou o seu trabalho?">Where have you presented your work?</button>
+    </div>
+    <p id="askStatus" class="ask-status" role="status" aria-live="polite"></p>
+    <ol id="askResults" class="ask-results" aria-label="Passages that answer the question"></ol>
+    <div class="ask-gen" id="askGen" hidden>
+      <button type="button" class="ask-gen-btn" id="askGenBtn"><i data-lucide="wand-sparkles" aria-hidden="true"></i><span data-pt="Escrever uma resposta com IA neste dispositivo">Write an answer with AI on this device</span></button>
+      <p class="ask-gen-note" data-pt="Opcional: descarrega uma vez um modelo aberto (Qwen2.5 1.5B, Apache 2.0, cerca de 1 GB) e corre-o na placa gráfica do seu dispositivo (requer WebGPU). A resposta usa apenas as passagens acima e pode conter erros.">Optional: downloads an open model once (Qwen2.5 1.5B, Apache 2.0, about 1 GB) and runs it on your device's graphics card (needs WebGPU). The answer uses only the passages above and may contain mistakes.</p>
+      <div id="askAnswer" class="ask-answer" aria-live="polite" hidden></div>
+    </div>
+  </div>
+</section>

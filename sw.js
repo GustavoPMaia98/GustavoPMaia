@@ -1,7 +1,7 @@
 /* Service worker: app-shell caching + offline fallback.
    Network-first for HTML, CSS, JS and data (so new content shows at once),
    cache-then-refresh for pictures and other static files. */
-const CACHE = "gpm-v59";
+const CACHE = "gpm-v60";
 const CORE = [
   "./", "index.html", "cientificamente.html",
   "design-system/styles.css", "design-system/tokens/fonts.css", "design-system/tokens/colors.css",
@@ -10,7 +10,9 @@ const CORE = [
   "sections/highlights.html", "sections/news.html", "sections/publications.html", "sections/presentations.html",
   "sections/education.html", "sections/experience.html", "sections/courses.html", "sections/awards.html",
   "sections/funding.html", "sections/tree.html", "sections/map.html",
-  "data/news.json", "data/tree.json", "data/publications.json"
+  "sections/ask.html", "sections/projects.html", "sections/network.html", "sections/datacode.html", "sections/missions.html",
+  "hub.js", "ask.js", "missions3d.js",
+  "data/news.json", "data/tree.json", "data/publications.json", "data/projects.json", "data/missions.json"
 ];
 
 self.addEventListener("install", e => {
@@ -34,6 +36,9 @@ self.addEventListener("fetch", e => {
   if (req.method !== "GET") return;
   const url = new URL(req.url);
   if (url.origin !== location.origin) return; // leave CDN / map tiles to the network
+  // the AI models and their runtimes are large: the browser (and transformers.js /
+  // WebLLM) cache them; keeping second copies here would only waste space
+  if (/\/vendor\/(models|transformers-|web-llm-)/.test(url.pathname)) return;
 
   const isHTML = req.mode === "navigate" || url.pathname.endsWith("/") || url.pathname.endsWith(".html");
   // CSS/JS change often — keep them fresh (network-first) so an update never

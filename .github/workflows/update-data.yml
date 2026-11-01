@@ -4,6 +4,8 @@
 #   (The Academic Tree has its own, more frequent job: sync-tree.yml.)
 #   - News: new LinkedIn posts, if the LINKEDIN_FEED_URL secret is set
 #                                                     -> data/news.json
+#   - Datasets on Zenodo and public GitHub repositories -> data/datasets.json, data/repos.json
+#   - News: a news item for each newly found paper    -> data/news.json
 #   - CV: cv.html saved as PDF when its content changed -> cv.pdf, cv-pt/fr/ja.pdf
 # The site reads these files when it loads, so nothing else needs editing.
 name: Update site data
@@ -38,6 +40,10 @@ jobs:
         env:
           CONTACT_EMAIL: ${{ secrets.CONTACT_EMAIL }}   # optional, see tools/update_publications.py
         run: python tools/update_publications.py
+      - name: Datasets (Zenodo) and code (GitHub)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python tools/update_outputs.py
       - name: News (LinkedIn feed)
         env:
           FEED: ${{ secrets.LINKEDIN_FEED_URL }}
@@ -59,7 +65,7 @@ jobs:
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add data images/news cv*.pdf
-            git commit -m "Update site data (publications, news, CV)"
+            git commit -m "Update site data (publications, news, datasets, CV)"
             # if you pushed while this was running, put this commit on top of yours
             for i in 1 2 3; do git pull --rebase origin main && git push && break; sleep 5; done
           else

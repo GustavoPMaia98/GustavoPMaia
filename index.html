@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Security: only this site, GoatCounter and Google Fonts may run code or load styles here.
        After editing an inline script, run: python tools/check_site.py --fix -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://gc.zgo.at 'sha256-8amGrSvoFL2IAIB0fs686DpmPU9SudQaOsy8b968DmI=' 'sha256-sIUn72laVtkA5+ffrSPnak2L0WVx84gPnqoN58RLsIU=' 'sha256-4q2xuongV1yIe//jKK9VhIfoTj8TRdiwk12UI+5uJRk='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://gustavopmaia.goatcounter.com; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://gc.zgo.at 'sha256-8amGrSvoFL2IAIB0fs686DpmPU9SudQaOsy8b968DmI=' 'sha256-WLqpvowcIm4Wvx/vasa8IgkO3jUj2HdMYU4ZYS/pLKg=' 'sha256-4q2xuongV1yIe//jKK9VhIfoTj8TRdiwk12UI+5uJRk='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://gustavopmaia.goatcounter.com https://huggingface.co https://*.huggingface.co https://*.hf.co https://raw.githubusercontent.com; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="referrer" content="strict-origin-when-cross-origin">
 
   <!-- ============ PRIMARY / SEO ============ -->
@@ -146,8 +146,10 @@
 
       <nav class="nav-links" id="navLinks" aria-label="Primary">
         <a href="#highlights" data-i18n="nav_research">Research</a>
+        <a href="#ask" data-i18n="nav_ask">Ask</a>
         <a href="#news" data-i18n="nav_news">News</a>
         <a href="#publications" data-i18n="nav_publications">Publications</a>
+        <a href="#projects" data-i18n="nav_projects">Projects</a>
         <a href="#presentations" data-i18n="nav_presentations">Presentations</a>
         <a href="#education" data-i18n="nav_education">Education</a>
         <a href="#experience" data-i18n="nav_experience">Experience</a>
@@ -155,8 +157,11 @@
         <a href="#courses" data-i18n="nav_courses">Courses</a>
         <a href="#awards" data-i18n="nav_awards">Awards</a>
         <a href="#funding" data-i18n="nav_funding">Funding</a>
+        <a href="#network" data-i18n="nav_network">Collaborations</a>
+        <a href="#datacode" data-i18n="nav_datacode">Data &amp; code</a>
         <a href="#tree" data-i18n="nav_tree">Tree</a>
         <a href="#map" data-i18n="nav_map">Map</a>
+        <a href="#missions" data-i18n="nav_missions">Missions</a>
         <a href="cientificamente.html" data-i18n="nav_tutoring">Tutoring</a>
       </nav>
 
@@ -171,13 +176,18 @@
             <span class="nav-more" id="navMore">
               <button type="button" class="nav-sec-ico nav-sec-main nav-more-btn" id="navMoreBtn" data-tip="More" aria-haspopup="true" aria-expanded="false" aria-controls="navMoreMenu"><i data-lucide="layout-grid"></i><span class="nav-sec-label" data-i18n="nav_more">More</span></button>
               <span class="nav-more-menu" id="navMoreMenu" role="menu" hidden>
+                <a href="#ask" role="menuitem"><i data-lucide="message-circle-question"></i><span data-i18n="nav_ask">Ask</span></a>
                 <a href="#news" role="menuitem"><i data-lucide="newspaper"></i><span data-i18n="nav_news">News</span></a>
+                <a href="#projects" role="menuitem"><i data-lucide="flask-conical"></i><span data-i18n="nav_projects">Projects</span></a>
+                <a href="#network" role="menuitem"><i data-lucide="share-2"></i><span data-i18n="nav_network">Collaborations</span></a>
                 <a href="#techniques" role="menuitem"><i data-lucide="microscope"></i><span data-i18n="nav_skills">Skills</span></a>
                 <a href="#courses" role="menuitem"><i data-lucide="book-marked"></i><span data-i18n="nav_courses">Courses</span></a>
                 <a href="#awards" role="menuitem"><i data-lucide="award"></i><span data-i18n="nav_awards">Awards</span></a>
                 <a href="#funding" role="menuitem"><i data-lucide="banknote"></i><span data-i18n="nav_funding">Funding</span></a>
                 <a href="#tree" role="menuitem"><i data-lucide="git-fork"></i><span data-i18n="nav_tree">Tree</span></a>
+                <a href="#datacode" role="menuitem"><i data-lucide="database"></i><span data-i18n="nav_datacode">Data &amp; code</span></a>
                 <a href="#map" role="menuitem"><i data-lucide="map-pin"></i><span data-i18n="nav_map">Map</span></a>
+                <a href="#missions" role="menuitem"><i data-lucide="orbit"></i><span data-i18n="nav_missions">Missions</span></a>
                 <a href="cientificamente.html" role="menuitem"><i data-lucide="flask-conical"></i><span data-i18n="nav_tutoring">Tutoring</span></a>
               </span>
             </span>
@@ -360,6 +370,8 @@
   <script type="module" src="scenes3d.js"></script>
   <!-- Builds News and the Academic Tree from data/news.json and data/tree.json -->
   <script src="render.js"></script>
+  <!-- Research projects, co-author network, data & code (from data/*.json) -->
+  <script src="hub.js"></script>
   <!-- Email links: the address is only assembled when clicked (keeps it away from spam bots) -->
   <script src="mail.js"></script>
 
@@ -379,15 +391,20 @@
       return null;
     }
     async function loadSections() {
-      const sections = ['highlights','news','publications','presentations','education','experience','courses','awards','funding','tree','map'];   // add 'blog' here to show the Blog again
+      // the Blog shows by itself once data/blog.json has a published post
+      const sections = ['highlights','ask','news','publications','projects','network','presentations','education','experience','courses','awards','funding','datacode','blog','tree','map','missions'];
       const c = document.getElementById('mainContent');
-      const dataNames = ['news', 'tree', 'presentations', 'education', 'experience', 'courses', 'blog', 'updated'];
+      const dataNames = ['news', 'tree', 'presentations', 'education', 'experience', 'courses', 'blog', 'updated', 'publications', 'paper-info', 'projects', 'datasets', 'repos'];
       const [results, datasets] = await Promise.all([Promise.all(sections.map(fetchSection)), Promise.all(dataNames.map(fetchData))]);
       const data = {}; dataNames.forEach((n, i) => { data[n] = datasets[i]; });
-      let html = results.join('');
+      const hasPosts = ((data.blog && data.blog.posts) || []).some(p => p && !p.hidden);
+      let html = results.filter((r, i) => sections[i] !== 'blog' || hasPosts).join('');
       if (window.SiteRender) html = SiteRender.fill(html, data);
       c.insertAdjacentHTML('beforeend', html);
+      if (window.Hub) Hub.render(data);
       if (window.SiteApp && SiteApp.init) SiteApp.init();
+      import('./ask.js').catch(e => console.warn(e));         // "Ask my research"
+      import('./missions3d.js').catch(e => console.warn(e));  // sample-return missions (3D, starts when near)
     }
     var y = document.getElementById('footerYear'); if (y) y.textContent = new Date().getFullYear();
     (function(){
