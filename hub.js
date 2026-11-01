@@ -6,8 +6,10 @@
      - Down from me: my co-authors (data/publications.json + data/paper-info.json),
        so the network grows by itself with every new paper. Mentors who are also
        co-authors keep their place in the tree and get a co-author ring.
+   Drawn as one circle so everyone fits on screen: me in the centre, each generation of
+   mentors on a ring further out, co-authors on the inner rings of their own part.
    Click (or Enter on) a person to see who they are and, for co-authors, the papers
-   we share; their line back to me lights up. Drag sideways to explore.
+   we share; their line back to me lights up.
    index.html calls Hub.render(data) after loading the sections and before
    SiteApp.init().
    ===================================================================== */
@@ -23,11 +25,12 @@
     papersN: { en: "{n} papers together", pt: "{n} artigos em conjunto", fr: "{n} articles ensemble", ja: "共著論文 {n} 本" },
     coauthor: { en: "Co-author", pt: "Coautor(a)", fr: "Co-auteur", ja: "共著者" },
     mentorCo: { en: "Mentor and co-author", pt: "Mentor(a) e coautor(a)", fr: "Mentor et co-auteur", ja: "指導者・共著者" },
-    me: { en: "{g} generations of mentors above me, {n} co-authors on {p} papers below. Select anyone to see who they are.",
-          pt: "{g} gerações de mentores acima de mim, {n} coautores em {p} artigos abaixo. Selecione alguém para ver quem é.",
-          fr: "{g} générations de mentors au-dessus de moi, {n} co-auteurs sur {p} articles en dessous. Sélectionnez quelqu’un pour le découvrir.",
-          ja: "上に {g} 世代の指導者、下に {p} 本の論文の共著者 {n} 人。選択すると詳細を表示します。" },
+    me: { en: "{g} generations of mentors around me, ring after ring, and {n} co-authors on {p} papers (orange). Select anyone to see who they are.",
+          pt: "{g} gerações de mentores à minha volta, anel após anel, e {n} coautores em {p} artigos (laranja). Selecione alguém para ver quem é.",
+          fr: "{g} générations de mentors autour de moi, anneau après anneau, et {n} co-auteurs sur {p} articles (orange). Sélectionnez quelqu’un pour le découvrir.",
+          ja: "周囲の輪に {g} 世代の指導者、{p} 本の論文の共著者 {n} 人（オレンジ）。選択すると詳細を表示します。" },
     profile: { en: "Profile", pt: "Perfil", fr: "Profil", ja: "プロフィール" },
+    photo: { en: "Photo", pt: "Foto", fr: "Photo", ja: "写真" },
     nobel: { en: "Nobel laureate", pt: "Prémio Nobel", fr: "Prix Nobel", ja: "ノーベル賞受賞者" }
   };
   const t = (k, o) => { let s = T[k][lang()] || T[k].en; for (const x in o || {}) s = s.replace("{" + x + "}", o[x]); return s; };
@@ -47,23 +50,21 @@
     const stage = document.getElementById("tnStage"), side = document.getElementById("tnSide");
     if (!stage || !side || !tree || !tree.root) return;
     pubs = pubs || [];
-    const SX = 112, SY = 128, PAD = 70;
-    // ---- the lineage, laid out as a tidy tree (leaves side by side, parents above the middle of their mentees... here: mentors above)
+    // ---- one circle: me in the centre, each generation of mentors on a ring further out,
+    //      my co-authors on the inner rings of their own part of the circle
     const nodes = [], links = [];
-    let leafX = 0, maxGen = 0;
-    function place(n, gen, parent) {
-      const node = { id: nodes.length, n, gen, parent, name: n.name, key: keyOf(n.name), tree: true };
+    let maxGen = 0;
+    function grow(n, gen, parent) {
+      const node = { id: nodes.length, n, gen, parent, name: n.name, key: keyOf(n.name), tree: true, kids: [] };
       nodes.push(node);
-      if (parent) links.push({ a: node, b: parent, kind: "mentor" });
+      if (parent) { links.push({ a: node, b: parent, kind: "mentor" }); parent.kids.push(node); }
       maxGen = Math.max(maxGen, gen);
-      const kids = (n.mentors || []).filter(m => m && m.name && !m.hidden && !m.cvOnly);
-      if (!kids.length) { node.x = leafX; leafX += SX; }
-      else { const xs = kids.map(k => place(k, gen + 1, node).x); node.x = (xs[0] + xs[xs.length - 1]) / 2; }
+      (n.mentors || []).filter(m => m && m.name && !m.hidden && !m.cvOnly).forEach(k => grow(k, gen + 1, node));
       return node;
     }
-    const me = place(tree.root, 0, null);
+    const me = grow(tree.root, 0, null);
     me.self = true;
-    // ---- co-authors
+    // co-authors
     const SELF = keyOf(tree.root.name);
     const byKey = new Map();
     pubs.forEach((w, pi) => authorsOf(w, info).forEach(nm => {
@@ -77,49 +78,65 @@
     byKey.forEach(c => {
       const inTree = nodes.find(n => n.tree && !n.self && n.gen === 1 && n.key === c.key) || nodes.find(n => n.tree && !n.self && n.key === c.key);
       if (inTree) { inTree.papers = c.papers; inTree.co = true; return; }
-      below.push({ id: nodes.length + below.length, name: c.name, key: c.key, papers: c.papers, co: true, gen: -1 });
+      const extra = Object.entries(tree.coauthors || {}).find(([nm]) => nm !== "_help" && keyOf(nm) === c.key);
+      below.push({ id: 0, name: c.name, key: c.key, papers: c.papers, co: true, gen: 1, kids: [], n: extra ? Object.assign({ name: c.name }, extra[1]) : null });
     });
     below.sort((p, q) => (p.papers[0] - q.papers[0]) || (q.papers.length - p.papers.length));
-    const perRow = Math.max(4, Math.min(9, Math.ceil(leafX / SX)));
-    below.forEach((c, i) => {
-      const row = Math.floor(i / perRow), inRow = Math.min(perRow, below.length - row * perRow), col = i % perRow;
-      c.x = me.x + (col - (inRow - 1) / 2) * SX; c.row = row; nodes.push(c);
-      links.push({ a: c, b: me, kind: "co" });
-    });
+    below.forEach((c, i) => { c.id = nodes.length; c.alt = i % 2; nodes.push(c); links.push({ a: c, b: me, kind: "co" }); });
     nodes.filter(n => n.tree && n.co && !n.self).forEach(n => { if (n.parent !== me) links.push({ a: n, b: me, kind: "co" }); });
-    // ---- coordinates
-    const minX = Math.min(...nodes.map(n => n.x)) - PAD, maxX = Math.max(...nodes.map(n => n.x)) + PAD;
-    const rows = below.length ? Math.floor((below.length - 1) / perRow) + 1 : 0;
-    const top = 40, meY = top + maxGen * SY + 30;
-    nodes.forEach(n => { n.x -= minX; n.y = n.gen >= 0 ? meY - n.gen * SY : meY + 150 + n.row * SY; });
-    const W = maxX - minX, H = meY + (rows ? 150 + (rows - 1) * SY + 70 : 80);
+    // angles: every leaf gets a slice of the circle (co-authors a slightly smaller one);
+    // a mentor sits in the middle of the people it trained
+    const leaves = n => n.kids.length ? n.kids.reduce((s, k) => s + leaves(k), 0) : 1;
+    const total = me.kids.reduce((s, k) => s + leaves(k), 0) + below.length * 0.8;
+    let at = -Math.PI / 2 - (me.kids.reduce((s, k) => s + leaves(k), 0) / total) * Math.PI;   // the lineage around the top
+    const span = Math.PI * 2 / total;
+    function angle(n) {
+      if (!n.kids.length) { n.ang = at + span / 2; at += span; return n.ang; }
+      const as = n.kids.map(angle); n.ang = (as[0] + as[as.length - 1]) / 2; return n.ang;
+    }
+    me.kids.forEach(angle);
+    below.forEach(c => { c.ang = at + span * 0.4; at += span * 0.8; });
+    const RING = [0, 175, 300, 410, 510, 600, 680];
+    const ringOf = g => RING[Math.min(g, RING.length - 1)] + Math.max(0, g - RING.length + 1) * 80;
+    const outer = ringOf(maxGen) + 30, C = outer + 120;   // room for the names on the outer ring
+    nodes.forEach(n => {
+      const r = n.self ? 0 : (n.tree ? ringOf(n.gen) : (n.alt ? 255 : 185));
+      n.r0 = r; n.x = C + Math.cos(n.ang || 0) * r; n.y = C + Math.sin(n.ang || 0) * r;
+    });
+    const W = 2 * C, H = 2 * C;
 
     // ---- drawing
-    const R = n => n.self ? 30 : 21;
+    const R = n => n.self ? 36 : 23;
     const ini = nm => { const w = nm.replace(/^(Eng|Prof|Dr)\.?\s+/i, "").replace(/[.\-]/g, " ").split(/\s+/).filter(Boolean); return (w[0][0] + (w.length > 1 ? w[w.length - 1][0] : "")).toUpperCase(); };
-    const lines = nm => { const w = nm.split(/\s+/); if (nm.length <= 16 || w.length < 2) return [nm]; const h = Math.ceil(w.length / 2); return [w.slice(0, h).join(" "), w.slice(h).join(" ")]; };
+    const short = nm => { const w = nm.replace(/^(Eng)\.?\s+/i, "").split(/\s+/); return w.length > 2 ? w[0] + " " + w[w.length - 1] : w.join(" "); };
+    const P = (ang, r) => [C + Math.cos(ang) * r, C + Math.sin(ang) * r];
     const path = l => {
-      const { a, b } = l;
-      if (l.kind === "mentor") { const my = (a.y + b.y) / 2; return "M" + b.x + " " + (b.y - R(b)) + " C" + b.x + " " + my + " " + a.x + " " + my + " " + a.x + " " + (a.y + R(a) + 26); }
-      return "M" + b.x + " " + (b.y + R(b) + 26) + " C" + b.x + " " + (b.y + 90) + " " + a.x + " " + (a.y - 80) + " " + a.x + " " + (a.y - R(a));
+      const { a, b } = l;                              // a: further out, b: nearer the centre
+      if (b.self) { const m = (a.r0) * 0.5; const p1 = P(a.ang, m), p2 = P(a.ang, a.r0 - R(a));
+        return "M" + C + " " + C + " Q" + p1[0].toFixed(1) + " " + p1[1].toFixed(1) + " " + p2[0].toFixed(1) + " " + p2[1].toFixed(1); }
+      const mid = (a.r0 + b.r0) / 2, s = P(b.ang, b.r0 + R(b)), c1 = P(b.ang, mid), c2 = P(a.ang, mid), e = P(a.ang, a.r0 - R(a));
+      return "M" + s.map(v => v.toFixed(1)).join(" ") + " C" + c1.map(v => v.toFixed(1)).join(" ") + " " + c2.map(v => v.toFixed(1)).join(" ") + " " + e.map(v => v.toFixed(1)).join(" ");
     };
     let defs = "";
     const svgNodes = nodes.map(n => {
       const r = R(n), photo = n.n && safe(n.n.photo);
       if (photo) defs += '<clipPath id="tnc' + n.id + '"><circle r="' + r + '"/></clipPath>';
-      const ln = lines(n.name), inst = n.n && n.n.institution ? n.n.institution.name : "";
+      // the name sits outside the node, away from the centre
+      const cos = Math.cos(n.ang || Math.PI / 2), sin = Math.sin(n.ang || Math.PI / 2);
+      const lx = n.self ? 0 : cos * (r + 8), ly = n.self ? r + 18 : sin * (r + 8) + (sin > 0.3 ? 10 : sin < -0.3 ? -2 : 4);
+      const anchor = n.self ? "middle" : (cos > 0.35 ? "start" : cos < -0.35 ? "end" : "middle");
       return '<g class="tn-node' + (n.self ? " is-self" : "") + (n.co ? " is-co" : "") + (n.tree ? " is-tree" : " is-coonly") + '" data-id="' + n.id + '" tabindex="0" role="button" aria-label="' + esc(n.name) + '" transform="translate(' + n.x.toFixed(1) + " " + n.y.toFixed(1) + ')">' +
         (n.co && !n.self ? '<circle class="tn-co-ring" r="' + (r + 5) + '"/>' : "") +
         '<circle class="tn-dot" r="' + r + '"/>' +
         (photo ? '<image href="' + esc(photo) + '" x="' + -r + '" y="' + -r + '" width="' + 2 * r + '" height="' + 2 * r + '" preserveAspectRatio="xMidYMid slice" clip-path="url(#tnc' + n.id + ')"/>'
                : '<text class="tn-ini" dy="0.35em">' + esc(n.n && n.n.initials || ini(n.name)) + "</text>") +
         (n.n && n.n.nobel ? '<g class="tn-nobel" transform="translate(' + (r * 0.72) + " " + (-r * 0.72) + ')"><circle r="7"/><text dy="0.35em">★</text></g>' : "") +
-        ln.map((s, i) => '<text class="tn-name" dy="' + (r + 15 + i * 13) + '">' + esc(s) + "</text>").join("") +
-        (inst ? '<text class="tn-inst" dy="' + (r + 15 + ln.length * 13) + '">' + esc(inst.length > 24 ? inst.slice(0, 23) + "…" : inst) + "</text>" : "") +
+        '<text class="tn-name" text-anchor="' + anchor + '" x="' + lx.toFixed(1) + '" y="' + ly.toFixed(1) + '">' + esc(n.self ? n.name : short(n.name)) + "</text>" +
         "</g>";
     }).join("");
-    stage.innerHTML = '<svg class="tn-svg" width="' + Math.round(W) + '" height="' + Math.round(H) + '" viewBox="0 0 ' + Math.round(W) + " " + Math.round(H) + '" role="group" aria-label="Academic tree and co-authors">' +
-      "<defs>" + defs + "</defs>" +
+    const rings = RING.slice(1, maxGen + 1).map(r => '<circle class="tn-ring" cx="' + C + '" cy="' + C + '" r="' + r + '"/>').join("");
+    stage.innerHTML = '<svg class="tn-svg" viewBox="0 0 ' + Math.round(W) + " " + Math.round(H) + '" role="group" aria-label="Academic tree and co-authors">' +
+      "<defs>" + defs + "</defs>" + rings +
       links.map(l => '<path class="tn-link tn-link--' + l.kind + '" data-a="' + l.a.id + '" data-b="' + l.b.id + '" d="' + path(l) + '"/>').join("") + svgNodes + "</svg>";
 
     // ---- details
@@ -145,30 +162,22 @@
         (n.co ? '<p class="tn-badge">' + esc(n.tree ? t("mentorCo") : t("coauthor")) + "</p>" : "") +
         (inst && inst.name ? '<p class="tn-inst-line">' + (safe(inst.url) ? '<a href="' + esc(inst.url) + '" target="_blank" rel="noopener noreferrer">' + esc(inst.name) + " ↗</a>" : esc(inst.name)) + "</p>" : "") +
         (n.n && safe(n.n.url) ? '<p><a class="tn-link-out" href="' + esc(n.n.url) + '" target="_blank" rel="noopener noreferrer">' + esc(t("profile")) + " ↗</a></p>" : "") +
+        (n.n && n.n.photoCredit ? '<p class="tn-credit">' + esc(t("photo")) + ": " + esc(n.n.photoCredit.author) + " · " +
+          (safe(n.n.photoCredit.source) ? '<a href="' + esc(n.n.photoCredit.source) + '" target="_blank" rel="noopener noreferrer">' + esc(n.n.photoCredit.license) + "</a>" : esc(n.n.photoCredit.license)) + "</p>" : "") +
         (shared.length ? '<p class="tn-count">' + esc(shared.length === 1 ? t("papers1") : t("papersN", { n: shared.length })) + '</p><ul class="tn-papers">' +
           shared.map(i => '<li><button type="button" class="tn-paper" data-doi="' + esc(pubs[i].doi) + '"><span class="tn-pt">' + esc(strip(pubs[i].title)) +
             '</span><span class="tn-pm">' + esc(pubs[i].journal + " · " + pubs[i].year) + "</span></button></li>").join("") + "</ul>" : "");
     }
     let current = me.id;
     show(me.id);
-    stage.addEventListener("click", e => { if (stage.__dragged) return; const g = e.target.closest(".tn-node"); if (g) { current = +g.dataset.id; show(current); } });
+    stage.addEventListener("click", e => { const g = e.target.closest(".tn-node"); if (g) { current = +g.dataset.id; show(current); } });
     stage.addEventListener("keydown", e => { const g = e.target.closest(".tn-node"); if (g && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); current = +g.dataset.id; show(current); } });
     side.addEventListener("click", e => { const b = e.target.closest(".tn-paper"); if (b && window.SiteApp && SiteApp.openPublication) SiteApp.openPublication(b.dataset.doi); });
     new MutationObserver(() => show(current)).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
 
-    // ---- drag sideways to explore; starts centred on me
+    // on phones the circle is wider than the screen: start with me in the middle
     const wrap = stage.parentElement;
-    requestAnimationFrame(() => { wrap.scrollLeft = Math.max(0, me.x - wrap.clientWidth / 2); wrap.scrollTop = Math.max(0, me.y - wrap.clientHeight * 0.55); });
-    let down = null;
-    wrap.addEventListener("pointerdown", e => { if (e.pointerType !== "mouse" || e.button !== 0) return; down = { x: e.clientX, y: e.clientY, l: wrap.scrollLeft, t: wrap.scrollTop, moved: false }; stage.__dragged = false; });
-    addEventListener("pointermove", e => {
-      if (!down) return;
-      const dx = e.clientX - down.x, dy = e.clientY - down.y;
-      if (!down.moved && Math.hypot(dx, dy) < 5) return;
-      down.moved = true; stage.__dragged = true; wrap.classList.add("is-dragging");
-      wrap.scrollLeft = down.l - dx; wrap.scrollTop = down.t - dy;
-    });
-    addEventListener("pointerup", () => { if (!down) return; down = null; wrap.classList.remove("is-dragging"); setTimeout(() => { stage.__dragged = false; }, 0); });
+    requestAnimationFrame(() => { wrap.scrollLeft = Math.max(0, (wrap.scrollWidth - wrap.clientWidth) / 2); });
   }
 
   window.Hub = {

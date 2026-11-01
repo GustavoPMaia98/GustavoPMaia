@@ -341,6 +341,11 @@ async function startSpace() {
   // restoring the scroll position on reload, a link to a section) and the first
   // seconds are followed at once, so the sky never races to catch up.
   let scrollTarget = 0, scrollNow = 0;
+  // the website and the Blog share one sky: the page that opens continues from where the
+  // last one left it (its scroll position and the sideways pull of slide.js)
+  let skyBase = 0, pan = 0;
+  try { const k = JSON.parse(sessionStorage.getItem("gpm.sky") || "null"); sessionStorage.removeItem("gpm.sky");
+    if (k && Date.now() - k.t < 15000) { skyBase = +k.scroll || 0; pan = +k.pan || 0; } } catch (e) {}
   const readScroll = () => { scrollTarget = scrollY; };
   addEventListener("scroll", readScroll, { passive: true });
   readScroll(); scrollNow = scrollTarget;
@@ -350,8 +355,8 @@ async function startSpace() {
     const gap = scrollTarget - scrollNow;
     if (t < 3 || Math.abs(gap) > innerHeight * 1.5) scrollNow = scrollTarget;
     else scrollNow += gap * (1 - Math.exp(-dt * 4));
-    const sc = scrollNow / 9000;                     // the sky turns a little with the page, in pixels, not page fractions
-    skyRig.rotation.set(sc * 0.12, sc * 0.35, 0);    // the sky turns as the page scrolls
+    const sc = (scrollNow + skyBase) / 9000;         // the sky turns a little with the page, in pixels, not page fractions
+    skyRig.rotation.set(sc * 0.12, sc * 0.35 + pan, 0);   // the sky turns as the page scrolls (and as it is pulled sideways)
     near.rotation.set(skyRig.rotation.x * 0.3, skyRig.rotation.y * 0.3, 0);
     U.uTravel.value = scrollNow * 0.06;              // drifting forward while scrolling
     renderer.clear();
@@ -377,7 +382,10 @@ async function startSpace() {
     else { halt(); root.classList.remove("space-pending"); window.dispatchEvent(new Event("site:starfield")); }
   }
   // try it from the browser console: SiteSpace.meteor() or SiteSpace.shower()
-  window.SiteSpace = { meteor: () => spawn(null, clock), shower: () => { nextAt = 0; schedule.force = true; } };
+  window.SiteSpace = { meteor: () => spawn(null, clock), shower: () => { nextAt = 0; schedule.force = true; },
+    // slide.js: turn the sky sideways while the page is pulled, and hand it on to the next page
+    pan: v => { pan = v; if (reduced && !light()) draw(30); },
+    keep: () => { try { sessionStorage.setItem("gpm.sky", JSON.stringify({ scroll: scrollNow + skyBase, pan, t: Date.now() })); } catch (e) {} } };
   onThemeChange(theme);
   document.addEventListener("visibilitychange", () => document.hidden ? halt() : run());
   if (reduced) addEventListener("scroll", () => { if (!light()) draw(30); }, { passive: true });

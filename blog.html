@@ -5,25 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Security: only this site, GoatCounter, Google Fonts may run code or load styles here.
        After editing an inline script, run: python tools/check_site.py --fix -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-r3FnVnP9W/uaNhK9XkZqH3GIfK4TudOQGYTwoNIjGR4=' 'sha256-4al+8Url0GYZoZ11/YmwIdieCrU8pFFtjTJvbWPtHaY=' https://gc.zgo.at; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://gustavopmaia.goatcounter.com; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://gc.zgo.at 'sha256-2SQzgZHSYZLib51jInAWYIf1FhcAFJlL4CHAz4ytXFM='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://gustavopmaia.goatcounter.com; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Blog · Gustavo Pinho Maia</title>
   <meta name="description" content="Notes on astrobiology, mechanochemistry and research life by Gustavo Pinho Maia.">
   <meta name="author" content="Gustavo Pinho Maia">
   <meta name="theme-color" content="#0b1020">
-  <meta name="color-scheme" content="dark light">
+  <meta name="color-scheme" content="dark">
   <link rel="canonical" href="https://gustavopmaia98.github.io/GustavoPMaia/blog.html">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <script>(function(){try{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <script>(function(){try{var t='dark';document.documentElement.setAttribute('data-theme',t);if(t!=='light')document.documentElement.classList.add('space-pending');}catch(e){}})();</script>
   <link rel="stylesheet" href="design-system/styles.css">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="ui-extra.css">
   <script src="slide.js"></script>
   <style>@view-transition{ navigation:auto; }</style>
 </head>
-<body>
+<body class="blog-body">
+  <!-- the same sky as the website: the 3D universe (dark theme) or the star field (light theme) -->
+  <canvas id="starfield" aria-hidden="true"></canvas>
   <a class="skip-link" href="#blog">Skip to content</a>
   <header class="nav">
     <div class="nav-inner">
@@ -60,6 +62,7 @@
       </nav>
     </div>
   </footer>
+  <script type="module" src="scenes3d.js"></script>
   <script src="blog.js"></script>
   <!-- Visitor statistics (GoatCounter: no cookies, no personal data) -->
   <script data-goatcounter="https://gustavopmaia.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>

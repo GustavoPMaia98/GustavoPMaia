@@ -954,8 +954,10 @@
       makeDraggable(track);
       // a click outside the timeline closes the paper
       document.addEventListener("click", e => {
-        if (openIdx >= 0 && !stage.contains(e.target) && !e.target.closest(".lightbox, a[download], .proj-paper, .net-paper, .ask-open")) close();   // (a download link is the export; the others open a paper)
+        if (openIdx >= 0 && !stage.contains(e.target) && !e.target.closest(".lightbox, a[download], .tn-paper, .askc-open, .askc-cite, .askc-go")) close();   // (a download link is the export; the others open a paper)
       });
+      // and it closes by itself once the whole timeline has left the screen
+      if ("IntersectionObserver" in window) new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting && openIdx >= 0) close(); })).observe(stage);
       // in the open paper: copy the APA citation, the export menu
       panel.addEventListener("click", e => {
         if (openIdx < 0) return;
@@ -992,6 +994,7 @@
     track.scrollLeft = track.scrollWidth; sync();                  // newest in view
     pubInfoP.then(() => { if (Object.keys(pubInfo).length) { render(); track.scrollLeft = track.scrollWidth; sync(); } });
     pubCarousel = { open: it => pathFinders.some(f => f.wrap === stage && f.open(it)) };
+    observePathLines();
   }
 
   // ---- Citation counts, free PDF links and a "Cite" button, from the nightly
@@ -1531,7 +1534,9 @@
   }
 
   // Theme
+  // The site has a single (dark) theme; this only clears a light choice saved before.
   function setupThemeToggle() {
+    try { localStorage.removeItem("theme"); } catch (e) {}
     const btn = document.getElementById("themeToggle");
     if (!btn || btn.__wired) return;
     btn.__wired = true;
@@ -2363,13 +2368,13 @@
   // ============================================================
   //  KEYBOARD SHORTCUTS for the toolbar (single keys, no modifier).
   //  Search keeps its own "/" and ⌘K (wired in search.js).
-  //    S — sections menu   T — theme   L — language   H — hands-free
+  //    S — sections menu   L — language   H — hands-free
   // ============================================================
   function setupShortcuts() {
     if (shortcutsWired) return;
     shortcutsWired = true;
     const map = {
-      s: "navJump", t: "themeToggle", l: "langToggle", h: "autoScrollToggle"
+      s: "navJump", l: "langToggle", h: "autoScrollToggle"
     };
     document.addEventListener("keydown", (e) => {
       if (e.metaKey || e.ctrlKey || e.altKey) return;          // leave browser combos alone
@@ -2734,12 +2739,31 @@
     document.addEventListener("click", e => {
       if (current && !panel.hidden && !wrap.contains(e.target) && !e.target.closest(".lightbox")) hide();
     });
-    // draw the line when the path scrolls into view
-    if (prefersReduced || !("IntersectionObserver" in window)) { path.classList.add("is-drawn"); return; }
-    const io = new IntersectionObserver(es => es.forEach(e => {
-      if (e.isIntersecting) { path.classList.add("is-drawn"); io.disconnect(); }
-    }), { threshold: 0.3 });
-    io.observe(path);
+    // the open text closes by itself once the whole box has left the screen
+    if ("IntersectionObserver" in window) new IntersectionObserver(es => es.forEach(e => {
+      if (!e.isIntersecting && current && !panel.hidden) hide();
+    })).observe(wrap);
+  }
+
+  // The line through a path is drawn every time the path comes into view (and
+  // quietly undrawn once it has left), so it plays again when the visitor returns.
+  const pathLineObserver = ("IntersectionObserver" in window && !prefersReduced) ? new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting && e.intersectionRatio >= 0.3) e.target.classList.add("is-drawn");
+    else if (!e.isIntersecting) e.target.classList.remove("is-drawn");
+  }), { threshold: [0, 0.3] }) : null;
+  function observePathLines() {
+    document.querySelectorAll(".path").forEach(p => {
+      if (p.__lineObserved) return; p.__lineObserved = true;
+      if (pathLineObserver) pathLineObserver.observe(p); else p.classList.add("is-drawn");
+    });
+  }
+  // Opened timeline entries (cards that unfold) close by themselves once they have left the screen.
+  const openItemObserver = "IntersectionObserver" in window ? new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting && e.target.classList.contains("open")) closeTimelineItem(e.target);
+  })) : null;
+  function observeOpenItems() {
+    if (!openItemObserver) return;
+    document.querySelectorAll(".timeline-item").forEach(it => { if (!it.__openObserved) { it.__openObserved = true; openItemObserver.observe(it); } });
   }
 
   // ============================================================
@@ -2786,6 +2810,8 @@
     setupNewsList();
     setupPhoneHelpers();
     setupCareerPath();
+    observePathLines();
+    observeOpenItems();
     setupRails();
     setupHighlightModal();
     setupTechModal();

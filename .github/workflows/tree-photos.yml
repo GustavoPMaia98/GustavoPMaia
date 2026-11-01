@@ -1,0 +1,43 @@
+# Finds freely licensed portraits (Wikipedia / Wikimedia Commons) for the people in the
+# Academic Tree that have no photo yet (tools/fetch_tree_photos.py) and commits them.
+# Run from the Actions tab; also runs when the tool changes on a branch other than main.
+name: Find academic tree photos
+
+on:
+  workflow_dispatch:
+  push:
+    branches-ignore: [main]
+    paths: [tools/fetch_tree_photos.py]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: site-data
+  cancel-in-progress: false
+
+jobs:
+  photos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - run: pip install pillow==10.4.0
+      - name: Find the photos
+        run: python tools/fetch_tree_photos.py
+      - name: Check the site still builds
+        run: python tools/check_site.py
+      - name: Commit if anything changed
+        run: |
+          if [ -n "$(git status --porcelain data/tree.json images/tree)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add data/tree.json images/tree
+            git commit -m "Academic tree: freely licensed photos from Wikimedia Commons"
+            for i in 1 2 3; do git pull --rebase origin "$GITHUB_REF_NAME" && git push origin "HEAD:$GITHUB_REF_NAME" && break; sleep 5; done
+          else
+            echo "No changes."
+          fi
