@@ -458,5 +458,59 @@
   },
   "coauthors": {
     "_help": "Extra details for co-authors who are not in the tree above, keyed by their name as on the papers: \"photo\" (images/tree/...), \"url\", \"role\" {en, pt}, \"institution\" {name, url}. They appear in the Academic Tree & Collaborations circle."
-  }
+  },
+  "colleagues": [
+    {
+      "_help": "Research colleagues shown in the Academic Tree & Collaborations circle (green): \"name\", \"institution\" {name, url}, optional \"role\" {en, pt} (otherwise shown as research colleague), \"photo\" (images/tree/...), \"url\"."
+    },
+    {
+      "name": "Oyku Ataytur",
+      "institution": {
+        "name": "Muséum national d’Histoire naturelle · IMPMC",
+        "url": "https://www.mnhn.fr/en"
+      }
+    },
+    {
+      "name": "Vanessa Leyva",
+      "institution": {
+        "name": "Muséum national d’Histoire naturelle · IMPMC",
+        "url": "https://www.mnhn.fr/en"
+      }
+    },
+    {
+      "name": "Clementin Bouquet",
+      "institution": {
+        "name": "Muséum national d’Histoire naturelle · IMPMC",
+        "url": "https://www.mnhn.fr/en"
+      }
+    },
+    {
+      "name": "Louna Perez",
+      "institution": {
+        "name": "Muséum national d’Histoire naturelle · IMPMC",
+        "url": "https://www.mnhn.fr/en"
+      }
+    },
+    {
+      "name": "Jean Charlier",
+      "institution": {
+        "name": "Muséum national d’Histoire naturelle · IMPMC",
+        "url": "https://www.mnhn.fr/en"
+      }
+    },
+    {
+      "name": "Valentine",
+      "institution": {
+        "name": "Muséum national d’Histoire naturelle · IMPMC",
+        "url": "https://www.mnhn.fr/en"
+      }
+    },
+    {
+      "name": "Ana Banha",
+      "institution": {
+        "name": "Centro de Química Estrutural · IST",
+        "url": "https://cqe.tecnico.ulisboa.pt/"
+      }
+    }
+  ]
 }
