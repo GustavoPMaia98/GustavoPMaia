@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Security: only this site, GoatCounter, Google Fonts may run code or load styles here.
+       After editing an inline script, run: python tools/check_site.py --fix -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-r3FnVnP9W/uaNhK9XkZqH3GIfK4TudOQGYTwoNIjGR4=' 'sha256-4al+8Url0GYZoZ11/YmwIdieCrU8pFFtjTJvbWPtHaY=' https://gc.zgo.at; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://gustavopmaia.goatcounter.com; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Blog · Gustavo Pinho Maia</title>
+  <meta name="description" content="Notes on astrobiology, mechanochemistry and research life by Gustavo Pinho Maia.">
+  <meta name="author" content="Gustavo Pinho Maia">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="color-scheme" content="dark light">
+  <link rel="canonical" href="https://gustavopmaia98.github.io/GustavoPMaia/blog.html">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <script>(function(){try{var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <link rel="stylesheet" href="design-system/styles.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="ui-extra.css">
+  <script src="slide.js"></script>
+  <style>@view-transition{ navigation:auto; }</style>
+</head>
+<body>
+  <a class="skip-link" href="#blog">Skip to content</a>
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="nav-logo" href="./" aria-label="Gustavo Pinho Maia, home">G<span>P</span>M</a>
+    </div>
+  </header>
+
+  <main class="blog-page">
+    <a class="blog-back" href="./" data-t="back">&larr; Back to the research website</a>
+    <section class="section" id="blog">
+      <h1 class="blog-h1">Blog</h1>
+      <div class="blog-soon" id="blogSoon">
+        <span class="blog-soon-ico" aria-hidden="true">
+          <svg viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M24 8h16M28 8v14L12 50a5 5 0 0 0 4.4 7.4h31.2A5 5 0 0 0 52 50L36 22V8"/><path d="M18 40h28"/>
+            <circle class="blog-bub b1" cx="27" cy="47" r="2.4"/><circle class="blog-bub b2" cx="36" cy="44" r="1.8"/><circle class="blog-bub b3" cx="31" cy="51" r="1.5"/>
+          </svg>
+        </span>
+        <h2 class="blog-soon-title" data-t="title">The blog is being synthesized</h2>
+        <p class="blog-soon-text" data-t="text">New writing on astrobiology, mechanochemistry and research life is in the flask. Come back soon.</p>
+        <a class="btn" href="./" data-t="home">Back to the research website</a>
+      </div>
+      <div id="blogPosts"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-copy">© <span id="footerYear"></span> Gustavo Pinho Maia · Blog</p>
+      <nav class="footer-social" aria-label="Links">
+        <a href="./" data-t="research">Research</a>
+        <a href="https://www.linkedin.com/in/gustavopinhomaia" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        <a href="https://orcid.org/0000-0001-5314-8816" target="_blank" rel="noopener noreferrer">ORCID</a>
+      </nav>
+    </div>
+  </footer>
+  <script src="blog.js"></script>
+  <!-- Visitor statistics (GoatCounter: no cookies, no personal data) -->
+  <script data-goatcounter="https://gustavopmaia.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</body>
+</html>

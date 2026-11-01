@@ -703,6 +703,7 @@
   function go(entry) {
     close();
     const el = entry.el;
+    if (el.classList && el.classList.contains("sk-item")) el.dispatchEvent(new Event("sk:open", { bubbles: true }));
     // older news items are folded away: show the full list first
     const newsList = el.closest && el.closest("#newsList");
     if (newsList && !newsList.classList.contains("is-all")) {

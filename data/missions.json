@@ -1,60 +1,824 @@
 {
-  "_help": "Sample-return missions shown in 'Sample-return missions' (missions3d.js). Orbits: a (AU), e, i, node, peri (argument of perihelion) and M0 (mean anomaly at 1 Jan 2000) in degrees; approximate, for illustration. Text takes \"en\" and \"pt\".",
+  "_help": "Missions shown in 'Space missions' (missions3d.js): \"status\" is returned (samples brought back), visited (studied without bringing samples back) or upcoming; \"agency\", \"target\", \"when\", \"what\", and optionally \"sample\", \"found\", \"why\" (text in \"en\" and \"pt\"). \"body\" is the target's orbit: a (AU), e, i, node, peri and M0 (mean anomaly at 1 Jan 2000) in degrees, approximate, for illustration; \"extra\" adds more bodies; kind moon is drawn next to its planet.",
   "planets": [
-    { "name": { "en": "Mercury", "pt": "Mercúrio" }, "color": "#9a9a9a", "size": 0.035, "a": 0.3871, "e": 0.2056, "i": 7.0, "node": 48.33, "peri": 29.12, "M0": 174.8 },
-    { "name": { "en": "Venus", "pt": "Vénus" }, "color": "#e8cf9a", "size": 0.05, "a": 0.7233, "e": 0.0068, "i": 3.39, "node": 76.68, "peri": 54.88, "M0": 50.1 },
-    { "name": { "en": "Earth", "pt": "Terra" }, "color": "#4f8fe0", "size": 0.055, "a": 1.0, "e": 0.0167, "i": 0.0, "node": 0.0, "peri": 102.94, "M0": 357.5 },
-    { "name": { "en": "Mars", "pt": "Marte" }, "color": "#d0603a", "size": 0.042, "a": 1.5237, "e": 0.0934, "i": 1.85, "node": 49.56, "peri": 286.5, "M0": 19.4 },
-    { "name": { "en": "Jupiter", "pt": "Júpiter" }, "color": "#d8b48a", "size": 0.11, "a": 5.2034, "e": 0.0484, "i": 1.3, "node": 100.47, "peri": 274.3, "M0": 19.7 }
+    {
+      "name": {
+        "en": "Mercury",
+        "pt": "Mercúrio"
+      },
+      "color": "#9a9a9a",
+      "size": 0.035,
+      "a": 0.3871,
+      "e": 0.2056,
+      "i": 7.0,
+      "node": 48.33,
+      "peri": 29.12,
+      "M0": 174.8
+    },
+    {
+      "name": {
+        "en": "Venus",
+        "pt": "Vénus"
+      },
+      "color": "#e8cf9a",
+      "size": 0.05,
+      "a": 0.7233,
+      "e": 0.0068,
+      "i": 3.39,
+      "node": 76.68,
+      "peri": 54.88,
+      "M0": 50.1
+    },
+    {
+      "name": {
+        "en": "Earth",
+        "pt": "Terra"
+      },
+      "color": "#4f8fe0",
+      "size": 0.055,
+      "a": 1.0,
+      "e": 0.0167,
+      "i": 0.0,
+      "node": 0.0,
+      "peri": 102.94,
+      "M0": 357.5
+    },
+    {
+      "name": {
+        "en": "Mars",
+        "pt": "Marte"
+      },
+      "color": "#d0603a",
+      "size": 0.042,
+      "a": 1.5237,
+      "e": 0.0934,
+      "i": 1.85,
+      "node": 49.56,
+      "peri": 286.5,
+      "M0": 19.4
+    },
+    {
+      "name": {
+        "en": "Jupiter",
+        "pt": "Júpiter"
+      },
+      "color": "#d8b48a",
+      "size": 0.11,
+      "a": 5.2034,
+      "e": 0.0484,
+      "i": 1.3,
+      "node": 100.47,
+      "peri": 274.3,
+      "M0": 19.7
+    }
   ],
   "missions": [
     {
       "id": "osiris-rex",
       "mission": "OSIRIS-REx",
       "agency": "NASA",
-      "target": { "en": "Asteroid (101955) Bennu", "pt": "Asteroide (101955) Bennu" },
-      "body": { "name": "Bennu", "kind": "asteroid", "color": "#c7b8a6", "a": 1.1264, "e": 0.2037, "i": 6.035, "node": 2.061, "peri": 66.22, "M0": 101.7 },
-      "launch": "2016", "returned": { "en": "24 September 2023 · Utah, USA", "pt": "24 de setembro de 2023 · Utah, EUA" },
-      "sample": { "en": "121.6 g of rocks and dust", "pt": "121,6 g de rochas e poeira" },
-      "found": { "en": "A carbon-rich, water-altered asteroid: 14 of the 20 amino acids used by life on Earth, all five nucleobases of DNA and RNA, and salts left by evaporating brines.", "pt": "Um asteroide rico em carbono e alterado pela água: 14 dos 20 aminoácidos usados pela vida na Terra, as cinco nucleobases do DNA e do RNA e sais deixados pela evaporação de salmouras." },
-      "why": { "en": "Bennu's surface is a rubble pile constantly reworked by small impacts, exactly the asteroid gardening I reproduce in the lab. Jason Dworkin, my supervisor at NASA Goddard, is the mission's project scientist.", "pt": "A superfície de Bennu é um aglomerado de detritos continuamente remodelado por pequenos impactos, exatamente o asteroid gardening que reproduzo no laboratório. Jason Dworkin, o meu supervisor no NASA Goddard, é o cientista do projeto da missão." },
-      "url": "https://science.nasa.gov/mission/osiris-rex/"
+      "target": {
+        "en": "Asteroid (101955) Bennu",
+        "pt": "Asteroide (101955) Bennu"
+      },
+      "body": {
+        "name": "Bennu",
+        "kind": "asteroid",
+        "color": "#c7b8a6",
+        "a": 1.1264,
+        "e": 0.2037,
+        "i": 6.035,
+        "node": 2.061,
+        "peri": 66.22,
+        "M0": 101.7
+      },
+      "launch": "2016",
+      "returned": {
+        "en": "24 September 2023 · Utah, USA",
+        "pt": "24 de setembro de 2023 · Utah, EUA"
+      },
+      "sample": {
+        "en": "121.6 g of rocks and dust",
+        "pt": "121,6 g de rochas e poeira"
+      },
+      "found": {
+        "en": "A carbon-rich, water-altered asteroid: 14 of the 20 amino acids used by life on Earth, all five nucleobases of DNA and RNA, and salts left by evaporating brines.",
+        "pt": "Um asteroide rico em carbono e alterado pela água: 14 dos 20 aminoácidos usados pela vida na Terra, as cinco nucleobases do DNA e do RNA e sais deixados pela evaporação de salmouras."
+      },
+      "why": {
+        "en": "Bennu's surface is a rubble pile constantly reworked by small impacts, exactly the asteroid gardening I reproduce in the lab. Jason Dworkin, my supervisor at NASA Goddard, is the mission's project scientist.",
+        "pt": "A superfície de Bennu é um aglomerado de detritos continuamente remodelado por pequenos impactos, exatamente o asteroid gardening que reproduzo no laboratório. Jason Dworkin, o meu supervisor no NASA Goddard, é o cientista do projeto da missão."
+      },
+      "url": "https://science.nasa.gov/mission/osiris-rex/",
+      "status": "returned",
+      "when": {
+        "en": "Launched 2016 · sample back 24 September 2023 · Utah, USA",
+        "pt": "Lançamento 2016 · amostra na Terra 24 de setembro de 2023 · Utah, EUA"
+      }
     },
     {
       "id": "hayabusa2",
       "mission": "Hayabusa2",
       "agency": "JAXA",
-      "target": { "en": "Asteroid (162173) Ryugu", "pt": "Asteroide (162173) Ryugu" },
-      "body": { "name": "Ryugu", "kind": "asteroid", "color": "#a39788", "a": 1.1896, "e": 0.1902, "i": 5.866, "node": 251.6, "peri": 211.4, "M0": 21.5 },
-      "launch": "2014", "returned": { "en": "6 December 2020 · Woomera, Australia", "pt": "6 de dezembro de 2020 · Woomera, Austrália" },
-      "sample": { "en": "5.4 g, partly from below the surface, collected next to a crater the spacecraft made", "pt": "5,4 g, em parte de baixo da superfície, recolhidos junto a uma cratera feita pela sonda" },
-      "found": { "en": "Material like the most primitive (CI) carbonaceous chondrites, with amino acids and the RNA nucleobase uracil.", "pt": "Material semelhante aos condritos carbonáceos mais primitivos (CI), com aminoácidos e a nucleobase uracilo do RNA." },
-      "why": { "en": "Comparing the organics at Ryugu's surface with those just below it shows what space exposure and impacts do to them, the question behind my mechanochemistry experiments.", "pt": "Comparar a matéria orgânica da superfície de Ryugu com a de logo abaixo mostra o que a exposição ao espaço e os impactos lhe fazem, a questão por detrás das minhas experiências de mecanoquímica." },
-      "url": "https://www.hayabusa2.jaxa.jp/en/"
+      "target": {
+        "en": "Asteroid (162173) Ryugu",
+        "pt": "Asteroide (162173) Ryugu"
+      },
+      "body": {
+        "name": "Ryugu",
+        "kind": "asteroid",
+        "color": "#a39788",
+        "a": 1.1896,
+        "e": 0.1902,
+        "i": 5.866,
+        "node": 251.6,
+        "peri": 211.4,
+        "M0": 21.5
+      },
+      "launch": "2014",
+      "returned": {
+        "en": "6 December 2020 · Woomera, Australia",
+        "pt": "6 de dezembro de 2020 · Woomera, Austrália"
+      },
+      "sample": {
+        "en": "5.4 g, partly from below the surface, collected next to a crater the spacecraft made",
+        "pt": "5,4 g, em parte de baixo da superfície, recolhidos junto a uma cratera feita pela sonda"
+      },
+      "found": {
+        "en": "Material like the most primitive (CI) carbonaceous chondrites, with amino acids and the RNA nucleobase uracil.",
+        "pt": "Material semelhante aos condritos carbonáceos mais primitivos (CI), com aminoácidos e a nucleobase uracilo do RNA."
+      },
+      "why": {
+        "en": "Comparing the organics at Ryugu's surface with those just below it shows what space exposure and impacts do to them, the question behind my mechanochemistry experiments.",
+        "pt": "Comparar a matéria orgânica da superfície de Ryugu com a de logo abaixo mostra o que a exposição ao espaço e os impactos lhe fazem, a questão por detrás das minhas experiências de mecanoquímica."
+      },
+      "url": "https://www.hayabusa2.jaxa.jp/en/",
+      "status": "returned",
+      "when": {
+        "en": "Launched 2014 · sample back 6 December 2020 · Woomera, Australia",
+        "pt": "Lançamento 2014 · amostra na Terra 6 de dezembro de 2020 · Woomera, Austrália"
+      }
     },
     {
       "id": "hayabusa",
       "mission": "Hayabusa",
       "agency": "JAXA",
-      "target": { "en": "Asteroid (25143) Itokawa", "pt": "Asteroide (25143) Itokawa" },
-      "body": { "name": "Itokawa", "kind": "asteroid", "color": "#b9ab95", "a": 1.3241, "e": 0.2801, "i": 1.621, "node": 69.08, "peri": 162.8, "M0": 254.0 },
-      "launch": "2003", "returned": { "en": "13 June 2010 · Woomera, Australia", "pt": "13 de junho de 2010 · Woomera, Austrália" },
-      "sample": { "en": "About 1,500 tiny grains", "pt": "Cerca de 1500 grãos minúsculos" },
-      "found": { "en": "The first asteroid sample ever returned: a stony (S-type) asteroid made of the same rock as the most common meteorites, ordinary chondrites, its grains marked by space weathering.", "pt": "A primeira amostra de um asteroide trazida para a Terra: um asteroide rochoso (tipo S) feito da mesma rocha que os meteoritos mais comuns, os condritos ordinários, com grãos marcados pela meteorização espacial." },
-      "why": { "en": "It proved that meteorites in our collections come from asteroids we can see, and that their surfaces are altered by the space environment.", "pt": "Provou que os meteoritos das nossas coleções vêm de asteroides que conseguimos observar, e que as suas superfícies são alteradas pelo ambiente espacial." },
-      "url": "https://global.jaxa.jp/projects/sas/muses_c/"
+      "target": {
+        "en": "Asteroid (25143) Itokawa",
+        "pt": "Asteroide (25143) Itokawa"
+      },
+      "body": {
+        "name": "Itokawa",
+        "kind": "asteroid",
+        "color": "#b9ab95",
+        "a": 1.3241,
+        "e": 0.2801,
+        "i": 1.621,
+        "node": 69.08,
+        "peri": 162.8,
+        "M0": 254.0
+      },
+      "launch": "2003",
+      "returned": {
+        "en": "13 June 2010 · Woomera, Australia",
+        "pt": "13 de junho de 2010 · Woomera, Austrália"
+      },
+      "sample": {
+        "en": "About 1,500 tiny grains",
+        "pt": "Cerca de 1500 grãos minúsculos"
+      },
+      "found": {
+        "en": "The first asteroid sample ever returned: a stony (S-type) asteroid made of the same rock as the most common meteorites, ordinary chondrites, its grains marked by space weathering.",
+        "pt": "A primeira amostra de um asteroide trazida para a Terra: um asteroide rochoso (tipo S) feito da mesma rocha que os meteoritos mais comuns, os condritos ordinários, com grãos marcados pela meteorização espacial."
+      },
+      "why": {
+        "en": "It proved that meteorites in our collections come from asteroids we can see, and that their surfaces are altered by the space environment.",
+        "pt": "Provou que os meteoritos das nossas coleções vêm de asteroides que conseguimos observar, e que as suas superfícies são alteradas pelo ambiente espacial."
+      },
+      "url": "https://global.jaxa.jp/projects/sas/muses_c/",
+      "status": "returned",
+      "when": {
+        "en": "Launched 2003 · sample back 13 June 2010 · Woomera, Australia",
+        "pt": "Lançamento 2003 · amostra na Terra 13 de junho de 2010 · Woomera, Austrália"
+      }
     },
     {
       "id": "stardust",
       "mission": "Stardust",
       "agency": "NASA",
-      "target": { "en": "Comet 81P/Wild 2", "pt": "Cometa 81P/Wild 2" },
-      "body": { "name": "Wild 2", "kind": "comet", "color": "#bfe3ff", "a": 3.45, "e": 0.538, "i": 3.24, "node": 136.1, "peri": 41.7, "M0": 330.0 },
-      "launch": "1999", "returned": { "en": "15 January 2006 · Utah, USA", "pt": "15 de janeiro de 2006 · Utah, EUA" },
-      "sample": { "en": "Comet dust caught in aerogel during a fly-by", "pt": "Poeira de cometa apanhada em aerogel durante um sobrevoo" },
-      "found": { "en": "Grains formed close to the young Sun mixed with icy material, and the amino acid glycine.", "pt": "Grãos formados perto do Sol jovem misturados com material gelado, e o aminoácido glicina." },
-      "why": { "en": "Comets and their dust also deliver organic matter to planets, and the dust is processed by impacts on the way.", "pt": "Os cometas e as suas poeiras também entregam matéria orgânica aos planetas, e essas poeiras são processadas por impactos pelo caminho." },
-      "url": "https://science.nasa.gov/mission/stardust/"
+      "target": {
+        "en": "Comet 81P/Wild 2",
+        "pt": "Cometa 81P/Wild 2"
+      },
+      "body": {
+        "name": "Wild 2",
+        "kind": "comet",
+        "color": "#bfe3ff",
+        "a": 3.45,
+        "e": 0.538,
+        "i": 3.24,
+        "node": 136.1,
+        "peri": 41.7,
+        "M0": 330.0
+      },
+      "launch": "1999",
+      "returned": {
+        "en": "15 January 2006 · Utah, USA",
+        "pt": "15 de janeiro de 2006 · Utah, EUA"
+      },
+      "sample": {
+        "en": "Comet dust caught in aerogel during a fly-by",
+        "pt": "Poeira de cometa apanhada em aerogel durante um sobrevoo"
+      },
+      "found": {
+        "en": "Grains formed close to the young Sun mixed with icy material, and the amino acid glycine.",
+        "pt": "Grãos formados perto do Sol jovem misturados com material gelado, e o aminoácido glicina."
+      },
+      "why": {
+        "en": "Comets and their dust also deliver organic matter to planets, and the dust is processed by impacts on the way.",
+        "pt": "Os cometas e as suas poeiras também entregam matéria orgânica aos planetas, e essas poeiras são processadas por impactos pelo caminho."
+      },
+      "url": "https://science.nasa.gov/mission/stardust/",
+      "status": "returned",
+      "when": {
+        "en": "Launched 1999 · sample back 15 January 2006 · Utah, USA",
+        "pt": "Lançamento 1999 · amostra na Terra 15 de janeiro de 2006 · Utah, EUA"
+      }
+    },
+    {
+      "id": "change5",
+      "mission": "Chang’e 5",
+      "agency": "CNSA",
+      "status": "returned",
+      "target": {
+        "en": "The Moon (Oceanus Procellarum)",
+        "pt": "A Lua (Oceanus Procellarum)"
+      },
+      "when": {
+        "en": "Launched 2020 · sample back 16 December 2020 · Inner Mongolia, China",
+        "pt": "Lançamento 2020 · amostra na Terra 16 de dezembro de 2020 · Mongólia Interior, China"
+      },
+      "what": {
+        "en": "Brought back 1,731 g of lunar soil and rock, the first new Moon samples since 1976.",
+        "pt": "Trouxe 1731 g de solo e rocha lunares, as primeiras novas amostras da Lua desde 1976."
+      },
+      "url": "https://www.cnsa.gov.cn/english/",
+      "body": {
+        "name": "Moon",
+        "kind": "moon",
+        "color": "#cfcfcf",
+        "a": 1.0,
+        "e": 0.0167,
+        "i": 0.0,
+        "node": 0.0,
+        "peri": 102.94,
+        "M0": 357.5
+      },
+      "found": {
+        "en": "Volcanic basalts about 2 billion years old, younger than any returned before, showing the Moon stayed volcanically active for longer than thought.",
+        "pt": "Basaltos vulcânicos com cerca de 2 mil milhões de anos, mais jovens do que todos os anteriores, mostrando que a Lua se manteve vulcanicamente ativa durante mais tempo do que se pensava."
+      }
+    },
+    {
+      "id": "change6",
+      "mission": "Chang’e 6",
+      "agency": "CNSA",
+      "status": "returned",
+      "target": {
+        "en": "The Moon, far side (South Pole–Aitken basin)",
+        "pt": "A Lua, face oculta (bacia Polo Sul–Aitken)"
+      },
+      "when": {
+        "en": "Launched 2024 · sample back 25 June 2024 · Inner Mongolia, China",
+        "pt": "Lançamento 2024 · amostra na Terra 25 de junho de 2024 · Mongólia Interior, China"
+      },
+      "what": {
+        "en": "Brought back 1,935 g: the first samples ever collected from the far side of the Moon, inside its largest and oldest impact basin.",
+        "pt": "Trouxe 1935 g: as primeiras amostras recolhidas na face oculta da Lua, dentro da sua maior e mais antiga bacia de impacto."
+      },
+      "url": "https://www.cnsa.gov.cn/english/",
+      "body": {
+        "name": "Moon",
+        "kind": "moon",
+        "color": "#cfcfcf",
+        "a": 1.0,
+        "e": 0.0167,
+        "i": 0.0,
+        "node": 0.0,
+        "peri": 102.94,
+        "M0": 357.5
+      },
+      "why": {
+        "en": "Material from a giant impact basin: a record of how large impacts reshape and mix planetary surfaces.",
+        "pt": "Material de uma bacia de impacto gigante: um registo de como os grandes impactos remodelam e misturam as superfícies planetárias."
+      }
+    },
+    {
+      "id": "rosetta",
+      "mission": "Rosetta & Philae",
+      "agency": "ESA",
+      "status": "visited",
+      "target": {
+        "en": "Comet 67P/Churyumov–Gerasimenko",
+        "pt": "Cometa 67P/Churyumov–Gerasimenko"
+      },
+      "when": {
+        "en": "Launched 2004 · at the comet 2014–2016 · Philae landed 12 November 2014",
+        "pt": "Lançamento 2004 · no cometa 2014–2016 · Philae aterrou a 12 de novembro de 2014"
+      },
+      "what": {
+        "en": "Orbited a comet for two years and put the first lander on one.",
+        "pt": "Orbitou um cometa durante dois anos e pousou nele o primeiro módulo de aterragem."
+      },
+      "url": "https://www.esa.int/Science_Exploration/Space_Science/Rosetta",
+      "body": {
+        "name": "67P",
+        "kind": "comet",
+        "color": "#bfe3ff",
+        "a": 3.46,
+        "e": 0.641,
+        "i": 7.04,
+        "node": 50.1,
+        "peri": 12.8,
+        "M0": 200.0
+      },
+      "found": {
+        "en": "Many organic molecules, including the amino acid glycine and phosphorus, in the gas and dust around the comet.",
+        "pt": "Muitas moléculas orgânicas, incluindo o aminoácido glicina e fósforo, no gás e na poeira em redor do cometa."
+      },
+      "why": {
+        "en": "Comets are a source of the organic matter delivered to the young Earth, the delivery my work follows.",
+        "pt": "Os cometas são uma fonte da matéria orgânica entregue à Terra jovem, a entrega que o meu trabalho acompanha."
+      }
+    },
+    {
+      "id": "dawn",
+      "mission": "Dawn",
+      "agency": "NASA",
+      "status": "visited",
+      "target": {
+        "en": "Asteroid (4) Vesta and dwarf planet (1) Ceres",
+        "pt": "Asteroide (4) Vesta e planeta anão (1) Ceres"
+      },
+      "when": {
+        "en": "Launched 2007 · Vesta 2011–2012 · Ceres 2015–2018",
+        "pt": "Lançamento 2007 · Vesta 2011–2012 · Ceres 2015–2018"
+      },
+      "what": {
+        "en": "The first spacecraft to orbit two different bodies beyond the Earth–Moon system, using ion engines.",
+        "pt": "A primeira sonda a orbitar dois corpos diferentes para lá do sistema Terra–Lua, com motores iónicos."
+      },
+      "url": "https://science.nasa.gov/mission/dawn/",
+      "body": {
+        "name": "Ceres",
+        "kind": "asteroid",
+        "color": "#b9b2a8",
+        "a": 2.767,
+        "e": 0.079,
+        "i": 10.59,
+        "node": 80.3,
+        "peri": 73.6,
+        "M0": 95.0,
+        "extra": [
+          {
+            "name": "Vesta",
+            "kind": "asteroid",
+            "color": "#c2b6a2",
+            "a": 2.362,
+            "e": 0.089,
+            "i": 7.14,
+            "node": 103.8,
+            "peri": 151.2,
+            "M0": 20.0
+          }
+        ]
+      },
+      "found": {
+        "en": "Bright spots on Ceres made of salts such as sodium carbonate, and organic material on its surface.",
+        "pt": "Manchas brilhantes em Ceres feitas de sais como o carbonato de sódio, e material orgânico à sua superfície."
+      },
+      "why": {
+        "en": "Carbonates and organics together on a small body: the same pairing I mill together in the lab.",
+        "pt": "Carbonatos e matéria orgânica juntos num pequeno corpo: o mesmo par que moo em conjunto no laboratório."
+      }
+    },
+    {
+      "id": "near",
+      "mission": "NEAR Shoemaker",
+      "agency": "NASA",
+      "status": "visited",
+      "target": {
+        "en": "Asteroid (433) Eros",
+        "pt": "Asteroide (433) Eros"
+      },
+      "when": {
+        "en": "Launched 1996 · orbited Eros 2000–2001 · landed 12 February 2001",
+        "pt": "Lançamento 1996 · orbitou Eros 2000–2001 · aterrou a 12 de fevereiro de 2001"
+      },
+      "what": {
+        "en": "The first spacecraft to orbit an asteroid, and the first to land on one.",
+        "pt": "A primeira sonda a orbitar um asteroide e a primeira a aterrar num."
+      },
+      "url": "https://science.nasa.gov/mission/near-shoemaker/",
+      "body": {
+        "name": "Eros",
+        "kind": "asteroid",
+        "color": "#c9a98a",
+        "a": 1.458,
+        "e": 0.223,
+        "i": 10.83,
+        "node": 304.3,
+        "peri": 178.9,
+        "M0": 320.0
+      },
+      "why": {
+        "en": "Its close-up images showed a surface covered in loose regolith, ground down by impacts.",
+        "pt": "As imagens de perto mostraram uma superfície coberta de regolito solto, moído por impactos."
+      }
+    },
+    {
+      "id": "dart",
+      "mission": "DART",
+      "agency": "NASA",
+      "status": "visited",
+      "target": {
+        "en": "Dimorphos, the moon of asteroid (65803) Didymos",
+        "pt": "Dimorphos, a lua do asteroide (65803) Didymos"
+      },
+      "when": {
+        "en": "Launched 2021 · impact 26 September 2022",
+        "pt": "Lançamento 2021 · impacto a 26 de setembro de 2022"
+      },
+      "what": {
+        "en": "Crashed into Dimorphos on purpose to test planetary defence, and shortened its orbit around Didymos by about 32 minutes.",
+        "pt": "Embateu de propósito em Dimorphos para testar a defesa planetária, e encurtou a sua órbita em torno de Didymos em cerca de 32 minutos."
+      },
+      "url": "https://science.nasa.gov/mission/dart/",
+      "body": {
+        "name": "Didymos",
+        "kind": "asteroid",
+        "color": "#b8a690",
+        "a": 1.644,
+        "e": 0.384,
+        "i": 3.41,
+        "node": 73.2,
+        "peri": 319.3,
+        "M0": 250.0
+      },
+      "why": {
+        "en": "A full-scale impact experiment on an asteroid, the process I reproduce at small scale.",
+        "pt": "Uma experiência de impacto à escala real num asteroide, o processo que reproduzo em pequena escala."
+      }
+    },
+    {
+      "id": "deep-impact",
+      "mission": "Deep Impact",
+      "agency": "NASA",
+      "status": "visited",
+      "target": {
+        "en": "Comet 9P/Tempel 1",
+        "pt": "Cometa 9P/Tempel 1"
+      },
+      "when": {
+        "en": "Launched 2005 · impact 4 July 2005",
+        "pt": "Lançamento 2005 · impacto a 4 de julho de 2005"
+      },
+      "what": {
+        "en": "Fired an impactor into a comet and watched the material it dug out from below the surface.",
+        "pt": "Lançou um projétil contra um cometa e observou o material escavado de baixo da superfície."
+      },
+      "url": "https://science.nasa.gov/mission/deep-impact-epoxi/",
+      "body": {
+        "name": "Tempel 1",
+        "kind": "comet",
+        "color": "#bfe3ff",
+        "a": 3.12,
+        "e": 0.51,
+        "i": 10.5,
+        "node": 68.9,
+        "peri": 179.2,
+        "M0": 60.0
+      }
+    },
+    {
+      "id": "giotto",
+      "mission": "Giotto",
+      "agency": "ESA",
+      "status": "visited",
+      "target": {
+        "en": "Comet 1P/Halley",
+        "pt": "Cometa 1P/Halley"
+      },
+      "when": {
+        "en": "Launched 1985 · fly-by 14 March 1986",
+        "pt": "Lançamento 1985 · sobrevoo a 14 de março de 1986"
+      },
+      "what": {
+        "en": "Took the first close-up pictures of a comet nucleus, dark and dusty, and measured dust rich in carbon, hydrogen, oxygen and nitrogen.",
+        "pt": "Obteve as primeiras imagens de perto de um núcleo de cometa, escuro e poeirento, e mediu poeiras ricas em carbono, hidrogénio, oxigénio e azoto."
+      },
+      "url": "https://www.esa.int/Science_Exploration/Space_Science/Giotto_overview",
+      "body": {
+        "name": "Halley",
+        "kind": "comet",
+        "color": "#bfe3ff",
+        "a": 17.8,
+        "e": 0.967,
+        "i": 162.3,
+        "node": 58.4,
+        "peri": 111.3,
+        "M0": 170.0
+      }
+    },
+    {
+      "id": "change2",
+      "mission": "Chang’e 2",
+      "agency": "CNSA",
+      "status": "visited",
+      "target": {
+        "en": "Asteroid (4179) Toutatis",
+        "pt": "Asteroide (4179) Toutatis"
+      },
+      "when": {
+        "en": "Launched 2010 · fly-by 13 December 2012",
+        "pt": "Lançamento 2010 · sobrevoo a 13 de dezembro de 2012"
+      },
+      "what": {
+        "en": "After mapping the Moon, it flew past Toutatis: China’s first close look at an asteroid.",
+        "pt": "Depois de cartografar a Lua, passou por Toutatis: o primeiro olhar de perto da China a um asteroide."
+      },
+      "url": "https://www.cnsa.gov.cn/english/",
+      "body": {
+        "name": "Toutatis",
+        "kind": "asteroid",
+        "color": "#b5a593",
+        "a": 2.53,
+        "e": 0.629,
+        "i": 0.45,
+        "node": 125.4,
+        "peri": 278.7,
+        "M0": 140.0
+      }
+    },
+    {
+      "id": "tianwen2",
+      "mission": "Tianwen-2",
+      "agency": "CNSA",
+      "status": "upcoming",
+      "target": {
+        "en": "Asteroid (469219) Kamoʻoalewa, then comet 311P",
+        "pt": "Asteroide (469219) Kamoʻoalewa, depois o cometa 311P"
+      },
+      "when": {
+        "en": "Launched 29 May 2025 · samples planned back in about 2027",
+        "pt": "Lançada a 29 de maio de 2025 · amostras previstas para cerca de 2027"
+      },
+      "what": {
+        "en": "China’s first asteroid sample return, from a small near-Earth asteroid that may be a fragment of the Moon; then on to a main-belt comet.",
+        "pt": "A primeira recolha de amostras de um asteroide pela China, de um pequeno asteroide próximo da Terra que poderá ser um fragmento da Lua; depois segue para um cometa da cintura principal."
+      },
+      "url": "https://www.cnsa.gov.cn/english/",
+      "body": {
+        "name": "Kamoʻoalewa",
+        "kind": "asteroid",
+        "color": "#c0a58c",
+        "a": 1.001,
+        "e": 0.103,
+        "i": 7.8,
+        "node": 66.0,
+        "peri": 307.0,
+        "M0": 40.0
+      }
+    },
+    {
+      "id": "mmx",
+      "mission": "MMX",
+      "agency": "JAXA",
+      "status": "upcoming",
+      "target": {
+        "en": "Phobos, moon of Mars",
+        "pt": "Fobos, lua de Marte"
+      },
+      "when": {
+        "en": "Launch planned for 2026 · samples planned back in 2031",
+        "pt": "Lançamento previsto para 2026 · amostras previstas para 2031"
+      },
+      "what": {
+        "en": "Martian Moons eXploration will land on Phobos, collect at least 10 g of its surface and bring it to Earth.",
+        "pt": "A Martian Moons eXploration vai pousar em Fobos, recolher pelo menos 10 g da sua superfície e trazê-los para a Terra."
+      },
+      "url": "https://www.mmx.jaxa.jp/en/",
+      "body": {
+        "name": "Phobos",
+        "kind": "moon",
+        "color": "#9c8a7a",
+        "a": 1.5237,
+        "e": 0.0934,
+        "i": 1.85,
+        "node": 49.56,
+        "peri": 286.5,
+        "M0": 19.4
+      },
+      "why": {
+        "en": "Phobos is either a captured asteroid or debris from a giant impact on Mars; its regolith also holds material blasted off Mars.",
+        "pt": "Fobos é um asteroide capturado ou detritos de um impacto gigante em Marte; o seu regolito também guarda material projetado de Marte."
+      }
+    },
+    {
+      "id": "tianwen3",
+      "mission": "Tianwen-3",
+      "agency": "CNSA",
+      "status": "upcoming",
+      "target": {
+        "en": "Mars",
+        "pt": "Marte"
+      },
+      "when": {
+        "en": "Launch planned around 2028 · samples planned back around 2031",
+        "pt": "Lançamento previsto para cerca de 2028 · amostras previstas para cerca de 2031"
+      },
+      "what": {
+        "en": "A planned Mars sample return, to bring rocks and soil from the Martian surface to Earth.",
+        "pt": "Uma recolha de amostras de Marte planeada, para trazer rochas e solo da superfície marciana para a Terra."
+      },
+      "url": "https://www.cnsa.gov.cn/english/"
+    },
+    {
+      "id": "hera",
+      "mission": "Hera",
+      "agency": "ESA",
+      "status": "upcoming",
+      "target": {
+        "en": "Asteroid (65803) Didymos and its moon Dimorphos",
+        "pt": "Asteroide (65803) Didymos e a sua lua Dimorphos"
+      },
+      "when": {
+        "en": "Launched 7 October 2024 · arrival planned late 2026",
+        "pt": "Lançada a 7 de outubro de 2024 · chegada prevista para o fim de 2026"
+      },
+      "what": {
+        "en": "Will study the crater and the changes left by NASA’s DART impact, turning it into a well-measured experiment.",
+        "pt": "Vai estudar a cratera e as alterações deixadas pelo impacto da DART da NASA, tornando-o numa experiência bem medida."
+      },
+      "url": "https://www.esa.int/Space_Safety/Hera",
+      "body": {
+        "name": "Didymos",
+        "kind": "asteroid",
+        "color": "#b8a690",
+        "a": 1.644,
+        "e": 0.384,
+        "i": 3.41,
+        "node": 73.2,
+        "peri": 319.3,
+        "M0": 250.0
+      },
+      "why": {
+        "en": "Measured consequences of an impact on an asteroid: what shocks do to a small body’s surface.",
+        "pt": "Consequências medidas de um impacto num asteroide: o que os choques fazem à superfície de um pequeno corpo."
+      }
+    },
+    {
+      "id": "lucy",
+      "mission": "Lucy",
+      "agency": "NASA",
+      "status": "upcoming",
+      "target": {
+        "en": "Trojan asteroids of Jupiter",
+        "pt": "Asteroides troianos de Júpiter"
+      },
+      "when": {
+        "en": "Launched 2021 · fly-bys of Dinkinesh (2023) and Donaldjohanson (2025) · Trojans from 2027",
+        "pt": "Lançada em 2021 · sobrevoos de Dinkinesh (2023) e Donaldjohanson (2025) · troianos a partir de 2027"
+      },
+      "what": {
+        "en": "The first visit to the Trojans, primitive asteroids sharing Jupiter’s orbit that may keep material from the early Solar System.",
+        "pt": "A primeira visita aos troianos, asteroides primitivos que partilham a órbita de Júpiter e podem guardar material do início do Sistema Solar."
+      },
+      "url": "https://science.nasa.gov/mission/lucy/",
+      "body": {
+        "name": "Eurybates",
+        "kind": "asteroid",
+        "color": "#a5927e",
+        "a": 5.21,
+        "e": 0.09,
+        "i": 8.1,
+        "node": 43.5,
+        "peri": 27.9,
+        "M0": 80.0
+      }
+    },
+    {
+      "id": "psyche",
+      "mission": "Psyche",
+      "agency": "NASA",
+      "status": "upcoming",
+      "target": {
+        "en": "Asteroid (16) Psyche",
+        "pt": "Asteroide (16) Psyche"
+      },
+      "when": {
+        "en": "Launched 13 October 2023 · arrival planned 2029",
+        "pt": "Lançada a 13 de outubro de 2023 · chegada prevista para 2029"
+      },
+      "what": {
+        "en": "Will orbit a metal-rich asteroid that may be the exposed core of an early planet.",
+        "pt": "Vai orbitar um asteroide rico em metal que poderá ser o núcleo exposto de um planeta primitivo."
+      },
+      "url": "https://science.nasa.gov/mission/psyche/",
+      "body": {
+        "name": "Psyche",
+        "kind": "asteroid",
+        "color": "#a8a8b8",
+        "a": 2.92,
+        "e": 0.134,
+        "i": 3.1,
+        "node": 150.0,
+        "peri": 229.0,
+        "M0": 300.0
+      }
+    },
+    {
+      "id": "apophis",
+      "mission": "OSIRIS-APEX & Ramses",
+      "agency": "NASA · ESA",
+      "status": "upcoming",
+      "target": {
+        "en": "Asteroid (99942) Apophis",
+        "pt": "Asteroide (99942) Apophis"
+      },
+      "when": {
+        "en": "Apophis passes about 32,000 km from Earth on 13 April 2029",
+        "pt": "Apophis passa a cerca de 32 000 km da Terra a 13 de abril de 2029"
+      },
+      "what": {
+        "en": "NASA’s OSIRIS-APEX (the OSIRIS-REx spacecraft, sent on) and ESA’s planned Ramses will watch how Earth’s gravity shakes and reshapes the asteroid during its close pass.",
+        "pt": "A OSIRIS-APEX da NASA (a sonda OSIRIS-REx, reenviada) e a Ramses planeada pela ESA vão observar como a gravidade da Terra abana e remodela o asteroide durante a passagem próxima."
+      },
+      "url": "https://science.nasa.gov/mission/osiris-apex/",
+      "body": {
+        "name": "Apophis",
+        "kind": "asteroid",
+        "color": "#b7a48f",
+        "a": 0.922,
+        "e": 0.191,
+        "i": 3.34,
+        "node": 204.4,
+        "peri": 126.4,
+        "M0": 180.0
+      }
+    },
+    {
+      "id": "destiny",
+      "mission": "DESTINY+",
+      "agency": "JAXA",
+      "status": "upcoming",
+      "target": {
+        "en": "Asteroid (3200) Phaethon",
+        "pt": "Asteroide (3200) Faetonte"
+      },
+      "when": {
+        "en": "Launch planned in the late 2020s",
+        "pt": "Lançamento previsto para o final da década de 2020"
+      },
+      "what": {
+        "en": "Will fly past Phaethon, the parent of the Geminid meteor shower, and collect interplanetary dust on the way.",
+        "pt": "Vai passar por Faetonte, a origem da chuva de meteoros Gemínidas, e recolher poeira interplanetária pelo caminho."
+      },
+      "url": "https://destiny.isas.jaxa.jp/en/",
+      "body": {
+        "name": "Phaethon",
+        "kind": "asteroid",
+        "color": "#c4a080",
+        "a": 1.271,
+        "e": 0.89,
+        "i": 22.3,
+        "node": 265.2,
+        "peri": 322.2,
+        "M0": 10.0
+      },
+      "why": {
+        "en": "Interplanetary dust carries organic matter to Earth; DESTINY+ will measure it in space.",
+        "pt": "A poeira interplanetária transporta matéria orgânica para a Terra; a DESTINY+ vai medi-la no espaço."
+      }
+    },
+    {
+      "id": "comet-interceptor",
+      "mission": "Comet Interceptor",
+      "agency": "ESA · JAXA",
+      "status": "upcoming",
+      "target": {
+        "en": "A comet still to be found",
+        "pt": "Um cometa ainda por descobrir"
+      },
+      "when": {
+        "en": "Launch planned for 2029",
+        "pt": "Lançamento previsto para 2029"
+      },
+      "what": {
+        "en": "Will wait in space for a pristine comet on its first trip into the inner Solar System, then fly past it with three spacecraft.",
+        "pt": "Vai esperar no espaço por um cometa intacto na sua primeira viagem ao Sistema Solar interior e depois sobrevoá-lo com três sondas."
+      },
+      "url": "https://www.esa.int/Science_Exploration/Space_Science/Comet_Interceptor"
     }
   ]
 }

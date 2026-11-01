@@ -1,60 +1,141 @@
 /* =====================================================================
-   ask.js: "Ask my research"
-   1. Finds the passages of the site (papers, highlights, projects, talks...) that
-      answer a question. data/research-index.json holds the passages and their
-      meaning vectors (tools/build_research_index.mjs). The question is matched by
-      words at once, then by meaning with the same small open model
-      (bge-small-en-v1.5, MIT licence) run in the browser by transformers.js
-      (Apache 2.0), both self-hosted in vendor/. Nothing leaves the device.
-   2. Optional: "Write an answer with AI" loads an open chat model (Qwen2.5 1.5B
-      Instruct, Apache 2.0) with WebLLM (Apache 2.0) on the visitor's GPU and writes
-      a short answer from those passages only, citing them [1], [2]...
+   ask.js: "Ask my research", a chat window that floats over the page.
+   - Open it with the round button (bottom right) or the "Ask" menu entry; hide it
+     with the minimise button. The conversation is kept in this browser
+     (localStorage) until "Clear" is pressed, and reopens as it was.
+   - Each answer is put together from the site's own content (papers, highlights,
+     talks, courses, positions, funding, awards, news): the passages that match
+     the question by words and by meaning, and their sentences closest to it,
+     with numbered links to the sources.
+   - Meanings come from a small open model (bge-small-en-v1.5, MIT licence) run by
+     transformers.js in a background thread (ask-worker.js), loaded only when the
+     first question is asked. Nothing typed leaves the device.
+   Passages and their meaning vectors: data/research-index.json
+   (tools/build_research_index.mjs, rebuilt every night).
    ===================================================================== */
-const form = document.getElementById("askForm");
-if (form && !form.__wired) {
-  form.__wired = true;
-  const input = document.getElementById("askInput");
-  const status = document.getElementById("askStatus");
-  const list = document.getElementById("askResults");
-  const gen = document.getElementById("askGen");
-  const genBtn = document.getElementById("askGenBtn");
-  const answer = document.getElementById("askAnswer");
-  const base = new URL("./", document.baseURI).href;
-
-  const lang = () => { const l = document.documentElement.getAttribute("lang"); return ["pt", "fr", "ja"].includes(l) ? l : "en"; };
+const root = document.documentElement;
+if (!window.__askChat) {
+  window.__askChat = true;
+  const lang = () => { const l = root.getAttribute("lang"); return ["pt", "fr", "ja"].includes(l) ? l : "en"; };
   const T = {
-    placeholder: { en: "e.g. What happens to organic matter when asteroids are hit by small impacts?", pt: "ex.: O que acontece à matéria orgânica quando os asteroides sofrem pequenos impactos?",
-                   fr: "ex. : Que devient la matière organique quand des astéroïdes subissent de petits impacts ?", ja: "例：小さな衝突を受けた小惑星の有機物はどうなる？" },
+    title: { en: "Ask my research", pt: "Pergunte à minha investigação", fr: "Interrogez mes recherches", ja: "研究に質問する" },
+    sub: { en: "Answers from my papers, talks and projects · runs on your device", pt: "Respostas dos meus artigos, comunicações e projetos · corre no seu dispositivo",
+           fr: "Réponses tirées de mes articles, présentations et projets · fonctionne sur votre appareil", ja: "論文・発表・プロジェクトから回答 · 端末内で動作" },
+    open: { en: "Ask my research", pt: "Perguntar", fr: "Poser une question", ja: "質問する" },
+    hide: { en: "Hide the chat", pt: "Esconder o chat", fr: "Masquer le chat", ja: "チャットを隠す" },
+    clear: { en: "Clear the conversation", pt: "Apagar a conversa", fr: "Effacer la conversation", ja: "会話を消去" },
+    ph: { en: "Ask about my research…", pt: "Pergunte sobre a minha investigação…", fr: "Une question sur mes recherches…", ja: "研究について質問…" },
+    send: { en: "Send", pt: "Enviar", fr: "Envoyer", ja: "送信" },
+    hello: { en: "Hi! Ask me anything about my research: asteroid gardening, mechanochemistry, my papers, talks, where I have worked… I answer from the content of this site and show where it comes from.",
+             pt: "Olá! Pergunte-me o que quiser sobre a minha investigação: reprocessamento de asteroides, mecanoquímica, os meus artigos, comunicações, onde trabalhei… Respondo a partir do conteúdo deste site e mostro de onde vem.",
+             fr: "Bonjour ! Posez-moi vos questions sur mes recherches : asteroid gardening, mécanochimie, mes articles, présentations, où j’ai travaillé… Je réponds à partir du contenu de ce site et j’indique d’où cela vient.",
+             ja: "こんにちは！小惑星表面の撹拌、メカノケミストリー、論文、発表、経歴など、私の研究について何でも質問してください。このサイトの内容から回答し、出典を示します。" },
+    ex: { en: ["What is asteroid gardening?", "Do ribonucleosides survive mechanochemistry?", "Who funds your PhD?"],
+          pt: ["O que é o reprocessamento de asteroides?", "Os ribonucleósidos sobrevivem à mecanoquímica?", "Quem financia o seu doutoramento?"],
+          fr: ["Qu’est-ce que l’asteroid gardening ?", "Les ribonucléosides survivent-ils à la mécanochimie ?", "Qui finance votre doctorat ?"],
+          ja: ["小惑星表面の撹拌（asteroid gardening）とは？", "リボヌクレオシドはメカノケミストリーに耐える？", "博士課程の資金は？"] },
+    thinking: { en: "Looking through my work…", pt: "A procurar no meu trabalho…", fr: "Je cherche dans mon travail…", ja: "研究内容を検索中…" },
     loading: { en: "Loading the search model (about 34 MB, only the first time)…", pt: "A carregar o modelo de pesquisa (cerca de 34 MB, só da primeira vez)…",
                fr: "Chargement du modèle de recherche (environ 34 Mo, la première fois seulement)…", ja: "検索モデルを読み込み中（約 34 MB、初回のみ）…" },
-    found: { en: "The passages of my work closest to your question:", pt: "As passagens do meu trabalho mais próximas da sua pergunta:",
-             fr: "Les passages de mon travail les plus proches de votre question :", ja: "質問に最も近い研究内容：" },
-    words: { en: "(matched by words)", pt: "(correspondência por palavras)", fr: "(correspondance par mots)", ja: "（単語で一致）" },
-    none: { en: "Nothing on this site answers that yet. Try other words, or one of the examples.", pt: "Ainda nada neste site responde a isso. Experimente outras palavras ou um dos exemplos.",
-            fr: "Rien sur ce site n'y répond encore. Essayez d'autres mots ou l'un des exemples.", ja: "このサイトにはまだ該当する内容がありません。別の言葉か例をお試しください。" },
-    open: { en: "Open", pt: "Abrir", fr: "Ouvrir", ja: "開く" },
-    nogpu: { en: "This browser cannot run the AI model (it needs WebGPU, e.g. a recent Chrome or Edge on a computer).", pt: "Este navegador não consegue correr o modelo de IA (requer WebGPU, p. ex. um Chrome ou Edge recente num computador).",
-             fr: "Ce navigateur ne peut pas exécuter le modèle d'IA (WebGPU requis, p. ex. un Chrome ou Edge récent sur ordinateur).", ja: "このブラウザでは AI モデルを実行できません（WebGPU が必要です。例：PC の最新 Chrome / Edge）。" },
-    dl: { en: "Downloading the AI model: {p}% (once; next time it starts from your device)", pt: "A descarregar o modelo de IA: {p}% (uma vez; da próxima vez arranca do seu dispositivo)",
-          fr: "Téléchargement du modèle d'IA : {p} % (une seule fois ; ensuite il démarre depuis votre appareil)", ja: "AI モデルをダウンロード中：{p}%（初回のみ）" },
-    writing: { en: "Writing…", pt: "A escrever…", fr: "Rédaction…", ja: "作成中…" },
-    failed: { en: "The AI model could not start on this device.", pt: "O modelo de IA não conseguiu arrancar neste dispositivo.", fr: "Le modèle d'IA n'a pas pu démarrer sur cet appareil.", ja: "この端末では AI モデルを起動できませんでした。" },
-    disclaimer: { en: "Written by an AI model from the passages above; it can be wrong. The passages are the source.", pt: "Escrito por um modelo de IA a partir das passagens acima; pode conter erros. As passagens são a fonte.",
-                  fr: "Rédigé par un modèle d'IA à partir des passages ci-dessus ; il peut se tromper. Les passages font foi.", ja: "上記の内容から AI が作成した回答です。誤りがある可能性があります。" },
+    none: { en: "I could not find that on this site. Try other words, or ask about my papers, talks, projects or career.", pt: "Não encontrei isso neste site. Experimente outras palavras, ou pergunte sobre os meus artigos, comunicações, projetos ou percurso.",
+            fr: "Je n’ai pas trouvé cela sur ce site. Essayez d’autres mots, ou posez une question sur mes articles, présentations ou mon parcours.", ja: "このサイトには見つかりませんでした。別の言葉で、または論文・発表・経歴について質問してください。" },
+    sources: { en: "Sources", pt: "Fontes", fr: "Sources", ja: "出典" },
+    note: { en: "Put together from this site's content; check the sources.", pt: "Composto a partir do conteúdo deste site; confirme nas fontes.", fr: "Composé à partir du contenu de ce site ; vérifiez les sources.", ja: "サイトの内容から作成した回答です。出典をご確認ください。" },
     sec: {
       publications: { en: "Paper", pt: "Artigo", fr: "Article", ja: "論文" }, highlights: { en: "Research", pt: "Investigação", fr: "Recherche", ja: "研究" },
-      projects: { en: "Project", pt: "Projeto", fr: "Projet", ja: "プロジェクト" }, presentations: { en: "Talk", pt: "Comunicação", fr: "Présentation", ja: "発表" },
-      courses: { en: "Course", pt: "Curso", fr: "Cours", ja: "講習" }, experience: { en: "Experience", pt: "Experiência", fr: "Expérience", ja: "経歴" },
-      education: { en: "Education", pt: "Educação", fr: "Formation", ja: "学歴" }, news: { en: "News", pt: "Novidades", fr: "Actualités", ja: "ニュース" },
-      funding: { en: "Funding", pt: "Financiamento", fr: "Financement", ja: "資金" }, awards: { en: "Award", pt: "Prémio", fr: "Prix", ja: "受賞" }, blog: { en: "Blog", pt: "Blog", fr: "Blog", ja: "ブログ" } }
+      presentations: { en: "Talk", pt: "Comunicação", fr: "Présentation", ja: "発表" }, courses: { en: "Course", pt: "Curso", fr: "Cours", ja: "講習" },
+      experience: { en: "Experience", pt: "Experiência", fr: "Expérience", ja: "経歴" }, education: { en: "Education", pt: "Educação", fr: "Formation", ja: "学歴" },
+      news: { en: "News", pt: "Novidades", fr: "Actualités", ja: "ニュース" }, funding: { en: "Funding", pt: "Financiamento", fr: "Financement", ja: "資金" },
+      awards: { en: "Award", pt: "Prémio", fr: "Prix", ja: "受賞" }, blog: { en: "Blog", pt: "Blog", fr: "Blog", ja: "ブログ" } }
   };
-  const t = (k, o) => { let s = T[k][lang()] || T[k].en; for (const x in o || {}) s = s.replace("{" + x + "}", o[x]); return s; };
+  const t = k => { const v = T[k]; return v[lang()] || v.en; };
   const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const setPlaceholder = () => { input.placeholder = t("placeholder"); };
-  setPlaceholder();
-  new MutationObserver(setPlaceholder).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
+  const icon = (d, w = 18) => '<svg viewBox="0 0 24 24" width="' + w + '" height="' + w + '" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + "</svg>";
+  const I = {
+    chat: '<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',
+    min: '<path d="M5 12h14"/>', trash: '<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
+    send: '<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>'
+  };
 
-  // ------------------------------------------------------------------ index
+  // ------------------------------------------------------------------ the window
+  const box = document.createElement("div");
+  box.className = "askc";
+  box.innerHTML =
+    '<button type="button" class="askc-fab" aria-expanded="false" aria-controls="askcPanel">' + icon(I.chat, 22) + '<span class="askc-fab-label"></span></button>' +
+    '<section class="askc-panel" id="askcPanel" role="dialog" aria-modal="false" aria-labelledby="askcTitle" hidden>' +
+      '<header class="askc-head"><div class="askc-hd"><h2 class="askc-title" id="askcTitle"></h2><p class="askc-sub"></p></div>' +
+        '<button type="button" class="askc-ib askc-clear">' + icon(I.trash, 17) + "</button>" +
+        '<button type="button" class="askc-ib askc-min">' + icon(I.min, 18) + "</button></header>" +
+      '<ol class="askc-log" aria-live="polite"></ol>' +
+      '<div class="askc-ex" role="group"></div>' +
+      '<form class="askc-form" autocomplete="off"><input class="askc-in" type="text" maxlength="300" enterkeyhint="send">' +
+        '<button type="submit" class="askc-send">' + icon(I.send, 17) + "</button></form>" +
+    "</section>";
+  document.body.appendChild(box);
+  const fab = box.querySelector(".askc-fab"), panel = box.querySelector(".askc-panel"), log = box.querySelector(".askc-log");
+  const exBox = box.querySelector(".askc-ex"), form = box.querySelector(".askc-form"), input = box.querySelector(".askc-in");
+
+  function texts() {
+    fab.querySelector(".askc-fab-label").textContent = t("open");
+    fab.setAttribute("aria-label", t("open"));
+    box.querySelector(".askc-title").textContent = t("title");
+    box.querySelector(".askc-sub").textContent = t("sub");
+    const c = box.querySelector(".askc-clear"), m = box.querySelector(".askc-min");
+    c.setAttribute("aria-label", t("clear")); c.title = t("clear");
+    m.setAttribute("aria-label", t("hide")); m.title = t("hide");
+    input.placeholder = t("ph"); input.setAttribute("aria-label", t("ph"));
+    box.querySelector(".askc-send").setAttribute("aria-label", t("send"));
+    exBox.setAttribute("aria-label", t("ph"));
+    exBox.innerHTML = t("ex").map(q => '<button type="button" class="askc-chip">' + esc(q) + "</button>").join("");
+    render();
+  }
+
+  // ------------------------------------------------------------------ conversation (kept in this browser)
+  const KEY = "askChat.v1";
+  let chat = [];
+  try { chat = JSON.parse(localStorage.getItem(KEY) || "[]"); if (!Array.isArray(chat)) chat = []; } catch (e) { chat = []; }
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(chat.slice(-60))); } catch (e) {} };
+  function render() {
+    const hello = '<li class="askc-msg askc-msg--bot"><p>' + esc(t("hello")) + "</p></li>";
+    log.innerHTML = hello + chat.map((m, i) => m.role === "user"
+      ? '<li class="askc-msg askc-msg--me"><p>' + esc(m.text) + "</p></li>"
+      : '<li class="askc-msg askc-msg--bot">' + (m.pending ? '<p class="askc-wait">' + esc(m.status || t("thinking")) + "</p>"
+        : (m.none ? "<p>" + esc(t("none")) + "</p>" :
+          "<p>" + m.parts.map(x => esc(x.s) + ' <a class="askc-cite" href="#" data-m="' + i + '" data-n="' + x.n + '">[' + x.n + "]</a>").join(" ") + "</p>" +
+          '<p class="askc-src-h">' + esc(t("sources")) + '</p><ol class="askc-src">' + m.src.map((s, k) =>
+            '<li><button type="button" class="askc-open" data-m="' + i + '" data-n="' + (k + 1) + '"><span class="askc-n">' + (k + 1) + "</span>" +
+            '<span class="askc-tag">' + esc((T.sec[s.sec] && (T.sec[s.sec][lang()] || T.sec[s.sec].en)) || s.sec) + '</span><span class="askc-st">' + esc(s.title) + "</span></button></li>").join("") +
+          '</ol><p class="askc-note">' + esc(t("note")) + "</p>")) + "</li>").join("");
+    exBox.hidden = chat.length > 0;
+    log.scrollTop = log.scrollHeight;
+  }
+
+  function setOpen(on, focus) {
+    panel.hidden = !on; fab.hidden = on;
+    fab.setAttribute("aria-expanded", on ? "true" : "false");
+    box.classList.toggle("is-open", on);
+    try { localStorage.setItem("askChat.open", on ? "1" : "0"); } catch (e) {}
+    if (on) { render(); if (focus) setTimeout(() => input.focus(), 30); warm(); }
+    else if (focus) fab.focus();
+  }
+  fab.addEventListener("click", () => setOpen(true, true));
+  box.querySelector(".askc-min").addEventListener("click", () => setOpen(false, true));
+  box.querySelector(".askc-clear").addEventListener("click", () => { chat = []; save(); render(); input.focus(); });
+  panel.addEventListener("keydown", e => { if (e.key === "Escape") { e.stopPropagation(); setOpen(false, true); } });
+  exBox.addEventListener("click", e => { const b = e.target.closest(".askc-chip"); if (b) ask(b.textContent); });
+  form.addEventListener("submit", e => { e.preventDefault(); const q = input.value.trim(); if (q) { input.value = ""; ask(q); } });
+  // the "Ask" entries of the menu open the chat
+  document.addEventListener("click", e => {
+    const a = e.target.closest('a[href="#ask"]'); if (!a) return;
+    e.preventDefault(); setOpen(true, true);
+    const pop = document.getElementById("navMoreMenu"); if (pop) pop.hidden = true;
+  });
+  new MutationObserver(texts).observe(root, { attributes: true, attributeFilter: ["lang"] });
+  texts();
+  let wasOpen = false; try { wasOpen = localStorage.getItem("askChat.open") === "1"; } catch (e) {}
+  setOpen(wasOpen && innerWidth > 760, false);
+
+  // ------------------------------------------------------------------ index + search
   let idxP = null, vecs = null;
   const loadIndex = () => idxP || (idxP = fetch("data/research-index.json", { cache: "no-cache" }).then(r => r.json()).then(idx => {
     if (idx.vectors && idx.dim) {
@@ -67,154 +148,110 @@ if (form && !form.__wired) {
     idx._avg = idx.passages.reduce((s, p) => s + p._len, 0) / Math.max(1, idx.passages.length);
     return idx;
   }));
+  loadIndex().catch(() => { idxP = null; });
 
-  const STOP = new Set(("the a an of to in on for and or is are was were be been do does did what which who whom how why when where with from by at as it its this that these those your you my me i about tell "
+  const STOP = new Set(("the a an of to in on for and or is are was were be been do does did what which who whom how why when where with from by at as it its this that these those your you my me i about tell can could "
     + "o a os as um uma de do da dos das em no na nos nas por para com que qual quais quem como porque onde quando é são foi sobre seu sua meu minha "
     + "le la les un une des du de et ou est sont que qui quoi comment pourquoi où quand avec pour par sur dans ce cette ces votre vos mon ma mes").split(" "));
   function toks(s) {
     return String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9぀-ヿ一-鿿]+/g, " ")
       .split(" ").filter(w => w.length > 2 && !STOP.has(w)).map(w => w.length > 5 ? w.replace(/(ing|ion|ions|es|s)$/, "") : w);
   }
-  function lexical(idx, q) {   // BM25
-    const qt = [...new Set(toks(q))], N = idx.passages.length, k1 = 1.4, b = 0.75;
+  function bm25(idx, qt) {
+    const N = idx.passages.length;
     return idx.passages.map(p => {
       let s = 0;
       for (const w of qt) {
         const df = idx._df[w]; if (!df) continue;
         let tf = 0; for (const x of p._t) if (x === w) tf++;
-        if (!tf) continue;
-        s += Math.log(1 + (N - df + 0.5) / (df + 0.5)) * tf * (k1 + 1) / (tf + k1 * (1 - b + b * p._len / idx._avg));
+        if (tf) s += Math.log(1 + (N - df + 0.5) / (df + 0.5)) * tf * 2.4 / (tf + 1.4 * (0.25 + 0.75 * p._len / idx._avg));
       }
       return s;
     });
   }
 
-  // ------------------------------------------------------------------ meaning model
-  let embP = null;
-  const loadEmbedder = model => embP || (embP = (async () => {
-    const tf = await import(base + "vendor/transformers-3.8.1/transformers.min.js");
-    tf.env.allowRemoteModels = false;
-    tf.env.allowLocalModels = true;
-    tf.env.localModelPath = base + "vendor/models/";
-    tf.env.backends.onnx.wasm.wasmPaths = base + "vendor/transformers-3.8.1/";
-    tf.env.backends.onnx.wasm.numThreads = 1;
-    return tf.pipeline("feature-extraction", model, { dtype: "q8", device: "wasm" });
-  })());
-
-  // ------------------------------------------------------------------ search
-  let last = { q: "", hits: [] }, run = 0;
-  async function ask(q) {
-    q = q.trim(); if (q.length < 3) return;
-    const my = ++run;
-    answer.hidden = true; answer.innerHTML = "";
-    const idx = await loadIndex();
-    const lex = lexical(idx, q), lmax = Math.max(...lex, 1e-9);
-    let score = lex.map(s => s / lmax), semantic = false;
-    show(q, idx, score, false, my);                     // words first: instant
-    if (vecs) {
-      try {
-        if (!embP) status.textContent = t("loading");
-        const emb = await loadEmbedder(idx.model);
-        if (my !== run) return;
-        const out = await emb((idx.queryPrefix || "") + q, { pooling: idx.pooling || "mean", normalize: true }), v = out.data, d = idx.dim;
-        // cosine similarities, rescaled between the typical (median) and the best passage
-        const cos = idx.passages.map((p, i) => { let c = 0; for (let k = 0; k < d; k++) c += v[k] * vecs[i * d + k]; return c / 127; });
-        const sorted = cos.slice().sort((a, b) => a - b), med = sorted[sorted.length >> 1], top = sorted[sorted.length - 1];
-        score = cos.map((c, i) => 0.75 * Math.max(0, (c - med) / Math.max(1e-6, top - med)) + 0.25 * lex[i] / lmax);
-        semantic = true;
-      } catch (e) { console.warn("meaning search unavailable", e); }
+  // the model runs in a background thread; one at a time, started on the first question
+  let worker = null, wid = 0, workerBroken = false;
+  const pending = new Map();
+  function embed(texts, idx, prefix) {
+    if (workerBroken || !vecs) return Promise.reject(new Error("no model"));
+    if (!worker) {
+      try { worker = new Worker(new URL("./ask-worker.js", import.meta.url), { type: "module" }); }
+      catch (e) { workerBroken = true; return Promise.reject(e); }
+      worker.onmessage = e => { const p = pending.get(e.data.id); if (!p) return; pending.delete(e.data.id); e.data.error ? p.no(new Error(e.data.error)) : p.ok(e.data.vectors); };
+      worker.onerror = () => { workerBroken = true; pending.forEach(p => p.no(new Error("worker"))); pending.clear(); };
     }
-    if (my === run) show(q, idx, score, semantic, my, true);
+    const id = ++wid;
+    return new Promise((ok, no) => { pending.set(id, { ok, no }); worker.postMessage({ id, texts, model: idx.model, pooling: idx.pooling, prefix }); });
   }
+  let warmed = false;
+  function warm() { if (warmed) return; warmed = true; loadIndex().then(idx => embed(["hello"], idx, "").catch(() => {})).catch(() => {}); }   // start loading in the background
 
-  function show(q, idx, score, semantic, my, final) {
-    const order = idx.passages.map((p, i) => ({ p, s: score[i] })).filter(x => x.s > (semantic ? 0.42 : 0.05)).sort((a, b) => b.s - a.s);
-    const seen = new Set(), hits = [];
-    for (const x of order) { const k = x.p.sec + "|" + x.p.title; if (seen.has(k)) continue; seen.add(k); hits.push(x.p); if (hits.length === 5) break; }
-    last = { q, hits };
-    if (!hits.length) { list.innerHTML = ""; gen.hidden = true; if (final || !vecs) status.textContent = t("none"); return; }
-    status.textContent = t("found") + (final && !semantic ? " " + t("words") : "");
-    const terms = [...new Set(toks(q))];
-    list.innerHTML = hits.map((p, i) => {
-      const L = lang(), body = L === "pt" && p.pt ? p.pt : p.text;
-      let snip = esc(body.length > 260 ? body.slice(0, 259) + "…" : body);
-      if (terms.length) snip = snip.replace(new RegExp("\\b(" + terms.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|") + ")[a-z]*", "gi"), "<mark>$&</mark>");
-      const tag = T.sec[p.sec] ? (T.sec[p.sec][L] || T.sec[p.sec].en) : p.sec;
-      return '<li class="ask-hit" id="ask-src-' + (i + 1) + '"><span class="ask-n">' + (i + 1) + '</span><div class="ask-body">' +
-        '<div class="ask-head"><span class="ask-tag">' + esc(tag) + '</span><span class="ask-title">' + esc(p.title) + "</span></div>" +
-        '<p class="ask-snip">' + snip + "</p>" +
-        '<button type="button" class="ask-open" data-i="' + i + '">' + esc(t("open")) + ' <span aria-hidden="true">→</span></button></div></li>';
-    }).join("");
-    gen.hidden = !final;
-  }
-
-  // jump to where a passage lives on the site
-  list.addEventListener("click", e => {
-    const b = e.target.closest(".ask-open"); if (!b) return;
-    const p = last.hits[+b.dataset.i]; if (!p) return;
-    const go = el => { if (!el) return false; el.scrollIntoView({ behavior: "smooth", block: "center" }); el.classList.add("search-hit"); setTimeout(() => el.classList.remove("search-hit"), 1800); return true; };
-    if (p.doi && window.SiteApp && SiteApp.openPublication) { SiteApp.openPublication(p.doi); return; }
-    if (p.hl) { const c = document.querySelector('[data-hl="' + p.hl + '"]'); if (c) { c.click(); return; } }
-    if (p.anchor && go(document.getElementById(p.anchor))) return;
-    if (p.url && /^https:/.test(p.url)) { window.open(p.url, "_blank", "noopener"); return; }
-    // talks, courses, positions, degrees: the site search knows how to open them
-    const sec = document.getElementById(p.sec);
-    const item = sec && [...sec.querySelectorAll(".timeline-item")].find(it => it.textContent.indexOf(p.title.slice(0, 40)) !== -1);
-    if (item && window.SiteApp && SiteApp.showPathFor && SiteApp.showPathFor(item)) return;
-    if (item && window.SiteApp && SiteApp.openItem) { SiteApp.openItem(item); go(item); return; }
-    go(sec);
-  });
-
-  form.addEventListener("submit", e => { e.preventDefault(); ask(input.value); });
-  document.querySelectorAll(".ask-chip").forEach(c => c.addEventListener("click", () => { input.value = c.textContent.trim(); ask(input.value); }));
-  input.addEventListener("focus", () => { loadIndex().catch(() => {}); }, { once: true });
-
-  // ------------------------------------------------------------------ optional AI answer (WebLLM)
-  let engineP = null;
-  const LANGNAME = { en: "English", pt: "European Portuguese", fr: "French", ja: "Japanese" };
-  async function engine() {
-    if (engineP) return engineP;
-    engineP = (async () => {
-      const adapter = navigator.gpu && await navigator.gpu.requestAdapter();
-      if (!adapter) throw new Error("no WebGPU");
-      const f16 = adapter.features && adapter.features.has("shader-f16");
-      const webllm = await import(base + "vendor/web-llm-0.2.87/web-llm.min.js");
-      return webllm.CreateMLCEngine(f16 ? "Qwen2.5-1.5B-Instruct-q4f16_1-MLC" : "Qwen2.5-1.5B-Instruct-q4f32_1-MLC", {
-        initProgressCallback: r => { status.textContent = t("dl", { p: Math.round((r.progress || 0) * 100) }); }
-      });
-    })();
-    engineP.catch(() => { engineP = null; });
-    return engineP;
-  }
-  genBtn.addEventListener("click", async () => {
-    if (!last.hits.length) return;
-    if (!navigator.gpu) { status.textContent = t("nogpu"); return; }
-    genBtn.disabled = true;
-    const L = lang(), q = last.q, hits = last.hits;
+  const sentences = s => String(s).split(/(?<=[.!?])\s+(?=[A-Z0-9“"(À-Ý])/).map(x => x.trim()).filter(x => x.length > 25);
+  let busy = false;
+  async function ask(q) {
+    if (busy) return; busy = true;
+    q = q.trim().slice(0, 300);
+    chat.push({ role: "user", text: q });
+    const me = { role: "bot", pending: true };
+    chat.push(me); render();
     try {
-      const eng = await engine();
-      status.textContent = t("writing");
-      answer.hidden = false; answer.innerHTML = '<p class="ask-ans-text"></p><p class="ask-ans-note">' + esc(t("disclaimer")) + "</p>";
-      const out = answer.querySelector(".ask-ans-text");
-      const sources = hits.map((p, i) => "[" + (i + 1) + "] " + p.title + ": " + p.text).join("\n\n");
-      const chunks = await eng.chat.completions.create({
-        stream: true, temperature: 0.2, max_tokens: 380,
-        messages: [
-          { role: "system", content: "You answer questions about the research of Gustavo Pinho Maia (chemistry, astrobiology) for visitors of his website. " +
-            "Use ONLY the numbered sources. Cite them like [1] or [2]. If the sources do not answer the question, say so briefly. " +
-            "Be concise (at most 120 words), refer to him as Gustavo, and answer in " + LANGNAME[L] + "." },
-          { role: "user", content: "Sources:\n" + sources + "\n\nQuestion: " + q }
-        ]
-      });
-      let txt = "";
-      for await (const c of chunks) {
-        txt += (c.choices[0] && c.choices[0].delta && c.choices[0].delta.content) || "";
-        out.innerHTML = esc(txt).replace(/\[(\d)\]/g, (m, n) => +n >= 1 && +n <= hits.length ? '<a class="ask-cite" href="#ask-src-' + n + '">[' + n + "]</a>" : m);
+      const idx = await loadIndex();
+      const qt = [...new Set(toks(q))], lex = bm25(idx, qt), lmax = Math.max(...lex, 1e-9);
+      let score = lex.map(s => s / lmax), qv = null;
+      if (vecs) {
+        if (!embedReady) { me.status = t("loading"); render(); }
+        try {
+          qv = (await embed([q], idx, idx.queryPrefix || ""))[0]; embedReady = true;
+          const d = idx.dim;
+          const cos = idx.passages.map((p, i) => { let c = 0; for (let k = 0; k < d; k++) c += qv[k] * vecs[i * d + k]; return c / 127; });
+          const sorted = cos.slice().sort((a, b) => a - b), med = sorted[sorted.length >> 1], top = sorted[sorted.length - 1];
+          score = cos.map((c, i) => 0.75 * Math.max(0, (c - med) / Math.max(1e-6, top - med)) + 0.25 * lex[i] / lmax);
+        } catch (e) { console.warn("meaning search unavailable", e); }
       }
-      status.textContent = t("found");
+      const cut = qv ? 0.45 : 0.08;
+      const order = idx.passages.map((p, i) => ({ p, s: score[i] })).filter(x => x.s > cut).sort((a, b) => b.s - a.s);
+      const seen = new Set(), src = [];
+      for (const x of order) { const k = x.p.sec + "|" + x.p.title; if (seen.has(k)) continue; seen.add(k); src.push(x.p); if (src.length === 3) break; }
+      if (!src.length) { Object.assign(me, { pending: false, none: true }); return; }
+      // answer: the sentences of these sources closest to the question
+      const L = lang();
+      const cands = [];
+      // (not the passage's own title line, nor bare lists of names and places)
+      src.forEach((p, k) => sentences(L === "pt" && p.pt ? p.pt : p.text)
+        .filter(s => s.indexOf(p.title) !== 0 && (s.match(/·/g) || []).length < 3)
+        .forEach((s, j) => cands.push({ s, n: k + 1, j })));
+      let ss = cands.map(c => { const ct = toks(c.s); return qt.filter(w => ct.includes(w)).length / Math.sqrt(1 + ct.length) + (c.n === 1 ? 0.15 : 0) - c.j * 0.01; });
+      if (qv && L !== "pt" && cands.length) {
+        try {
+          const sv = await embed(cands.map(c => c.s), idx, "");
+          ss = sv.map((v, i) => { let c = 0; for (let k = 0; k < v.length; k++) c += v[k] * qv[k]; return c + 0.15 * ss[i]; });
+        } catch (e) {}
+      }
+      const pickd = cands.map((c, i) => ({ ...c, v: ss[i] })).sort((a, b) => b.v - a.v).slice(0, 2).sort((a, b) => a.n - b.n || a.j - b.j);
+      Object.assign(me, { pending: false, parts: pickd.map(c => ({ s: c.s, n: c.n })),
+        src: src.map(p => ({ sec: p.sec, title: p.title, doi: p.doi || "", hl: p.hl || "", url: p.url || "" })) });
     } catch (e) {
-      console.warn("AI answer", e);
-      status.textContent = /WebGPU/i.test(String(e && e.message)) ? t("nogpu") : t("failed");
-    } finally { genBtn.disabled = false; }
+      console.warn(e); Object.assign(me, { pending: false, none: true });
+    } finally { delete me.status; busy = false; save(); render(); }
+  }
+  let embedReady = false;
+
+  // ------------------------------------------------------------------ open a source on the page
+  log.addEventListener("click", e => {
+    const b = e.target.closest(".askc-open, .askc-cite"); if (!b) return;
+    e.preventDefault();
+    const m = chat[+b.dataset.m], s = m && m.src && m.src[+b.dataset.n - 1]; if (!s) return;
+    if (innerWidth <= 760) setOpen(false, false);           // on phones, get the chat out of the way
+    const flash = el => { if (!el) return false; el.scrollIntoView({ behavior: "smooth", block: "center" }); el.classList.add("search-hit"); setTimeout(() => el.classList.remove("search-hit"), 1800); return true; };
+    if (s.doi && window.SiteApp && SiteApp.openPublication) { SiteApp.openPublication(s.doi); return; }
+    if (s.hl) { const c = document.querySelector('[data-hl="' + s.hl + '"]'); if (c) { c.click(); return; } }
+    const sec = document.getElementById(s.sec);
+    const item = sec && [...sec.querySelectorAll(".timeline-item, .award-card")].find(it => it.textContent.indexOf(s.title.slice(0, 40)) !== -1);
+    if (item && window.SiteApp && SiteApp.showPathFor && SiteApp.showPathFor(item)) return;
+    if (item && item.classList.contains("timeline-item") && window.SiteApp && SiteApp.openItem) { SiteApp.openItem(item); flash(item); return; }
+    if (item) { flash(item); return; }
+    if (s.url && /^https:/.test(s.url)) { window.open(s.url, "_blank", "noopener"); return; }
+    flash(sec);
   });
 }

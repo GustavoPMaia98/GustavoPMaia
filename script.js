@@ -1420,7 +1420,7 @@
     "News":"Novidades", "Where I have been":"Por onde andei",
     "Current Work Interests":"Interesses de Trabalho Atuais", "Awards":"Prémios", "Courses & Formations":"Cursos e Formações",
     "Ask my research":"Pergunte à minha investigação", "Research projects":"Projetos de investigação", "Collaborations":"Colaborações",
-    "Data & code":"Dados e código", "Sample-return missions":"Missões de recolha de amostras", "Blog":"Blog"
+    "Data & code":"Dados e código", "Space missions":"Missões espaciais", "Blog":"Blog"
   };
 
   // Section heading icons (Lucide)
@@ -2243,7 +2243,8 @@
       if (lastFocus && lastFocus.focus) lastFocus.focus();
     }
 
-    document.querySelectorAll(".tech-card[data-tech], .tech-name[data-tech]").forEach(card => {
+    setupSkillsExplorer(DATA, pick);
+    document.querySelectorAll(".tech-card[data-tech], .tech-name[data-tech]:not(.sk-item)").forEach(card => {
       // inject the "Learn more" affordance chip (carousel cards only, not the name lists)
       const info = card.querySelector(".tech-info");
       if (info && !card.querySelector(".tech-learn")) {
@@ -2267,6 +2268,96 @@
     document.addEventListener("keydown", e => {
       if (e.key === "Escape" && !modal.hidden) { e.preventDefault(); close(); }
     });
+  }
+
+  // ============================================================
+  //  TECHNIQUES, EQUIPMENT, SOFTWARE & SKILLS: an explorer in the style of the
+  //  education / experience paths. A row of category steps; the chosen category's
+  //  items in a panel below, and the chosen item explained beside them (the same
+  //  texts as the old pop-up, from #tech-detail-data). Built from the six skill
+  //  cards in sections/experience.html, so editing those keeps working.
+  // ============================================================
+  function setupSkillsExplorer(DATA, pick) {
+    const grid = document.getElementById("techniques");
+    if (!grid || grid.__sk) return;
+    grid.__sk = true;
+    const cards = Array.from(grid.querySelectorAll(".skill-card"));
+    if (!cards.length) return;
+    const cats = cards.map(c => ({
+      icon: (c.querySelector(".skill-card-ico [data-lucide], .skill-card-ico svg") || {}).getAttribute?.("data-lucide") || "sparkles",
+      kind: c.querySelector(".skill-kind"), title: c.querySelector(".skill-card-title"),
+      items: Array.from(c.querySelectorAll(".skill-item"))
+    }));
+    const wrap = document.createElement("div");
+    wrap.className = "sk";
+    wrap.innerHTML = '<div class="sk-steps" role="tablist" aria-label="Skill categories"></div>' +
+      '<div class="sk-panel" role="tabpanel"><div class="sk-items"></div><article class="sk-detail" aria-live="polite"></article></div>';
+    const steps = wrap.querySelector(".sk-steps"), itemsEl = wrap.querySelector(".sk-items"), detail = wrap.querySelector(".sk-detail");
+    cats.forEach((c, i) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "path-btn sk-step"; b.setAttribute("role", "tab"); b.id = "sk-tab-" + i; b.dataset.i = i;
+      b.innerHTML = '<span class="path-logo" aria-hidden="true"><i data-lucide="' + c.icon + '"></i></span>';
+      const k = c.kind.cloneNode(true); k.className = "path-kind"; b.appendChild(k);
+      const t = document.createElement("span"); t.className = "path-place sk-step-title";
+      t.innerHTML = c.title.innerHTML; if (c.title.dataset.pt) t.dataset.pt = c.title.dataset.pt;
+      b.appendChild(t);
+      const n = document.createElement("span"); n.className = "path-year"; n.textContent = c.items.length; b.appendChild(n);
+      steps.appendChild(b);
+    });
+    // the item buttons move into the panel (they keep their translations and icons)
+    cats.forEach(c => c.items.forEach(it => { it.classList.add("sk-item"); it.setAttribute("aria-pressed", "false"); }));
+    grid.replaceWith(wrap);
+    wrap.id = "techniques";
+    const hint = document.querySelector(".skills-hint"); if (hint) hint.remove();
+
+    // one list per category (all stay in the page, so the site search finds every item)
+    const lists = cats.map((c, i) => { const ul = document.createElement("ul"); ul.className = "sk-list"; ul.hidden = i > 0;
+      c.items.forEach(it => { const li = document.createElement("li"); li.appendChild(it); ul.appendChild(li); }); itemsEl.appendChild(ul); return ul; });
+    let cat = 0, item = null;
+    function showDetail(id) {
+      item = id;
+      const d = DATA[id];
+      cats[cat].items.forEach(it => it.setAttribute("aria-pressed", it.dataset.tech === id ? "true" : "false"));
+      if (!d) { detail.innerHTML = ""; return; }
+      const body = (pick(d.body) || []).map(p => "<p>" + p + "</p>").join("");
+      const pts = (pick(d.points) || []).map(p => "<li>" + p + "</li>").join("");
+      // texts come from the site's own #tech-detail-data (may contain <b> tags)
+      detail.innerHTML = '<div class="sk-d-head"><span class="sk-d-ico"><i data-lucide="' + (d.icon || "sparkles") + '"></i></span><div>' +
+        '<span class="sk-d-eyebrow"></span><h4 class="sk-d-title"></h4>' + (pick(d.tag) ? '<span class="sk-d-tag"></span>' : "") + "</div></div>" +
+        body + (pts ? '<ul class="sk-d-points">' + pts + "</ul>" : "");
+      detail.querySelector(".sk-d-eyebrow").textContent = pick(d.eyebrow) || "";
+      detail.querySelector(".sk-d-title").textContent = pick(d.title) || "";
+      const tg = detail.querySelector(".sk-d-tag"); if (tg) tg.textContent = pick(d.tag);
+      if (window.lucide && lucide.createIcons) lucide.createIcons();
+    }
+    function showCat(i, keepItem) {
+      cat = i;
+      steps.querySelectorAll(".sk-step").forEach((b, k) => { b.setAttribute("aria-selected", k === i ? "true" : "false"); b.tabIndex = k === i ? 0 : -1; });
+      wrap.querySelector(".sk-panel").setAttribute("aria-labelledby", "sk-tab-" + i);
+      lists.forEach((ul, k) => { ul.hidden = k !== i; });
+      const first = cats[i].items[0];
+      showDetail(keepItem && cats[i].items.some(it => it.dataset.tech === item) ? item : (first && first.dataset.tech));
+    }
+    steps.addEventListener("click", e => { const b = e.target.closest(".sk-step"); if (b) showCat(+b.dataset.i); });
+    steps.addEventListener("keydown", e => {
+      if (!/^Arrow(Left|Right)$/.test(e.key)) return;
+      e.preventDefault(); const i = (cat + (e.key === "ArrowRight" ? 1 : -1) + cats.length) % cats.length;
+      showCat(i); steps.querySelectorAll(".sk-step")[i].focus();
+    });
+    itemsEl.addEventListener("click", e => {
+      const b = e.target.closest(".sk-item"); if (!b) return;
+      e.preventDefault(); showDetail(b.dataset.tech);
+      if (innerWidth <= 860) detail.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth", block: "nearest" });
+    });
+    new MutationObserver(() => { if (item) showDetail(item); }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-lang"] });
+    // a site-search result on an item opens its category and its text
+    wrap.addEventListener("sk:open", e => {
+      const it = e.target.closest(".sk-item"); if (!it) return;
+      const i = cats.findIndex(c => c.items.includes(it)); if (i < 0) return;
+      showCat(i); showDetail(it.dataset.tech);
+    });
+    showCat(0);
+    if (window.lucide && lucide.createIcons) lucide.createIcons();
   }
 
   // ============================================================

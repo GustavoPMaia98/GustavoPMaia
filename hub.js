@@ -1,6 +1,5 @@
 /* =====================================================================
    hub.js: the data-driven research sections
-     - Research projects  (data/projects.json)
      - Collaborations     (co-author network from data/publications.json and
                            data/paper-info.json; updates itself with new papers)
      - Data & code        (data/datasets.json from Zenodo, data/repos.json from GitHub;
@@ -23,37 +22,6 @@
   };
   const t = (k, o) => { let s = (T[k][lang()] || T[k].en); for (const x in o || {}) s = s.replace("{" + x + "}", o[x]); return s; };
   const plain = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
-
-  // ------------------------------------------------------------- projects
-  function projects(data, pubs) {
-    const grid = document.getElementById("projGrid");
-    if (!grid) return;
-    const items = ((data && data.items) || []).filter(p => p && !p.hidden && p.title);
-    const byDoi = {}; (pubs || []).forEach(w => { byDoi[String(w.doi).toLowerCase()] = w; });
-    grid.innerHTML = items.map(p => {
-      const live = p.status !== "completed";
-      const papers = (p.papers || []).map(d => byDoi[String(d).toLowerCase()] ? { doi: d, w: byDoi[String(d).toLowerCase()] } : { doi: d, w: null });
-      return '<article class="proj" id="project-' + esc(p.id) + '">' +
-        '<div class="proj-top"><span class="proj-ico"><i data-lucide="' + esc(p.icon || "flask-conical") + '"></i></span>' +
-        '<span class="proj-status proj-status--' + (live ? "live" : "done") + '"' + (live ? ' data-pt="Em curso">Ongoing' : ' data-pt="Concluído">Completed') + "</span>" +
-        (p.years ? '<span class="proj-years">' + esc(p.years) + "</span>" : "") + "</div>" +
-        '<h3 class="proj-title"' + ptAttr(p.title) + ">" + esc(en(p.title)) + "</h3>" +
-        '<p class="proj-sum"' + ptAttr(p.summary) + ">" + esc(en(p.summary)) + "</p>" +
-        (p.details ? '<details class="proj-more"><summary><span data-pt="Mais">More</span></summary><p' + ptAttr(p.details) + ">" + esc(en(p.details)) + "</p></details>" : "") +
-        ((p.partners || []).length ? '<div class="proj-row"><span class="proj-k" data-pt="Parceiros">Partners</span><span class="proj-chips">' +
-          p.partners.map(x => '<span class="proj-chip">' + esc(x) + "</span>").join("") + "</span></div>" : "") +
-        (p.funding ? '<div class="proj-row"><span class="proj-k" data-pt="Financiamento">Funding</span><span class="proj-v">' + esc(p.funding) + "</span></div>" : "") +
-        (papers.length ? '<div class="proj-row proj-row--papers"><span class="proj-k" data-pt="Artigos">Papers</span><span class="proj-papers">' +
-          papers.map(x => '<button type="button" class="proj-paper" data-doi="' + esc(x.doi) + '"><i data-lucide="book-open" aria-hidden="true"></i><span>' +
-            esc(x.w ? x.w.journal + " · " + x.w.year : x.doi) + "</span></button>").join("") + "</span></div>" : "") +
-        "</article>";
-    }).join("");
-    grid.addEventListener("click", e => {
-      const b = e.target.closest(".proj-paper"); if (!b) return;
-      if (window.SiteApp && SiteApp.openPublication) SiteApp.openPublication(b.dataset.doi);
-      else window.open("https://doi.org/" + b.dataset.doi, "_blank", "noopener");
-    });
-  }
 
   // ------------------------------------------------------------- co-author network
   function authorsOf(w, info) {
@@ -155,7 +123,6 @@
   window.Hub = {
     render(data) {
       const pubs = ((data.publications && data.publications.works) || []).slice();
-      try { projects(data.projects, pubs); } catch (e) { console.warn("projects", e); }
       try { network(pubs, data["paper-info"]); } catch (e) { console.warn("network", e); }
       try { datacode(data.datasets, data.repos); } catch (e) { console.warn("data & code", e); }
     }
