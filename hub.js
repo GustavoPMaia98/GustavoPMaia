@@ -24,11 +24,12 @@
     papers1: { en: "1 paper together", pt: "1 artigo em conjunto", fr: "1 article ensemble", ja: "共著論文 1 本" },
     papersN: { en: "{n} papers together", pt: "{n} artigos em conjunto", fr: "{n} articles ensemble", ja: "共著論文 {n} 本" },
     coauthor: { en: "Co-author", pt: "Coautor(a)", fr: "Co-auteur", ja: "共著者" },
+    colleague: { en: "Research colleague", pt: "Colega de investigação", fr: "Collègue de recherche", ja: "研究仲間" },
     mentorCo: { en: "Mentor and co-author", pt: "Mentor(a) e coautor(a)", fr: "Mentor et co-auteur", ja: "指導者・共著者" },
-    me: { en: "{g} generations of mentors around me, ring after ring, and {n} co-authors on {p} papers (orange). Select anyone to see who they are.",
-          pt: "{g} gerações de mentores à minha volta, anel após anel, e {n} coautores em {p} artigos (laranja). Selecione alguém para ver quem é.",
-          fr: "{g} générations de mentors autour de moi, anneau après anneau, et {n} co-auteurs sur {p} articles (orange). Sélectionnez quelqu’un pour le découvrir.",
-          ja: "周囲の輪に {g} 世代の指導者、{p} 本の論文の共著者 {n} 人（オレンジ）。選択すると詳細を表示します。" },
+    me: { en: "{g} generations of mentors around me, ring after ring, {n} co-authors on {p} papers (orange) and {m} research colleagues (green). Select anyone to see who they are.",
+          pt: "{g} gerações de mentores à minha volta, anel após anel, {n} coautores em {p} artigos (laranja) e {m} colegas de investigação (verde). Selecione alguém para ver quem é.",
+          fr: "{g} générations de mentors autour de moi, anneau après anneau, {n} co-auteurs sur {p} articles (orange) et {m} collègues de recherche (vert). Sélectionnez quelqu’un pour le découvrir.",
+          ja: "周囲の輪に {g} 世代の指導者、{p} 本の論文の共著者 {n} 人（オレンジ）、研究仲間 {m} 人（緑）。選択すると詳細を表示します。" },
     profile: { en: "Profile", pt: "Perfil", fr: "Profil", ja: "プロフィール" },
     photo: { en: "Photo", pt: "Foto", fr: "Photo", ja: "写真" },
     nobel: { en: "Nobel laureate", pt: "Prémio Nobel", fr: "Prix Nobel", ja: "ノーベル賞受賞者" }
@@ -82,12 +83,16 @@
       below.push({ id: 0, name: c.name, key: c.key, papers: c.papers, co: true, gen: 1, kids: [], n: extra ? Object.assign({ name: c.name }, extra[1]) : null });
     });
     below.sort((p, q) => (p.papers[0] - q.papers[0]) || (q.papers.length - p.papers.length));
-    below.forEach((c, i) => { c.id = nodes.length; c.alt = i % 2; nodes.push(c); links.push({ a: c, b: me, kind: "co" }); });
+    below.forEach((c, i) => { c.id = nodes.length; c.alt = i % 3; nodes.push(c); links.push({ a: c, b: me, kind: "co" }); });
+    // research colleagues (data/tree.json "colleagues"), on their own part of the circle
+    const mates = (tree.colleagues || []).filter(c => c && c.name && !c.hidden && !byKey.has(keyOf(c.name)))
+      .map((c, i) => ({ id: nodes.length + i, name: c.name, key: keyOf(c.name), mate: true, gen: 1, kids: [], alt: (below.length + i) % 3, n: c }));
+    mates.forEach(c => { nodes.push(c); links.push({ a: c, b: me, kind: "mate" }); });
     nodes.filter(n => n.tree && n.co && !n.self).forEach(n => { if (n.parent !== me) links.push({ a: n, b: me, kind: "co" }); });
     // angles: every leaf gets a slice of the circle (co-authors a slightly smaller one);
     // a mentor sits in the middle of the people it trained
     const leaves = n => n.kids.length ? n.kids.reduce((s, k) => s + leaves(k), 0) : 1;
-    const total = me.kids.reduce((s, k) => s + leaves(k), 0) + below.length * 0.8;
+    const total = me.kids.reduce((s, k) => s + leaves(k), 0) + (below.length + mates.length) * 0.9;
     let at = -Math.PI / 2 - (me.kids.reduce((s, k) => s + leaves(k), 0) / total) * Math.PI;   // the lineage around the top
     const span = Math.PI * 2 / total;
     function angle(n) {
@@ -95,12 +100,12 @@
       const as = n.kids.map(angle); n.ang = (as[0] + as[as.length - 1]) / 2; return n.ang;
     }
     me.kids.forEach(angle);
-    below.forEach(c => { c.ang = at + span * 0.4; at += span * 0.8; });
+    below.concat(mates).forEach(c => { c.ang = at + span * 0.45; at += span * 0.9; });
     const RING = [0, 175, 300, 410, 510, 600, 680];
     const ringOf = g => RING[Math.min(g, RING.length - 1)] + Math.max(0, g - RING.length + 1) * 80;
     const outer = ringOf(maxGen) + 30, C = outer + 120;   // room for the names on the outer ring
     nodes.forEach(n => {
-      const r = n.self ? 0 : (n.tree ? ringOf(n.gen) : (n.alt ? 255 : 185));
+      const r = n.self ? 0 : (n.tree ? ringOf(n.gen) : [190, 270, 350][n.alt || 0]);
       n.r0 = r; n.x = C + Math.cos(n.ang || 0) * r; n.y = C + Math.sin(n.ang || 0) * r;
     });
     const W = 2 * C, H = 2 * C;
@@ -125,8 +130,9 @@
       const cos = Math.cos(n.ang || Math.PI / 2), sin = Math.sin(n.ang || Math.PI / 2);
       const lx = n.self ? 0 : cos * (r + 8), ly = n.self ? r + 18 : sin * (r + 8) + (sin > 0.3 ? 10 : sin < -0.3 ? -2 : 4);
       const anchor = n.self ? "middle" : (cos > 0.35 ? "start" : cos < -0.35 ? "end" : "middle");
-      return '<g class="tn-node' + (n.self ? " is-self" : "") + (n.co ? " is-co" : "") + (n.tree ? " is-tree" : " is-coonly") + '" data-id="' + n.id + '" tabindex="0" role="button" aria-label="' + esc(n.name) + '" transform="translate(' + n.x.toFixed(1) + " " + n.y.toFixed(1) + ')">' +
+      return '<g class="tn-node' + (n.self ? " is-self" : "") + (n.co ? " is-co" : "") + (n.mate ? " is-mate" : "") + (n.tree ? " is-tree" : " is-coonly") + '" data-id="' + n.id + '" tabindex="0" role="button" aria-label="' + esc(n.name) + '" transform="translate(' + n.x.toFixed(1) + " " + n.y.toFixed(1) + ')">' +
         (n.co && !n.self ? '<circle class="tn-co-ring" r="' + (r + 5) + '"/>' : "") +
+        (n.mate ? '<circle class="tn-mate-ring" r="' + (r + 5) + '"/>' : "") +
         '<circle class="tn-dot" r="' + r + '"/>' +
         (photo ? '<image href="' + esc(photo) + '" x="' + -r + '" y="' + -r + '" width="' + 2 * r + '" height="' + 2 * r + '" preserveAspectRatio="xMidYMid slice" clip-path="url(#tnc' + n.id + ')"/>'
                : '<text class="tn-ini" dy="0.35em">' + esc(n.n && n.n.initials || ini(n.name)) + "</text>") +
@@ -148,11 +154,11 @@
       stage.querySelectorAll(".tn-node").forEach(g => g.classList.toggle("is-on", on.has(+g.dataset.id) || +g.dataset.id === n.id));
       stage.querySelectorAll(".tn-link").forEach(p => {
         const a = +p.dataset.a, b = +p.dataset.b;
-        p.classList.toggle("is-on", (p.classList.contains("tn-link--mentor") && on.has(a) && on.has(b)) || (p.classList.contains("tn-link--co") && a === n.id));
+        p.classList.toggle("is-on", (p.classList.contains("tn-link--mentor") && on.has(a) && on.has(b)) || (!p.classList.contains("tn-link--mentor") && a === n.id));
       });
       if (n.self) {
         side.innerHTML = '<p class="tn-who">' + esc(n.name) + '</p><p class="tn-role">' + esc(tr(n.n.role)) + '</p><p class="tn-hint">' +
-          esc(t("me", { g: maxGen, n: coCount, p: pubs.length })) + "</p>";
+          esc(t("me", { g: maxGen, n: coCount, p: pubs.length, m: mates.length })) + "</p>";
         return;
       }
       const role = n.n ? tr(n.n.role) : "", inst = n.n && n.n.institution;
@@ -160,6 +166,7 @@
       side.innerHTML = '<p class="tn-who">' + esc(n.name) + (n.n && n.n.nobel ? ' <span class="tn-badge tn-badge--nobel">' + esc(t("nobel")) + "</span>" : "") + "</p>" +
         (role ? '<p class="tn-role">' + esc(strip(role)) + "</p>" : "") +
         (n.co ? '<p class="tn-badge">' + esc(n.tree ? t("mentorCo") : t("coauthor")) + "</p>" : "") +
+        (n.mate ? '<p class="tn-badge tn-badge--mate">' + esc(t("colleague")) + "</p>" : "") +
         (inst && inst.name ? '<p class="tn-inst-line">' + (safe(inst.url) ? '<a href="' + esc(inst.url) + '" target="_blank" rel="noopener noreferrer">' + esc(inst.name) + " ↗</a>" : esc(inst.name)) + "</p>" : "") +
         (n.n && safe(n.n.url) ? '<p><a class="tn-link-out" href="' + esc(n.n.url) + '" target="_blank" rel="noopener noreferrer">' + esc(t("profile")) + " ↗</a></p>" : "") +
         (n.n && n.n.photoCredit ? '<p class="tn-credit">' + esc(t("photo")) + ": " + esc(n.n.photoCredit.author) + " · " +
