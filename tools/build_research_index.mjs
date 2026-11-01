@@ -4,7 +4,7 @@
    It gathers short passages from the website's own content (paper abstracts, research
    highlights, projects, talks, courses, positions, degrees, news, blog posts) and, when
    the embedding model is available, adds a 384-number "meaning vector" for each one
-   (all-MiniLM-L6-v2, Apache 2.0, run with transformers.js). The browser embeds the
+   (bge-small-en-v1.5, MIT licence, run with transformers.js). The browser embeds the
    visitor's question with the same model and compares meanings, so a question finds the
    right passage even when it uses other words. Without vectors the search falls back
    to matching words.
@@ -24,7 +24,9 @@ import url from "node:url";
 
 const ROOT = path.dirname(path.dirname(url.fileURLToPath(import.meta.url)));
 const OUT = path.join(ROOT, "data", "research-index.json");
-const MODEL = "Xenova/all-MiniLM-L6-v2";
+const MODEL = "Xenova/bge-small-en-v1.5";               // MIT licence, made for search
+const POOLING = "cls";
+const QUERY_PREFIX = "Represent this sentence for searching relevant passages: ";   // added to questions, not passages
 const embed = !process.argv.includes("--no-embed");
 
 const read = f => fs.readFileSync(path.join(ROOT, f), "utf8");
@@ -122,11 +124,11 @@ if (embed) {
     const dim = 384, all = new Int8Array(passages.length * dim);
     for (let i = 0; i < passages.length; i += 16) {
       const batch = passages.slice(i, i + 16).map(p => p.title + ". " + p.text);
-      const out = await extractor(batch, { pooling: "mean", normalize: true });
+      const out = await extractor(batch, { pooling: POOLING, normalize: true });
       const v = out.data;
       for (let k = 0; k < v.length; k++) all[i * dim + k] = Math.max(-127, Math.min(127, Math.round(v[k] * 127)));
     }
-    index.model = MODEL; index.dim = dim; index.vectors = Buffer.from(all.buffer).toString("base64");
+    index.model = MODEL; index.dim = dim; index.pooling = POOLING; index.queryPrefix = QUERY_PREFIX; index.vectors = Buffer.from(all.buffer).toString("base64");
     console.log("Embedded", passages.length, "passages with", MODEL);
   } catch (e) {
     console.warn("No vectors (" + e.message + "): word matching only.");

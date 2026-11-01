@@ -4,7 +4,7 @@
       answer a question. data/research-index.json holds the passages and their
       meaning vectors (tools/build_research_index.mjs). The question is matched by
       words at once, then by meaning with the same small open model
-      (all-MiniLM-L6-v2, Apache 2.0) run in the browser by transformers.js
+      (bge-small-en-v1.5, MIT licence) run in the browser by transformers.js
       (Apache 2.0), both self-hosted in vendor/. Nothing leaves the device.
    2. Optional: "Write an answer with AI" loads an open chat model (Qwen2.5 1.5B
       Instruct, Apache 2.0) with WebLLM (Apache 2.0) on the visitor's GPU and writes
@@ -25,8 +25,8 @@ if (form && !form.__wired) {
   const T = {
     placeholder: { en: "e.g. What happens to organic matter when asteroids are hit by small impacts?", pt: "ex.: O que acontece à matéria orgânica quando os asteroides sofrem pequenos impactos?",
                    fr: "ex. : Que devient la matière organique quand des astéroïdes subissent de petits impacts ?", ja: "例：小さな衝突を受けた小惑星の有機物はどうなる？" },
-    loading: { en: "Loading the search model (about 23 MB, only the first time)…", pt: "A carregar o modelo de pesquisa (cerca de 23 MB, só da primeira vez)…",
-               fr: "Chargement du modèle de recherche (environ 23 Mo, la première fois seulement)…", ja: "検索モデルを読み込み中（約 23 MB、初回のみ）…" },
+    loading: { en: "Loading the search model (about 34 MB, only the first time)…", pt: "A carregar o modelo de pesquisa (cerca de 34 MB, só da primeira vez)…",
+               fr: "Chargement du modèle de recherche (environ 34 Mo, la première fois seulement)…", ja: "検索モデルを読み込み中（約 34 MB、初回のみ）…" },
     found: { en: "The passages of my work closest to your question:", pt: "As passagens do meu trabalho mais próximas da sua pergunta:",
              fr: "Les passages de mon travail les plus proches de votre question :", ja: "質問に最も近い研究内容：" },
     words: { en: "(matched by words)", pt: "(correspondência por palavras)", fr: "(correspondance par mots)", ja: "（単語で一致）" },
@@ -116,7 +116,7 @@ if (form && !form.__wired) {
         if (!embP) status.textContent = t("loading");
         const emb = await loadEmbedder(idx.model);
         if (my !== run) return;
-        const out = await emb(q, { pooling: "mean", normalize: true }), v = out.data, d = idx.dim;
+        const out = await emb((idx.queryPrefix || "") + q, { pooling: idx.pooling || "mean", normalize: true }), v = out.data, d = idx.dim;
         score = idx.passages.map((p, i) => {
           let c = 0; for (let k = 0; k < d; k++) c += v[k] * vecs[i * d + k];
           c /= 127;

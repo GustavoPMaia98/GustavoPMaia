@@ -1,5 +1,5 @@
 # Builds the index "Ask my research" searches (data/research-index.json) from the site's
-# own content, with meaning vectors from a small open model (all-MiniLM-L6-v2, Apache 2.0)
+# own content, with meaning vectors from a small open model (bge-small-en-v1.5, MIT licence)
 # whose files are saved in vendor/models so visitors load them from this site.
 # Runs every night (after "Update site data"), from the Actions tab, and when the
 # builder itself changes on a branch other than main.
