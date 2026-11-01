@@ -1276,3 +1276,14 @@ html.space-pending body, html.has-space3d body{ background:#02040a; }
 .tn-head .tn-badge{ margin:4px 0 0; }
 @media (max-width:700px){ .tn-svg{ width:100%; max-width:none; } .tn-stage{ display:flex; width:auto; } .tn-wrap{ overflow:hidden; } }
 .tn-about{ margin:0 0 8px; font-size:.86rem; line-height:1.5; color:var(--text); }
+
+/* Blog page: button back to the personal website (top bar), in the site's cyan-blue */
+.blog-body .nav-inner{ display:flex; align-items:center; justify-content:space-between; }
+.nav-home{ display:inline-flex; align-items:center; gap:6px; height:38px; padding:0 16px 0 11px; border-radius:var(--radius-pill);
+  font-weight:800; font-size:.9rem; color:#04121f; text-decoration:none; white-space:nowrap;
+  background:linear-gradient(120deg, #7dd3fc, #60a5fa 55%, #a78bfa); box-shadow:0 6px 18px -6px rgba(96,165,250,.75);
+  transition:transform .2s ease, box-shadow .2s ease, filter .2s ease; }
+.nav-home:hover, .nav-home:focus-visible{ color:#04121f; text-decoration:none; transform:translateY(-1px); filter:brightness(1.07); box-shadow:0 10px 24px -6px rgba(96,165,250,.9); }
+.nav-home svg{ transition:transform .2s ease; }
+.nav-home:hover svg{ transform:translateX(-3px); }
+@media (max-width:560px){ .nav-home{ height:34px; padding:0 12px 0 9px; font-size:.84rem; } }

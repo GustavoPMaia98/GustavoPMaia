@@ -4,10 +4,10 @@
 (function () {
   "use strict";
   const T = {
-    en: { back: "← Back to the research website", title: "The blog is being synthesized", text: "New writing on astrobiology, mechanochemistry and research life is in the flask. Come back soon.", home: "Back to the research website", research: "Research", skip: "Skip to content" },
-    pt: { back: "← Voltar ao site de investigação", title: "O blog está a ser sintetizado", text: "Novos textos sobre astrobiologia, mecanoquímica e a vida de investigação estão no balão. Volte em breve.", home: "Voltar ao site de investigação", research: "Investigação", skip: "Saltar para o conteúdo" },
-    fr: { back: "← Retour au site de recherche", title: "Le blog est en cours de synthèse", text: "De nouveaux textes sur l’astrobiologie, la mécanochimie et la vie de chercheur sont dans le ballon. Revenez bientôt.", home: "Retour au site de recherche", research: "Recherche", skip: "Aller au contenu" },
-    ja: { back: "← 研究サイトに戻る", title: "ブログは現在「合成中」です", text: "宇宙生物学、メカノケミストリー、研究生活についての新しい記事をフラスコの中で準備中です。また来てください。", home: "研究サイトに戻る", research: "研究", skip: "本文へスキップ" }
+    en: { site: "Personal website", back: "← Back to the research website", title: "The blog is being synthesized", text: "New writing on astrobiology, mechanochemistry and research life is in the flask. Come back soon.", home: "Back to the research website", research: "Research", skip: "Skip to content" },
+    pt: { site: "Site pessoal", back: "← Voltar ao site de investigação", title: "O blog está a ser sintetizado", text: "Novos textos sobre astrobiologia, mecanoquímica e a vida de investigação estão no balão. Volte em breve.", home: "Voltar ao site de investigação", research: "Investigação", skip: "Saltar para o conteúdo" },
+    fr: { site: "Site personnel", back: "← Retour au site de recherche", title: "Le blog est en cours de synthèse", text: "De nouveaux textes sur l’astrobiologie, la mécanochimie et la vie de chercheur sont dans le ballon. Revenez bientôt.", home: "Retour au site de recherche", research: "Recherche", skip: "Aller au contenu" },
+    ja: { site: "個人サイト", back: "← 研究サイトに戻る", title: "ブログは現在「合成中」です", text: "宇宙生物学、メカノケミストリー、研究生活についての新しい記事をフラスコの中で準備中です。また来てください。", home: "研究サイトに戻る", research: "研究", skip: "本文へスキップ" }
   };
   let lang = "en";
   try {
