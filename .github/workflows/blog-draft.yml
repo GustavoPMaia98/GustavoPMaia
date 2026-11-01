@@ -1,13 +1,15 @@
 # Issues -> New issue -> "Blog draft from notes (AI)": an open model (Mistral 7B, Apache 2.0)
 # run with Ollama on GitHub's machine writes a draft in English and Portuguese, saved hidden
 # in data/blog.json and posted on the issue. Add the "publish" label to the issue to put
-# it on the website (the Blog section appears once it has a post).
+# it on the website, or comment just: publish (the Blog section appears once it has a post).
 # Only issues opened by the owner of the repository are used.
 name: Blog draft from notes (AI)
 
 on:
   issues:
     types: [opened, labeled]
+  issue_comment:
+    types: [created]
 
 permissions:
   contents: write
@@ -21,7 +23,8 @@ jobs:
   draft:
     if: >-
       github.event.issue.user.login == github.repository_owner &&
-      contains(github.event.issue.labels.*.name, 'blog-draft') &&
+      github.event_name == 'issues' &&
+      (contains(github.event.issue.labels.*.name, 'blog-draft') || startsWith(github.event.issue.title, 'Blog draft:')) &&
       (github.event.action == 'opened' || github.event.label.name == 'redraft')
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -46,7 +49,7 @@ jobs:
           git commit -m "Blog draft from issue #$NUMBER (hidden)" || true
           for i in 1 2 3; do git pull --rebase origin main && git push && break; sleep 5; done
           { echo "Here is the draft, saved hidden in \`data/blog.json\` (AI-written from your notes: please check it)."
-            echo; echo "- To put it on the website, add the **publish** label to this issue."
+            echo; echo "- To put it on the website, comment just \`publish\` (or add the **publish** label)."
             echo "- To change it, edit the post in \`data/blog.json\` (it has \`\"issue\": $NUMBER\`)."
             echo "- For a new attempt, edit the notes above and add the **redraft** label."
             echo; cat draft.md; } > comment.md
@@ -54,9 +57,10 @@ jobs:
 
   publish:
     if: >-
-      github.event.action == 'labeled' && github.event.label.name == 'publish' &&
       github.event.sender.login == github.repository_owner &&
-      contains(github.event.issue.labels.*.name, 'blog-draft')
+      (contains(github.event.issue.labels.*.name, 'blog-draft') || startsWith(github.event.issue.title, 'Blog draft:')) &&
+      ((github.event_name == 'issues' && github.event.action == 'labeled' && github.event.label.name == 'publish') ||
+       (github.event_name == 'issue_comment' && github.event.comment.body == 'publish'))
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

@@ -1,5 +1,5 @@
 name: Blog draft from notes (AI)
-description: An open AI model (Mistral 7B, Apache 2.0, run on GitHub's machines) turns your notes into a blog draft in English and Portuguese. The draft is saved hidden; nothing is published until you add the "publish" label.
+description: An open AI model (Mistral 7B, Apache 2.0, run on GitHub's machines) turns your notes into a blog draft in English and Portuguese. The draft is saved hidden; nothing is published until you comment "publish" on the issue.
 title: "Blog draft: "
 labels: [blog-draft]
 body:

@@ -160,7 +160,10 @@ def main():
         ev = json.load(f)
     issue = ev["issue"]
     labels = {l["name"] for l in issue.get("labels", [])}
-    act = next((ACTIONS[l] for l in ACTIONS if l in labels), None)
+    title = issue.get("title", "").lower()
+    by_title = {"add talk:": "add-talk", "add course:": "add-course", "add award:": "add-award"}
+    act = next((ACTIONS[l] for l in ACTIONS if l in labels), None) or \
+        next((ACTIONS[v] for k, v in by_title.items() if title.startswith(k)), None)
     if not act:
         print("Not a website form; nothing to do.")
         return 0
