@@ -1,150 +1,176 @@
-/* slide.js: the website and the Blog page sit side by side.
-   - The Blog button (and the menu link) slides the website out to the left and the
-     blog in from the right; going back slides the other way (cross-page View
-     Transitions: Chrome, Edge, Safari 18.2+; other browsers simply open the page).
-   - On the website, the blog also waits just past the right edge:
-       * with a mouse, bringing the cursor to the far right shows a small "Blog" tab;
-       * pressing on that tab, or on the edge itself, and dragging to the left pulls
-         the blog over the page; let go past about a third of the screen and the
-         blog opens, otherwise it slides back. A click on the tab opens it too.
-       * on touch screens the tab stays visible as a thin handle (edge swipes there
-         belong to the phone's own back gesture).
-     It only starts from the edge or the tab, follows sideways moves only, and never
-     opens on a small or vertical movement, so the page cannot change by accident.
-   The look is in ui-extra.css (.blog-edge, .blog-tab, .blog-peek). */
+/* slide.js: the website and the Blog page sit side by side, like two pages on one sky.
+   - Pull the website itself to the left to reach the blog: press on the empty space to
+     the right of the website (or, on narrow screens, on the right edge) and drag left.
+     The whole page follows the pointer like a sheet of paper while the starry sky stays
+     behind it (turning slightly), and the blog arrives from the right on that same sky.
+     Let go past about a third of the screen and the blog opens; otherwise the page
+     settles back. It starts only from that empty space, never from text, links or
+     controls, and only for a clear sideways pull, so the page cannot change by accident.
+   - Bringing the cursor to that space shows a small hint ("‹ Blog").
+   - The menu's Blog link slides the same way (cross-page View Transitions where the
+     browser has them), and going back slides the other way.
+   - The blog page continues the sky where the website left it (scenes3d.js, SiteSpace.keep).
+   Styles: ui-extra.css (.blog-hint, .blog-peek, html.blog-pulling). */
 (function () {
   "use strict";
   const isBlog = u => /\/blog\.html$/.test(new URL(u, location.href).pathname);
-  let dragNav = false;                       // the drag already slid the blog in: no second animation
+  let dragNav = false;                       // the pull already brought the blog in: no second animation
 
   // ---- page-to-page slide (View Transitions) ----
   addEventListener("pagereveal", e => {
     if (!e.viewTransition) return;
     let from = "";
     try { from = navigation.activation && navigation.activation.from ? navigation.activation.from.url : ""; } catch (x) {}
-    if (!isBlog(location.href) && !(from && isBlog(from))) return;      // only between the website and the blog
+    if (!isBlog(location.href) && !(from && isBlog(from))) return;
     try { e.viewTransition.types.add(isBlog(location.href) ? "slide-forward" : "slide-back"); } catch (x) {}
   });
   addEventListener("pageswap", e => {
+    if (window.SiteSpace && SiteSpace.keep && e.activation && (isBlog(e.activation.entry.url) || isBlog(location.href))) SiteSpace.keep();
     if (!e.viewTransition || !e.activation) return;
     if (dragNav) { try { e.viewTransition.skipTransition(); } catch (x) {} return; }
     const to = e.activation.entry.url;
     if (!isBlog(to) && !isBlog(location.href)) return;
     try { e.viewTransition.types.add(isBlog(to) ? "slide-forward" : "slide-back"); } catch (x) {}
   });
+  // browsers without pageswap: keep the sky when following a link between the two pages
+  document.addEventListener("click", e => {
+    const a = e.target.closest && e.target.closest("a[href]");
+    if (a && (isBlog(a.href) || (isBlog(location.href) && new URL(a.href, location.href).origin === location.origin)) && window.SiteSpace && SiteSpace.keep) SiteSpace.keep();
+  });
 
   if (isBlog(location.href)) return;
 
-  // ---- the blog waiting at the right edge (website only) ----
+  // ---- pulling the website to the left (website only) ----
   const T = {
-    en: { tab: "Blog", title: "Blog", soon: "The blog is being synthesized", hint: "Drag to open the blog" },
-    pt: { tab: "Blog", title: "Blog", soon: "O blog está a ser sintetizado", hint: "Arraste para abrir o blog" },
-    fr: { tab: "Blog", title: "Blog", soon: "Le blog est en cours de synthèse", hint: "Faites glisser pour ouvrir le blog" },
-    ja: { tab: "ブログ", title: "ブログ", soon: "ブログは現在「合成中」です", hint: "ドラッグしてブログを開く" }
+    en: { hint: "Blog", sub: "drag the page", title: "Blog", soon: "The blog is being synthesized", text: "New writing on astrobiology, mechanochemistry and research life is in the flask. Come back soon." },
+    pt: { hint: "Blog", sub: "arraste a página", title: "Blog", soon: "O blog está a ser sintetizado", text: "Novos textos sobre astrobiologia, mecanoquímica e a vida de investigação estão no balão. Volte em breve." },
+    fr: { hint: "Blog", sub: "faites glisser la page", title: "Blog", soon: "Le blog est en cours de synthèse", text: "De nouveaux textes sur l’astrobiologie, la mécanochimie et la vie de chercheur sont dans le ballon. Revenez bientôt." },
+    ja: { hint: "ブログ", sub: "ページをドラッグ", title: "ブログ", soon: "ブログは現在「合成中」です", text: "宇宙生物学、メカノケミストリー、研究生活についての新しい記事をフラスコの中で準備中です。また来てください。" }
   };
   const lang = () => { const l = document.documentElement.getAttribute("lang"); return T[l] ? l : "en"; };
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
+  const root = document.documentElement;
+  const href = () => "blog.html" + (lang() !== "en" ? "?lang=" + lang() : "");
 
   function build() {
-    const href = () => "blog.html" + (lang() !== "en" ? "?lang=" + lang() : "");
-    const edge = document.createElement("div");
-    edge.className = "blog-edge"; edge.setAttribute("aria-hidden", "true");
-    const tab = document.createElement("a");
-    tab.className = "blog-tab" + (fine ? "" : " is-touch"); tab.href = href();
-    tab.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.4 3.6a2 2 0 0 1 2.8 2.8L7 18.6 3 20l1.4-4z"/></svg>' +
-      '<span class="blog-tab-t"></span><svg class="blog-tab-arrow" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>';
+    const hint = document.createElement("a");
+    hint.className = "blog-hint"; hint.href = href();
+    hint.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>' +
+      '<span class="blog-hint-t"></span><span class="blog-hint-s"></span>';
+    // what arrives from the right: the blog page's own content, on the same sky
     const peek = document.createElement("div");
     peek.className = "blog-peek"; peek.setAttribute("aria-hidden", "true");
-    peek.innerHTML = '<div class="blog-peek-in"><svg viewBox="0 0 64 64" width="56" height="56" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M24 8h16M28 8v14L12 50a5 5 0 0 0 4.4 7.4h31.2A5 5 0 0 0 52 50L36 22V8"/><path d="M18 40h28"/></svg>' +
-      '<p class="blog-peek-h"></p><p class="blog-peek-s"></p></div>';
-    document.body.append(edge, tab, peek);
+    peek.innerHTML = '<div class="nav blog-peek-nav"><div class="nav-inner"><span class="nav-logo">G<span>P</span>M</span></div></div><div class="blog-page"><span class="blog-back">&larr;</span><h1 class="blog-h1"></h1>' +
+      '<div class="blog-soon"><span class="blog-soon-ico"><svg viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M24 8h16M28 8v14L12 50a5 5 0 0 0 4.4 7.4h31.2A5 5 0 0 0 52 50L36 22V8"/><path d="M18 40h28"/></svg></span>' +
+      '<h2 class="blog-soon-title"></h2><p class="blog-soon-text"></p></div></div>';
+    document.body.append(hint, peek);
     const texts = () => {
       const t = T[lang()];
-      tab.querySelector(".blog-tab-t").textContent = t.tab; tab.title = t.hint; tab.setAttribute("aria-label", t.tab + ": " + t.hint);
-      peek.querySelector(".blog-peek-h").textContent = t.title; peek.querySelector(".blog-peek-s").textContent = t.soon;
-      tab.href = href();
+      hint.querySelector(".blog-hint-t").textContent = t.hint; hint.querySelector(".blog-hint-s").textContent = t.sub;
+      hint.setAttribute("aria-label", t.title); hint.href = href();
+      peek.querySelector(".blog-h1").textContent = t.title; peek.querySelector(".blog-soon-title").textContent = t.soon;
+      peek.querySelector(".blog-soon-text").textContent = t.text;
     };
     texts();
-    new MutationObserver(texts).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
+    new MutationObserver(texts).observe(root, { attributes: true, attributeFilter: ["lang"] });
 
-    // the tab shows when the cursor reaches the right side of the window
+    // where a pull may start: the empty space right of the website's column (at least
+    // the last 28 px of the window), below the menu bar, not on any control
+    const NAV = () => { const n = document.querySelector(".nav"); return n ? n.getBoundingClientRect().bottom : 64; };
+    let colRight = innerWidth;
+    const measure = () => {
+      const s = document.querySelector("#mainContent .section, main .section, main");
+      colRight = s ? Math.min(innerWidth - 28, s.getBoundingClientRect().right + 16) : innerWidth - 28;
+    };
+    measure(); addEventListener("resize", measure, { passive: true }); setTimeout(measure, 1500);
+    const CONTROLS = "a, button, input, textarea, select, label, summary, [role=button], [role=tab], [tabindex], canvas, video, iframe, .askc, .nav, .rail, .path-scroll, .tn-wrap, .ms-stage";
+    const inZone = (x, y, target) => x >= colRight && x <= innerWidth && y > NAV() && y < innerHeight - 8 &&
+      !(target && target.closest && target.closest(CONTROLS) && !target.closest(".blog-hint"));
+
+    // the hint, and a grab cursor, when the mouse is in that space
     if (fine) {
-      let raf = 0, x = 0, y = 0;
+      let raf = 0, mx = -1, my = -1, mt = null;
       addEventListener("mousemove", e => {
-        x = e.clientX; y = e.clientY;
+        mx = e.clientX; my = e.clientY; mt = e.target;
         if (raf) return;
-        raf = requestAnimationFrame(() => {
-          raf = 0;
-          const near = innerWidth - x < 70 && y > innerHeight * 0.15 && y < innerHeight * 0.8;
-          tab.classList.toggle("is-near", near || drag !== null);
-        });
+        raf = requestAnimationFrame(() => { raf = 0; const on = pull === null && inZone(mx, my, mt); root.classList.toggle("blog-zone", on); hint.classList.toggle("is-on", on || pull !== null); });
       }, { passive: true });
-      document.addEventListener("mouseleave", () => { if (!drag) tab.classList.remove("is-near"); });
+      document.addEventListener("mouseleave", () => { if (pull === null) { root.classList.remove("blog-zone"); hint.classList.remove("is-on"); } });
     }
 
-    // dragging the blog in from the right
-    let drag = null;
+    let pull = null, sx = 0, sy = 0, last = 0, lastT = 0, v = 0, id = null, started = false;
     const W = () => innerWidth;
-    const setX = px => { peek.style.transform = "translateX(" + Math.max(0, px) + "px)"; };
+    function set(px) {                                    // px <= 0: how far the website has moved left
+      root.style.setProperty("--pull", px + "px");
+      peek.style.transform = "translateX(" + (W() + px) + "px)";
+      if (window.SiteSpace && SiteSpace.pan) SiteSpace.pan(-px / W() * 0.22);
+    }
+    function begin() {
+      started = true; root.classList.add("blog-pulling"); root.classList.remove("blog-zone"); peek.classList.add("is-on");
+    }
     function settle(open) {
-      peek.classList.add("is-settling");
-      setX(open ? 0 : W());
+      root.classList.add("blog-settling");
+      set(open ? -W() : 0);
       const done = () => {
-        peek.classList.remove("is-settling");
-        if (open) { dragNav = true; location.href = href(); }
-        else { peek.classList.remove("is-on"); peek.style.transform = ""; document.documentElement.classList.remove("blog-dragging"); }
+        root.classList.remove("blog-settling");
+        if (open) { dragNav = true; if (window.SiteSpace && SiteSpace.keep) SiteSpace.keep(); location.href = href(); return; }
+        root.classList.remove("blog-pulling"); peek.classList.remove("is-on"); root.style.removeProperty("--pull");
+        if (window.SiteSpace && SiteSpace.pan) SiteSpace.pan(0);
+        pull = null;
       };
-      if (reduced) done(); else setTimeout(done, 320);
+      if (reduced) done(); else setTimeout(done, 420);
     }
-    function start(e) {
-      if (e.button !== 0 && e.pointerType === "mouse") return;
-      drag = { x: e.clientX, y: e.clientY, t: performance.now(), moved: false, lastX: e.clientX, lastT: performance.now(), v: 0, el: e.currentTarget, id: e.pointerId };
-      try { e.currentTarget.setPointerCapture(e.pointerId); } catch (x) {}
+    function down(x, y, target, pid) {
+      if (pull !== null || !inZone(x, y, target)) return false;
+      pull = 0; sx = x; sy = y; last = x; lastT = performance.now(); v = 0; id = pid; started = false;
+      return true;
     }
-    function move(e) {
-      if (!drag || e.pointerId !== drag.id) return;
-      const dx = drag.x - e.clientX, dy = Math.abs(e.clientY - drag.y);
-      if (!drag.moved) {
-        if (dy > 12 && dy > Math.abs(dx)) { drag = null; return; }      // a vertical move: not a drag to the blog
-        if (dx < 8) return;
-        drag.moved = true;
-        peek.classList.add("is-on"); document.documentElement.classList.add("blog-dragging");
+    function moveTo(x, y) {
+      if (pull === null) return false;
+      const dx = x - sx, dy = y - sy;
+      if (!started) {
+        if (Math.abs(dy) > 10 && Math.abs(dy) > Math.abs(dx)) { pull = null; return false; }     // scrolling, not pulling
+        if (dx > -12) return false;                                                               // only a clear pull to the left
+        begin();
       }
-      e.preventDefault();
-      const now = performance.now();
-      drag.v = (drag.lastX - e.clientX) / Math.max(1, now - drag.lastT); drag.lastX = e.clientX; drag.lastT = now;
-      setX(W() - Math.max(0, dx));
+      const now = performance.now(); v = (last - x) / Math.max(1, now - lastT); last = x; lastT = now;
+      pull = Math.min(0, dx); set(pull);
+      return true;
     }
-    function end(e) {
-      if (!drag || (e && e.pointerId !== drag.id)) return;
-      const d = drag; drag = null;
-      if (!d.moved) return;                                              // a click: handled by the link
-      const dx = d.x - (e ? e.clientX : d.lastX);
-      d.el.__justDragged = true; setTimeout(() => { d.el.__justDragged = false; }, 50);
-      settle(dx > W() * 0.33 || (d.v > 0.7 && dx > 80));
+    function up() {
+      if (pull === null) return;
+      if (!started) { pull = null; return; }
+      settle(-pull > W() * 0.3 || (v > 0.8 && -pull > 90));
     }
-    [edge, tab].forEach(el => {
-      el.addEventListener("pointerdown", start);
-      el.addEventListener("pointermove", move);
-      el.addEventListener("pointerup", end);
-      el.addEventListener("pointercancel", () => { if (drag && drag.moved) settle(false); drag = null; });
-      el.addEventListener("dragstart", e => e.preventDefault());
+    // mouse and pen
+    addEventListener("pointerdown", e => {
+      if (e.pointerType === "touch" || e.button !== 0) return;
+      if (down(e.clientX, e.clientY, e.target, e.pointerId)) { e.preventDefault(); }
     });
-    // a plain click on the tab: slide the blog in, then open it
-    tab.addEventListener("click", e => {
-      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;          // new tab / window: let the browser do it
+    addEventListener("pointermove", e => { if (e.pointerType !== "touch" && e.pointerId === id && moveTo(e.clientX, e.clientY)) e.preventDefault(); });
+    addEventListener("pointerup", e => { if (e.pointerType !== "touch" && e.pointerId === id) up(); });
+    addEventListener("pointercancel", e => { if (e.pointerType !== "touch" && e.pointerId === id && started) settle(false); else if (e.pointerId === id) pull = null; });
+    // touch: sideways pulls are taken over, vertical moves keep scrolling the page
+    addEventListener("touchstart", e => { if (e.touches.length === 1) down(e.touches[0].clientX, e.touches[0].clientY, e.target, "t"); else if (pull !== null && !started) pull = null; }, { passive: true });
+    addEventListener("touchmove", e => { if (pull !== null && e.touches.length === 1 && moveTo(e.touches[0].clientX, e.touches[0].clientY) && e.cancelable) e.preventDefault(); }, { passive: false });
+    addEventListener("touchend", () => up(), { passive: true });
+    addEventListener("touchcancel", () => { if (started) settle(false); else pull = null; }, { passive: true });
+    // the hint itself: a click slides the page away and opens the blog
+    hint.addEventListener("click", e => {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
       e.preventDefault();
-      if (tab.__justDragged) return;
       if (reduced) { location.href = href(); return; }
-      peek.classList.add("is-on"); document.documentElement.classList.add("blog-dragging"); setX(W());
+      pull = 0; begin(); set(0);
       requestAnimationFrame(() => requestAnimationFrame(() => settle(true)));
     });
-    // coming back with the browser's back button (page restored from memory)
+    // coming back with the browser's Back button (page restored from memory)
     addEventListener("pageshow", ev => {
       if (!ev.persisted) return;
-      dragNav = false; peek.classList.remove("is-on", "is-settling"); peek.style.transform = "";
-      document.documentElement.classList.remove("blog-dragging"); tab.classList.remove("is-near");
+      dragNav = false; pull = null; started = false;
+      root.classList.remove("blog-pulling", "blog-settling", "blog-zone"); root.style.removeProperty("--pull");
+      peek.classList.remove("is-on"); hint.classList.remove("is-on");
+      if (window.SiteSpace && SiteSpace.pan) SiteSpace.pan(0);
     });
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", build); else build();
