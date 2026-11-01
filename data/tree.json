@@ -242,6 +242,12 @@
                     "institution": {
                       "name": "University of California, Berkeley",
                       "url": "https://chemistry.berkeley.edu/"
+                    },
+                    "photo": "images/tree/kenneth-s-pitzer.jpg",
+                    "photoCredit": {
+                      "author": "unknown",
+                      "license": "Public domain",
+                      "source": "https://commons.wikimedia.org/wiki/File:Kennethpitzer.jpg"
                     }
                   }
                 ]
