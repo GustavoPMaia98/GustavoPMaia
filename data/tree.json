@@ -418,7 +418,8 @@
               }
             ]
           }
-        ]
+        ],
+        "photo": "images/tree/dworkin.jpg"
       },
       {
         "name": "Paulo J. S. Almeida",
@@ -457,7 +458,14 @@
     "academictree": 972410
   },
   "coauthors": {
-    "_help": "Extra details for co-authors who are not in the tree above, keyed by their name as on the papers: \"photo\" (images/tree/...), \"url\", \"role\" {en, pt}, \"institution\" {name, url}. They appear in the Academic Tree & Collaborations circle."
+    "_help": "Extra details for co-authors who are not in the tree above, keyed by their name as on the papers: \"photo\" (images/tree/...), \"url\", \"role\" {en, pt}, \"institution\" {name, url}. They appear in the Academic Tree & Collaborations circle.",
+    "Hannah L. McLain": {
+      "photo": "images/tree/mclain.jpg",
+      "role": {
+        "en": "Co-author · NASA Goddard Space Flight Center",
+        "pt": "Coautora · NASA Goddard Space Flight Center"
+      }
+    }
   },
   "colleagues": [
     {
