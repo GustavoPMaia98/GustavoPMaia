@@ -1311,7 +1311,7 @@ Object.assign(window.TR.ja, {
 // Research hub: Ask my research, Research projects, Collaborations, Data & code, Sample-return missions
 Object.assign(window.TR.fr, {
   "Ask": "Demander", "Projects": "Projets", "Collaborations": "Collaborations", "Data & code": "Données et code", "Missions": "Missions",
-  "Ask my research": "Interrogez mes recherches", "Research projects": "Projets de recherche", "Sample-return missions": "Missions de retour d’échantillons",
+  "Ask my research": "Interrogez mes recherches", "Research projects": "Projets de recherche", "Space missions": "Missions spatiales",
   "Ask a question about my work. The answer is looked up in my papers, talks and projects by a small open AI model that runs in your browser: what you type never leaves your device.": "Posez une question sur mon travail. La réponse est cherchée dans mes articles, présentations et projets par un petit modèle d’IA ouvert qui tourne dans votre navigateur : ce que vous tapez ne quitte jamais votre appareil.",
   "What is asteroid gardening?": "Qu’est-ce que l’« asteroid gardening » ?",
   "Do ribonucleosides survive mechanochemistry?": "Les ribonucléosides survivent-ils à la mécanochimie ?",
@@ -1326,12 +1326,12 @@ Object.assign(window.TR.fr, {
   "Datasets": "Jeux de données", "Code": "Code",
   "Datasets appear here by themselves once they are published on Zenodo with my ORCID.": "Les jeux de données apparaîtront ici d’eux-mêmes dès qu’ils seront publiés sur Zenodo avec mon ORCID.",
   "This website: data, automation and code, open source.": "Ce site : données, automatisation et code, en open source.",
-  "The missions that brought pieces of asteroids and a comet back to Earth: the samples that test the chemistry I study in the lab. Orbits have their real shapes, distances are compressed and positions approximate; drag to turn.": "Les missions qui ont rapporté sur Terre des morceaux d’astéroïdes et d’une comète : les échantillons qui mettent à l’épreuve la chimie que j’étudie au laboratoire. Les orbites ont leur forme réelle, les distances sont comprimées et les positions approximatives ; faites glisser pour tourner.",
+  "The missions that brought pieces of asteroids, comets and the Moon back to Earth, those that studied them up close, and those on their way (NASA, ESA, JAXA, CNSA): the worlds that test the chemistry I study in the lab. Orbits have their real shapes, distances are compressed and positions approximate; drag to turn.": "Les missions qui ont rapporté sur Terre des morceaux d’astéroïdes, de comètes et de la Lune, celles qui les ont étudiés de près et celles en route (NASA, ESA, JAXA, CNSA) : les mondes qui mettent à l’épreuve la chimie que j’étudie au laboratoire. Les orbites ont leur forme réelle, les distances sont comprimées et les positions approximatives ; faites glisser pour tourner.",
   "Pause / play": "Pause / lecture",
 });
 Object.assign(window.TR.ja, {
   "Ask": "質問", "Projects": "プロジェクト", "Collaborations": "共同研究", "Data & code": "データとコード", "Missions": "探査ミッション",
-  "Ask my research": "研究に質問する", "Research projects": "研究プロジェクト", "Sample-return missions": "サンプルリターン・ミッション",
+  "Ask my research": "研究に質問する", "Research projects": "研究プロジェクト", "Space missions": "宇宙探査ミッション",
   "Ask a question about my work. The answer is looked up in my papers, talks and projects by a small open AI model that runs in your browser: what you type never leaves your device.": "私の研究について質問してください。ブラウザ内で動く小さなオープン AI モデルが、論文・発表・プロジェクトから答えを探します。入力内容が端末の外に送られることはありません。",
   "What is asteroid gardening?": "小惑星表面の撹拌（asteroid gardening）とは？",
   "Do ribonucleosides survive mechanochemistry?": "リボヌクレオシドはメカノケミストリーに耐えられる？",
@@ -1346,6 +1346,6 @@ Object.assign(window.TR.ja, {
   "Datasets": "データセット", "Code": "コード",
   "Datasets appear here by themselves once they are published on Zenodo with my ORCID.": "ORCID 付きで Zenodo に公開されたデータセットは、ここに自動で表示されます。",
   "This website: data, automation and code, open source.": "このウェブサイト：データ、自動化、コード（オープンソース）。",
-  "The missions that brought pieces of asteroids and a comet back to Earth: the samples that test the chemistry I study in the lab. Orbits have their real shapes, distances are compressed and positions approximate; drag to turn.": "小惑星と彗星のかけらを地球に持ち帰ったミッションです。その試料が、私が実験室で研究する化学を検証します。軌道の形は実際のもの、距離は圧縮、位置はおおよそです。ドラッグで回転できます。",
+  "The missions that brought pieces of asteroids, comets and the Moon back to Earth, those that studied them up close, and those on their way (NASA, ESA, JAXA, CNSA): the worlds that test the chemistry I study in the lab. Orbits have their real shapes, distances are compressed and positions approximate; drag to turn.": "小惑星・彗星・月のかけらを地球に持ち帰ったミッション、それらを間近で調べたミッション、そしてこれからのミッション（NASA、ESA、JAXA、CNSA）。私が実験室で研究する化学を検証する天体です。軌道の形は実際のもの、距離は圧縮、位置はおおよそです。ドラッグで回転できます。",
   "Pause / play": "一時停止／再生",
 });

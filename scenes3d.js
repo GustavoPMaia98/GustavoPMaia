@@ -334,8 +334,8 @@ async function startSpace() {
   layout();
   addEventListener("resize", () => { layout(); if (reduced) draw(0); }, { passive: true });
 
-  let mx = 0, my = 0, clock = 0;
-  if (!PHONE) addEventListener("pointermove", e => { mx = e.clientX / innerWidth - 0.5; my = e.clientY / innerHeight - 0.5; }, { passive: true });
+  let clock = 0;
+  // the stars move only with scrolling (not with the mouse, not on their own)
   // scrolling: read once per scroll event (no layout work inside the frame) and eased
   // towards in the frame, so the sky glides with the page. Big jumps (the browser
   // restoring the scroll position on reload, a link to a section) and the first
@@ -351,9 +351,9 @@ async function startSpace() {
     if (t < 3 || Math.abs(gap) > innerHeight * 1.5) scrollNow = scrollTarget;
     else scrollNow += gap * (1 - Math.exp(-dt * 4));
     const sc = scrollNow / 9000;                     // the sky turns a little with the page, in pixels, not page fractions
-    skyRig.rotation.set(0.0006 * t * 0.3 + sc * 0.12 - my * 0.02, 0.0009 * t + sc * 0.35 - mx * 0.03, 0);   // the sky turns slowly
+    skyRig.rotation.set(sc * 0.12, sc * 0.35, 0);    // the sky turns as the page scrolls
     near.rotation.set(skyRig.rotation.x * 0.3, skyRig.rotation.y * 0.3, 0);
-    U.uTravel.value = t * 3.2 + scrollNow * 0.06;    // drifting forward, faster while scrolling
+    U.uTravel.value = scrollNow * 0.06;              // drifting forward while scrolling
     renderer.clear();
     renderer.render(sky, camera);
     if (!reduced) { schedule(t); updateMeteors(t); renderer.render(overlay, ortho); }

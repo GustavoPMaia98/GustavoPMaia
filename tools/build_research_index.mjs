@@ -2,7 +2,7 @@
 /* Build data/research-index.json: the passages "Ask my research" (ask.js) searches.
 
    It gathers short passages from the website's own content (paper abstracts, research
-   highlights, projects, talks, courses, positions, degrees, news, blog posts) and, when
+   highlights, talks, courses, positions, degrees, news, blog posts) and, when
    the embedding model is available, adds a 384-number "meaning vector" for each one
    (bge-small-en-v1.5, MIT licence, run with transformers.js). The browser embeds the
    visitor's question with the same model and compares meanings, so a question finds the
@@ -90,10 +90,6 @@ if (hl) {
     }
   } catch (e) { console.warn("highlights: " + e.message); }
 }
-
-// ---- projects
-for (const p of (json("data/projects.json")?.items || []).filter(p => !p.hidden))
-  add("projects", en(p.title), en(p.title) + ". " + en(p.summary) + " " + en(p.details), { anchor: "project-" + p.id, ptBody: pt(p.summary) + " " + pt(p.details) });
 
 // ---- talks, courses, positions, degrees
 for (const [file, sec] of [["presentations", "presentations"], ["courses", "courses"], ["experience", "experience"], ["education", "education"]]) {

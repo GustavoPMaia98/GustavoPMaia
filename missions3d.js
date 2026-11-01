@@ -1,7 +1,8 @@
 /* =====================================================================
-   missions3d.js: "Sample-return missions", a 3D inner Solar System (Three.js,
-   self-hosted) with the asteroids and the comet that missions brought samples
-   back from (data/missions.json). Orbits come from their orbital elements and
+   missions3d.js: "Space missions", a 3D Solar System (Three.js, self-hosted) with
+   the asteroids, comets and moons that missions brought samples back from,
+   studied up close, or are on their way to (data/missions.json; NASA, ESA, JAXA,
+   CNSA), filtered by samples returned / visited / upcoming. Orbits come from their orbital elements and
    move with time (positions approximate); distances are compressed so the
    inner planets and Jupiter fit together. Drag to turn; pick a mission to read
    about it. Loaded only when the section comes near the screen, paused when it
@@ -21,40 +22,58 @@ if (stage && !stage.__wired) {
   const NAMES = { Mercury: { fr: "Mercure", ja: "水星" }, Venus: { fr: "Vénus", ja: "金星" }, Earth: { fr: "Terre", ja: "地球" }, Mars: { fr: "Mars", ja: "火星" }, Jupiter: { fr: "Jupiter", ja: "木星" }, Sun: { pt: "Sol", fr: "Soleil", ja: "太陽" } };
   const pname = n => (n.en && NAMES[n.en] && NAMES[n.en][lang()]) || tx(n);
   const L = {
-    target: { en: "Target", pt: "Alvo", fr: "Cible", ja: "目標" }, launch: { en: "Launched", pt: "Lançamento", fr: "Lancement", ja: "打ち上げ" },
-    back: { en: "Sample landed", pt: "Amostra na Terra", fr: "Retour de l'échantillon", ja: "試料の帰還" }, sample: { en: "Sample", pt: "Amostra", fr: "Échantillon", ja: "試料" },
+    target: { en: "Target", pt: "Alvo", fr: "Cible", ja: "目標" }, when: { en: "When", pt: "Quando", fr: "Quand", ja: "時期" },
+    sample: { en: "Sample", pt: "Amostra", fr: "Échantillon", ja: "試料" },
+    what: { en: "The mission", pt: "A missão", fr: "La mission", ja: "ミッション" },
     found: { en: "What it found", pt: "O que revelou", fr: "Ce qu'il a révélé", ja: "わかったこと" }, why: { en: "Why it matters for my research", pt: "Porque importa para a minha investigação", fr: "Pourquoi c'est important pour mes recherches", ja: "私の研究との関係" },
-    more: { en: "Mission page", pt: "Página da missão", fr: "Page de la mission", ja: "ミッションのページ" }
+    more: { en: "Mission page", pt: "Página da missão", fr: "Page de la mission", ja: "ミッションのページ" },
+    all: { en: "All", pt: "Todas", fr: "Toutes", ja: "すべて" },
+    returned: { en: "Samples returned", pt: "Amostras trazidas", fr: "Échantillons rapportés", ja: "サンプルリターン" },
+    visited: { en: "Visited", pt: "Visitados", fr: "Visités", ja: "探査済み" },
+    upcoming: { en: "Upcoming", pt: "Próximas", fr: "À venir", ja: "今後" },
+    filter: { en: "Show missions", pt: "Mostrar missões", fr: "Afficher les missions", ja: "表示するミッション" }
   };
   const lt = k => L[k][lang()] || L[k].en;
+  const ST = { returned: "returned", visited: "visited", upcoming: "upcoming" };
 
-  let data = null, sel = 0;
+  let data = null, sel = 0, filter = "all";
+  const filters = document.getElementById("msFilters");
   function renderCard() {
     if (!data) return;
     const m = data.missions[sel];
-    tabs.querySelectorAll(".ms-tab").forEach((b, i) => { b.setAttribute("aria-selected", i === sel ? "true" : "false"); b.tabIndex = i === sel ? 0 : -1; });
-    card.innerHTML = '<p class="ms-agency">' + esc(m.agency) + '</p><h3 class="ms-title">' + esc(m.mission) + "</h3>" +
-      '<dl class="ms-facts"><div><dt>' + lt("target") + "</dt><dd>" + esc(tx(m.target)) + "</dd></div>" +
-      "<div><dt>" + lt("launch") + "</dt><dd>" + esc(m.launch) + "</dd></div>" +
-      "<div><dt>" + lt("back") + "</dt><dd>" + esc(tx(m.returned)) + "</dd></div>" +
-      "<div><dt>" + lt("sample") + "</dt><dd>" + esc(tx(m.sample)) + "</dd></div></dl>" +
-      '<h4 class="ms-h">' + lt("found") + "</h4><p>" + esc(tx(m.found)) + "</p>" +
-      '<h4 class="ms-h">' + lt("why") + "</h4><p>" + esc(tx(m.why)) + "</p>" +
+    tabs.querySelectorAll(".ms-tab").forEach(b => { const on = +b.dataset.i === sel; b.setAttribute("aria-selected", on ? "true" : "false"); b.tabIndex = on ? 0 : -1; });
+    const row = (k, v) => v ? "<div><dt>" + lt(k) + "</dt><dd>" + esc(tx(v)) + "</dd></div>" : "";
+    const para = (k, v) => v ? '<h4 class="ms-h">' + lt(k) + "</h4><p>" + esc(tx(v)) + "</p>" : "";
+    card.innerHTML = '<p class="ms-agency"><span>' + esc(m.agency) + '</span><span class="ms-status ms-status--' + m.status + '">' + lt(ST[m.status] || "visited") + "</span></p>" +
+      '<h3 class="ms-title">' + esc(m.mission) + "</h3>" +
+      '<dl class="ms-facts">' + row("target", m.target) + row("when", m.when) + row("sample", m.sample) + "</dl>" +
+      para("what", m.what) + para("found", m.found) + para("why", m.why) +
       '<a class="ms-link" href="' + esc(m.url) + '" target="_blank" rel="noopener noreferrer">' + lt("more") + " ↗</a>";
     if (scene) scene.select(sel);
   }
-  function renderTabs() {
-    tabs.innerHTML = data.missions.map((m, i) => '<button type="button" class="ms-tab" role="tab" id="ms-tab-' + i + '" aria-controls="msCard" data-i="' + i + '">' +
-      '<span class="ms-tab-m">' + esc(m.mission) + '</span><span class="ms-tab-t">' + esc(m.body.name) + "</span></button>").join("");
-    card.setAttribute("aria-labelledby", "ms-tab-0");
+  function renderFilters() {
+    const n = k => k === "all" ? data.missions.length : data.missions.filter(m => m.status === k).length;
+    filters.setAttribute("aria-label", lt("filter"));
+    filters.innerHTML = ["all", "returned", "visited", "upcoming"].map(k => '<button type="button" class="ms-filter' + (k === "all" ? "" : " ms-filter--" + k) + '" data-f="' + k + '" aria-pressed="' + (k === filter) + '">' +
+      lt(k) + ' <span class="ms-filter-n">' + n(k) + "</span></button>").join("");
   }
+  function renderTabs() {
+    const shown = data.missions.map((m, i) => ({ m, i })).filter(x => filter === "all" || x.m.status === filter);
+    tabs.innerHTML = shown.map(({ m, i }) => '<button type="button" class="ms-tab ms-tab--' + m.status + '" role="tab" id="ms-tab-' + i + '" aria-controls="msCard" data-i="' + i + '">' +
+      '<span class="ms-tab-m">' + esc(m.mission) + '</span><span class="ms-tab-t"><span class="ms-tab-a">' + esc(m.agency) + "</span> " + esc(m.body ? m.body.name : tx(m.target)) + "</span></button>").join("");
+    if (!shown.some(x => x.i === sel) && shown.length) sel = shown[0].i;
+    card.setAttribute("aria-labelledby", "ms-tab-" + sel);
+  }
+  filters.addEventListener("click", e => { const b = e.target.closest(".ms-filter"); if (!b) return; filter = b.dataset.f; renderFilters(); renderTabs(); renderCard(); });
   tabs.addEventListener("click", e => { const b = e.target.closest(".ms-tab"); if (!b) return; sel = +b.dataset.i; card.setAttribute("aria-labelledby", b.id); renderCard(); });
   tabs.addEventListener("keydown", e => {
     if (!data || !/^Arrow(Left|Right|Up|Down)$/.test(e.key)) return;
-    e.preventDefault(); sel = (sel + (/Right|Down/.test(e.key) ? 1 : -1) + data.missions.length) % data.missions.length;
-    renderCard(); tabs.querySelectorAll(".ms-tab")[sel].focus();
+    e.preventDefault();
+    const list = [...tabs.querySelectorAll(".ms-tab")], k = list.findIndex(b => +b.dataset.i === sel);
+    const nb = list[(k + (/Right|Down/.test(e.key) ? 1 : -1) + list.length) % list.length];
+    sel = +nb.dataset.i; renderCard(); nb.focus();
   });
-  new MutationObserver(() => { renderCard(); if (scene) scene.relabel(); }).observe(root, { attributes: true, attributeFilter: ["lang"] });
+  new MutationObserver(() => { if (!data) return; renderFilters(); renderTabs(); renderCard(); if (scene) scene.relabel(); }).observe(root, { attributes: true, attributeFilter: ["lang"] });
 
   // ------------------------------------------------------------------ orbits
   const J2000 = Date.UTC(2000, 0, 1, 12);
@@ -78,13 +97,13 @@ if (stage && !stage.__wired) {
   let scene = null;
   async function start() {
     try { data = await (await fetch("data/missions.json", { cache: "no-cache" })).json(); } catch (e) { return; }
-    renderTabs(); renderCard();
+    renderFilters(); renderTabs(); renderCard();
     let THREE;
     try { THREE = await import("./vendor/three-0.160.0.module.min.js"); } catch (e) { stage.classList.add("ms-noweb"); return; }
     const gl = (() => { try { return !!(document.createElement("canvas").getContext("webgl2")); } catch (e) { return false; } })();
     if (!gl) { stage.classList.add("ms-noweb"); return; }
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(2, devicePixelRatio || 1));
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "low-power" });
+    renderer.setPixelRatio(Math.min(1.25, devicePixelRatio || 1));   // light on the graphics card
     const sc = new THREE.Scene(), cam = new THREE.PerspectiveCamera(38, 1, 0.05, 200);
     const light = () => root.getAttribute("data-theme") === "light";
     sc.add(new THREE.AmbientLight(0xffffff, 0.35));
@@ -111,14 +130,22 @@ if (stage && !stage.__wired) {
       sc.add(mesh);
       bodies.push({ o: p, mesh, line: orbitLine(p, 0x8fa6c8, 0.28), label: p.name, kind: "planet" });
     });
-    data.missions.forEach((m, i) => {
-      const b = m.body, geo = new THREE.IcosahedronGeometry(b.kind === "comet" ? 0.03 : 0.035, 1);
-      const pos = geo.attributes.position;                 // lumpy rock
-      for (let k = 0; k < pos.count; k++) { const s = 0.75 + 0.5 * Math.abs(Math.sin(k * 12.9898 + i * 78.233) * 43758.5453 % 1); pos.setXYZ(k, pos.getX(k) * s, pos.getY(k) * s * 0.85, pos.getZ(k) * s); }
+    // the targets: one body per name, each knowing the missions that went (or go) there
+    const byName = new Map();
+    data.missions.forEach((m, i) => [m.body].concat((m.body && m.body.extra) || []).filter(Boolean).forEach(bd => {
+      if (!byName.has(bd.name)) byName.set(bd.name, { o: bd, missions: [] });
+      byName.get(bd.name).missions.push(i);
+    }));
+    let seed = 0;
+    byName.forEach((t, name) => {
+      const b = t.o, moon = b.kind === "moon";
+      const geo = new THREE.IcosahedronGeometry(b.kind === "comet" ? 0.03 : moon ? 0.022 : 0.032, 1);
+      const pos = geo.attributes.position; seed++;
+      for (let k = 0; k < pos.count; k++) { const s = 0.75 + 0.5 * Math.abs(Math.sin(k * 12.9898 + seed * 78.233) * 43758.5453 % 1); pos.setXYZ(k, pos.getX(k) * s, pos.getY(k) * s * 0.85, pos.getZ(k) * s); }
       geo.computeVertexNormals();
       const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: b.color, roughness: 1, flatShading: true, emissive: b.kind === "comet" ? 0x4a7ea8 : 0x000000 }));
       sc.add(mesh);
-      bodies.push({ o: b, mesh, line: orbitLine(b, 0xffb35c, 0.35), label: b.name, kind: b.kind, mi: i });
+      bodies.push({ o: b, mesh, line: moon ? null : orbitLine(b, 0xb9a07a, 0.16), label: name, kind: b.kind, missions: t.missions, moon });
     });
     labels.innerHTML = '<span class="ms-lab ms-lab--sun" data-k="sun"></span>' + bodies.map((b, i) => '<span class="ms-lab ms-lab--' + b.kind + '" data-k="' + i + '"></span>').join("");
     const labEls = [...labels.querySelectorAll(".ms-lab")];
@@ -128,10 +155,10 @@ if (stage && !stage.__wired) {
     };
     relabel();
     const select = i => bodies.forEach((b, k) => {
-      if (b.mi === undefined) return;
-      const on = b.mi === i;
-      b.line.material.color.set(on ? 0xffb35c : 0xb9a07a); b.line.material.opacity = on ? 0.95 : 0.22;
-      b.mesh.scale.setScalar(on ? 1.9 : 1); labEls[k + 1].classList.toggle("is-on", on);
+      if (!b.missions) return;
+      const on = b.missions.includes(i);
+      if (b.line) { b.line.material.color.set(on ? 0xffb35c : 0xb9a07a); b.line.material.opacity = on ? 0.95 : 0.16; }
+      b.mesh.scale.setScalar(on ? 2 : 1); labEls[k + 1].classList.toggle("is-on", on);
     });
     select(sel);
 
@@ -154,9 +181,13 @@ if (stage && !stage.__wired) {
       renderer.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix();
       dist = w < 520 ? 11.5 : 9.2;
     }
+    let lastDraw = 0;
     function frame() {
       raf = 0;
-      const now = performance.now(), dt = Math.min(0.1, (now - t0) / 1000); t0 = now;
+      const now = performance.now();
+      if (playing && !drag && now - lastDraw < 32) { if (visible && !document.hidden) loop(); return; }   // 30 frames a second is plenty
+      lastDraw = now;
+      const dt = Math.min(0.1, (now - t0) / 1000); t0 = now;
       if (playing) { days += dt * 12; if (!drag) az += dt * 0.03; }
       cam.position.set(Math.cos(az) * Math.cos(el) * dist, Math.sin(el) * dist, Math.sin(az) * Math.cos(el) * dist);
       cam.lookAt(0, 0, 0);
@@ -164,7 +195,9 @@ if (stage && !stage.__wired) {
       v.set(0, 0, 0).project(cam);
       labEls[0].style.transform = "translate(" + ((v.x + 1) / 2 * W).toFixed(1) + "px," + ((1 - v.y) / 2 * H + 16).toFixed(1) + "px)";
       bodies.forEach((b, k) => {
-        const p = squash(kepler(b.o, days)); b.mesh.position.set(p[0], p[1], p[2]); b.mesh.rotation.y += dt * 0.6;
+        const p = squash(kepler(b.o, days));
+        if (b.moon) { const a = days * 0.23 + k; p[0] += Math.cos(a) * 0.13; p[2] += Math.sin(a) * 0.13; }   // drawn circling its planet
+        b.mesh.position.set(p[0], p[1], p[2]); b.mesh.rotation.y += dt * 0.6;
         v.copy(b.mesh.position).project(cam);
         labEls[k + 1].style.transform = "translate(" + ((v.x + 1) / 2 * W).toFixed(1) + "px," + ((1 - v.y) / 2 * H - 12).toFixed(1) + "px)";
       });
