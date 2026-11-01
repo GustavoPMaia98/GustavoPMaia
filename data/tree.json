@@ -490,6 +490,12 @@
       "role": {
         "en": "Postdoctoral researcher · IMPMC",
         "pt": "Investigadora de pós-doutoramento · IMPMC"
+      },
+      "photo": "images/tree/ataytur.jpg",
+      "photoCredit": {
+        "author": "Cécile Duflot",
+        "license": "© IMPMC",
+        "source": ""
       }
     },
     {
@@ -505,6 +511,12 @@
       "about": {
         "en": "Characterises the molecular and isotopic composition of organic matter in carbonaceous chondrites and astrophysical analogues, to understand the processes that shaped it in the early Solar System and its relevance to prebiotic chemistry. Postdoc with Laurent Remusat and Sylvain Bernard; PhD (2021–2024) at the Institut de Chimie de Nice with Cornelia Meinert.",
         "pt": "Caracteriza a composição molecular e isotópica da matéria orgânica dos condritos carbonáceos e de análogos astrofísicos, para compreender os processos que a moldaram no início do Sistema Solar e a sua relevância para a química prebiótica. Pós-doutoramento com Laurent Remusat e Sylvain Bernard; doutoramento (2021–2024) no Institut de Chimie de Nice com Cornelia Meinert."
+      },
+      "photo": "images/tree/leyva.jpg",
+      "photoCredit": {
+        "author": "Cécile Duflot",
+        "license": "© IMPMC",
+        "source": ""
       }
     },
     {
@@ -523,6 +535,12 @@
       "institution": {
         "name": "IMPMC · Sorbonne Université / MNHN",
         "url": "https://impmc.sorbonne-universite.fr/en/index.html"
+      },
+      "photo": "images/tree/khodorova.jpg",
+      "photoCredit": {
+        "author": "Cécile Duflot",
+        "license": "© IMPMC",
+        "source": ""
       }
     },
     {
@@ -571,6 +589,12 @@
       "about": {
         "en": "Thesis: Metal-enhanced phosphorylation on primitive planetary surfaces: geological and experimental perspectives. Supervised by François Guillot and Sylvain Bernard.",
         "pt": "Tese: Fosforilação potenciada por metais em superfícies planetárias primitivas: perspetivas geológicas e experimentais. Orientada por François Guillot e Sylvain Bernard."
+      },
+      "photo": "images/tree/megevand.jpg",
+      "photoCredit": {
+        "author": "Cécile Duflot",
+        "license": "© IMPMC",
+        "source": ""
       }
     },
     {
