@@ -1287,3 +1287,24 @@ html.space-pending body, html.has-space3d body{ background:#02040a; }
 .nav-home svg{ transition:transform .2s ease; }
 .nav-home:hover svg{ transform:translateX(-3px); }
 @media (max-width:560px){ .nav-home{ height:34px; padding:0 12px 0 9px; font-size:.84rem; } }
+
+/* Language picker: the button shows the current language; the menu is a small grid of
+   cards (flag, name, a hello in that language), the chosen one ringed and ticked */
+#langToggle.lang-btn{ width:auto; min-width:38px; padding:0 10px 0 9px; gap:6px; }
+#langToggle .lang-code{ font-family:var(--font-mono); font-size:.72rem; font-weight:800; letter-spacing:.06em; color:var(--accent); }
+.lang-pop{ min-width:0; width:300px; padding:12px; display:grid; grid-template-columns:1fr 1fr; gap:8px; border-radius:18px;
+  background:rgba(8,12,24,.97); transform-origin:top right; animation:langIn .22s cubic-bezier(.22,.61,.36,1); }
+@keyframes langIn{ from{ opacity:0; transform:translateY(-6px) scale(.96); } to{ opacity:1; transform:none; } }
+.lang-pop[hidden]{ display:none; }
+.lang-pop-h{ grid-column:1 / -1; margin:0 2px 2px; font-size:.7rem; color:var(--muted); letter-spacing:.02em; }
+.lang-pop .lang-opt{ position:relative; flex-direction:column; align-items:flex-start; gap:3px; padding:11px 12px; border-radius:13px;
+  border:1px solid var(--border); background:color-mix(in srgb, var(--card) 70%, transparent); transition:transform .18s ease, border-color .18s ease, background .18s ease; }
+.lang-pop .lang-opt:hover, .lang-pop .lang-opt:focus-visible{ transform:translateY(-2px); border-color:color-mix(in srgb, var(--accent) 60%, transparent); background:rgba(125,211,252,.08); outline:none; }
+.lang-pop .lang-flag{ font-size:1.6rem; width:auto; text-align:left; margin-bottom:2px; }
+.lang-pop .lang-name{ font-weight:700; font-size:.9rem; }
+.lang-pop .lang-hello{ font-size:.74rem; color:var(--muted); }
+.lang-pop .lang-opt.active{ border-color:var(--accent); background:rgba(125,211,252,.14); box-shadow:0 0 0 1px var(--accent) inset; }
+.lang-pop .lang-opt.active::after{ content:"✓"; position:absolute; top:9px; right:11px; width:20px; height:20px; border-radius:50%; display:grid; place-items:center;
+  font-size:.72rem; font-weight:800; color:var(--on-accent, #04121f); background:var(--accent); }
+@media (prefers-reduced-motion:reduce){ .lang-pop{ animation:none; } .lang-pop .lang-opt{ transition:none; } }
+@media (max-width:560px){ .lang-pop{ width:min(300px, calc(100vw - 24px)); } #langToggle .lang-code{ display:none; } #langToggle.lang-btn{ padding:0; width:38px; } }
