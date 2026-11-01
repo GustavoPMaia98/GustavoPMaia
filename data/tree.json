@@ -39,7 +39,8 @@
               "url": "https://cqe.tecnico.ulisboa.pt/"
             }
           }
-        ]
+        ],
+        "photo": "images/tree/dasilva.jpg"
       },
       {
         "name": "Laurent Remusat",
@@ -431,7 +432,8 @@
         "institution": {
           "name": "Universidade da Beira Interior",
           "url": "https://www.ubi.pt/"
-        }
+        },
+        "photo": "images/tree/almeida.jpg"
       },
       {
         "name": "João Serrano",
@@ -464,6 +466,14 @@
       "role": {
         "en": "Co-author · NASA Goddard Space Flight Center",
         "pt": "Coautora · NASA Goddard Space Flight Center"
+      }
+    },
+    "Kana Amano": {
+      "photo": "images/tree/amano.jpg",
+      "photoCredit": {
+        "author": "Cécile Duflot",
+        "license": "© IMPMC",
+        "source": ""
       }
     }
   },
@@ -516,10 +526,29 @@
       }
     },
     {
+      "name": "Rebeca Lopez",
+      "institution": {
+        "name": "IMPMC · Sorbonne Université / MNHN",
+        "url": "https://impmc.sorbonne-universite.fr/en/index.html"
+      },
+      "photo": "images/tree/lopez.jpg",
+      "photoCredit": {
+        "author": "Cécile Duflot",
+        "license": "© IMPMC",
+        "source": ""
+      }
+    },
+    {
       "name": "Louna Perez",
       "institution": {
         "name": "IMPMC · Sorbonne Université / MNHN",
         "url": "https://impmc.sorbonne-universite.fr/en/index.html"
+      },
+      "photo": "images/tree/perez.jpg",
+      "photoCredit": {
+        "author": "Cécile Duflot",
+        "license": "© IMPMC",
+        "source": ""
       }
     },
     {
