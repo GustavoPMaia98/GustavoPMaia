@@ -37,7 +37,22 @@
             "institution": {
               "name": "Centro de Química Estrutural · IST",
               "url": "https://cqe.tecnico.ulisboa.pt/"
-            }
+            },
+            "mentors": [
+              {
+                "name": "Harry Irving",
+                "role": {
+                  "en": "Doctoral advisor of João Fraústo da Silva (D.Phil., Oxford, 1962)",
+                  "pt": "Orientador de doutoramento de João Fraústo da Silva (D.Phil., Oxford, 1962)",
+                  "fr": "Directeur de thèse de João Fraústo da Silva (D.Phil., Oxford, 1962)",
+                  "ja": "João Fraústo da Silva の博士課程指導教員 (D.Phil., Oxford, 1962)"
+                },
+                "institution": {
+                  "name": "University of Oxford"
+                },
+                "url": "https://en.wikipedia.org/wiki/Harry_Irving_(chemist)"
+              }
+            ]
           }
         ],
         "photo": "images/tree/dasilva.jpg",
@@ -71,7 +86,46 @@
               "author": "François Robert",
               "license": "CC BY-SA 3.0",
               "source": "https://commons.wikimedia.org/wiki/File:Francois_robert_mnhn.jpg"
-            }
+            },
+            "mentors": [
+              {
+                "name": "Marc Javoy",
+                "role": {
+                  "en": "Doctoral advisor of François Robert (doctorat, 1976)",
+                  "pt": "Orientador(a) de doutoramento de François Robert (doutoramento, 1976)",
+                  "fr": "Directeur·rice de thèse de François Robert (doctorat, 1976)",
+                  "ja": "François Robert の博士課程指導教員 (doctorat, 1976)"
+                },
+                "institution": {
+                  "name": "CEA Saclay / IPGP"
+                }
+              },
+              {
+                "name": "Liliane Merlivat",
+                "role": {
+                  "en": "Doctoral advisor of François Robert (doctorat, 1976)",
+                  "pt": "Orientador(a) de doutoramento de François Robert (doutoramento, 1976)",
+                  "fr": "Directeur·rice de thèse de François Robert (doctorat, 1976)",
+                  "ja": "François Robert の博士課程指導教員 (doctorat, 1976)"
+                },
+                "institution": {
+                  "name": "CEA Saclay"
+                }
+              },
+              {
+                "name": "Samuel Epstein",
+                "role": {
+                  "en": "Postdoctoral mentor of François Robert",
+                  "pt": "Mentor(a) de pós-doutoramento de François Robert",
+                  "fr": "Encadrant·e postdoctoral·e de François Robert",
+                  "ja": "François Robert のポスドク指導者"
+                },
+                "institution": {
+                  "name": "California Institute of Technology"
+                },
+                "url": "https://en.wikipedia.org/wiki/Samuel_Epstein"
+              }
+            ]
           },
           {
             "name": "Sylvie Derenne",
@@ -82,7 +136,21 @@
             "institution": {
               "name": "École Nationale Supérieure de Chimie de Paris",
               "url": "https://www.chimieparistech.psl.eu/en/"
-            }
+            },
+            "mentors": [
+              {
+                "name": "Éliette Casadevall",
+                "role": {
+                  "en": "Doctoral advisor of Sylvie Derenne (PhD, 1988)",
+                  "pt": "Orientador(a) de doutoramento de Sylvie Derenne (doutoramento, 1988)",
+                  "fr": "Directeur·rice de thèse de Sylvie Derenne (PhD, 1988)",
+                  "ja": "Sylvie Derenne の博士課程指導教員 (PhD, 1988)"
+                },
+                "institution": {
+                  "name": "Université Pierre et Marie Curie, Paris"
+                }
+              }
+            ]
           }
         ],
         "phd": true
@@ -481,11 +549,51 @@
     },
     "Ana P. C. Ribeiro": {
       "photo": "images/tree/ribeiro.jpg"
+    },
+    "Jean-Christophe Viennet": {
+      "mentors": [
+        {
+          "name": "Alain Meunier",
+          "role": {
+            "en": "Doctoral advisor of Jean-Christophe Viennet (PhD, Poitiers, 2015)",
+            "pt": "Orientador(a) de doutoramento de Jean-Christophe Viennet (doutoramento, Poitiers, 2015)",
+            "fr": "Directeur·rice de thèse de Jean-Christophe Viennet (PhD, Poitiers, 2015)",
+            "ja": "Jean-Christophe Viennet の博士課程指導教員 (PhD, Poitiers, 2015)"
+          },
+          "institution": {
+            "name": "Université de Poitiers · IC2MP"
+          }
+        },
+        {
+          "name": "Marie-Pierre Turpault",
+          "role": {
+            "en": "Doctoral advisor of Jean-Christophe Viennet (PhD, Poitiers, 2015)",
+            "pt": "Orientador(a) de doutoramento de Jean-Christophe Viennet (doutoramento, Poitiers, 2015)",
+            "fr": "Directeur·rice de thèse de Jean-Christophe Viennet (PhD, Poitiers, 2015)",
+            "ja": "Jean-Christophe Viennet の博士課程指導教員 (PhD, Poitiers, 2015)"
+          },
+          "institution": {
+            "name": "INRAE Nancy"
+          }
+        },
+        {
+          "name": "Fabien Hubert",
+          "role": {
+            "en": "Doctoral advisor of Jean-Christophe Viennet (PhD, Poitiers, 2015)",
+            "pt": "Orientador(a) de doutoramento de Jean-Christophe Viennet (doutoramento, Poitiers, 2015)",
+            "fr": "Directeur·rice de thèse de Jean-Christophe Viennet (PhD, Poitiers, 2015)",
+            "ja": "Jean-Christophe Viennet の博士課程指導教員 (PhD, Poitiers, 2015)"
+          },
+          "institution": {
+            "name": "Université de Poitiers · IC2MP"
+          }
+        }
+      ]
     }
   },
   "colleagues": [
     {
-      "_help": "Research colleagues shown in the Academic Tree & Collaborations circle (green): \"name\", \"institution\" {name, url}, optional \"role\" and \"about\" ({en, pt}, shown when the person is selected), \"photo\" (images/tree/...), \"url\"."
+      "_help": "Research colleagues shown in the Academic Tree & Collaborations circle (green): \"name\", \"institution\" {name, url}, optional \"role\" and \"about\" ({en, pt}, shown when the person is selected), \"photo\" (images/tree/...), \"url\". Optional \"mentors\": their PhD/postdoc advisors (name, role, institution), drawn further out with a line to them."
     },
     {
       "name": "Oyku Ataytur",
@@ -502,7 +610,33 @@
         "author": "Cécile Duflot",
         "license": "© IMPMC",
         "source": ""
-      }
+      },
+      "mentors": [
+        {
+          "name": "Thierry Allard",
+          "role": {
+            "en": "Doctoral advisor of Oyku Ataytur",
+            "pt": "Orientador(a) de doutoramento de Oyku Ataytur",
+            "fr": "Directeur·rice de thèse de Oyku Ataytur",
+            "ja": "Oyku Ataytur の博士課程指導教員"
+          },
+          "institution": {
+            "name": "IMPMC · Sorbonne Université"
+          }
+        },
+        {
+          "name": "Cécile Gautheron",
+          "role": {
+            "en": "Doctoral advisor of Oyku Ataytur",
+            "pt": "Orientador(a) de doutoramento de Oyku Ataytur",
+            "fr": "Directeur·rice de thèse de Oyku Ataytur",
+            "ja": "Oyku Ataytur の博士課程指導教員"
+          },
+          "institution": {
+            "name": "Université Grenoble Alpes / ISTerre"
+          }
+        }
+      ]
     },
     {
       "name": "Vanessa Leyva",
@@ -523,7 +657,45 @@
         "author": "Cécile Duflot",
         "license": "© IMPMC",
         "source": ""
-      }
+      },
+      "mentors": [
+        {
+          "name": "Cornelia Meinert",
+          "role": {
+            "en": "Doctoral advisor of Vanessa Leyva",
+            "pt": "Orientador(a) de doutoramento de Vanessa Leyva",
+            "fr": "Directeur·rice de thèse de Vanessa Leyva",
+            "ja": "Vanessa Leyva の博士課程指導教員"
+          },
+          "institution": {
+            "name": "Institut de Chimie de Nice · Université Côte d’Azur"
+          }
+        },
+        {
+          "name": "Laurent Remusat",
+          "role": {
+            "en": "Postdoctoral mentor of Vanessa Leyva",
+            "pt": "Mentor(a) de pós-doutoramento de Vanessa Leyva",
+            "fr": "Encadrant·e postdoctoral·e de Vanessa Leyva",
+            "ja": "Vanessa Leyva のポスドク指導者"
+          },
+          "institution": {
+            "name": "IMPMC"
+          }
+        },
+        {
+          "name": "Sylvain Bernard",
+          "role": {
+            "en": "Postdoctoral mentor of Vanessa Leyva",
+            "pt": "Mentor(a) de pós-doutoramento de Vanessa Leyva",
+            "fr": "Encadrant·e postdoctoral·e de Vanessa Leyva",
+            "ja": "Vanessa Leyva のポスドク指導者"
+          },
+          "institution": {
+            "name": "IMPMC · CNRS"
+          }
+        }
+      ]
     },
     {
       "name": "Clementine Bouquet",
@@ -531,7 +703,21 @@
         "name": "IMPMC · Sorbonne Université / MNHN",
         "url": "https://impmc.sorbonne-universite.fr/en/index.html"
       },
-      "photo": "images/tree/bouquet.jpg"
+      "photo": "images/tree/bouquet.jpg",
+      "mentors": [
+        {
+          "name": "Anne-Catherine Lehours",
+          "role": {
+            "en": "Doctoral advisor of Clementine Bouquet",
+            "pt": "Orientador(a) de doutoramento de Clementine Bouquet",
+            "fr": "Directeur·rice de thèse de Clementine Bouquet",
+            "ja": "Clementine Bouquet の博士課程指導教員"
+          },
+          "institution": {
+            "name": "Université Clermont Auvergne"
+          }
+        }
+      ]
     },
     {
       "name": "Nadezda Khodorova",
@@ -548,7 +734,33 @@
         "author": "Cécile Duflot",
         "license": "© IMPMC",
         "source": ""
-      }
+      },
+      "mentors": [
+        {
+          "name": "Michèle Boitel-Conti",
+          "role": {
+            "en": "Doctoral advisor of Nadezda Khodorova",
+            "pt": "Orientador(a) de doutoramento de Nadezda Khodorova",
+            "fr": "Directeur·rice de thèse de Nadezda Khodorova",
+            "ja": "Nadezda Khodorova の博士課程指導教員"
+          },
+          "institution": {
+            "name": "Université de Picardie Jules Verne, Amiens"
+          }
+        },
+        {
+          "name": "Jean-Claude Laberche",
+          "role": {
+            "en": "Doctoral advisor of Nadezda Khodorova",
+            "pt": "Orientador(a) de doutoramento de Nadezda Khodorova",
+            "fr": "Directeur·rice de thèse de Nadezda Khodorova",
+            "ja": "Nadezda Khodorova の博士課程指導教員"
+          },
+          "institution": {
+            "name": "Université de Picardie Jules Verne, Amiens"
+          }
+        }
+      ]
     },
     {
       "name": "Rebeca Lopez",
@@ -574,7 +786,33 @@
         "author": "Cécile Duflot",
         "license": "© IMPMC",
         "source": ""
-      }
+      },
+      "mentors": [
+        {
+          "name": "Matthieu Gounelle",
+          "role": {
+            "en": "Doctoral advisor of Louna Perez",
+            "pt": "Orientador(a) de doutoramento de Louna Perez",
+            "fr": "Directeur·rice de thèse de Louna Perez",
+            "ja": "Louna Perez の博士課程指導教員"
+          },
+          "institution": {
+            "name": "IMPMC · MNHN"
+          }
+        },
+        {
+          "name": "Mathieu Roskosz",
+          "role": {
+            "en": "Doctoral advisor of Louna Perez",
+            "pt": "Orientador(a) de doutoramento de Louna Perez",
+            "fr": "Directeur·rice de thèse de Louna Perez",
+            "ja": "Louna Perez の博士課程指導教員"
+          },
+          "institution": {
+            "name": "IMPMC · MNHN"
+          }
+        }
+      ]
     },
     {
       "name": "Jean Charlier",
@@ -587,7 +825,33 @@
         "author": "Cécile Duflot",
         "license": "© IMPMC",
         "source": ""
-      }
+      },
+      "mentors": [
+        {
+          "name": "Jérôme Aléon",
+          "role": {
+            "en": "Doctoral advisor of Jean Charlier",
+            "pt": "Orientador(a) de doutoramento de Jean Charlier",
+            "fr": "Directeur·rice de thèse de Jean Charlier",
+            "ja": "Jean Charlier の博士課程指導教員"
+          },
+          "institution": {
+            "name": "IMPMC · MNHN"
+          }
+        },
+        {
+          "name": "Alice Aléon-Toppani",
+          "role": {
+            "en": "Doctoral advisor of Jean Charlier",
+            "pt": "Orientador(a) de doutoramento de Jean Charlier",
+            "fr": "Directeur·rice de thèse de Jean Charlier",
+            "ja": "Jean Charlier の博士課程指導教員"
+          },
+          "institution": {
+            "name": "IAS · Université Paris-Saclay"
+          }
+        }
+      ]
     },
     {
       "name": "Valentine Megevand",
@@ -608,7 +872,33 @@
         "author": "Cécile Duflot",
         "license": "© IMPMC",
         "source": ""
-      }
+      },
+      "mentors": [
+        {
+          "name": "François Guillot",
+          "role": {
+            "en": "Doctoral advisor of Valentine Megevand",
+            "pt": "Orientador(a) de doutoramento de Valentine Megevand",
+            "fr": "Directeur·rice de thèse de Valentine Megevand",
+            "ja": "Valentine Megevand の博士課程指導教員"
+          },
+          "institution": {
+            "name": "IMPMC · Sorbonne Université"
+          }
+        },
+        {
+          "name": "Sylvain Bernard",
+          "role": {
+            "en": "Doctoral advisor of Valentine Megevand",
+            "pt": "Orientador(a) de doutoramento de Valentine Megevand",
+            "fr": "Directeur·rice de thèse de Valentine Megevand",
+            "ja": "Valentine Megevand の博士課程指導教員"
+          },
+          "institution": {
+            "name": "IMPMC · CNRS"
+          }
+        }
+      ]
     },
     {
       "name": "Ana Banha",
@@ -636,7 +926,45 @@
         "ja": "模擬火星環境下でのバイオリーチングと金属のバイオプロセッシングに関する博士研究。指導教員：Paola Di Donato、Elena Chianese（ナポリ・パルテノペ大学）、Ilaria Finore（ICB-CNR、ナポリ）。"
       },
       "photo": "images/tree/esposito.jpg",
-      "url": "https://www.unive.it/data/persone/29018388"
+      "url": "https://www.unive.it/data/persone/29018388",
+      "mentors": [
+        {
+          "name": "Paola Di Donato",
+          "role": {
+            "en": "Doctoral advisor of Mattia Esposito",
+            "pt": "Orientador(a) de doutoramento de Mattia Esposito",
+            "fr": "Directeur·rice de thèse de Mattia Esposito",
+            "ja": "Mattia Esposito の博士課程指導教員"
+          },
+          "institution": {
+            "name": "Università di Napoli Parthenope"
+          }
+        },
+        {
+          "name": "Elena Chianese",
+          "role": {
+            "en": "Doctoral advisor of Mattia Esposito",
+            "pt": "Orientador(a) de doutoramento de Mattia Esposito",
+            "fr": "Directeur·rice de thèse de Mattia Esposito",
+            "ja": "Mattia Esposito の博士課程指導教員"
+          },
+          "institution": {
+            "name": "Università di Napoli Parthenope"
+          }
+        },
+        {
+          "name": "Ilaria Finore",
+          "role": {
+            "en": "Doctoral advisor of Mattia Esposito",
+            "pt": "Orientador(a) de doutoramento de Mattia Esposito",
+            "fr": "Directeur·rice de thèse de Mattia Esposito",
+            "ja": "Mattia Esposito の博士課程指導教員"
+          },
+          "institution": {
+            "name": "ICB-CNR, Naples"
+          }
+        }
+      ]
     },
     {
       "name": "Oskari Sivula",
@@ -657,7 +985,45 @@
         "ja": "宇宙倫理学、環境哲学、世代間倫理を研究する哲学者。現在はヘルシンキ大学でリスクの倫理学を研究するポスドク。トゥルク大学で博士号取得（博士論文「Essays in Space Ethics」、2025年）。博士課程の指導教員：Juha Räikkä、Helena Siipi（トゥルク大学）、Tony Milligan（キングス・カレッジ・ロンドン）。"
       },
       "photo": "images/tree/sivula.jpg",
-      "url": "https://bsky.app/profile/oskarisivula.bsky.social"
+      "url": "https://bsky.app/profile/oskarisivula.bsky.social",
+      "mentors": [
+        {
+          "name": "Juha Räikkä",
+          "role": {
+            "en": "Doctoral advisor of Oskari Sivula",
+            "pt": "Orientador(a) de doutoramento de Oskari Sivula",
+            "fr": "Directeur·rice de thèse de Oskari Sivula",
+            "ja": "Oskari Sivula の博士課程指導教員"
+          },
+          "institution": {
+            "name": "University of Turku"
+          }
+        },
+        {
+          "name": "Helena Siipi",
+          "role": {
+            "en": "Doctoral advisor of Oskari Sivula",
+            "pt": "Orientador(a) de doutoramento de Oskari Sivula",
+            "fr": "Directeur·rice de thèse de Oskari Sivula",
+            "ja": "Oskari Sivula の博士課程指導教員"
+          },
+          "institution": {
+            "name": "University of Turku"
+          }
+        },
+        {
+          "name": "Tony Milligan",
+          "role": {
+            "en": "Doctoral advisor of Oskari Sivula",
+            "pt": "Orientador(a) de doutoramento de Oskari Sivula",
+            "fr": "Directeur·rice de thèse de Oskari Sivula",
+            "ja": "Oskari Sivula の博士課程指導教員"
+          },
+          "institution": {
+            "name": "King’s College London"
+          }
+        }
+      ]
     },
     {
       "name": "Rebecca Martellotti",
@@ -677,7 +1043,46 @@
         "fr": "Thèse sur la diversité microbienne et les biosignatures en environnements extrêmes comme analogues planétaires (p. ex. le champ géothermique d’Alalobad, Afar, Éthiopie). Encadrée par Barbara Cavalazzi, Sandra Cristino (Université de Bologne) et Frédéric Foucher (CNRS, Orléans).",
         "ja": "惑星アナログとしての極限環境における微生物多様性とバイオシグネチャーに関する博士研究（例：エチオピア・アファールのアラロバド地熱地帯）。指導教員：Barbara Cavalazzi、Sandra Cristino（ボローニャ大学）、Frédéric Foucher（CNRS、オルレアン）。"
       },
-      "photo": "images/tree/martellotti.jpg"
+      "photo": "images/tree/martellotti.jpg",
+      "mentors": [
+        {
+          "name": "Barbara Cavalazzi",
+          "role": {
+            "en": "Doctoral advisor of Rebecca Martellotti",
+            "pt": "Orientador(a) de doutoramento de Rebecca Martellotti",
+            "fr": "Directeur·rice de thèse de Rebecca Martellotti",
+            "ja": "Rebecca Martellotti の博士課程指導教員"
+          },
+          "institution": {
+            "name": "University of Bologna"
+          },
+          "url": "https://www.unibo.it/sitoweb/barbara.cavalazzi"
+        },
+        {
+          "name": "Sandra Cristino",
+          "role": {
+            "en": "Doctoral advisor of Rebecca Martellotti",
+            "pt": "Orientador(a) de doutoramento de Rebecca Martellotti",
+            "fr": "Directeur·rice de thèse de Rebecca Martellotti",
+            "ja": "Rebecca Martellotti の博士課程指導教員"
+          },
+          "institution": {
+            "name": "University of Bologna"
+          }
+        },
+        {
+          "name": "Frédéric Foucher",
+          "role": {
+            "en": "Doctoral advisor of Rebecca Martellotti",
+            "pt": "Orientador(a) de doutoramento de Rebecca Martellotti",
+            "fr": "Directeur·rice de thèse de Rebecca Martellotti",
+            "ja": "Rebecca Martellotti の博士課程指導教員"
+          },
+          "institution": {
+            "name": "CNRS · Centre de Biophysique Moléculaire, Orléans"
+          }
+        }
+      ]
     },
     {
       "name": "Laura I. Tenelanda-Osorio",
@@ -697,7 +1102,21 @@
         "fr": "A soutenu sa thèse dans le groupe de géomicrobiologie de l’Université de Tübingen, sur les biosignatures du fer terrestres et leur potentiel pour l’astrobiologie et l’exploration du Système solaire, sous la direction d’Andreas Kappler. Elle commencera bientôt un postdoc.",
         "ja": "テュービンゲン大学 地球微生物学グループで、地球上の鉄バイオシグネチャーとアストロバイオロジー・太陽系探査への応用可能性に関する博士号を取得（指導教員：Andreas Kappler）。まもなくポスドクを開始予定。"
       },
-      "photo": "images/tree/tenelanda-osorio.jpg"
+      "photo": "images/tree/tenelanda-osorio.jpg",
+      "mentors": [
+        {
+          "name": "Andreas Kappler",
+          "role": {
+            "en": "Doctoral advisor of Laura Tenelanda-Osorio",
+            "pt": "Orientador(a) de doutoramento de Laura Tenelanda-Osorio",
+            "fr": "Directeur·rice de thèse de Laura Tenelanda-Osorio",
+            "ja": "Laura Tenelanda-Osorio の博士課程指導教員"
+          },
+          "institution": {
+            "name": "University of Tübingen"
+          }
+        }
+      ]
     },
     {
       "name": "Diogo Veloso Gonçalves",
@@ -717,7 +1136,61 @@
         "fr": "Recherche en astrobiologie à l’Institute for Bioengineering and Biosciences, Instituto Superior Técnico. Encadré par Zita Martins et Bruno Pedras.",
         "ja": "Instituto Superior Técnico 生物工学・生命科学研究所（iBB）でのアストロバイオロジー研究。指導教員：Zita Martins、Bruno Pedras。"
       },
-      "photo": "images/tree/goncalves.jpg"
+      "photo": "images/tree/goncalves.jpg",
+      "mentors": [
+        {
+          "name": "Zita Martins",
+          "role": {
+            "en": "Doctoral advisor of Diogo Gonçalves",
+            "pt": "Orientador(a) de doutoramento de Diogo Gonçalves",
+            "fr": "Directeur·rice de thèse de Diogo Gonçalves",
+            "ja": "Diogo Gonçalves の博士課程指導教員"
+          },
+          "institution": {
+            "name": "Instituto Superior Técnico"
+          },
+          "url": "https://en.wikipedia.org/wiki/Zita_Martins",
+          "mentors": [
+            {
+              "name": "Pascale Ehrenfreund",
+              "role": {
+                "en": "Doctoral advisor of Zita Martins (PhD, Leiden, 2007)",
+                "pt": "Orientador(a) de doutoramento de Zita Martins (doutoramento, Leiden, 2007)",
+                "fr": "Directeur·rice de thèse de Zita Martins (PhD, Leiden, 2007)",
+                "ja": "Zita Martins の博士課程指導教員 (PhD, Leiden, 2007)"
+              },
+              "institution": {
+                "name": "Leiden University"
+              },
+              "url": "https://en.wikipedia.org/wiki/Pascale_Ehrenfreund",
+              "photo": "images/tree/pascale-ehrenfreund.jpg",
+              "photoCredit": {
+                "author": "Franz Johann Morgenbesser from Vienna, Austria",
+                "license": "CC BY-SA 2.0",
+                "source": "https://commons.wikimedia.org/wiki/File:Prof._Dr._Pascale_Ehrenfreund-3985_(14262939769).jpg"
+              }
+            }
+          ],
+          "photo": "images/tree/zita-martins.jpg",
+          "photoCredit": {
+            "author": "António Pedro Ferreira",
+            "license": "CC BY-SA 4.0",
+            "source": "https://commons.wikimedia.org/wiki/File:Zita_Martins.jpg"
+          }
+        },
+        {
+          "name": "Bruno Pedras",
+          "role": {
+            "en": "Doctoral advisor of Diogo Gonçalves",
+            "pt": "Orientador(a) de doutoramento de Diogo Gonçalves",
+            "fr": "Directeur·rice de thèse de Diogo Gonçalves",
+            "ja": "Diogo Gonçalves の博士課程指導教員"
+          },
+          "institution": {
+            "name": "Instituto Superior Técnico"
+          }
+        }
+      ]
     }
   ]
 }
