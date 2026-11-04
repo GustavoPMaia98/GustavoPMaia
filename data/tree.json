@@ -616,6 +616,108 @@
         "name": "Centro de Química Estrutural · IST",
         "url": "https://cqe.tecnico.ulisboa.pt/"
       }
+    },
+    {
+      "name": "Mattia Esposito",
+      "institution": {
+        "name": "Università Ca’ Foscari Venezia · Università di Napoli Parthenope",
+        "url": "https://www.unive.it/data/persone/29018388"
+      },
+      "role": {
+        "en": "PhD student · Polar Sciences",
+        "pt": "Doutorando · Ciências Polares",
+        "fr": "Doctorant · Sciences polaires",
+        "ja": "博士課程学生 · 極域科学"
+      },
+      "about": {
+        "en": "PhD on bioleaching and metal bioprocessing under simulated Martian conditions. Supervised by Paola Di Donato, Elena Chianese (Università di Napoli Parthenope) and Ilaria Finore (ICB-CNR, Naples).",
+        "pt": "Doutoramento sobre biolixiviação e bioprocessamento de metais em condições marcianas simuladas. Orientado por Paola Di Donato, Elena Chianese (Università di Napoli Parthenope) e Ilaria Finore (ICB-CNR, Nápoles).",
+        "fr": "Thèse sur la biolixiviation et le biotraitement des métaux en conditions martiennes simulées. Encadré par Paola Di Donato, Elena Chianese (Università di Napoli Parthenope) et Ilaria Finore (ICB-CNR, Naples).",
+        "ja": "模擬火星環境下でのバイオリーチングと金属のバイオプロセッシングに関する博士研究。指導教員：Paola Di Donato、Elena Chianese（ナポリ・パルテノペ大学）、Ilaria Finore（ICB-CNR、ナポリ）。"
+      },
+      "photo": "images/tree/esposito.jpg",
+      "url": "https://www.unive.it/data/persone/29018388"
+    },
+    {
+      "name": "Oskari Sivula",
+      "institution": {
+        "name": "University of Turku",
+        "url": "https://www.utu.fi/en/people/oskari-sivula"
+      },
+      "role": {
+        "en": "Doctoral researcher · Space ethics",
+        "pt": "Investigador doutorando · Ética espacial",
+        "fr": "Doctorant · Éthique spatiale",
+        "ja": "博士研究員 · 宇宙倫理学"
+      },
+      "about": {
+        "en": "Philosopher working on space ethics, environmental philosophy and intergenerational ethics; doctoral thesis “Essays in Space Ethics” (2025). Supervised by Juha Räikkä, Helena Siipi (University of Turku) and Tony Milligan (King’s College London).",
+        "pt": "Filósofo dedicado à ética espacial, filosofia ambiental e ética intergeracional; tese de doutoramento “Essays in Space Ethics” (2025). Orientado por Juha Räikkä, Helena Siipi (Universidade de Turku) e Tony Milligan (King’s College London).",
+        "fr": "Philosophe travaillant sur l’éthique spatiale, la philosophie de l’environnement et l’éthique intergénérationnelle ; thèse « Essays in Space Ethics » (2025). Encadré par Juha Räikkä, Helena Siipi (Université de Turku) et Tony Milligan (King’s College London).",
+        "ja": "宇宙倫理学、環境哲学、世代間倫理を研究する哲学者。博士論文「Essays in Space Ethics」（2025年）。指導教員：Juha Räikkä、Helena Siipi（トゥルク大学）、Tony Milligan（キングス・カレッジ・ロンドン）。"
+      },
+      "photo": "images/tree/sivula.jpg",
+      "url": "https://www.utu.fi/en/people/oskari-sivula"
+    },
+    {
+      "name": "Rebecca Martellotti",
+      "institution": {
+        "name": "University of Bologna",
+        "url": "https://site.unibo.it/origin/en/who-we-are/our-team"
+      },
+      "role": {
+        "en": "PhD student · Astrobiology & geobiology",
+        "pt": "Doutoranda · Astrobiologia e geobiologia",
+        "fr": "Doctorante · Astrobiologie et géobiologie",
+        "ja": "博士課程学生 · アストロバイオロジー・地球生物学"
+      },
+      "about": {
+        "en": "PhD on microbial diversity and biosignatures in extreme environments as planetary analogues (e.g. the Alalobad geothermal field, Afar, Ethiopia). Supervised by Barbara Cavalazzi, Sandra Cristino (University of Bologna) and Frédéric Foucher (CNRS, Orléans).",
+        "pt": "Doutoramento sobre diversidade microbiana e bioassinaturas em ambientes extremos como análogos planetários (p. ex. o campo geotérmico de Alalobad, Afar, Etiópia). Orientada por Barbara Cavalazzi, Sandra Cristino (Universidade de Bolonha) e Frédéric Foucher (CNRS, Orléans).",
+        "fr": "Thèse sur la diversité microbienne et les biosignatures en environnements extrêmes comme analogues planétaires (p. ex. le champ géothermique d’Alalobad, Afar, Éthiopie). Encadrée par Barbara Cavalazzi, Sandra Cristino (Université de Bologne) et Frédéric Foucher (CNRS, Orléans).",
+        "ja": "惑星アナログとしての極限環境における微生物多様性とバイオシグネチャーに関する博士研究（例：エチオピア・アファールのアラロバド地熱地帯）。指導教員：Barbara Cavalazzi、Sandra Cristino（ボローニャ大学）、Frédéric Foucher（CNRS、オルレアン）。"
+      },
+      "photo": "images/tree/martellotti.jpg"
+    },
+    {
+      "name": "Laura I. Tenelanda-Osorio",
+      "institution": {
+        "name": "University of Tübingen · Geomicrobiology",
+        "url": "https://uni-tuebingen.de/fakultaeten/mathematisch-naturwissenschaftliche-fakultaet/fachbereiche/geowissenschaften/arbeitsgruppen/geo-und-umweltnaturwissenschaften/geo-und-umweltnaturwissenschaften/geomikrobiologie/"
+      },
+      "role": {
+        "en": "Doctoral researcher · Geomicrobiology",
+        "pt": "Investigadora doutoranda · Geomicrobiologia",
+        "fr": "Doctorante · Géomicrobiologie",
+        "ja": "博士研究員 · 地球微生物学"
+      },
+      "about": {
+        "en": "Doctoral research on terrestrial iron biosignatures and their potential for astrobiology and solar system exploration, in the Geomicrobiology group of Andreas Kappler (doctoral examiner), University of Tübingen.",
+        "pt": "Doutoramento sobre bioassinaturas de ferro terrestres e o seu potencial para a astrobiologia e a exploração do Sistema Solar, no grupo de Geomicrobiologia de Andreas Kappler (examinador da tese), Universidade de Tübingen.",
+        "fr": "Thèse sur les biosignatures du fer terrestres et leur potentiel pour l’astrobiologie et l’exploration du Système solaire, dans le groupe de géomicrobiologie d’Andreas Kappler (rapporteur de thèse), Université de Tübingen.",
+        "ja": "地球上の鉄バイオシグネチャーとアストロバイオロジー・太陽系探査への応用可能性に関する博士研究。テュービンゲン大学 Andreas Kappler（博士論文審査員）の地球微生物学グループ。"
+      },
+      "photo": "images/tree/tenelanda-osorio.jpg"
+    },
+    {
+      "name": "Diogo Veloso Gonçalves",
+      "institution": {
+        "name": "Instituto Superior Técnico · iBB",
+        "url": "https://tecnico.ulisboa.pt/"
+      },
+      "role": {
+        "en": "Researcher · Astrobiology",
+        "pt": "Investigador · Astrobiologia",
+        "fr": "Chercheur · Astrobiologie",
+        "ja": "研究者 · アストロバイオロジー"
+      },
+      "about": {
+        "en": "Astrobiology research at the Institute for Bioengineering and Biosciences, Instituto Superior Técnico. Supervised by Zita Martins and Bruno Pedras.",
+        "pt": "Investigação em astrobiologia no Instituto de Bioengenharia e Biociências, Instituto Superior Técnico. Orientado por Zita Martins e Bruno Pedras.",
+        "fr": "Recherche en astrobiologie à l’Institute for Bioengineering and Biosciences, Instituto Superior Técnico. Encadré par Zita Martins et Bruno Pedras.",
+        "ja": "Instituto Superior Técnico 生物工学・生命科学研究所（iBB）でのアストロバイオロジー研究。指導教員：Zita Martins、Bruno Pedras。"
+      },
+      "photo": "images/tree/goncalves.jpg"
     }
   ]
 }
