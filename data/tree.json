@@ -1162,9 +1162,21 @@
               "institution": {
                 "name": "Leiden University"
               },
-              "url": "https://en.wikipedia.org/wiki/Pascale_Ehrenfreund"
+              "url": "https://en.wikipedia.org/wiki/Pascale_Ehrenfreund",
+              "photo": "images/tree/pascale-ehrenfreund.jpg",
+              "photoCredit": {
+                "author": "Franz Johann Morgenbesser from Vienna, Austria",
+                "license": "CC BY-SA 2.0",
+                "source": "https://commons.wikimedia.org/wiki/File:Prof._Dr._Pascale_Ehrenfreund-3985_(14262939769).jpg"
+              }
             }
-          ]
+          ],
+          "photo": "images/tree/zita-martins.jpg",
+          "photoCredit": {
+            "author": "António Pedro Ferreira",
+            "license": "CC BY-SA 4.0",
+            "source": "https://commons.wikimedia.org/wiki/File:Zita_Martins.jpg"
+          }
         },
         {
           "name": "Bruno Pedras",
