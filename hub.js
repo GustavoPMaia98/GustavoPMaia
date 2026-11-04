@@ -29,13 +29,14 @@
     profile: { en: "Profile", pt: "Perfil", fr: "Profil", ja: "プロフィール" },
     photo: { en: "Photo", pt: "Foto", fr: "Photo", ja: "写真" },
     homeView: { en: "Standard view", pt: "Vista normal", fr: "Vue d’ensemble", ja: "標準表示" },
+    advisor: { en: "Advisor of a collaborator", pt: "Orientador(a) de um colaborador", fr: "Encadrant·e d’un collaborateur", ja: "共同研究者の指導教員" },
     nobel: { en: "Nobel laureate", pt: "Prémio Nobel", fr: "Prix Nobel", ja: "ノーベル賞受賞者" }
   };
   const t = (k, o) => { let s = T[k][lang()] || T[k].en; for (const x in o || {}) s = s.replace("{" + x + "}", o[x]); return s; };
   const plain = s => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
   const keyOf = name => {
     const w = plain(name).replace(/[.\-]/g, " ").split(/\s+/).filter(w => w && !["eng", "prof", "dr"].includes(w));
-    return w.length ? w[w.length - 1] + "|" + w[0][0] : "";
+    return w.length ? w[w.length - 1] + "|" + w[0] : "";   // surname + first name ("João … da Silva" is not "José … da Silva")
   };
   const safe = u => /^(https?:\/\/|images\/)/.test(String(u || "")) ? String(u) : "";
   function authorsOf(w, info) {
@@ -104,11 +105,29 @@
     }
     me.kids.forEach(angle);
     below.concat(mates).forEach(c => { c.ang = at + span * 0.45; at += span * 0.9; });
+    // the PhD and postdoc advisors of my co-authors and colleagues ("mentors" on them in
+    // data/tree.json), further out in their part of the circle; an advisor who is already
+    // in the tree (e.g. one of my own supervisors) keeps their place and gets a line
+    const ADV = [[440, 525], [610, 610]];   // two rings for the first generation so they stay near their students
+    let advN = 0;
+    function advise(child, depth) {
+      const ms = ((child.n && child.n.mentors) || []).filter(m => m && m.name && !m.hidden);
+      ms.forEach((m, i) => {
+        const k = keyOf(m.name);
+        if (seen.has(k)) { links.push({ a: seen.get(k), b: child, kind: "mentor", cross: true }); return; }
+        const node = { id: nodes.length, n: m, name: m.name, key: k, gen: child.gen + 1, parent: child, kids: [], adv: true,
+          ang: child.ang + (i - (ms.length - 1) / 2) * 0.05, rFix: ADV[Math.min(depth, ADV.length - 1)][advN++ % 2] };
+        seen.set(k, node); nodes.push(node); child.kids.push(node);
+        links.push({ a: node, b: child, kind: "mentor" });
+        advise(node, depth + 1);
+      });
+    }
+    below.concat(mates).forEach(c => advise(c, 0));
     const RING = [0, 175, 300, 410, 510, 600, 680];
     const ringOf = g => RING[Math.min(g, RING.length - 1)] + Math.max(0, g - RING.length + 1) * 80;
     const outer = ringOf(maxGen) + 30, C = outer + 120;   // room for the names on the outer ring
     nodes.forEach(n => {
-      const r = n.self ? 0 : (n.tree ? ringOf(n.gen) : [190, 270, 350][n.alt || 0]);
+      const r = n.self ? 0 : n.rFix ? n.rFix : (n.tree ? ringOf(n.gen) : [190, 270, 350][n.alt || 0]);
       n.r0 = r; n.x = C + Math.cos(n.ang || 0) * r; n.y = C + Math.sin(n.ang || 0) * r;
     });
 
@@ -136,7 +155,7 @@
       let moved = false;
       for (let i = 0; i < nodes.length; i++) for (let j = i + 1; j < nodes.length; j++) {
         const p = nodes[i], q = nodes[j];
-        if (p.self || q.self || Math.abs(p.r0 - q.r0) > 30) continue;
+        if (p.self || q.self || Math.abs(p.r0 - q.r0) > 58) continue;
         const need = R(p) + R(q) + 10, d = Math.hypot(p.x - q.x, p.y - q.y);
         if (d >= need) continue;
         const da = Math.min(0.06, (need - d) / Math.max(60, (p.r0 + q.r0) / 2) / 2), sgn = Math.sign(((q.ang - p.ang + 3 * Math.PI) % (2 * Math.PI)) - Math.PI) || 1;
@@ -214,6 +233,9 @@
     function show(id) {
       const n = nodes[id]; if (!n) return;
       const on = n.self ? new Set([n.id]) : chain(n);
+      // a co-author or colleague lights up their own advisors too
+      const upTo = x => (x.kids || []).filter(k => k.adv).forEach(k => { on.add(k.id); upTo(k); });
+      if (n.co || n.mate || n.adv) { upTo(n); links.filter(l => l.cross && l.b === n).forEach(l => on.add(l.a.id)); }
       stage.querySelectorAll(".tn-node").forEach(g => g.classList.toggle("is-on", on.has(+g.dataset.id) || +g.dataset.id === n.id));
       stage.querySelectorAll(".tn-link").forEach(p => {
         const a = +p.dataset.a, b = +p.dataset.b;
@@ -232,6 +254,7 @@
       const shared = (n.papers || []);
       side.innerHTML = head +
         (role ? '<p class="tn-role">' + esc(strip(role)) + "</p>" : "") +
+        (n.adv ? '<p class="tn-badge tn-badge--adv">' + esc(t("advisor")) + "</p>" : "") +
         (n.co ? '<p class="tn-badge">' + esc(n.tree ? t("mentorCo") : t("coauthor")) + "</p>" : "") +
         (n.mate ? '<p class="tn-badge tn-badge--mate">' + esc(t("colleague")) + "</p>" : "") +
         (n.n && n.n.about ? '<p class="tn-about">' + esc(tr(n.n.about)) + "</p>" : "") +

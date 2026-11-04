@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Find freely licensed portraits for the people in the Academic Tree.
 
-For every person in data/tree.json without a "photo", this looks for their Wikipedia
+For every person in data/tree.json without a "photo" (my lineage, and the advisors
+of my colleagues and co-authors), this looks for their Wikipedia
 article (the "url" when it is a Wikipedia link, otherwise their name), checks that
 the article is about a scientist, takes their portrait on Wikidata or the article's
 main picture, and keeps it only
@@ -152,6 +153,13 @@ def main():
         for m in n.get("mentors") or []:
             walk(m)
     walk(tree["root"])
+    # the advisors of my colleagues and co-authors (their "mentors") too
+    for c in tree.get("colleagues") or []:
+        for m in (c.get("mentors") or []) if isinstance(c, dict) else []:
+            walk(m)
+    for nm, c in (tree.get("coauthors") or {}).items():
+        for m in (c.get("mentors") or []) if isinstance(c, dict) else []:
+            walk(m)
     found, done = {}, 0
     for n in people:
         if n.get("photo") or n.get("hidden"):
