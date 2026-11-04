@@ -1169,17 +1169,6 @@ html.space-pending body, html.has-space3d body{ background:#02040a; }
 .nav-blog:hover, .nav-blog:focus-visible{ color:#fff; text-decoration:none; transform:translateY(-1px); filter:brightness(1.08); box-shadow:0 10px 24px -6px rgba(217,70,239,.85); }
 .nav-blog svg{ width:16px; height:16px; flex:none; }
 @media (max-width:560px){ .nav-blog{ height:34px; padding:0 11px; font-size:.84rem; } }
-/* Lessons: the tutoring ad on Superprof, next to the Blog button in another colour */
-.nav-lessons{ display:inline-flex; align-items:center; gap:7px; height:38px; padding:0 15px 0 13px; border-radius:var(--radius-pill);
-  font-weight:800; font-size:.9rem; letter-spacing:.01em; color:#0b1020; text-decoration:none; white-space:nowrap;
-  background:linear-gradient(120deg, #fbbf24, #fb923c 60%, #f97316); box-shadow:0 6px 18px -6px rgba(251,146,60,.7);
-  transition:transform .2s ease, box-shadow .2s ease, filter .2s ease; }
-.nav-lessons:hover, .nav-lessons:focus-visible{ color:#0b1020; text-decoration:none; transform:translateY(-1px); filter:brightness(1.06); box-shadow:0 10px 24px -6px rgba(251,146,60,.85); }
-.nav-lessons svg{ width:16px; height:16px; flex:none; }
-@media (max-width:900px){   /* icon only on tablets and phones: the label stays for screen readers */
-  .nav-lessons{ width:38px; padding:0; justify-content:center; }
-  .nav-lessons span{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; } }
-@media (max-width:560px){ .nav-lessons{ width:34px; height:34px; } }
 
 /* the website and the Blog page side by side (slide.js): the page slides out to one side
    while the other slides in from the other */
@@ -1332,3 +1321,14 @@ html.space-pending body, html.has-space3d body{ background:#02040a; }
 #langToggle[aria-expanded="true"] .lang-caret{ transform:rotate(180deg); }
 #langToggle.lang-btn[data-tip]::after{ display:none; }
 @media (max-width:560px){ #langToggle.lang-btn{ width:auto; padding:0 9px 0 8px; gap:5px; } #langToggle .lang-code{ display:inline; } #langToggle .lang-caret{ display:none; } }
+
+/* Superprof (tutoring ad) among the profile links: Superprof's coral pink and hexagon mark, framed in gold */
+.social-links a.profile-link--superprof{ color:#fff; font-weight:800;
+  background:linear-gradient(120deg, #fb7f99, #f7698a 55%, #ee5579);
+  border:1.5px solid #f5c542; box-shadow:0 0 0 2px rgba(245,197,66,.22), 0 6px 18px -6px rgba(245,197,66,.75); }
+.social-links a.profile-link--superprof img{ width:18px; height:20px; }
+.social-links a.profile-link--superprof:hover, .social-links a.profile-link--superprof:focus-visible{
+  color:#fff; text-decoration:none; filter:brightness(1.07); border-color:#ffd96a;
+  box-shadow:0 0 0 3px rgba(245,197,66,.35), 0 10px 24px -6px rgba(245,197,66,.9); }
+/* the profile row wraps instead of running off the screen on tablets */
+@media (max-width:1100px){ .social-links{ flex-wrap:wrap; justify-content:center; } }

@@ -1403,7 +1403,7 @@
     nav_highlights:{en:"Highlights",pt:"Destaques"}, nav_awards:{en:"Awards",pt:"Prémios"},
     nav_experience:{en:"Experience",pt:"Experiência"}, nav_presentations:{en:"Presentations",pt:"Apresentações"},
     nav_funding:{en:"Funding",pt:"Financiamento"}, nav_publications:{en:"Publications",pt:"Publicações"},
-    nav_tree:{en:"Tree",pt:"Árvore"}, nav_map:{en:"Map",pt:"Mapa"}, nav_blog:{en:"Blog",pt:"Blog"}, nav_tutoring:{en:"Tutoring",pt:"Explicações"}, nav_lessons:{en:"Lessons",pt:"Explicações"}, nav_courses:{en:"Courses",pt:"Cursos"},
+    nav_tree:{en:"Tree",pt:"Árvore"}, nav_map:{en:"Map",pt:"Mapa"}, nav_blog:{en:"Blog",pt:"Blog"}, nav_tutoring:{en:"Tutoring",pt:"Explicações"}, nav_courses:{en:"Courses",pt:"Cursos"},
     nav_ask:{en:"Ask",pt:"Perguntar"}, nav_projects:{en:"Projects",pt:"Projetos"}, nav_network:{en:"Collaborations",pt:"Colaborações"},
     nav_datacode:{en:"Data & code",pt:"Dados e código"}, nav_missions:{en:"Missions",pt:"Missões"},
     nav_research:{en:"Research",pt:"Investigação"}, nav_skills:{en:"Skills",pt:"Competências"}, nav_more:{en:"More",pt:"Mais"},
