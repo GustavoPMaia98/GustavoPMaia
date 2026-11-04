@@ -44,6 +44,26 @@
     {
       "type": "oral",
       "logo": {
+        "src": "images/logos/Origins.svg",
+        "alt": ""
+      },
+      "title": {
+        "en": "Mechanochemical Processing of Organic Matter During Asteroid Gardening",
+        "pt": "Processamento mecanoquímico da matéria orgânica durante o asteroid gardening"
+      },
+      "meta": {
+        "en": "Origins 2026 (ISSOL) · Jul 2026 · Paris",
+        "pt": "Origins 2026 (ISSOL) · jul. 2026 · Paris"
+      },
+      "summary": {
+        "en": "Oral talk · Maia, Remusat, Amano, Viennet, Dworkin, McLain &amp; da Silva",
+        "pt": "Comunicação oral · Maia, Remusat, Amano, Viennet, Dworkin, McLain & da Silva"
+      },
+      "details": "<p data-pt=\"Comunicação oral na <em>Origins 2026</em>, a conferência da International Society for the Study of the Origin of Life (ISSOL) na Sorbonne Université, Paris. A mecanoquímica em estado sólido da hexametilenotetramina (HMT) com montmorilonite sódica serve de análogo aos impactos de micrometeoritos e IDPs em superfícies de asteroides. Quando a estrutura da argila é desorganizada, a HMT transforma-se em espécies relacionadas com a HMT, pirazina e derivados de triazinano/triazina, formando-se produtos oxigenados mesmo sem água líquida; quando a argila se mantém, moléculas do tipo HMT intercalam-se entre as suas camadas. Os choques e impactos transformam e preservam, assim, a matéria orgânica extraterrestre, moldando o que os pequenos corpos entregam às superfícies planetárias.\">Oral talk at <em>Origins 2026</em>, the conference of the International Society for the Study of the Origin of Life (ISSOL) at Sorbonne Université, Paris. Solid-state mechanochemistry of hexamethylenetetramine (HMT) with Na-rich montmorillonite serves as an analogue for micrometeorite and IDP impacts on asteroid surfaces. When the clay structure is disrupted, HMT turns into HMT-related species, pyrazine and triazinane/triazine derivatives, with oxygen-bearing products forming even without liquid water; when the clay is preserved, HMT-like molecules intercalate into its interlayers. Shock and impact events thus both transform and preserve extraterrestrial organic matter, shaping what small bodies deliver to planetary surfaces.</p>\n<p><a href=\"abstracts/Origins2026_Maia.pdf\" target=\"_blank\" rel=\"noopener\" data-pt=\"Resumo ↗\">Abstract ↗</a></p>\n<div class=\"expand-gallery\">\n<img src=\"images/origins2026.jpg\" alt=\"Origins 2026, ISSOL conference, Sorbonne Université, Paris\">\n</div>"
+    },
+    {
+      "type": "oral",
+      "logo": {
         "src": "images/logos/AbGradE.png",
         "alt": ""
       },

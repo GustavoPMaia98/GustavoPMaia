@@ -641,23 +641,23 @@
     {
       "name": "Oskari Sivula",
       "institution": {
-        "name": "University of Turku",
-        "url": "https://www.utu.fi/en/people/oskari-sivula"
+        "name": "University of Helsinki",
+        "url": "https://www.helsinki.fi/en"
       },
       "role": {
-        "en": "Doctoral researcher · Space ethics",
-        "pt": "Investigador doutorando · Ética espacial",
-        "fr": "Doctorant · Éthique spatiale",
-        "ja": "博士研究員 · 宇宙倫理学"
+        "en": "Postdoctoral researcher · Ethics of risk",
+        "pt": "Investigador de pós-doutoramento · Ética do risco",
+        "fr": "Chercheur postdoctoral · Éthique du risque",
+        "ja": "博士研究員（ポスドク）· リスクの倫理学"
       },
       "about": {
-        "en": "Philosopher working on space ethics, environmental philosophy and intergenerational ethics; doctoral thesis “Essays in Space Ethics” (2025). Supervised by Juha Räikkä, Helena Siipi (University of Turku) and Tony Milligan (King’s College London).",
-        "pt": "Filósofo dedicado à ética espacial, filosofia ambiental e ética intergeracional; tese de doutoramento “Essays in Space Ethics” (2025). Orientado por Juha Räikkä, Helena Siipi (Universidade de Turku) e Tony Milligan (King’s College London).",
-        "fr": "Philosophe travaillant sur l’éthique spatiale, la philosophie de l’environnement et l’éthique intergénérationnelle ; thèse « Essays in Space Ethics » (2025). Encadré par Juha Räikkä, Helena Siipi (Université de Turku) et Tony Milligan (King’s College London).",
-        "ja": "宇宙倫理学、環境哲学、世代間倫理を研究する哲学者。博士論文「Essays in Space Ethics」（2025年）。指導教員：Juha Räikkä、Helena Siipi（トゥルク大学）、Tony Milligan（キングス・カレッジ・ロンドン）。"
+        "en": "Philosopher working on space ethics, environmental philosophy and intergenerational ethics; now a postdoctoral researcher on the ethics of risk at the University of Helsinki. PhD at the University of Turku (thesis “Essays in Space Ethics”, 2025), supervised by Juha Räikkä, Helena Siipi (University of Turku) and Tony Milligan (King’s College London).",
+        "pt": "Filósofo dedicado à ética espacial, filosofia ambiental e ética intergeracional; atualmente investigador de pós-doutoramento em ética do risco na Universidade de Helsínquia. Doutoramento na Universidade de Turku (tese “Essays in Space Ethics”, 2025), orientado por Juha Räikkä, Helena Siipi (Universidade de Turku) e Tony Milligan (King’s College London).",
+        "fr": "Philosophe travaillant sur l’éthique spatiale, la philosophie de l’environnement et l’éthique intergénérationnelle ; aujourd’hui chercheur postdoctoral en éthique du risque à l’Université d’Helsinki. Doctorat à l’Université de Turku (thèse « Essays in Space Ethics », 2025), sous la direction de Juha Räikkä, Helena Siipi (Université de Turku) et Tony Milligan (King’s College London).",
+        "ja": "宇宙倫理学、環境哲学、世代間倫理を研究する哲学者。現在はヘルシンキ大学でリスクの倫理学を研究するポスドク。トゥルク大学で博士号取得（博士論文「Essays in Space Ethics」、2025年）。博士課程の指導教員：Juha Räikkä、Helena Siipi（トゥルク大学）、Tony Milligan（キングス・カレッジ・ロンドン）。"
       },
       "photo": "images/tree/sivula.jpg",
-      "url": "https://www.utu.fi/en/people/oskari-sivula"
+      "url": "https://bsky.app/profile/oskarisivula.bsky.social"
     },
     {
       "name": "Rebecca Martellotti",
@@ -692,10 +692,10 @@
         "ja": "博士研究員 · 地球微生物学"
       },
       "about": {
-        "en": "Doctoral research on terrestrial iron biosignatures and their potential for astrobiology and solar system exploration, in the Geomicrobiology group of Andreas Kappler (doctoral examiner), University of Tübingen.",
-        "pt": "Doutoramento sobre bioassinaturas de ferro terrestres e o seu potencial para a astrobiologia e a exploração do Sistema Solar, no grupo de Geomicrobiologia de Andreas Kappler (examinador da tese), Universidade de Tübingen.",
-        "fr": "Thèse sur les biosignatures du fer terrestres et leur potentiel pour l’astrobiologie et l’exploration du Système solaire, dans le groupe de géomicrobiologie d’Andreas Kappler (rapporteur de thèse), Université de Tübingen.",
-        "ja": "地球上の鉄バイオシグネチャーとアストロバイオロジー・太陽系探査への応用可能性に関する博士研究。テュービンゲン大学 Andreas Kappler（博士論文審査員）の地球微生物学グループ。"
+        "en": "Doctoral research on terrestrial iron biosignatures and their potential for astrobiology and solar system exploration, in the Geomicrobiology group of the University of Tübingen. Supervised by Andreas Kappler.",
+        "pt": "Doutoramento sobre bioassinaturas de ferro terrestres e o seu potencial para a astrobiologia e a exploração do Sistema Solar, no grupo de Geomicrobiologia da Universidade de Tübingen. Orientada por Andreas Kappler.",
+        "fr": "Thèse sur les biosignatures du fer terrestres et leur potentiel pour l’astrobiologie et l’exploration du Système solaire, dans le groupe de géomicrobiologie de l’Université de Tübingen. Encadrée par Andreas Kappler.",
+        "ja": "地球上の鉄バイオシグネチャーとアストロバイオロジー・太陽系探査への応用可能性に関する博士研究（テュービンゲン大学 地球微生物学グループ）。指導教員：Andreas Kappler。"
       },
       "photo": "images/tree/tenelanda-osorio.jpg"
     },
