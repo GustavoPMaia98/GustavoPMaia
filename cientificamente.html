@@ -29,6 +29,24 @@
     .tut-page{ max-width:var(--max-width); margin:0 auto; padding:clamp(24px,5vw,48px) 20px 40px; }
     .tut-back{ display:inline-flex; align-items:center; gap:6px; font-weight:700; font-size:var(--text-sm); color:var(--muted); margin-bottom:18px; }
     .tut-back:hover{ color:var(--accent); text-decoration:none; }
+    /* Superprof listing: same look as the rest of the site (no Superprof logo or text copied) */
+    .sp-card{ position:relative; margin-top:28px; padding:clamp(22px,4vw,34px); border-radius:var(--radius-lg);
+      background:linear-gradient(160deg, rgba(23,30,62,.92), rgba(12,16,36,.92));
+      border:1px solid rgba(255,255,255,.08); box-shadow:0 14px 40px rgba(0,0,0,.4); overflow:hidden; }
+    .sp-card::before{ content:""; position:absolute; inset:0 0 auto 0; height:4px; background:linear-gradient(90deg,#8b5cf6,#d946ef 55%,#f472b6); }
+    .sp-tag{ display:inline-flex; align-items:center; gap:6px; font-size:.78rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase;
+      color:#f9a8d4; background:rgba(217,70,239,.14); border:1px solid rgba(217,70,239,.3); padding:5px 11px; border-radius:var(--radius-pill); }
+    .sp-title{ font-family:var(--font-display); font-size:clamp(1.35rem,1rem + 1.6vw,1.9rem); line-height:1.25; margin:14px 0 4px; color:#fff; }
+    .sp-sub{ color:var(--muted); margin:0 0 16px; font-weight:600; }
+    .sp-facts{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:10px; margin:0 0 18px; padding:0; list-style:none; }
+    .sp-facts li{ display:flex; gap:10px; align-items:flex-start; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.07);
+      border-radius:12px; padding:11px 13px; color:#eef4ff; font-size:.93rem; }
+    .sp-facts b{ display:block; color:#fff; }
+    .sp-ico{ flex:none; width:30px; height:30px; display:grid; place-items:center; border-radius:9px; background:rgba(125,211,252,.12); font-size:1rem; }
+    .sp-btn{ display:inline-flex; align-items:center; gap:8px; padding:12px 22px; border-radius:var(--radius-pill); font-weight:800; color:#fff;
+      background:linear-gradient(120deg,#8b5cf6,#d946ef 60%,#f472b6); box-shadow:0 8px 22px -8px rgba(217,70,239,.8); transition:transform .2s ease, filter .2s ease; }
+    .sp-btn:hover, .sp-btn:focus-visible{ color:#fff; text-decoration:none; transform:translateY(-1px); filter:brightness(1.08); }
+    .sp-note{ margin:16px 0 0; font-size:.8rem; color:var(--muted); line-height:1.5; }
   </style>
 </head>
 <body>
@@ -81,6 +99,21 @@ Obrigado!">
           </a>
         </div>
       </div>
+    </section>
+
+    <!-- Superprof listing (lessons booked there follow Superprof's own terms) -->
+    <section class="sp-card" aria-labelledby="spTitle">
+      <span class="sp-tag">&#9733; Também na Superprof</span>
+      <h2 class="sp-title" id="spTitle">Mestre em Química com especialidade em Química Orgânica</h2>
+      <p class="sp-sub">Explicações de Química · Chemistry tutoring · MSc, Organic Chemistry</p>
+      <ul class="sp-facts">
+        <li><span class="sp-ico" aria-hidden="true">&#127891;</span><span><b>Mestrado em Química</b>Instituto Superior Técnico</span></li>
+        <li><span class="sp-ico" aria-hidden="true">&#9879;&#65039;</span><span><b>Química Orgânica</b>do básico às reações e mecanismos</span></li>
+        <li><span class="sp-ico" aria-hidden="true">&#127942;</span><span><b>Excelência no Ensino</b>Docentes Excelentes 2024/25, IST</span></li>
+        <li><span class="sp-ico" aria-hidden="true">&#128172;</span><span><b>Avaliações de alunos e pais</b>no anúncio da Superprof</span></li>
+      </ul>
+      <a class="sp-btn" href="https://www.superprof.pt/mestre-quimica-com-especialidade-quimica-organica-tutor-chemistry-msc-chemistry-organic-chemistry.html" target="_blank" rel="noopener">Ver o anúncio e marcar aula &#8599;</a>
+      <p class="sp-note">Preços, disponibilidade e avaliações estão no anúncio. As aulas marcadas pela Superprof seguem os termos e condições da Superprof; este site não é afiliado à Superprof.</p>
     </section>
   </main>
 
