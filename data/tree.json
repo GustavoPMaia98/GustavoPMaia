@@ -1171,13 +1171,7 @@
               }
             }
           ],
-          "photoFocus": "bottom",
-          "photo": "images/tree/zita-martins.jpg",
-          "photoCredit": {
-            "author": "António Pedro Ferreira",
-            "license": "CC BY-SA 4.0",
-            "source": "https://commons.wikimedia.org/wiki/File:Zita_Martins.jpg"
-          }
+          "photo": "images/tree/zita-martins.jpg"
         },
         {
           "name": "Bruno Pedras",
