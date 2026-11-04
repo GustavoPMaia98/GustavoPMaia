@@ -698,7 +698,7 @@
       ]
     },
     {
-      "name": "Clementine Bouquet",
+      "name": "Clémentin Bouquet",
       "institution": {
         "name": "IMPMC · Sorbonne Université / MNHN",
         "url": "https://impmc.sorbonne-universite.fr/en/index.html"
@@ -708,10 +708,10 @@
         {
           "name": "Anne-Catherine Lehours",
           "role": {
-            "en": "Doctoral advisor of Clementine Bouquet",
-            "pt": "Orientador(a) de doutoramento de Clementine Bouquet",
-            "fr": "Directeur·rice de thèse de Clementine Bouquet",
-            "ja": "Clementine Bouquet の博士課程指導教員"
+            "en": "Doctoral advisor of Clémentin Bouquet",
+            "pt": "Orientador(a) de doutoramento de Clémentin Bouquet",
+            "fr": "Directeur·rice de thèse de Clémentin Bouquet",
+            "ja": "Clémentin Bouquet の博士課程指導教員"
           },
           "institution": {
             "name": "Université Clermont Auvergne"
@@ -1171,6 +1171,7 @@
               }
             }
           ],
+          "photoFocus": "bottom",
           "photo": "images/tree/zita-martins.jpg",
           "photoCredit": {
             "author": "António Pedro Ferreira",
