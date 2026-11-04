@@ -49,6 +49,7 @@ window.TR.fr = {
   "Tree": "Arbre",
   "Map": "Carte",
   "Tutoring": "Enseignement",
+  "Lessons": "Cours",
 
   // ---- Hero ----
   "PhD Researcher in Chemistry · Astrobiology": "Doctorant en chimie · Astrobiologie",
@@ -554,6 +555,7 @@ window.TR.ja = {
   "Tree": "学術系譜",
   "Map": "地図",
   "Tutoring": "指導",
+  "Lessons": "レッスン",
 
   // ---- Hero ----
   "Gustavo Pinho Maia": "グスタヴォ・ピニョ・マイア",
