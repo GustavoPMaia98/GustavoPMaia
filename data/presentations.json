@@ -4,6 +4,26 @@
     {
       "type": "oral",
       "logo": {
+        "src": "images/logos/EJC.svg",
+        "alt": ""
+      },
+      "title": {
+        "en": "Effect of asteroid gardening on extraterrestrial organic matter: implications for the RNA World Hypothesis",
+        "pt": "Efeito do asteroid gardening na matéria orgânica extraterrestre: implicações para a hipótese do Mundo de RNA"
+      },
+      "meta": {
+        "en": "EJC 2026 · 2–4 Nov 2026 · CNES, Paris",
+        "pt": "EJC 2026 · 2–4 nov. 2026 · CNES, Paris"
+      },
+      "summary": {
+        "en": "Oral talk · Maia, Dworkin, McLain, da Silva &amp; Remusat",
+        "pt": "Comunicação oral · Maia, Dworkin, McLain, da Silva & Remusat"
+      },
+      "details": "<p data-pt=\"Comunicação oral na conferência Exobiologie Jeunes Chercheur·ses 2026 (EJC 2026, Salle de l’Espace, CNES, Paris, 2–4 de novembro de 2026). A hipótese do Mundo de RNA requer ribonucleósidos e ribonucleótidos, mas estes monómeros do RNA nunca foram detetados em amostras extraterrestres. Os quatro ribonucleósidos canónicos foram moídos com sais, sílica, o análogo lunar JSC-1A e pó do meteorito Allende CV3, como análogo do asteroid gardening. Em todos os sistemas degradaram-se, sobretudo nas respetivas nucleobases (guanina, adenina, citosina, uracilo), todas já encontradas em Murchison e Bennu, o que sugere que algumas nucleobases meteoríticas podem ser produtos de degradação de precursores mais complexos. A energia mecânica pode assim alterar a diversidade de moléculas orgânicas entregues a mundos habitáveis.\">Oral talk at the Exobiologie Jeunes Chercheur·ses 2026 conference (EJC 2026, Salle de l’Espace, CNES, Paris, 2–4 November 2026). The RNA World Hypothesis needs ribonucleosides and ribonucleotides, yet these RNA monomers have never been detected in extraterrestrial samples. The four canonical ribonucleosides were ball-milled with salts, silica, the lunar analogue JSC-1A and crushed Allende CV3 meteorite powder as an analogue for asteroid gardening. In every system they broke down, mainly into their nucleobases (guanine, adenine, cytosine, uracil), all already found in Murchison and Bennu, suggesting that some meteoritic nucleobases may be degradation products of more complex precursors. Mechanical energy can thus change the diversity of organic molecules delivered to habitable worlds.</p>\n<p><a href=\"abstracts/EJC2026_Maia.pdf\" target=\"_blank\" rel=\"noopener\" data-pt=\"Resumo ↗\">Abstract ↗</a> · <a href=\"https://ejc2026.exobiologie.fr/\" target=\"_blank\" rel=\"noopener\" data-pt=\"Conferência ↗\">Conference ↗</a></p>"
+    },
+    {
+      "type": "oral",
+      "logo": {
         "src": "images/logos/metsoc.png",
         "alt": ""
       },
@@ -19,7 +39,27 @@
         "en": "Oral talk · Maia, Remusat, Amano, Viennet, Dworkin, McLain &amp; da Silva",
         "pt": "Comunicação oral · Maia, Remusat, Amano, Viennet, Dworkin, McLain & da Silva"
       },
-      "details": "<p data-pt=\"Comunicação oral na 88.ª Reunião da Meteoritical Society (MetSoc 2026, Frankfurt), na sessão Organics &amp; Ices. A moagem por impacto e a trituração de hexametilenotetramina (HMT), com montmorilonite sódica servem de análogo aos impactos repetidos do asteroid gardening. A moagem de alta energia desorganiza a estrutura da argila e converte a HMT numa variedade de novas espécies orgânicas (pirazina, derivados de triazina/triazinano e espécies azotadas com oxigénio) mesmo sem água líquida, enquanto a trituração mais suave intercala moléculas do tipo HMT entre as camadas da argila, protegendo-as. Os eventos de impacto transformam e preservam, assim, a matéria orgânica extraterrestre.\">Oral talk at the 88th Meeting of the Meteoritical Society (MetSoc 2026, Frankfurt), in the Organics &amp; Ices session. Ball-milling and grinding of hexamethylenetetramine (HMT), with Na-montmorillonite serve as an analogue for the repeated impacts of asteroid gardening. High-energy milling disrupts the clay structure and drives HMT into a diverse suite of new organics (pyrazine, triazine/triazinane derivatives, and oxygen-bearing nitrogen species) even without liquid water, while gentler grinding intercalates HMT-like molecules into the clay interlayers, protecting them. Impact events thus both transform and preserve extraterrestrial organic matter.</p>\n<p><a href=\"https://www.hou.usra.edu/meetings/metsoc2026/pdf/5158.pdf\" target=\"_blank\" rel=\"noopener\" data-pt=\"Resumo ↗\">Abstract ↗</a></p>"
+      "details": "<p data-pt=\"Comunicação oral na 88.ª Reunião da Meteoritical Society (MetSoc 2026, Frankfurt), na sessão Organics &amp; Ices. A moagem por impacto e a trituração de hexametilenotetramina (HMT), com montmorilonite sódica servem de análogo aos impactos repetidos do asteroid gardening. A moagem de alta energia desorganiza a estrutura da argila e converte a HMT numa variedade de novas espécies orgânicas (pirazina, derivados de triazina/triazinano e espécies azotadas com oxigénio) mesmo sem água líquida, enquanto a trituração mais suave intercala moléculas do tipo HMT entre as camadas da argila, protegendo-as. Os eventos de impacto transformam e preservam, assim, a matéria orgânica extraterrestre.\">Oral talk at the 88th Meeting of the Meteoritical Society (MetSoc 2026, Frankfurt), in the Organics &amp; Ices session. Ball-milling and grinding of hexamethylenetetramine (HMT), with Na-montmorillonite serve as an analogue for the repeated impacts of asteroid gardening. High-energy milling disrupts the clay structure and drives HMT into a diverse suite of new organics (pyrazine, triazine/triazinane derivatives, and oxygen-bearing nitrogen species) even without liquid water, while gentler grinding intercalates HMT-like molecules into the clay interlayers, protecting them. Impact events thus both transform and preserve extraterrestrial organic matter.</p>\n<p><a href=\"abstracts/MetSoc2026_Maia.pdf\" target=\"_blank\" rel=\"noopener\" data-pt=\"Resumo ↗\">Abstract ↗</a></p>"
+    },
+    {
+      "type": "oral",
+      "logo": {
+        "src": "images/logos/Origins.svg",
+        "alt": ""
+      },
+      "title": {
+        "en": "Mechanochemical Processing of Organic Matter During Asteroid Gardening",
+        "pt": "Processamento mecanoquímico da matéria orgânica durante o asteroid gardening"
+      },
+      "meta": {
+        "en": "Origins 2026 (ISSOL) · Jul 2026 · Paris",
+        "pt": "Origins 2026 (ISSOL) · jul. 2026 · Paris"
+      },
+      "summary": {
+        "en": "Oral talk · Maia, Remusat, Amano, Viennet, Dworkin, McLain &amp; da Silva",
+        "pt": "Comunicação oral · Maia, Remusat, Amano, Viennet, Dworkin, McLain & da Silva"
+      },
+      "details": "<p data-pt=\"Comunicação oral na <em>Origins 2026</em>, a conferência da International Society for the Study of the Origin of Life (ISSOL) na Sorbonne Université, Paris. A mecanoquímica em estado sólido da hexametilenotetramina (HMT) com montmorilonite sódica serve de análogo aos impactos de micrometeoritos e IDPs em superfícies de asteroides. Quando a estrutura da argila é desorganizada, a HMT transforma-se em espécies relacionadas com a HMT, pirazina e derivados de triazinano/triazina, formando-se produtos oxigenados mesmo sem água líquida; quando a argila se mantém, moléculas do tipo HMT intercalam-se entre as suas camadas. Os choques e impactos transformam e preservam, assim, a matéria orgânica extraterrestre, moldando o que os pequenos corpos entregam às superfícies planetárias.\">Oral talk at <em>Origins 2026</em>, the conference of the International Society for the Study of the Origin of Life (ISSOL) at Sorbonne Université, Paris. Solid-state mechanochemistry of hexamethylenetetramine (HMT) with Na-rich montmorillonite serves as an analogue for micrometeorite and IDP impacts on asteroid surfaces. When the clay structure is disrupted, HMT turns into HMT-related species, pyrazine and triazinane/triazine derivatives, with oxygen-bearing products forming even without liquid water; when the clay is preserved, HMT-like molecules intercalate into its interlayers. Shock and impact events thus both transform and preserve extraterrestrial organic matter, shaping what small bodies deliver to planetary surfaces.</p>\n<p><a href=\"abstracts/Origins2026_Maia.pdf\" target=\"_blank\" rel=\"noopener\" data-pt=\"Resumo ↗\">Abstract ↗</a></p>\n<div class=\"expand-gallery\">\n<img src=\"images/origins2026.jpg\" alt=\"Origins 2026, ISSOL conference, Sorbonne Université, Paris\">\n</div>"
     },
     {
       "type": "oral",
