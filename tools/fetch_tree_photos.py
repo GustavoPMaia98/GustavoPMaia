@@ -9,7 +9,8 @@ main picture, and keeps it only
 if it is on Wikimedia Commons under a free licence (public domain or Creative
 Commons). The picture is saved as images/tree/<name>.jpg (square, 320 px) and the
 person gets "photo" and "photoCredit" (author, licence, source page) in data/tree.json;
-the site shows the credit next to the photo. Nothing is changed for anyone it cannot
+the site shows the credit next to the photo. A person can have
+"photoFocus": "bottom" or "center" when the face is not at the top of the picture. Nothing is changed for anyone it cannot
 find with certainty.
 
 Run by .github/workflows/tree-photos.yml ("Run workflow"), or by hand:
@@ -127,12 +128,16 @@ def commons(file, page):
                 "author": artist[:120], "title": page["title"]}
 
 
-def square(data, size=320):
+def square(data, size=320, focus=None):
     from PIL import Image
     im = Image.open(io.BytesIO(data)).convert("RGB")
     w, h = im.size
     s = min(w, h)
     top = 0 if h > w else (h - s) // 2                      # portraits: keep the top (the face)
+    if focus == "bottom":                                   # "photoFocus": "bottom" when the face is low in the picture
+        top = h - s
+    elif focus == "center":
+        top = (h - s) // 2
     left = (w - s) // 2
     im = im.crop((left, top, left + s, top + s)).resize((size, size), Image.LANCZOS)
     buf = io.BytesIO()
@@ -175,7 +180,7 @@ def main():
                 rel = "images/tree/" + slug(n["name"]) + ".jpg"
                 os.makedirs(OUT, exist_ok=True)
                 with open(os.path.join(ROOT, rel), "wb") as f:
-                    f.write(square(get(hit["thumb"])))
+                    f.write(square(get(hit["thumb"]), focus=n.get("photoFocus")))
                 hit["rel"] = rel
         hit = found[key]
         if hit and not a.dry_run and hit.get("rel"):
