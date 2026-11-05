@@ -1,6 +1,6 @@
 {
  "source": "ORCID 0000-0001-5314-8816, Crossref and OpenAlex; every paper verified (author + field + identity)",
- "updated": "2026-09-28",
+ "updated": "2026-11-05",
  "works": [
   {
    "doi": "10.1016/j.epsl.2026.120237",
@@ -12,7 +12,53 @@
     "orcid-id-on-paper",
     "on-orcid-record",
     "known-coauthor"
-   ]
+   ],
+   "author_list": [
+    {
+     "given": "Gustavo P.",
+     "family": "Maia"
+    },
+    {
+     "given": "Laurent",
+     "family": "Remusat"
+    },
+    {
+     "given": "Kana",
+     "family": "Amano"
+    },
+    {
+     "given": "Jean-Christophe",
+     "family": "Viennet"
+    },
+    {
+     "given": "Jason P.",
+     "family": "Dworkin"
+    },
+    {
+     "given": "Hannah L.",
+     "family": "McLain"
+    },
+    {
+     "given": "José A.L.",
+     "family": "da Silva"
+    }
+   ],
+   "volume": "692",
+   "issue": "",
+   "pages": "120237",
+   "abstract": "Carbonaceous chondrites contain up to 4 wt% organic matter, likely inherited from precursors synthesised during preaccretion events. This organic inventory was later altered by hydrothermal and radiative processes, though the role of shock-induced impacts remains unclear. In this study, we examine the solid-state mechanochemical reactivity of hexamethylenetetramine (HMT) with sodium-rich montmorillonite (MMT) as an analogue to investigate the influence of shock- or impact-induced processes on organic matter evolution. HMT is reactive under mechanical stress, particularly when the clay mineral structure is disrupted, resulting in a wide range of molecules, including HMT-related compounds (as HMT-CH 3 , HMT-OH, among others), pyrazine and triazinane/triazine derivatives. Notably, the incorporation of oxygen in N -rich species was also observed, despite the absence of liquid water. Conversely, when the clay mineral remains intact, mechanical input promotes the solid-state insertion of HMT-like molecules (as HMT, HMT-CH 3 and triazinane derivative) within its interlayer space, thereby protecting it from further reaction. The “cyclic mechanical input” delivered by laboratory milling ( i.e. , MM 200) and grinding ( i.e. , McCrone) is relevant to shock processes at an asteroid surface through repeated micrometeorite and IDPs impacts ( i.e. , space gardening). This work highlights shock/impact as a key factor driving both transformation and protection of extraterrestrial organics, offering new insights on how impact processes might have shaped extraterrestrial organic matter and consequent exogenous delivery of possibly prebiotic compounds to planetary surfaces.",
+   "oa_url": "https://doi.org/10.1016/j.epsl.2026.120237",
+   "cited_by": 0,
+   "keywords": [
+    "hexamethylenetetramine",
+    "montmorillonite",
+    "carbonaceous chondrites",
+    "interplanetary dust particles",
+    "extraterrestrial organic matter",
+    "micrometeorite impacts",
+    "prebiotic compounds"
+   ],
+   "keywords_source": "OpenAlex"
   },
   {
    "doi": "10.3390/app15031363",
@@ -24,7 +70,58 @@
     "orcid-id-on-paper",
     "on-orcid-record",
     "known-coauthor"
-   ]
+   ],
+   "author_list": [
+    {
+     "given": "Gustavo P.",
+     "family": "Maia"
+    },
+    {
+     "given": "Catarina",
+     "family": "Gonçalves"
+    },
+    {
+     "given": "Ana J.",
+     "family": "Carvalho"
+    },
+    {
+     "given": "Vânia",
+     "family": "André"
+    },
+    {
+     "given": "Adelino",
+     "family": "Galvão"
+    },
+    {
+     "given": "Ana P. C.",
+     "family": "Ribeiro"
+    },
+    {
+     "given": "Pedro F.",
+     "family": "Pinheiro"
+    },
+    {
+     "given": "José Armando Luísa",
+     "family": "da Silva"
+    }
+   ],
+   "volume": "15",
+   "issue": "3",
+   "pages": "1363",
+   "abstract": "Metal species and carbonate are often found as minerals in extraterrestrial rocky bodies. Based on this, the mechanochemical-induced degradation of canonical purine and pyrimidine ribonucleosides into their corresponding nucleobases mediated by some of the main constituents of those materials (iron, nickel, or aluminum) was accomplished. In some cases, the previous heating of the samples intensified mechanochemical degradation. Additionally, carbonate acts as an activator for ribonucleoside degradation with a catalyst (a Lewis acid ion); however, it has almost no effect on ribonucleoside degradation in the absence of a catalyst. These results can contribute to the hypothesis that organic matter in extraterrestrial samples could have undergone mechanochemical reactions (i.e., shock/impact events), from its formation until its journey to Earth. Mechanochemical energy could occur in planetesimal accretion, asteroid formation (i.e., through planetesimal disintegration), and meteoroid atmospheric entry. Additionally, this hypothesis can clarify and relate some identified biosignatures with pathways of prebiological evolution.",
+   "oa_url": "https://www.mdpi.com/2076-3417/15/3/1363/pdf?version=1738073708",
+   "cited_by": 1,
+   "keywords": [
+    "nickel",
+    "ribonucleosides",
+    "aluminum",
+    "meteoroid atmospheric entry",
+    "extraterrestrial organic matter",
+    "mechanochemical degradation",
+    "carbonates",
+    "planetesimal accretion"
+   ],
+   "keywords_source": "OpenAlex"
   },
   {
    "doi": "10.3390/molecules28248006",
@@ -36,7 +133,49 @@
     "orcid-id-on-paper",
     "on-orcid-record",
     "known-coauthor"
-   ]
+   ],
+   "author_list": [
+    {
+     "given": "Gustavo P.",
+     "family": "Maia"
+    },
+    {
+     "given": "José Armando Luísa",
+     "family": "da Silva"
+    },
+    {
+     "given": "Vânia",
+     "family": "André"
+    },
+    {
+     "given": "Adelino M.",
+     "family": "Galvão"
+    }
+   ],
+   "volume": "28",
+   "issue": "24",
+   "pages": "8006",
+   "abstract": "Experimental studies of the degradation of two ribonucleosides (guanosine and uridine) were carried out by making use of mechanochemistry. Mechanochemical experiments reveal the decomposition of guanosine and uridine, promoted by nickel(II) and carbonate ions, into guanine and uracil, respectively. These nucleobases were identified by HPLC and 1H NMR spectroscopy (this applied only to uracil). Additionally, density-functional theory (DFT) methodologies were used to probe the energetic viability of several degradation pathways, including in the presence of the abovementioned ions. Three mechanisms were analysed via ribose ring-opening: dry, single-molecule water-assisted, and metal-assisted, wherein the last two mechanisms confirmed the mechanochemical degradation of both ribonucleosides into respective nucleobase moieties. These results can contribute to an astrobiological interpretation of the extraterrestrial sample’s contents.",
+   "oa_url": "https://www.mdpi.com/1420-3049/28/24/8006/pdf?version=1702022191",
+   "cited_by": 2,
+   "keywords": [
+    "uridine",
+    "uracil",
+    "mechanochemistry",
+    "nickel(II) catalysis",
+    "guanine",
+    "guanosine",
+    "extraterrestrial samples",
+    "astrobiology"
+   ],
+   "keywords_source": "OpenAlex"
   }
- ]
+ ],
+ "metrics": {
+  "h_index": 1,
+  "i10_index": 0,
+  "citations": 3,
+  "source": "OpenAlex",
+  "profile": "https://openalex.org/A5004436790"
+ }
 }
