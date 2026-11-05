@@ -172,10 +172,10 @@
   }
  ],
  "metrics": {
-  "h_index": 1,
+  "h_index": 2,
   "i10_index": 0,
-  "citations": 3,
-  "source": "OpenAlex",
-  "profile": "https://openalex.org/A5004436790"
+  "citations": 6,
+  "source": "Google Scholar",
+  "profile": "https://scholar.google.com/citations?user=TTVIFykAAAAJ"
  }
 }
