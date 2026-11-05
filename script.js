@@ -1670,14 +1670,14 @@
     set("pubs", pubs);
     set("talks", document.querySelectorAll("#presentations .timeline-item").length);
     set("areas", document.querySelectorAll(".hero-tags > span").length);
-    // h-index refreshed every night from OpenAlex (data/publications.json)
+    // h-index refreshed every night from Google Scholar, or OpenAlex when Scholar can't be read (data/publications.json)
     const m = db && db.metrics;
     if (m && m.h_index) {
       set("hindex", m.h_index);
       const link = document.querySelector('[data-metric="hindex"]').closest("a");
       if (link && m.profile) {
         link.href = m.profile;
-        link.title = "h-index · " + m.citations + " citations (OpenAlex)";
+        link.title = "h-index · " + m.citations + " citations (" + (m.source || "OpenAlex") + ")";
       }
     }
   }

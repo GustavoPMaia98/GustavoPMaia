@@ -259,7 +259,45 @@ def inverted_abstract(index):
     return " ".join(w for _, w in words)
 
 
+SCHOLAR = "TTVIFykAAAAJ"   # Google Scholar profile
+
+
+def scholar_metrics(page=None):
+    """h-index, i10-index and citations from my Google Scholar profile (its "Cited by"
+    table). Google Scholar has no API and sometimes answers automated visits with a
+    check page; then this returns None and OpenAlex is used instead."""
+    url = f"https://scholar.google.com/citations?user={SCHOLAR}&hl=en"
+    if page is None:
+        try:
+            req = urllib.request.Request(url, headers={
+                "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+                "Accept-Language": "en"})
+            with urllib.request.urlopen(req, timeout=30) as r:
+                page = r.read().decode("utf-8", "replace")
+        except Exception as e:
+            print(f"warning: Google Scholar unreachable ({e})")
+            return None
+    # the table: Citations / h-index / i10-index rows, each with "All" and "Since …" cells
+    nums = re.findall(r'class="gsc_rsb_std">(\d+)<', page)
+    labels = re.findall(r'class="gsc_rsb_f[^"]*"[^>]*>([^<]+)<', page)
+    if len(nums) < 6 or not any("h-index" in l for l in labels):
+        print("warning: Google Scholar page without the citation table (blocked?)")
+        return None
+    cites, h, i10 = int(nums[0]), int(nums[2]), int(nums[4])
+    print(f"Google Scholar: h-index {h}, i10-index {i10}, {cites} citations")
+    return {"h_index": h, "i10_index": i10, "citations": cites, "source": "Google Scholar",
+            "profile": f"https://scholar.google.com/citations?user={SCHOLAR}"}
+
+
 def author_metrics():
+    """h-index, i10-index and total citations: Google Scholar first, OpenAlex otherwise."""
+    m = scholar_metrics()
+    if m:
+        return m
+    return openalex_metrics()
+
+
+def openalex_metrics():
     """h-index, i10-index and total citations from my OpenAlex author profile."""
     try:
         a = get(f"https://api.openalex.org/authors/orcid:{ORCID}" + ("?" + POLITE.lstrip("&") if POLITE else "")) or {}
