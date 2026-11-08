@@ -90,8 +90,22 @@
     below.forEach((c, i) => { c.id = nodes.length; c.alt = i % 3; nodes.push(c); links.push({ a: c, b: me, kind: "co" }); });
     // research colleagues (data/tree.json "colleagues"), on their own part of the circle
     const mates = (tree.colleagues || []).filter(c => c && c.name && !c.hidden && !byKey.has(keyOf(c.name)))
-      .map((c, i) => ({ id: nodes.length + i, name: c.name, key: keyOf(c.name), mate: true, gen: 1, kids: [], alt: (below.length + i) % 3, n: c }));
-    mates.forEach(c => { nodes.push(c); links.push({ a: c, b: me, kind: "mate" }); });
+      .map(c => ({ name: c.name, key: keyOf(c.name), mate: true, gen: 1, kids: [], n: c }));
+    // colleagues who share an advisor sit side by side; those whose advisor is in my own
+    // lineage (e.g. a postdoc with one of my supervisors) go last, which is next to the lineage
+    const advKeys = c => ((c.n && c.n.mentors) || []).filter(m => m && m.name && !m.hidden).map(m => keyOf(m.name));
+    const toLineage = c => advKeys(c).some(k => seen.has(k)) ? 1 : 0;
+    {
+      const root = mates.map((_, i) => i), find = i => root[i] === i ? i : (root[i] = find(root[i]));
+      const first = new Map();
+      mates.forEach((c, i) => advKeys(c).forEach(k => { if (first.has(k)) root[find(i)] = find(first.get(k)); else first.set(k, i); }));
+      const groups = new Map();
+      mates.forEach((c, i) => { const r = find(i); if (!groups.has(r)) groups.set(r, []); groups.get(r).push(c); });
+      const ordered = [...groups.values()].map(g => g.sort((a, b) => toLineage(a) - toLineage(b)))
+        .sort((a, b) => Math.max(...a.map(toLineage)) - Math.max(...b.map(toLineage)));
+      mates.splice(0, mates.length, ...ordered.flat());
+    }
+    mates.forEach((c, i) => { c.id = nodes.length; c.alt = (below.length + i) % 3; nodes.push(c); links.push({ a: c, b: me, kind: "mate" }); });
     nodes.filter(n => n.tree && n.co && !n.self).forEach(n => { if (n.parent !== me) links.push({ a: n, b: me, kind: "co" }); });
     // angles: every leaf gets a slice of the circle (co-authors a slightly smaller one);
     // a mentor sits in the middle of the people it trained
@@ -114,8 +128,8 @@
       const ms = ((child.n && child.n.mentors) || []).filter(m => m && m.name && !m.hidden);
       ms.forEach((m, i) => {
         const k = keyOf(m.name);
-        if (seen.has(k)) { links.push({ a: seen.get(k), b: child, kind: "mentor", cross: true }); return; }
-        const node = { id: nodes.length, n: m, name: m.name, key: k, gen: child.gen + 1, parent: child, kids: [], adv: true,
+        if (seen.has(k)) { const at = seen.get(k); if (at.students) at.students.push(child); links.push({ a: at, b: child, kind: "mentor", cross: true }); return; }
+        const node = { id: nodes.length, n: m, name: m.name, key: k, gen: child.gen + 1, parent: child, kids: [], adv: true, students: [child],
           ang: child.ang + (i - (ms.length - 1) / 2) * 0.05, rFix: ADV[Math.min(depth, ADV.length - 1)][advN++ % 2] };
         seen.set(k, node); nodes.push(node); child.kids.push(node);
         links.push({ a: node, b: child, kind: "mentor" });
@@ -123,6 +137,9 @@
       });
     }
     below.concat(mates).forEach(c => advise(c, 0));
+    // an advisor shared by several of them sits in the middle of their students
+    const shift = (n, d) => { n.ang += d; n.kids.forEach(k => shift(k, d)); };
+    nodes.filter(n => n.adv && n.students.length > 1).forEach(n => shift(n, n.students.reduce((s, c) => s + c.ang, 0) / n.students.length - n.ang));
     const RING = [0, 175, 300, 410, 510, 600, 680];
     const ringOf = g => RING[Math.min(g, RING.length - 1)] + Math.max(0, g - RING.length + 1) * 80;
     const outer = ringOf(maxGen) + 30, C = outer + 120;   // room for the names on the outer ring
@@ -134,7 +151,16 @@
     // ---- drawing
     const R = n => (n.self || (n.n && n.n.phd)) ? 36 : 23;   // me and my PhD supervisors are drawn larger
     const ini = nm => { const w = nm.replace(/^(Eng|Prof|Dr)\.?\s+/i, "").replace(/[.\-]/g, " ").split(/\s+/).filter(Boolean); return (w[0][0] + (w.length > 1 ? w[w.length - 1][0] : "")).toUpperCase(); };
-    const short = nm => { const w = nm.replace(/^(Eng)\.?\s+/i, "").split(/\s+/); return w.length > 2 ? w[0] + " " + w[w.length - 1] : w.join(" "); };
+    const short = nm => {
+      const w = nm.replace(/^(Eng)\.?\s+/i, "").split(/\s+/);
+      if (w.length <= 2) return w.join(" ");
+      const n = w.length - 1, part = /^(da|de|do|dos|das|di|del|van|von|le)$/i;
+      if (n >= 2 && part.test(w[n - 1])) {                       // "João J. R. Fraústo da Silva" -> "João Fraústo da Silva"
+        let j = n - 2; while (j > 0 && /^[A-Z]\.?$|^([A-Z]\.)+$/.test(w[j])) j--;
+        return (j > 0 ? [w[0], w[j]] : [w[0]]).concat(w[n - 1], w[n]).join(" ");
+      }
+      return w[0] + " " + w[n];
+    };
     const P = (ang, r) => [C + Math.cos(ang) * r, C + Math.sin(ang) * r];
     const path = l => {
       const { a, b } = l;                              // a: further out, b: nearer the centre
@@ -236,6 +262,7 @@
       // a co-author or colleague lights up their own advisors too
       const upTo = x => (x.kids || []).filter(k => k.adv).forEach(k => { on.add(k.id); upTo(k); });
       if (n.co || n.mate || n.adv) { upTo(n); links.filter(l => l.cross && l.b === n).forEach(l => on.add(l.a.id)); }
+      if (n.students) n.students.forEach(c => on.add(c.id));   // an advisor lights up all their students
       stage.querySelectorAll(".tn-node").forEach(g => g.classList.toggle("is-on", on.has(+g.dataset.id) || +g.dataset.id === n.id));
       stage.querySelectorAll(".tn-link").forEach(p => {
         const a = +p.dataset.a, b = +p.dataset.b;
