@@ -686,10 +686,10 @@
         {
           "name": "Sylvain Bernard",
           "role": {
-            "en": "Postdoctoral mentor of Vanessa Leyva",
-            "pt": "Mentor(a) de pós-doutoramento de Vanessa Leyva",
-            "fr": "Encadrant·e postdoctoral·e de Vanessa Leyva",
-            "ja": "Vanessa Leyva のポスドク指導者"
+            "en": "Doctoral advisor of Valentine Megevand · postdoctoral mentor of Vanessa Leyva",
+            "pt": "Orientador de doutoramento de Valentine Megevand · mentor de pós-doutoramento de Vanessa Leyva",
+            "fr": "Directeur de thèse de Valentine Megevand · encadrant postdoctoral de Vanessa Leyva",
+            "ja": "Valentine Megevand の博士課程指導教員 · Vanessa Leyva のポスドク指導者"
           },
           "institution": {
             "name": "IMPMC · CNRS"
@@ -889,10 +889,10 @@
         {
           "name": "Sylvain Bernard",
           "role": {
-            "en": "Doctoral advisor of Valentine Megevand",
-            "pt": "Orientador(a) de doutoramento de Valentine Megevand",
-            "fr": "Directeur·rice de thèse de Valentine Megevand",
-            "ja": "Valentine Megevand の博士課程指導教員"
+            "en": "Doctoral advisor of Valentine Megevand · postdoctoral mentor of Vanessa Leyva",
+            "pt": "Orientador de doutoramento de Valentine Megevand · mentor de pós-doutoramento de Vanessa Leyva",
+            "fr": "Directeur de thèse de Valentine Megevand · encadrant postdoctoral de Vanessa Leyva",
+            "ja": "Valentine Megevand の博士課程指導教員 · Vanessa Leyva のポスドク指導者"
           },
           "institution": {
             "name": "IMPMC · CNRS"
