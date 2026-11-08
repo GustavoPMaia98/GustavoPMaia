@@ -871,9 +871,21 @@
                   "institution": {
                     "name": "EHESS / EPHE"
                   },
-                  "url": "https://en.wikipedia.org/wiki/Claude_L%C3%A9vi-Strauss"
+                  "url": "https://en.wikipedia.org/wiki/Claude_L%C3%A9vi-Strauss",
+                  "photo": "images/tree/claude-levi-strauss.jpg",
+                  "photoCredit": {
+                    "author": "UNESCO/Michel Ravassard",
+                    "license": "CC BY 3.0",
+                    "source": "https://commons.wikimedia.org/wiki/File:Levi-strauss_260_(cropped2).jpg"
+                  }
                 }
-              ]
+              ],
+              "photo": "images/tree/philippe-descola.jpg",
+              "photoCredit": {
+                "author": "Photo Claude TRUONG-NGOC",
+                "license": "CC BY-SA 3.0",
+                "source": "https://commons.wikimedia.org/wiki/File:Philippe_Descola_par_Claude_Truong-Ngoc_octobre_2014.jpg"
+              }
             }
           ]
         },
@@ -1574,7 +1586,13 @@
                   "institution": {
                     "name": "The Open University"
                   },
-                  "url": "https://en.wikipedia.org/wiki/Colin_Pillinger"
+                  "url": "https://en.wikipedia.org/wiki/Colin_Pillinger",
+                  "photo": "images/tree/colin-t-pillinger.jpg",
+                  "photoCredit": {
+                    "author": "Mike Peel; Jodrell Bank Centre for Astrophysics, University of Manchester.",
+                    "license": "CC BY-SA 4.0",
+                    "source": "https://commons.wikimedia.org/wiki/File:Colin_Pillinger.jpg"
+                  }
                 },
                 {
                   "name": "Jaap S. Sinninghe Damsté",
