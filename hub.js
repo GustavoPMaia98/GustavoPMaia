@@ -122,7 +122,7 @@
     // the PhD and postdoc advisors of my co-authors and colleagues ("mentors" on them in
     // data/tree.json), further out in their part of the circle; an advisor who is already
     // in the tree (e.g. one of my own supervisors) keeps their place and gets a line
-    const ADV = [[440, 525], [610, 610]];   // two rings for the first generation so they stay near their students
+    const ADV = [[440, 525], [610, 610], [695, 695], [775, 775], [850, 850]];   // two rings for the first generation so they stay near their students
     let advN = 0;
     function advise(child, depth) {
       const ms = ((child.n && child.n.mentors) || []).filter(m => m && m.name && !m.hidden);

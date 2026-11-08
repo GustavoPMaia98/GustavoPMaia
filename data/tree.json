@@ -545,7 +545,45 @@
         "author": "Cécile Duflot",
         "license": "© IMPMC",
         "source": ""
-      }
+      },
+      "mentors": [
+        {
+          "name": "Tomoki Nakamura",
+          "role": {
+            "en": "Doctoral advisor of Kana Amano (PhD, 2023)",
+            "pt": "Orientador(a) de doutoramento de Kana Amano (doutoramento, 2023)",
+            "fr": "Directeur·rice de thèse de Kana Amano (PhD, 2023)",
+            "ja": "Kana Amano の博士課程指導教員 (PhD, 2023)"
+          },
+          "institution": {
+            "name": "Tohoku University"
+          }
+        },
+        {
+          "name": "Eric Quirico",
+          "role": {
+            "en": "Doctoral advisor of Kana Amano (PhD, 2023)",
+            "pt": "Orientador(a) de doutoramento de Kana Amano (doutoramento, 2023)",
+            "fr": "Directeur·rice de thèse de Kana Amano (PhD, 2023)",
+            "ja": "Kana Amano の博士課程指導教員 (PhD, 2023)"
+          },
+          "institution": {
+            "name": "Université Grenoble Alpes · IPAG"
+          }
+        },
+        {
+          "name": "Mathieu Roskosz",
+          "role": {
+            "en": "Doctoral advisor of Louna Perez · Postdoctoral research host of Kana Amano",
+            "pt": "Orientador(a) de doutoramento de Louna Perez · Anfitrião(ã) de pós-doutoramento de Kana Amano",
+            "fr": "Directeur·rice de thèse de Louna Perez · Hôte postdoctoral de Kana Amano",
+            "ja": "Louna Perez の博士課程指導教員 · Kana Amano のポスドク受入研究者"
+          },
+          "institution": {
+            "name": "IMPMC · MNHN"
+          }
+        }
+      ]
     },
     "Ana P. C. Ribeiro": {
       "photo": "images/tree/ribeiro.jpg"
@@ -686,21 +724,100 @@
         {
           "name": "Sylvain Bernard",
           "role": {
-            "en": "Doctoral advisor of Valentine Megevand · postdoctoral mentor of Vanessa Leyva",
-            "pt": "Orientador de doutoramento de Valentine Megevand · mentor de pós-doutoramento de Vanessa Leyva",
-            "fr": "Directeur de thèse de Valentine Megevand · encadrant postdoctoral de Vanessa Leyva",
-            "ja": "Valentine Megevand の博士課程指導教員 · Vanessa Leyva のポスドク指導者"
+            "en": "Doctoral advisor of Valentine Megevand · Postdoctoral mentor of Vanessa Leyva · Postdoctoral mentor of Clémentin Bouquet",
+            "pt": "Orientador(a) de doutoramento de Valentine Megevand · Mentor(a) de pós-doutoramento de Vanessa Leyva · Mentor(a) de pós-doutoramento de Clémentin Bouquet",
+            "fr": "Directeur·rice de thèse de Valentine Megevand · Encadrant·e postdoctoral·e de Vanessa Leyva · Encadrant·e postdoctoral·e de Clémentin Bouquet",
+            "ja": "Valentine Megevand の博士課程指導教員 · Vanessa Leyva のポスドク指導者 · Clémentin Bouquet のポスドク指導者"
           },
           "institution": {
             "name": "IMPMC · CNRS"
-          }
+          },
+          "mentors": [
+            {
+              "name": "Bruno Goffé",
+              "role": {
+                "en": "Doctoral advisor of Sylvain Bernard (PhD, 2008)",
+                "pt": "Orientador(a) de doutoramento de Sylvain Bernard (doutoramento, 2008)",
+                "fr": "Directeur·rice de thèse de Sylvain Bernard (PhD, 2008)",
+                "ja": "Sylvain Bernard の博士課程指導教員 (PhD, 2008)"
+              },
+              "institution": {
+                "name": "École Normale Supérieure, Paris"
+              }
+            },
+            {
+              "name": "Olivier Beyssac",
+              "role": {
+                "en": "Doctoral advisor of Sylvain Bernard (PhD, 2008)",
+                "pt": "Orientador(a) de doutoramento de Sylvain Bernard (doutoramento, 2008)",
+                "fr": "Directeur·rice de thèse de Sylvain Bernard (PhD, 2008)",
+                "ja": "Sylvain Bernard の博士課程指導教員 (PhD, 2008)"
+              },
+              "institution": {
+                "name": "École Normale Supérieure, Paris"
+              }
+            },
+            {
+              "name": "Karim Benzerara",
+              "role": {
+                "en": "Doctoral advisor of Sylvain Bernard",
+                "pt": "Orientador(a) de doutoramento de Sylvain Bernard",
+                "fr": "Directeur·rice de thèse de Sylvain Bernard",
+                "ja": "Sylvain Bernard の博士課程指導教員"
+              },
+              "institution": {
+                "name": "IMPMC · CNRS"
+              },
+              "mentors": [
+                {
+                  "name": "François Guyot",
+                  "role": {
+                    "en": "Doctoral advisor of Karim Benzerara (PhD, 2002)",
+                    "pt": "Orientador(a) de doutoramento de Karim Benzerara (doutoramento, 2002)",
+                    "fr": "Directeur·rice de thèse de Karim Benzerara (PhD, 2002)",
+                    "ja": "Karim Benzerara の博士課程指導教員 (PhD, 2002)"
+                  },
+                  "institution": {
+                    "name": "Université Paris Diderot / IPGP"
+                  }
+                },
+                {
+                  "name": "Gordon E. Brown Jr.",
+                  "role": {
+                    "en": "Postdoctoral research host of Karim Benzerara",
+                    "pt": "Anfitrião(ã) de pós-doutoramento de Karim Benzerara",
+                    "fr": "Hôte postdoctoral de Karim Benzerara",
+                    "ja": "Karim Benzerara のポスドク受入研究者"
+                  },
+                  "institution": {
+                    "name": "Stanford University"
+                  },
+                  "url": "https://news.stanford.edu/stories/2026/09/gordon-e-brown-jr-obituary",
+                  "mentors": [
+                    {
+                      "name": "Gerald V. Gibbs",
+                      "role": {
+                        "en": "Research mentor of Gordon Jr. (graduate mentor, PhD 1970)",
+                        "pt": "Mentor(a) de investigação de Gordon Jr. (mentor de pós-graduação, doutoramento 1970)",
+                        "fr": "Mentor de recherche de Gordon Jr. (graduate mentor, PhD 1970)",
+                        "ja": "Gordon Jr. の研究上の指導者 (graduate mentor, PhD 1970)"
+                      },
+                      "institution": {
+                        "name": "Virginia Tech"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         }
       ]
     },
     {
       "name": "Clémentin Bouquet",
       "institution": {
-        "name": "IMPMC · Sorbonne Université / MNHN",
+        "name": "MNHN · IMPMC / Collège de France",
         "url": "https://impmc.sorbonne-universite.fr/en/index.html"
       },
       "photo": "images/tree/bouquet.jpg",
@@ -708,16 +825,162 @@
         {
           "name": "Anne-Catherine Lehours",
           "role": {
-            "en": "Doctoral advisor of Clémentin Bouquet",
-            "pt": "Orientador(a) de doutoramento de Clémentin Bouquet",
-            "fr": "Directeur·rice de thèse de Clémentin Bouquet",
-            "ja": "Clémentin Bouquet の博士課程指導教員"
+            "en": "Doctoral advisor of Clémentin Bouquet (thesis director on theses.fr)",
+            "pt": "Orientador(a) de doutoramento de Clémentin Bouquet (diretora da tese no theses.fr)",
+            "fr": "Directeur·rice de thèse de Clémentin Bouquet (thesis director on theses.fr)",
+            "ja": "Clémentin Bouquet の博士課程指導教員 (thesis director on theses.fr)"
           },
           "institution": {
             "name": "Université Clermont Auvergne"
           }
+        },
+        {
+          "name": "Périg Pitrou",
+          "role": {
+            "en": "Postdoctoral mentor of Clémentin Bouquet",
+            "pt": "Mentor(a) de pós-doutoramento de Clémentin Bouquet",
+            "fr": "Encadrant·e postdoctoral·e de Clémentin Bouquet",
+            "ja": "Clémentin Bouquet のポスドク指導者"
+          },
+          "institution": {
+            "name": "Collège de France · Laboratoire d’Anthropologie Sociale"
+          },
+          "url": "https://cv.hal.science/perig-pitrou",
+          "mentors": [
+            {
+              "name": "Philippe Descola",
+              "role": {
+                "en": "Doctoral advisor of Périg Pitrou (PhD, 2010)",
+                "pt": "Orientador(a) de doutoramento de Périg Pitrou (doutoramento, 2010)",
+                "fr": "Directeur·rice de thèse de Périg Pitrou (PhD, 2010)",
+                "ja": "Périg Pitrou の博士課程指導教員 (PhD, 2010)"
+              },
+              "institution": {
+                "name": "EHESS, Paris"
+              },
+              "url": "https://en.wikipedia.org/wiki/Philippe_Descola",
+              "mentors": [
+                {
+                  "name": "Claude Lévi-Strauss",
+                  "role": {
+                    "en": "Doctoral advisor of Philippe Descola (PhD, 1983)",
+                    "pt": "Orientador(a) de doutoramento de Philippe Descola (doutoramento, 1983)",
+                    "fr": "Directeur·rice de thèse de Philippe Descola (PhD, 1983)",
+                    "ja": "Philippe Descola の博士課程指導教員 (PhD, 1983)"
+                  },
+                  "institution": {
+                    "name": "EHESS / EPHE"
+                  },
+                  "url": "https://en.wikipedia.org/wiki/Claude_L%C3%A9vi-Strauss"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Sylvain Bernard",
+          "role": {
+            "en": "Doctoral advisor of Valentine Megevand · Postdoctoral mentor of Vanessa Leyva · Postdoctoral mentor of Clémentin Bouquet",
+            "pt": "Orientador(a) de doutoramento de Valentine Megevand · Mentor(a) de pós-doutoramento de Vanessa Leyva · Mentor(a) de pós-doutoramento de Clémentin Bouquet",
+            "fr": "Directeur·rice de thèse de Valentine Megevand · Encadrant·e postdoctoral·e de Vanessa Leyva · Encadrant·e postdoctoral·e de Clémentin Bouquet",
+            "ja": "Valentine Megevand の博士課程指導教員 · Vanessa Leyva のポスドク指導者 · Clémentin Bouquet のポスドク指導者"
+          },
+          "institution": {
+            "name": "IMPMC · CNRS"
+          },
+          "mentors": [
+            {
+              "name": "Bruno Goffé",
+              "role": {
+                "en": "Doctoral advisor of Sylvain Bernard (PhD, 2008)",
+                "pt": "Orientador(a) de doutoramento de Sylvain Bernard (doutoramento, 2008)",
+                "fr": "Directeur·rice de thèse de Sylvain Bernard (PhD, 2008)",
+                "ja": "Sylvain Bernard の博士課程指導教員 (PhD, 2008)"
+              },
+              "institution": {
+                "name": "École Normale Supérieure, Paris"
+              }
+            },
+            {
+              "name": "Olivier Beyssac",
+              "role": {
+                "en": "Doctoral advisor of Sylvain Bernard (PhD, 2008)",
+                "pt": "Orientador(a) de doutoramento de Sylvain Bernard (doutoramento, 2008)",
+                "fr": "Directeur·rice de thèse de Sylvain Bernard (PhD, 2008)",
+                "ja": "Sylvain Bernard の博士課程指導教員 (PhD, 2008)"
+              },
+              "institution": {
+                "name": "École Normale Supérieure, Paris"
+              }
+            },
+            {
+              "name": "Karim Benzerara",
+              "role": {
+                "en": "Doctoral advisor of Sylvain Bernard",
+                "pt": "Orientador(a) de doutoramento de Sylvain Bernard",
+                "fr": "Directeur·rice de thèse de Sylvain Bernard",
+                "ja": "Sylvain Bernard の博士課程指導教員"
+              },
+              "institution": {
+                "name": "IMPMC · CNRS"
+              },
+              "mentors": [
+                {
+                  "name": "François Guyot",
+                  "role": {
+                    "en": "Doctoral advisor of Karim Benzerara (PhD, 2002)",
+                    "pt": "Orientador(a) de doutoramento de Karim Benzerara (doutoramento, 2002)",
+                    "fr": "Directeur·rice de thèse de Karim Benzerara (PhD, 2002)",
+                    "ja": "Karim Benzerara の博士課程指導教員 (PhD, 2002)"
+                  },
+                  "institution": {
+                    "name": "Université Paris Diderot / IPGP"
+                  }
+                },
+                {
+                  "name": "Gordon E. Brown Jr.",
+                  "role": {
+                    "en": "Postdoctoral research host of Karim Benzerara",
+                    "pt": "Anfitrião(ã) de pós-doutoramento de Karim Benzerara",
+                    "fr": "Hôte postdoctoral de Karim Benzerara",
+                    "ja": "Karim Benzerara のポスドク受入研究者"
+                  },
+                  "institution": {
+                    "name": "Stanford University"
+                  },
+                  "url": "https://news.stanford.edu/stories/2026/09/gordon-e-brown-jr-obituary",
+                  "mentors": [
+                    {
+                      "name": "Gerald V. Gibbs",
+                      "role": {
+                        "en": "Research mentor of Gordon Jr. (graduate mentor, PhD 1970)",
+                        "pt": "Mentor(a) de investigação de Gordon Jr. (mentor de pós-graduação, doutoramento 1970)",
+                        "fr": "Mentor de recherche de Gordon Jr. (graduate mentor, PhD 1970)",
+                        "ja": "Gordon Jr. の研究上の指導者 (graduate mentor, PhD 1970)"
+                      },
+                      "institution": {
+                        "name": "Virginia Tech"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         }
-      ]
+      ],
+      "role": {
+        "en": "Postdoctoral researcher · MNHN / Collège de France",
+        "pt": "Investigador de pós-doutoramento · MNHN / Collège de France",
+        "fr": "Chercheur postdoctoral · MNHN / Collège de France",
+        "ja": "博士研究員 · MNHN / コレージュ・ド・フランス"
+      },
+      "about": {
+        "en": "PhD in environmental microbiology at Université Clermont Auvergne (LMGE, 2021–2025), with Anne-Catherine Lehours. Since October 2025, postdoc on biosignatures and the definition of life, supervised by Périg Pitrou (Collège de France) and Sylvain Bernard (IMPMC, MNHN).",
+        "pt": "Doutoramento em microbiologia ambiental na Université Clermont Auvergne (LMGE, 2021–2025), com Anne-Catherine Lehours. Desde outubro de 2025, pós-doutoramento sobre bioassinaturas e a definição de vida, orientado por Périg Pitrou (Collège de France) e Sylvain Bernard (IMPMC, MNHN).",
+        "fr": "Thèse en microbiologie environnementale à l’Université Clermont Auvergne (LMGE, 2021–2025), avec Anne-Catherine Lehours. Depuis octobre 2025, postdoc sur les biosignatures et la définition du vivant, encadré par Périg Pitrou (Collège de France) et Sylvain Bernard (IMPMC, MNHN).",
+        "ja": "クレルモン・オーヴェルニュ大学（LMGE、2021–2025年）で環境微生物学の博士号を取得（Anne-Catherine Lehours と共に）。2025年10月から、バイオシグネチャーと生命の定義に関するポスドク研究（指導：Périg Pitrou〔コレージュ・ド・フランス〕、Sylvain Bernard〔IMPMC、MNHN〕）。"
+      }
     },
     {
       "name": "Nadezda Khodorova",
@@ -803,10 +1066,10 @@
         {
           "name": "Mathieu Roskosz",
           "role": {
-            "en": "Doctoral advisor of Louna Perez",
-            "pt": "Orientador(a) de doutoramento de Louna Perez",
-            "fr": "Directeur·rice de thèse de Louna Perez",
-            "ja": "Louna Perez の博士課程指導教員"
+            "en": "Doctoral advisor of Louna Perez · Postdoctoral research host of Kana Amano",
+            "pt": "Orientador(a) de doutoramento de Louna Perez · Anfitrião(ã) de pós-doutoramento de Kana Amano",
+            "fr": "Directeur·rice de thèse de Louna Perez · Hôte postdoctoral de Kana Amano",
+            "ja": "Louna Perez の博士課程指導教員 · Kana Amano のポスドク受入研究者"
           },
           "institution": {
             "name": "IMPMC · MNHN"
@@ -889,14 +1152,93 @@
         {
           "name": "Sylvain Bernard",
           "role": {
-            "en": "Doctoral advisor of Valentine Megevand · postdoctoral mentor of Vanessa Leyva",
-            "pt": "Orientador de doutoramento de Valentine Megevand · mentor de pós-doutoramento de Vanessa Leyva",
-            "fr": "Directeur de thèse de Valentine Megevand · encadrant postdoctoral de Vanessa Leyva",
-            "ja": "Valentine Megevand の博士課程指導教員 · Vanessa Leyva のポスドク指導者"
+            "en": "Doctoral advisor of Valentine Megevand · Postdoctoral mentor of Vanessa Leyva · Postdoctoral mentor of Clémentin Bouquet",
+            "pt": "Orientador(a) de doutoramento de Valentine Megevand · Mentor(a) de pós-doutoramento de Vanessa Leyva · Mentor(a) de pós-doutoramento de Clémentin Bouquet",
+            "fr": "Directeur·rice de thèse de Valentine Megevand · Encadrant·e postdoctoral·e de Vanessa Leyva · Encadrant·e postdoctoral·e de Clémentin Bouquet",
+            "ja": "Valentine Megevand の博士課程指導教員 · Vanessa Leyva のポスドク指導者 · Clémentin Bouquet のポスドク指導者"
           },
           "institution": {
             "name": "IMPMC · CNRS"
-          }
+          },
+          "mentors": [
+            {
+              "name": "Bruno Goffé",
+              "role": {
+                "en": "Doctoral advisor of Sylvain Bernard (PhD, 2008)",
+                "pt": "Orientador(a) de doutoramento de Sylvain Bernard (doutoramento, 2008)",
+                "fr": "Directeur·rice de thèse de Sylvain Bernard (PhD, 2008)",
+                "ja": "Sylvain Bernard の博士課程指導教員 (PhD, 2008)"
+              },
+              "institution": {
+                "name": "École Normale Supérieure, Paris"
+              }
+            },
+            {
+              "name": "Olivier Beyssac",
+              "role": {
+                "en": "Doctoral advisor of Sylvain Bernard (PhD, 2008)",
+                "pt": "Orientador(a) de doutoramento de Sylvain Bernard (doutoramento, 2008)",
+                "fr": "Directeur·rice de thèse de Sylvain Bernard (PhD, 2008)",
+                "ja": "Sylvain Bernard の博士課程指導教員 (PhD, 2008)"
+              },
+              "institution": {
+                "name": "École Normale Supérieure, Paris"
+              }
+            },
+            {
+              "name": "Karim Benzerara",
+              "role": {
+                "en": "Doctoral advisor of Sylvain Bernard",
+                "pt": "Orientador(a) de doutoramento de Sylvain Bernard",
+                "fr": "Directeur·rice de thèse de Sylvain Bernard",
+                "ja": "Sylvain Bernard の博士課程指導教員"
+              },
+              "institution": {
+                "name": "IMPMC · CNRS"
+              },
+              "mentors": [
+                {
+                  "name": "François Guyot",
+                  "role": {
+                    "en": "Doctoral advisor of Karim Benzerara (PhD, 2002)",
+                    "pt": "Orientador(a) de doutoramento de Karim Benzerara (doutoramento, 2002)",
+                    "fr": "Directeur·rice de thèse de Karim Benzerara (PhD, 2002)",
+                    "ja": "Karim Benzerara の博士課程指導教員 (PhD, 2002)"
+                  },
+                  "institution": {
+                    "name": "Université Paris Diderot / IPGP"
+                  }
+                },
+                {
+                  "name": "Gordon E. Brown Jr.",
+                  "role": {
+                    "en": "Postdoctoral research host of Karim Benzerara",
+                    "pt": "Anfitrião(ã) de pós-doutoramento de Karim Benzerara",
+                    "fr": "Hôte postdoctoral de Karim Benzerara",
+                    "ja": "Karim Benzerara のポスドク受入研究者"
+                  },
+                  "institution": {
+                    "name": "Stanford University"
+                  },
+                  "url": "https://news.stanford.edu/stories/2026/09/gordon-e-brown-jr-obituary",
+                  "mentors": [
+                    {
+                      "name": "Gerald V. Gibbs",
+                      "role": {
+                        "en": "Research mentor of Gordon Jr. (graduate mentor, PhD 1970)",
+                        "pt": "Mentor(a) de investigação de Gordon Jr. (mentor de pós-graduação, doutoramento 1970)",
+                        "fr": "Mentor de recherche de Gordon Jr. (graduate mentor, PhD 1970)",
+                        "ja": "Gordon Jr. の研究上の指導者 (graduate mentor, PhD 1970)"
+                      },
+                      "institution": {
+                        "name": "Virginia Tech"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         }
       ]
     },
@@ -1168,10 +1510,94 @@
                 "author": "Franz Johann Morgenbesser from Vienna, Austria",
                 "license": "CC BY-SA 2.0",
                 "source": "https://commons.wikimedia.org/wiki/File:Prof._Dr._Pascale_Ehrenfreund-3985_(14262939769).jpg"
-              }
+              },
+              "mentors": [
+                {
+                  "name": "Alain Léger",
+                  "role": {
+                    "en": "Research mentor of Pascale Ehrenfreund",
+                    "pt": "Mentor(a) de investigação de Pascale Ehrenfreund",
+                    "fr": "Mentor de recherche de Pascale Ehrenfreund",
+                    "ja": "Pascale Ehrenfreund の研究上の指導者"
+                  },
+                  "institution": {
+                    "name": "Paris (early research)"
+                  }
+                },
+                {
+                  "name": "Louis d’Hendecourt",
+                  "role": {
+                    "en": "Research mentor of Pascale Ehrenfreund",
+                    "pt": "Mentor(a) de investigação de Pascale Ehrenfreund",
+                    "fr": "Mentor de recherche de Pascale Ehrenfreund",
+                    "ja": "Pascale Ehrenfreund の研究上の指導者"
+                  },
+                  "institution": {
+                    "name": "Paris (early research)"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Mark A. Sephton",
+              "role": {
+                "en": "Research mentor of Zita Martins (Imperial postdoc, 2007–2009)",
+                "pt": "Mentor(a) de investigação de Zita Martins (pós-doutoramento no Imperial, 2007–2009)",
+                "fr": "Mentor de recherche de Zita Martins (Imperial postdoc, 2007–2009)",
+                "ja": "Zita Martins の研究上の指導者 (Imperial postdoc, 2007–2009)"
+              },
+              "institution": {
+                "name": "Imperial College London"
+              },
+              "url": "https://www.imperial.ac.uk/people/m.a.sephton",
+              "mentors": [
+                {
+                  "name": "Iain Gilmour",
+                  "role": {
+                    "en": "Doctoral advisor of Mark Sephton (PhD, Open University, 1993–1996) · postdoc mentor 1998–1999",
+                    "pt": "Orientador(a) de doutoramento de Mark Sephton (doutoramento, Open University, 1993–1996) · mentor de pós-doutoramento 1998–1999",
+                    "fr": "Directeur·rice de thèse de Mark Sephton (PhD, Open University, 1993–1996) · postdoc mentor 1998–1999",
+                    "ja": "Mark Sephton の博士課程指導教員 (PhD, Open University, 1993–1996) · postdoc mentor 1998–1999"
+                  },
+                  "institution": {
+                    "name": "The Open University"
+                  }
+                },
+                {
+                  "name": "Colin T. Pillinger",
+                  "role": {
+                    "en": "Likely PhD co-supervisor of Mark Sephton",
+                    "pt": "Provável coorientador(a) de doutoramento de Mark Sephton",
+                    "fr": "Codirecteur·rice de thèse probable de Mark Sephton",
+                    "ja": "Mark Sephton の博士課程副指導教員（推定）"
+                  },
+                  "institution": {
+                    "name": "The Open University"
+                  },
+                  "url": "https://en.wikipedia.org/wiki/Colin_Pillinger"
+                },
+                {
+                  "name": "Jaap S. Sinninghe Damsté",
+                  "role": {
+                    "en": "Postdoctoral mentor of Mark Sephton (1996–1998)",
+                    "pt": "Mentor(a) de pós-doutoramento de Mark Sephton (1996–1998)",
+                    "fr": "Encadrant·e postdoctoral·e de Mark Sephton (1996–1998)",
+                    "ja": "Mark Sephton のポスドク指導者 (1996–1998)"
+                  },
+                  "institution": {
+                    "name": "NIOZ / Utrecht University"
+                  }
+                }
+              ]
             }
           ],
-          "photo": "images/tree/zita-martins.jpg"
+          "photo": "images/tree/zita-martins.jpg",
+          "about": {
+            "en": "PhD in astrobiology at Leiden University (2003–2007) with Pascale Ehrenfreund; postdoc at Imperial College London (2007–2009) on organic detection for the ExoMars Urey instrument, in Mark Sephton’s organic geochemistry group.",
+            "pt": "Doutoramento em astrobiologia na Universidade de Leiden (2003–2007) com Pascale Ehrenfreund; pós-doutoramento no Imperial College London (2007–2009) sobre deteção de compostos orgânicos para o instrumento Urey da ExoMars, no grupo de geoquímica orgânica de Mark Sephton.",
+            "fr": "Thèse en astrobiologie à l’Université de Leyde (2003–2007) avec Pascale Ehrenfreund ; postdoc à l’Imperial College London (2007–2009) sur la détection de composés organiques pour l’instrument Urey d’ExoMars, dans le groupe de géochimie organique de Mark Sephton.",
+            "ja": "ライデン大学でアストロバイオロジーの博士号（2003–2007年、Pascale Ehrenfreund のもと）。インペリアル・カレッジ・ロンドンでポスドク（2007–2009年）、Mark Sephton の有機地球化学グループで ExoMars Urey 装置向けの有機物検出を研究。"
+          }
         },
         {
           "name": "Bruno Pedras",
@@ -1183,6 +1609,53 @@
           },
           "institution": {
             "name": "Instituto Superior Técnico"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Te Jiang",
+      "institution": {
+        "name": "IMPMC · MNHN",
+        "url": "https://impmc.sorbonne-universite.fr/fr/equipes/cosmochimie_cosmo/liste_des_membres/membres_non_permanents/te-jiang.html"
+      },
+      "role": {
+        "en": "Researcher · IMPMC (Cosmochemistry)",
+        "pt": "Investigador · IMPMC (Cosmoquímica)",
+        "fr": "Chercheur · IMPMC (Cosmochimie)",
+        "ja": "研究者 · IMPMC（宇宙化学）"
+      },
+      "about": {
+        "en": "PhD in planetary geology and comparative planetology at the China University of Geosciences, Wuhan (2017–2024), supervised by Hao Zhang. At IMPMC (MNHN) since 2024, with Jean Duprat.",
+        "pt": "Doutoramento em geologia planetária e planetologia comparada na China University of Geosciences, Wuhan (2017–2024), orientado por Hao Zhang. No IMPMC (MNHN) desde 2024, com Jean Duprat.",
+        "fr": "Thèse en géologie planétaire et planétologie comparée à la China University of Geosciences, Wuhan (2017–2024), sous la direction de Hao Zhang. À l’IMPMC (MNHN) depuis 2024, avec Jean Duprat.",
+        "ja": "中国地質大学（武漢）で惑星地質学・比較惑星学の博士号を取得（2017–2024年、指導：Hao Zhang）。2024年から IMPMC（MNHN）で Jean Duprat と研究。"
+      },
+      "url": "https://orcid.org/0000-0002-7874-0207",
+      "mentors": [
+        {
+          "name": "Hao Zhang",
+          "role": {
+            "en": "Doctoral advisor of Te Jiang",
+            "pt": "Orientador(a) de doutoramento de Te Jiang",
+            "fr": "Directeur·rice de thèse de Te Jiang",
+            "ja": "Te Jiang の博士課程指導教員"
+          },
+          "institution": {
+            "name": "China University of Geosciences, Wuhan"
+          },
+          "url": "https://orcid.org/0000-0003-2902-1887"
+        },
+        {
+          "name": "Jean Duprat",
+          "role": {
+            "en": "IMPMC supervisor of Te Jiang",
+            "pt": "Supervisor(a) no IMPMC de Te Jiang",
+            "fr": "Encadrant à l’IMPMC de Te Jiang",
+            "ja": "Te Jiang の IMPMC 指導者"
+          },
+          "institution": {
+            "name": "IMPMC · CNRS / MNHN"
           }
         }
       ]
