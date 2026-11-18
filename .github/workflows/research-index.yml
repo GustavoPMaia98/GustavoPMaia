@@ -30,7 +30,9 @@ jobs:
         with:
           node-version: "22"
       - name: Install transformers.js (Apache 2.0)
-        run: npm install --no-save --prefix "$RUNNER_TEMP/ai" @huggingface/transformers@3.8.1
+        # the CPU runtime is enough; skip onnxruntime-node's optional GPU (CUDA) download,
+        # which fails with 404 on runners where it guesses a CUDA version
+        run: npm install --no-save --prefix "$RUNNER_TEMP/ai" --onnxruntime-node-install-cuda=skip @huggingface/transformers@3.8.1
       - name: Build the index
         run: TRANSFORMERS="$RUNNER_TEMP/ai/node_modules/@huggingface/transformers/dist/transformers.node.mjs" node tools/build_research_index.mjs
       - name: Commit if anything changed
