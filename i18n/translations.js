@@ -1024,6 +1024,7 @@ window.TR.ja = {
 
 /* ---- Added Sept 2026: content added in English after the first FR/JA pass ---- */
 Object.assign(window.TR.fr, {
+  "View research": "Découvrir mes recherches",
   "Oral presentation at <em>Origins 2026</em>, the ISSOL (International Society for the Study of the Origin of Life) conference at Sorbonne Université (Paris), on how <em>asteroid gardening</em> both transforms and preserves extraterrestrial organic matter.": "Communication orale à <em>Origins 2026</em>, la conférence de l'ISSOL (International Society for the Study of the Origin of Life) à Sorbonne Université (Paris), sur la manière dont le remaniement de la surface des astéroïdes (<em>asteroid gardening</em>) transforme et préserve à la fois la matière organique extraterrestre.",
   "Software": "Logiciels",
   "Building the Hard Rocky Planets — From Mercury to the Asteroid Belt": "Construire les planètes rocheuses — de Mercure à la ceinture d'astéroïdes",
@@ -1147,6 +1148,7 @@ Object.assign(window.TR.fr, {
   "RoboCup 2016 · Leipzig, Germany": "RoboCup 2016 · Leipzig, Allemagne",
 });
 Object.assign(window.TR.ja, {
+  "View research": "研究内容を見る",
   "Oral presentation at <em>Origins 2026</em>, the ISSOL (International Society for the Study of the Origin of Life) conference at Sorbonne Université (Paris), on how <em>asteroid gardening</em> both transforms and preserves extraterrestrial organic matter.": "Sorbonne Université（パリ）で開催されたISSOL（International Society for the Study of the Origin of Life）の国際会議<em>Origins 2026</em>にて、小惑星表面の撹拌（<em>asteroid gardening</em>）が地球外有機物をいかに変化させ、同時に保存するかについて口頭発表を行いました。",
   "Software": "ソフトウェア",
   "Building the Hard Rocky Planets — From Mercury to the Asteroid Belt": "硬い岩石惑星の形成——水星から小惑星帯まで",
@@ -1369,11 +1371,21 @@ Object.assign(window.TR.ja, {
 });
 Object.assign(window.TR.fr, {
   "Academic Tree & Collaborations": "Arbre académique et collaborations",
+  "Where I have been": "Parcours professionnel",
+  "Academic lineage": "Lignée académique",
+  "Career Map": "Parcours professionnel",
+  "Peer-reviewed articles": "Articles évalués par les pairs",
+  "Search publications": "Rechercher des publications",
   "Around me, my academic lineage: advisors and their own advisors, one ring per generation, as on <a href=\"https://academictree.org/chemistry/tree.php?pid=972410\" target=\"_blank\" rel=\"noopener noreferrer\">Chemistry Tree</a> (data CC‑BY 3.0). In orange, my co-authors, updated with every new paper; in green, my research colleagues. Select anyone to see who they are.": "Autour de moi, ma lignée académique : mes directeurs et leurs propres directeurs, un anneau par génération, comme sur <a href=\"https://academictree.org/chemistry/tree.php?pid=972410\" target=\"_blank\" rel=\"noopener noreferrer\">Chemistry Tree</a> (données CC‑BY 3.0). En orange, mes co-auteurs, mis à jour à chaque nouvel article ; en vert, mes collègues de recherche. Sélectionnez quelqu’un pour le découvrir.",
   "Mentorship": "Encadrement", "Co-authorship": "Co-autorat", "Research colleagues": "Collègues de recherche",
 });
 Object.assign(window.TR.ja, {
   "Academic Tree & Collaborations": "学術系譜と共同研究",
+  "Where I have been": "研究キャリアマップ",
+  "Academic lineage": "学術系譜",
+  "Career Map": "研究キャリアマップ",
+  "Peer-reviewed articles": "査読付き論文",
+  "Search publications": "論文を検索",
   "Around me, my academic lineage: advisors and their own advisors, one ring per generation, as on <a href=\"https://academictree.org/chemistry/tree.php?pid=972410\" target=\"_blank\" rel=\"noopener noreferrer\">Chemistry Tree</a> (data CC‑BY 3.0). In orange, my co-authors, updated with every new paper; in green, my research colleagues. Select anyone to see who they are.": "周囲の輪は私の学術系譜（指導教員とその指導教員、1 世代ごとに 1 つの輪）で、<a href=\"https://academictree.org/chemistry/tree.php?pid=972410\" target=\"_blank\" rel=\"noopener noreferrer\">Chemistry Tree</a>（データ CC‑BY 3.0）に基づきます。オレンジは共著者で、新しい論文ごとに更新されます。緑は研究仲間です。選択すると詳細を表示します。",
   "Mentorship": "指導", "Co-authorship": "共著", "Research colleagues": "研究仲間",
 });

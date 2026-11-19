@@ -325,6 +325,7 @@
     document.head.appendChild(l);
   }
 
+  const cv = document.getElementById("cv");
   Promise.all([
     getJSON("education"), getJSON("experience"), getJSON("presentations"), getJSON("courses"), getJSON("publications"),
     getJSON("tree"), getJSON("news"),
@@ -362,7 +363,6 @@
       section(L.media, media(news), "newspaper") +
       '<p class="cv-foot">' + esc(L.generated) + (lang === "ja" ? "" : " ") +
         fmt({ y: today.getFullYear(), m: today.getMonth() + 1, day: today.getDate() }) + (lang === "ja" ? "" : ".") + "</p>";
-    const cv = document.getElementById("cv");
     cv.innerHTML = html;
     // the email text is put together here, so it is not in the page source
     const mail = document.getElementById("cvMail");
@@ -372,6 +372,31 @@
     cv.setAttribute("aria-busy", "false");
     document.documentElement.dataset.cvReady = "1";  // tools/build_cv.py waits for this
     });
+  }).catch(error => {
+    console.error("Could not assemble the online CV", error);
+    const messages = {
+    en: "The online CV could not be loaded. You can download a PDF or retry.",
+    pt: "Não foi possível carregar o CV online. Pode descarregar um PDF ou tentar novamente.",
+    fr: "Le CV en ligne n’a pas pu être chargé. Vous pouvez télécharger un PDF ou réessayer.",
+    ja: "オンライン CV を読み込めませんでした。PDF をダウンロードするか、再試行してください。"
+    };
+    cv.innerHTML = "";
+    cv.setAttribute("aria-busy", "false");
+    const errorBox = document.createElement("section");
+    errorBox.className = "cv-load-error";
+    errorBox.setAttribute("role", "alert");
+    const message = document.createElement("p");
+    message.textContent = messages[lang] || messages.en;
+    const retry = document.createElement("a");
+    retry.href = location.href;
+    retry.className = "cv-btn";
+    retry.textContent = lang === "pt" ? "Tentar novamente" : lang === "fr" ? "Réessayer" : lang === "ja" ? "再試行" : "Retry";
+    const download = document.createElement("a");
+    download.href = pdf.href;
+    download.className = "cv-btn";
+    download.textContent = L.pdf;
+    errorBox.append(message, retry, download);
+    cv.appendChild(errorBox);
   });
 
   // top bar: labels, language, PDF (the print dialog until the nightly PDF exists)

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Security: only this site, GoatCounter and Google Fonts may run code or load styles here.
        After editing an inline script, run: python tools/check_site.py --fix -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://gc.zgo.at 'sha256-X64gS0mYqZ18iBIS5VZA59EEXWUwyTH87Lq2gTmHD/A=' 'sha256-956mGPWQWaNU33OmkFo2aqSC5CbaZBr1nUH7GH8V8Yo=' 'sha256-4q2xuongV1yIe//jKK9VhIfoTj8TRdiwk12UI+5uJRk='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://gustavopmaia.goatcounter.com; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://gc.zgo.at 'sha256-X64gS0mYqZ18iBIS5VZA59EEXWUwyTH87Lq2gTmHD/A=' 'sha256-956mGPWQWaNU33OmkFo2aqSC5CbaZBr1nUH7GH8V8Yo='; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://gustavopmaia.goatcounter.com; worker-src 'self' blob:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="referrer" content="strict-origin-when-cross-origin">
 
   <!-- ============ PRIMARY / SEO ============ -->
@@ -149,7 +149,7 @@
 
       <nav class="nav-links" id="navLinks" aria-label="Primary">
         <a href="#highlights" data-i18n="nav_research">Research</a>
-        <a href="#ask" data-i18n="nav_ask">Ask</a>
+        <a href="#ask" data-i18n="nav_ask">Ask my research</a>
         <a href="#news" data-i18n="nav_news">News</a>
         <a href="#publications" data-i18n="nav_publications">Publications</a>
         <a href="#presentations" data-i18n="nav_presentations">Presentations</a>
@@ -159,8 +159,8 @@
         <a href="#courses" data-i18n="nav_courses">Courses</a>
         <a href="#awards" data-i18n="nav_awards">Awards</a>
         <a href="#funding" data-i18n="nav_funding">Funding</a>
-        <a href="#tree" data-i18n="nav_tree">Tree</a>
-        <a href="#map" data-i18n="nav_map">Map</a>
+        <a href="#tree" data-i18n="nav_tree">Academic lineage</a>
+        <a href="#map" data-i18n="nav_map">Career Map</a>
         <a href="#missions" data-i18n="nav_missions">Missions</a>
         <a href="cientificamente.html" data-i18n="nav_tutoring">Tutoring</a>
       </nav>
@@ -176,14 +176,14 @@
               <button type="button" class="nav-sec-ico nav-sec-main nav-more-btn" id="navMoreBtn" data-tip="More" aria-haspopup="true" aria-expanded="false" aria-controls="navMoreMenu"><i data-lucide="layout-grid"></i><span class="nav-sec-label" data-i18n="nav_more">More</span></button>
               <span class="nav-more-menu" id="navMoreMenu" role="menu" hidden>
                 <a href="#highlights" role="menuitem"><i data-lucide="sparkles"></i><span data-i18n="nav_research">Research</span></a>
-                <a href="#ask" role="menuitem"><i data-lucide="message-circle-question"></i><span data-i18n="nav_ask">Ask</span></a>
+                <a href="#ask" role="menuitem"><i data-lucide="message-circle-question"></i><span data-i18n="nav_ask">Ask my research</span></a>
                 <a href="#news" role="menuitem"><i data-lucide="newspaper"></i><span data-i18n="nav_news">News</span></a>
                 <a href="#techniques" role="menuitem"><i data-lucide="microscope"></i><span data-i18n="nav_skills">Skills</span></a>
                 <a href="#courses" role="menuitem"><i data-lucide="book-marked"></i><span data-i18n="nav_courses">Courses</span></a>
                 <a href="#awards" role="menuitem"><i data-lucide="award"></i><span data-i18n="nav_awards">Awards</span></a>
                 <a href="#funding" role="menuitem"><i data-lucide="banknote"></i><span data-i18n="nav_funding">Funding</span></a>
-                <a href="#tree" role="menuitem"><i data-lucide="git-fork"></i><span data-i18n="nav_tree">Tree</span></a>
-                <a href="#map" role="menuitem"><i data-lucide="map-pin"></i><span data-i18n="nav_map">Map</span></a>
+                <a href="#tree" role="menuitem"><i data-lucide="git-fork"></i><span data-i18n="nav_tree">Academic lineage</span></a>
+                <a href="#map" role="menuitem"><i data-lucide="map-pin"></i><span data-i18n="nav_map">Career Map</span></a>
                 <a href="#missions" role="menuitem"><i data-lucide="orbit"></i><span data-i18n="nav_missions">Missions</span></a>
                 <a href="cientificamente.html" role="menuitem"><i data-lucide="flask-conical"></i><span data-i18n="nav_tutoring">Tutoring</span></a>
               </span>
@@ -244,12 +244,16 @@
             Earth and other planetary bodies, revealing alternative pathways for prebiotic chemistry
             under extreme and extraterrestrial environments.
           </p>
+          <div class="hero-primary-actions" aria-label="Explore the portfolio">
+            <a class="btn" href="#highlights" data-i18n="cta_research">View research</a>
+            <a class="btn ghost" href="#publications" data-i18n="cta_publications">Publications</a>
+          </div>
         </div>
         </div>
 
         <div class="hero-lower">
           <div class="metrics metrics--strip" aria-label="Highlights">
-            <div class="metric"><span class="metric-num" data-metric="pubs">3</span><span class="metric-label" data-i18n="m_pubs">Publications</span></div>
+            <div class="metric"><span class="metric-num" data-metric="pubs">3</span><span class="metric-label" data-i18n="m_pubs">Peer-reviewed articles</span></div>
             <div class="metric"><span class="metric-num" data-metric="talks">11</span><span class="metric-label" data-i18n="m_talks">Talks &amp; posters</span></div>
             <div class="metric"><span class="metric-num" data-metric="areas">4</span><span class="metric-label" data-i18n="m_areas">Research areas</span></div>
             <a class="metric metric-link" href="https://scholar.google.com/citations?user=TTVIFykAAAAJ&amp;hl=pt-PT" target="_blank" rel="noopener noreferrer" title="Google Scholar"><span class="metric-num" data-metric="hindex">2</span><span class="metric-label" data-i18n="m_hindex">h-index</span></a>
@@ -420,15 +424,7 @@
 
   <!-- Site search (command palette) -->
   <script src="search.js" defer></script>
-
-  <script>
-    // Progressive Web App: register the service worker on secure origins
-    if ("serviceWorker" in navigator && location.protocol === "https:") {
-      window.addEventListener("load", function () {
-        navigator.serviceWorker.register("sw.js").catch(function () {});
-      });
-    }
-  </script>
+  <script src="site-updates.js" defer></script>
   <!-- Visitor statistics (GoatCounter: no cookies, no personal data) -->
   <script data-goatcounter="https://gustavopmaia.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>

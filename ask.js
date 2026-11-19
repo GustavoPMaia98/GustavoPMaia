@@ -21,6 +21,10 @@ if (!window.__askChat) {
     title: { en: "Ask my research", pt: "Pergunte à minha investigação", fr: "Interrogez mes recherches", ja: "研究に質問する" },
     sub: { en: "Search the site or ask about my research", pt: "Pesquise no site ou pergunte sobre a minha investigação",
            fr: "Cherchez sur le site ou posez une question sur mes recherches", ja: "サイト内検索、または研究について質問" },
+    privacy: { en: "Questions are processed in this browser. Conversation history stays in this browser until you clear it.",
+               pt: "As perguntas são processadas neste navegador. O histórico fica guardado aqui até o apagar.",
+               fr: "Les questions sont traitées dans ce navigateur. L’historique y reste jusqu’à ce que vous l’effaciez.",
+               ja: "質問はこのブラウザー内で処理され、会話履歴は削除するまでこのブラウザーに保存されます。" },
     open: { en: "Ask my research", pt: "Perguntar", fr: "Poser une question", ja: "質問する" },
     hide: { en: "Hide the chat", pt: "Esconder o chat", fr: "Masquer le chat", ja: "チャットを隠す" },
     clear: { en: "Clear the conversation", pt: "Apagar a conversa", fr: "Effacer la conversation", ja: "会話を消去" },
@@ -62,7 +66,7 @@ if (!window.__askChat) {
   box.innerHTML =
     '<button type="button" class="askc-fab" aria-expanded="false" aria-controls="askcPanel">' + icon(I.chat, 22) + '<span class="askc-fab-label"></span></button>' +
     '<section class="askc-panel" id="askcPanel" role="dialog" aria-modal="false" aria-labelledby="askcTitle" hidden>' +
-      '<header class="askc-head"><div class="askc-hd"><h2 class="askc-title" id="askcTitle"></h2><p class="askc-sub"></p></div>' +
+      '<header class="askc-head"><div class="askc-hd"><h2 class="askc-title" id="askcTitle"></h2><p class="askc-sub"></p><p class="askc-privacy"></p></div>' +
         '<button type="button" class="askc-ib askc-clear">' + icon(I.trash, 17) + "</button>" +
         '<button type="button" class="askc-ib askc-min">' + icon(I.min, 18) + "</button></header>" +
       '<ol class="askc-log" aria-live="polite"></ol>' +
@@ -79,6 +83,7 @@ if (!window.__askChat) {
     fab.setAttribute("aria-label", t("open"));
     box.querySelector(".askc-title").textContent = t("title");
     box.querySelector(".askc-sub").textContent = t("sub");
+    box.querySelector(".askc-privacy").textContent = t("privacy");
     const c = box.querySelector(".askc-clear"), m = box.querySelector(".askc-min");
     c.setAttribute("aria-label", t("clear")); c.title = t("clear");
     m.setAttribute("aria-label", t("hide")); m.title = t("hide");

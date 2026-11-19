@@ -34,11 +34,17 @@
     <a href="?lang=fr" class="cv-lang" data-set-lang="fr">FR</a>
     <a href="?lang=ja" class="cv-lang" data-set-lang="ja">JA</a>
     <button type="button" class="cv-switch" id="cvLogos" role="switch" aria-checked="true"><span class="cv-switch-track" aria-hidden="true"></span><span data-l="logos">Logos</span></button>
-    <a href="#" class="cv-btn" id="cvPdf" download><span data-l="pdf">Download PDF</span></a>
+    <a href="cv.pdf" class="cv-btn" id="cvPdf" download><span data-l="pdf">Download PDF</span></a>
   </nav>
   <main class="cv" id="cv" aria-busy="true">
-    <p class="cv-loading">Loading…</p>
+    <p class="cv-loading" role="status" aria-live="polite">Loading…</p>
   </main>
+  <noscript>
+    <p class="cv-fallback">The interactive CV needs JavaScript. Download a PDF version:
+      <a href="cv.pdf">English</a> · <a href="cv-pt.pdf">Português</a> ·
+      <a href="cv-fr.pdf">Français</a> · <a href="cv-ja.pdf">日本語</a>.
+    </p>
+  </noscript>
   <script src="mail.js"></script>
   <script src="vendor/lucide-1.48.0.min.js"></script>
   <script src="cv.js"></script>
