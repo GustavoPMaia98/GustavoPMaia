@@ -1693,14 +1693,14 @@
     set("pubs", pubs);
     set("talks", document.querySelectorAll("#presentations .timeline-item").length);
     set("areas", document.querySelectorAll(".hero-tags > span").length);
-    // h-index refreshed every night from Google Scholar, or OpenAlex when Scholar can't be read (data/publications.json)
+    // The value may fall back to OpenAlex, but this link must always point to the requested Scholar profile.
     const m = db && db.metrics;
     if (m && m.h_index) {
       set("hindex", m.h_index);
       const link = document.querySelector('[data-metric="hindex"]').closest("a");
-      if (link && m.profile) {
-        link.href = m.profile;
-        link.title = "h-index · " + m.citations + " citations (" + (m.source || "OpenAlex") + ")";
+      if (link) {
+        link.href = "https://scholar.google.com/citations?user=TTVIFykAAAAJ&hl=pt-PT";
+        link.title = "Google Scholar h-index · " + m.citations + " citations (value source: " + (m.source || "OpenAlex") + ")";
       }
     }
   }
