@@ -32,12 +32,6 @@ jobs:
         run: python tools/check_site.py
       - name: Commit if the tree changed
         run: |
-          if [ -n "$(git status --porcelain data/tree.json)" ]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add data/tree.json
-            git commit -m "Update academic tree from Chemistry Tree"
-            for i in 1 2 3; do git pull --rebase origin main && git push && break; sleep 5; done
-          else
-            echo "Chemistry Tree: no changes."
-          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          python tools/git_publish.py --branch main --message "Update academic tree from Chemistry Tree" --paths data/tree.json

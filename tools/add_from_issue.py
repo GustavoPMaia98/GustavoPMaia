@@ -11,7 +11,7 @@ By hand:  python tools/add_from_issue.py event.json
 Prints a short summary on the last line for the issue comment. Pillow is used to
 shrink an attached picture when it is installed.
 """
-import html, io, json, os, re, sys, unicodedata, urllib.request
+import html, io, json, os, re, sys, time, unicodedata, urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -36,6 +36,10 @@ def esc(s):
 
 def attr(s):
     return html.escape(s or "", quote=True)
+
+
+def clean_doi(s):
+    return re.sub(r"^https?://(dx\.)?doi\.org/", "", (s or "").strip()).lower()
 
 
 def first_image(text):
@@ -152,7 +156,58 @@ def add_award(f):
     return f"Added the award “{t_en}” to Awards."
 
 
-ACTIONS = {"add-talk": add_talk, "add-course": add_course, "add-award": add_award}
+def add_news(f):
+    date, href = f.get("Date", "").strip(), f.get("Link (optional)", "").strip()
+    text_en, text_pt = f.get("English text", "").strip(), f.get("Portuguese text", "").strip()
+    if not re.match(r"^\d{4}(?:-\d{2})?$", date):
+        raise SystemExit("Date must look like 2026 or 2026-11")
+    if href and not re.match(r"^https://", href):
+        raise SystemExit("Link must start with https://")
+    img = save_image(first_image(f.get("Picture (optional)", "")), "news",
+                     slug(text_en, 40) + "-" + date, 1200)
+    item = {
+        "date": date,
+        "href": href,
+        "media": {"kind": "photo", "src": img, "alt": text_en[:120]} if img else
+                 {"kind": "logo", "src": "images/logos/linkedin.png", "alt": "LinkedIn"},
+        "text": {"en": esc(text_en), "pt": esc(text_pt or text_en)},
+        "link": {"en": "Post" if href else "Read", "pt": "Publicação" if href else "Ler"},
+    }
+    data = load("news.json")
+    data.insert(0, item)
+    dump("news.json", data)
+    return f"Added the news item “{text_en}” to News."
+
+
+def add_publication(f):
+    doi = clean_doi(f.get("DOI", ""))
+    title, year = f.get("Title", "").strip(), f.get("Year", "").strip()
+    if not doi or not title or not re.match(r"^(\d{4})$", year):
+        raise SystemExit("DOI, title and a four-digit year are required")
+    data = load("publications.json")
+    works = data.setdefault("works", [])
+    if any(str(w.get("doi", "")).lower() == doi for w in works):
+        return f"The publication “{title}” is already listed."
+    works.insert(0, {
+        "doi": doi,
+        "title": title,
+        "year": int(year),
+        "journal": f.get("Journal", "").strip(),
+        "authors": f.get("Authors", "").strip(),
+        "verified": ["manual-entry"],
+    })
+    data["updated"] = time.strftime("%Y-%m-%d")
+    dump("publications.json", data)
+    return f"Added the publication “{title}” to Publications."
+
+
+ACTIONS = {
+    "add-talk": add_talk,
+    "add-course": add_course,
+    "add-award": add_award,
+    "add-news": add_news,
+    "add-publication": add_publication,
+}
 
 
 def main():
@@ -161,7 +216,13 @@ def main():
     issue = ev["issue"]
     labels = {l["name"] for l in issue.get("labels", [])}
     title = issue.get("title", "").lower()
-    by_title = {"add talk:": "add-talk", "add course:": "add-course", "add award:": "add-award"}
+    by_title = {
+        "add talk:": "add-talk",
+        "add course:": "add-course",
+        "add award:": "add-award",
+        "add news:": "add-news",
+        "add publication:": "add-publication",
+    }
     act = next((ACTIONS[l] for l in ACTIONS if l in labels), None) or \
         next((ACTIONS[v] for k, v in by_title.items() if title.startswith(k)), None)
     if not act:

@@ -1,0 +1,30 @@
+name: Add a publication
+description: Add a journal publication while it is being processed by the automated publication updater.
+title: "Add publication: "
+labels: [add-publication]
+body:
+  - type: input
+    id: doi
+    attributes:
+      label: DOI
+      placeholder: "10.3390/app15031363"
+    validations: { required: true }
+  - type: input
+    id: title
+    attributes:
+      label: Title
+    validations: { required: true }
+  - type: input
+    id: year
+    attributes:
+      label: Year
+      placeholder: "2026"
+    validations: { required: true }
+  - type: input
+    id: journal
+    attributes:
+      label: Journal
+  - type: textarea
+    id: authors
+    attributes:
+      label: Authors

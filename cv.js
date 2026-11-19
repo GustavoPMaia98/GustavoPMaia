@@ -343,7 +343,7 @@
           contact('<i data-lucide="globe"></i>', L.web, '<a href="https://gustavopmaia98.github.io/GustavoPMaia/">gustavopmaia98.github.io/GustavoPMaia</a>') +
           contact('<img src="images/logos/linkedin.png" alt="">', "LinkedIn", '<a href="https://www.linkedin.com/in/gustavopinhomaia">linkedin.com/in/gustavopinhomaia</a>') +
           contact('<i data-lucide="id-card"></i>', "CiênciaVitae", '<a href="https://www.cienciavitae.pt/portal/en/8212-CEE3-E928">8212-CEE3-E928</a>') +
-          contact('<i data-lucide="graduation-cap"></i>', "Google Scholar", '<a href="https://scholar.google.com/citations?user=TTVIFykAAAAJ">TTVIFykAAAAJ</a>') +
+          contact('<i data-lucide="graduation-cap"></i>', "Google Scholar", '<a href="https://scholar.google.com/citations?user=TTVIFykAAAAJ&amp;hl=pt-PT">TTVIFykAAAAJ</a>') +
         "</ul></div>" +
         '<figure class="cv-portrait"><img class="cv-photo" src="images/cv-photo.jpg" alt="">' +
           '<figcaption>' + esc(tr("<em>Credit: IMPMC · Cécile Duflot</em>", "<em>Crédito: IMPMC · Cécile Duflot</em>")) + "</figcaption></figure></header>" +

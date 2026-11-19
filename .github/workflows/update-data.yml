@@ -56,13 +56,6 @@ jobs:
         run: python tools/check_site.py
       - name: Commit if anything changed
         run: |
-          if [ -n "$(git status --porcelain -- data images/news cv*.pdf 2>/dev/null)" ]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            for p in data images/news cv*.pdf; do [ ! -e "$p" ] || git add -A -- "$p"; done   # only paths that exist (images/news appears with the first news photo)
-            git commit -m "Update site data (publications, news, CV)"
-            # if you pushed while this was running, put this commit on top of yours
-            for i in 1 2 3; do git pull --rebase origin main && git push && break; sleep 5; done
-          else
-            echo "No changes."
-          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          python tools/git_publish.py --branch main --message "Update site data (publications, news, CV)" --paths data images/news cv.pdf cv-pt.pdf cv-fr.pdf cv-ja.pdf cv-nologos.pdf cv-pt-nologos.pdf cv-fr-nologos.pdf cv-ja-nologos.pdf

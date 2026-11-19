@@ -31,6 +31,4 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add images/earth/tiles
-          git commit -m "Add high-resolution Earth tiles (NASA Blue Marble, public domain)" || echo "No changes."
-          for i in 1 2 3; do git pull --rebase origin main && git push && break; sleep 5; done
+          python tools/git_publish.py --branch main --message "Add high-resolution Earth tiles (NASA Blue Marble, public domain)" --paths images/earth/tiles

@@ -266,7 +266,8 @@ def scholar_metrics(page=None):
     """h-index, i10-index and citations from my Google Scholar profile (its "Cited by"
     table). Google Scholar has no API and sometimes answers automated visits with a
     check page; then this returns None and OpenAlex is used instead."""
-    url = f"https://scholar.google.com/citations?user={SCHOLAR}&hl=en"
+    profile = f"https://scholar.google.com/citations?user={SCHOLAR}&hl=pt-PT"
+    url = profile
     if page is None:
         try:
             req = urllib.request.Request(url, headers={
@@ -279,22 +280,27 @@ def scholar_metrics(page=None):
             return None
     # the table: Citations / h-index / i10-index rows, each with "All" and "Since …" cells
     nums = re.findall(r'class="gsc_rsb_std">(\d+)<', page)
-    labels = re.findall(r'class="gsc_rsb_f[^"]*"[^>]*>([^<]+)<', page)
-    if len(nums) < 6 or not any("h-index" in l for l in labels):
+    labels = re.findall(r'class="gsc_rsb_(?:f|sth)[^"]*"[^>]*>([^<]+)<', page)
+    labels = [plain(html.unescape(label)).replace("-", " ").strip() for label in labels]
+    if len(nums) < 6 or not any("h index" in label or "indice h" in label for label in labels):
         print("warning: Google Scholar page without the citation table (blocked?)")
         return None
     cites, h, i10 = int(nums[0]), int(nums[2]), int(nums[4])
     print(f"Google Scholar: h-index {h}, i10-index {i10}, {cites} citations")
     return {"h_index": h, "i10_index": i10, "citations": cites, "source": "Google Scholar",
-            "profile": f"https://scholar.google.com/citations?user={SCHOLAR}"}
+            "profile": profile}
 
 
-def author_metrics():
-    """h-index, i10-index and total citations: Google Scholar first, OpenAlex otherwise."""
+def author_metrics(previous=None):
+    """Return Google Scholar metrics, preserving the last Scholar result on fetch failures."""
     m = scholar_metrics()
     if m:
         return m
-    return openalex_metrics()
+    if previous and previous.get("source") == "Google Scholar":
+        print("Google Scholar blocked; keeping the last Google Scholar metrics.")
+        return previous
+    print("Google Scholar metrics unavailable; not substituting a different source.")
+    return None
 
 
 def openalex_metrics():
@@ -352,7 +358,7 @@ def main():
     if os.path.exists(OUT):
         with open(OUT, encoding="utf-8") as f:
             cur = json.load(f)
-    metrics = author_metrics() or cur.get("metrics")
+    metrics = author_metrics(cur.get("metrics"))
     if cur.get("works") == works and cur.get("metrics") == metrics:
         print("No change.")
         return 0

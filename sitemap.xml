@@ -45,4 +45,8 @@
     <loc>https://gustavopmaia98.github.io/GustavoPMaia/cv.html</loc>
     <changefreq>monthly</changefreq>
   </url>
+  <url>
+    <loc>https://gustavopmaia98.github.io/GustavoPMaia/blog.html</loc>
+    <changefreq>weekly</changefreq>
+  </url>
 </urlset>
