@@ -839,7 +839,6 @@
     if (!stage) {
       stage = document.createElement("div");
       stage.className = "pub-tl path-wrap path-wrap--scroll";
-      stage.id = "pub-timeline-stage";
       stage.innerHTML =
         '<button type="button" class="path-arrow path-arrow--prev" data-dir="-1"><i data-lucide="chevron-left"></i></button>' +
         '<div class="path-scroll"><ol class="path path--scroll" aria-label="Publications timeline"></ol></div>' +
@@ -868,19 +867,6 @@
     const ME = /^(Gustavo\s+(P\.|Pinho)\s+Maia|G\.\s*P\.\s*Maia)$/;
     const logoOf = p => { const x = pubInfo[String(p.doi).toLowerCase()] || {};
       return /^images\/logos\/[\w.-]+\.(png|jpe?g|webp|svg)$/.test(x.logo || "") ? x.logo : ""; };
-    const search = document.getElementById("pub-search");
-    const searchStatus = document.getElementById("pub-search-status");
-    let searchQuery = "";
-    const normalizeSearch = s => String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
-    const searchable = it => {
-      const p = info(it), record = pubWorks[String(p.doi).toLowerCase()] || {};
-      const keywords = Array.isArray(record.keywords) ? record.keywords.join(" ") : record.keywords || "";
-      return normalizeSearch([it.textContent, p.doi, p.authors, p.journal, keywords, record.abstract].join(" "));
-    };
-    const matchesSearch = it => {
-      const text = searchable(it);
-      return !searchQuery || searchQuery.split(/\s+/).every(term => text.includes(term));
-    };
     // the paper itself: journal, title, authors (with the keys of their affiliations), affiliations, abstract
     function paperHTML(p, t) {
       const x = pubInfo[String(p.doi).toLowerCase()] || {}, logo = logoOf(p);
@@ -912,23 +898,13 @@
     let openIdx = -1;
     function render() {
       const t = T();
-      const shown = items.map((it, i) => ({ it, i })).filter(({ it }) => matchesSearch(it));
-      axis.innerHTML = shown.reverse().map(({ it, i }) => {
+      axis.innerHTML = items.map((it, i) => ({ it, i })).reverse().map(({ it, i }) => {
         const p = info(it), logo = logoOf(p);
         return '<li class="path-step"><button type="button" class="path-btn pub-step" data-i="' + i + '" aria-pressed="' + (i === openIdx) + '">' +
           '<span class="path-logo" aria-hidden="true">' + (logo ? '<img src="' + logo + '" alt="">' : '<i data-lucide="book-open"></i>') + "</span>" +
           '<span class="path-year">' + escapeHtml(p.year) + '</span><span class="path-kind">' + escapeHtml(t.art) + "</span>" +
           '<span class="path-place">' + escapeHtml(p.title) + '</span><span class="path-what">' + escapeHtml(p.journal) + "</span></button></li>";
       }).join("");
-      if (searchStatus) {
-        const messages = {
-          en: shown.length ? shown.length + " publication" + (shown.length === 1 ? "" : "s") + " found." : "No publications match this search.",
-          pt: shown.length ? shown.length + (shown.length === 1 ? " publicação encontrada." : " publicações encontradas.") : "Nenhuma publicação corresponde à pesquisa.",
-          fr: shown.length ? shown.length + (shown.length === 1 ? " publication trouvée." : " publications trouvées.") : "Aucune publication ne correspond à la recherche.",
-          ja: shown.length + "件の論文が見つかりました。"
-        };
-        searchStatus.textContent = searchQuery ? messages[currentLang] || messages.en : "";
-      }
       axis.querySelectorAll(".path-logo img").forEach(im => im.addEventListener("load", () => matchLogoBackground(im, im.parentNode)));
       arrows.forEach(a => a.setAttribute("aria-label", a.dataset.dir === "-1" ? t.older : t.newer));
       if (window.lucide && lucide.createIcons) try { lucide.createIcons(); } catch (e) {}
@@ -988,11 +964,6 @@
     }
     if (!stage.dataset.wired) {
       stage.dataset.wired = "1";
-      if (search) search.addEventListener("input", () => {
-        searchQuery = normalizeSearch(search.value);
-        if (openIdx >= 0 && !matchesSearch(items[openIdx])) close();
-        render();
-      });
       axis.addEventListener("click", e => {
         const b = e.target.closest(".pub-step"); if (!b) return;
         const i = +b.dataset.i;

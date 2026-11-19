@@ -1122,15 +1122,6 @@ html.space-pending body, html.has-space3d body{ background:#02040a; }
 .askc-send{ width:42px; height:42px; flex:none; display:grid; place-items:center; border:0; border-radius:50%; background:var(--accent); color:var(--on-accent, #04121f); cursor:pointer; }
 :root[data-theme="light"] .askc-panel{ background:#f8fafc; }
 
-.pub-search-label{ display:block; margin:0 0 5px; font-size:.84rem; font-weight:700; color:var(--muted); }
-.pub-search{
-  display:block; width:min(100%, 520px); margin:0 0 8px; padding:9px 12px;
-  border:1px solid var(--border); border-radius:var(--radius-sm);
-  background:var(--card); color:var(--text); font:inherit;
-}
-.pub-search:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
-.pub-search-status{ min-height:1.3em; margin:0 0 8px; font-size:.82rem; color:var(--muted); }
-
 .site-update-notice{
   position:fixed; z-index:200; top:calc(var(--nav-h, 60px) + 10px); left:50%; transform:translateX(-50%);
   display:flex; align-items:center; gap:10px; width:min(680px, calc(100vw - 24px)); padding:12px 14px;
