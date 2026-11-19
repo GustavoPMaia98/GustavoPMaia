@@ -45,9 +45,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/blog.json
-          git commit -m "Blog draft from issue #$NUMBER (hidden)" || true
-          for i in 1 2 3; do git pull --rebase origin main && git push && break; sleep 5; done
+          python tools/git_publish.py --branch main --message "Blog draft from issue #$NUMBER (hidden)" --paths data/blog.json
           { echo "Here is the draft, saved hidden in \`data/blog.json\` (AI-written from your notes: please check it)."
             echo; echo "- To put it on the website, comment just \`publish\` (or add the **publish** label)."
             echo "- To change it, edit the post in \`data/blog.json\` (it has \`\"issue\": $NUMBER\`)."
@@ -73,8 +71,6 @@ jobs:
           python3 tools/blog_draft.py publish "$GITHUB_EVENT_PATH" | tee out.txt
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/blog.json
-          git commit -m "Publish blog post from issue #$NUMBER" || { echo "Nothing to publish."; exit 0; }
-          for i in 1 2 3; do git pull --rebase origin main && git push && break; sleep 5; done
+          python tools/git_publish.py --branch main --message "Publish blog post from issue #$NUMBER" --paths data/blog.json
           gh issue comment "$NUMBER" --body "$(tail -n 1 out.txt) It will be on the website in a minute or two."
           gh issue close "$NUMBER"

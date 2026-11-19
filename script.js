@@ -212,6 +212,7 @@
   function initNav() {
     const toggle = document.getElementById("navToggle");
     const links = document.getElementById("navLinks");
+    let mobileFocusTarget = null;
 
     // Smooth-slide to a #section, accounting for the fixed nav. Uses an explicit
     // "smooth" so it still slides while hands-free mode has CSS smooth disabled.
@@ -223,6 +224,9 @@
         .getPropertyValue("--nav-h"), 10) || 60;
       const top = target.getBoundingClientRect().top + window.scrollY - navH - 12;
       window.scrollTo({ top: Math.max(0, top), behavior: prefersReduced ? "auto" : "smooth" });
+      if (history.replaceState) history.replaceState(null, "", hash);
+      target.setAttribute("tabindex", "-1");
+      target.focus({ preventScroll: true });
     };
 
     if (toggle && links && !navToggleWired) {
@@ -232,15 +236,34 @@
         toggle.classList.toggle("open", open);
         toggle.setAttribute("aria-expanded", open ? "true" : "false");
         toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+        if (open) {
+          const first = links.querySelector("a");
+          if (first) first.focus();
+        } else if (mobileFocusTarget) {
+          toggle.focus();
+        }
       });
       links.querySelectorAll("a").forEach(a => a.addEventListener("click", (e) => {
         const href = a.getAttribute("href") || "";
         if (href.charAt(0) === "#") { e.preventDefault(); slideToHash(href); }
+        mobileFocusTarget = a;
         links.classList.remove("open");
         toggle.classList.remove("open");
         toggle.setAttribute("aria-expanded", "false");
         toggle.setAttribute("aria-label", "Open menu");
       }));
+      document.addEventListener("click", (e) => {
+        if (!links.classList.contains("open")) return;
+        if (!links.contains(e.target) && !toggle.contains(e.target)) toggle.click();
+      });
+      links.addEventListener("keydown", (e) => {
+        if (e.key !== "Escape") return;
+        links.classList.remove("open");
+        toggle.classList.remove("open");
+        toggle.setAttribute("aria-expanded", "false");
+        toggle.setAttribute("aria-label", "Open menu");
+        toggle.focus();
+      });
     }
 
     // Section button (desktop): hover (or click) opens an expanding header row

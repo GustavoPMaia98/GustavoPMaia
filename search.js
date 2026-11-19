@@ -631,6 +631,10 @@
     const query = q.trim().toLowerCase();
     results.innerHTML = "";
     active = -1;
+    const url = new URL(location.href);
+    if (query) url.searchParams.set("q", q.trim());
+    else url.searchParams.delete("q");
+    history.replaceState(null, "", url);
     if (query.length < 2) {
       current = [];
       hint.textContent = ui("hint");
@@ -772,8 +776,9 @@
     buildIndex();
     overlay.hidden = false;
     document.body.classList.add("search-open");
-    input.value = "";
-    run("");
+    const initial = new URL(location.href).searchParams.get("q") || "";
+    input.value = initial;
+    run(initial);
     setTimeout(() => input.focus(), 40);
   }
   function close() {

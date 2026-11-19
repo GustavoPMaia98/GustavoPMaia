@@ -1,7 +1,7 @@
 /* Service worker: app-shell caching + offline fallback.
    Network-first for HTML, CSS, JS and data (so new content shows at once),
    cache-then-refresh for pictures and other static files. */
-const CACHE = "gpm-v62";
+const CACHE = "gpm-v63";
 const CORE = [
   "./", "index.html", "cientificamente.html",
   "design-system/styles.css", "design-system/tokens/fonts.css", "design-system/tokens/colors.css",

@@ -32,12 +32,6 @@ jobs:
         run: python tools/check_site.py
       - name: Commit if anything changed
         run: |
-          if [ -n "$(git status --porcelain data/tree.json images/tree)" ]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add data/tree.json images/tree
-            git commit -m "Academic tree: freely licensed photos from Wikimedia Commons"
-            for i in 1 2 3; do git pull --rebase origin "$GITHUB_REF_NAME" && git push origin "HEAD:$GITHUB_REF_NAME" && break; sleep 5; done
-          else
-            echo "No changes."
-          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          python tools/git_publish.py --branch "$GITHUB_REF_NAME" --message "Academic tree: freely licensed photos from Wikimedia Commons" --paths data/tree.json images/tree
