@@ -45,6 +45,10 @@ a:hover{ text-decoration:underline; }
   border-radius:6px; box-shadow:0 1px 2px rgba(17,24,39,.06), 0 12px 32px rgba(17,24,39,.08);
 }
 .cv-loading{ color:var(--muted); }
+.cv-fallback,.cv-load-error{ max-width:840px; margin:22px auto 48px; padding:24px; background:var(--bg); color:var(--ink); }
+.cv-load-error{ border:1px solid var(--line); border-radius:6px; box-shadow:0 12px 32px rgba(17,24,39,.08); }
+.cv-load-error p{ margin:0 0 16px; }
+.cv-load-error .cv-btn{ display:inline-block; margin:0 8px 8px 0; }
 
 .cv-head{ display:flex; gap:28px; align-items:flex-start; justify-content:space-between;
   padding-bottom:18px; border-bottom:3px solid var(--ink); }

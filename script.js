@@ -839,6 +839,7 @@
     if (!stage) {
       stage = document.createElement("div");
       stage.className = "pub-tl path-wrap path-wrap--scroll";
+      stage.id = "pub-timeline-stage";
       stage.innerHTML =
         '<button type="button" class="path-arrow path-arrow--prev" data-dir="-1"><i data-lucide="chevron-left"></i></button>' +
         '<div class="path-scroll"><ol class="path path--scroll" aria-label="Publications timeline"></ol></div>' +
@@ -867,6 +868,19 @@
     const ME = /^(Gustavo\s+(P\.|Pinho)\s+Maia|G\.\s*P\.\s*Maia)$/;
     const logoOf = p => { const x = pubInfo[String(p.doi).toLowerCase()] || {};
       return /^images\/logos\/[\w.-]+\.(png|jpe?g|webp|svg)$/.test(x.logo || "") ? x.logo : ""; };
+    const search = document.getElementById("pub-search");
+    const searchStatus = document.getElementById("pub-search-status");
+    let searchQuery = "";
+    const normalizeSearch = s => String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+    const searchable = it => {
+      const p = info(it), record = pubWorks[String(p.doi).toLowerCase()] || {};
+      const keywords = Array.isArray(record.keywords) ? record.keywords.join(" ") : record.keywords || "";
+      return normalizeSearch([it.textContent, p.doi, p.authors, p.journal, keywords, record.abstract].join(" "));
+    };
+    const matchesSearch = it => {
+      const text = searchable(it);
+      return !searchQuery || searchQuery.split(/\s+/).every(term => text.includes(term));
+    };
     // the paper itself: journal, title, authors (with the keys of their affiliations), affiliations, abstract
     function paperHTML(p, t) {
       const x = pubInfo[String(p.doi).toLowerCase()] || {}, logo = logoOf(p);
@@ -898,13 +912,23 @@
     let openIdx = -1;
     function render() {
       const t = T();
-      axis.innerHTML = items.map((it, i) => ({ it, i })).reverse().map(({ it, i }) => {
+      const shown = items.map((it, i) => ({ it, i })).filter(({ it }) => matchesSearch(it));
+      axis.innerHTML = shown.reverse().map(({ it, i }) => {
         const p = info(it), logo = logoOf(p);
         return '<li class="path-step"><button type="button" class="path-btn pub-step" data-i="' + i + '" aria-pressed="' + (i === openIdx) + '">' +
           '<span class="path-logo" aria-hidden="true">' + (logo ? '<img src="' + logo + '" alt="">' : '<i data-lucide="book-open"></i>') + "</span>" +
           '<span class="path-year">' + escapeHtml(p.year) + '</span><span class="path-kind">' + escapeHtml(t.art) + "</span>" +
           '<span class="path-place">' + escapeHtml(p.title) + '</span><span class="path-what">' + escapeHtml(p.journal) + "</span></button></li>";
       }).join("");
+      if (searchStatus) {
+        const messages = {
+          en: shown.length ? shown.length + " publication" + (shown.length === 1 ? "" : "s") + " found." : "No publications match this search.",
+          pt: shown.length ? shown.length + (shown.length === 1 ? " publicação encontrada." : " publicações encontradas.") : "Nenhuma publicação corresponde à pesquisa.",
+          fr: shown.length ? shown.length + (shown.length === 1 ? " publication trouvée." : " publications trouvées.") : "Aucune publication ne correspond à la recherche.",
+          ja: shown.length + "件の論文が見つかりました。"
+        };
+        searchStatus.textContent = searchQuery ? messages[currentLang] || messages.en : "";
+      }
       axis.querySelectorAll(".path-logo img").forEach(im => im.addEventListener("load", () => matchLogoBackground(im, im.parentNode)));
       arrows.forEach(a => a.setAttribute("aria-label", a.dataset.dir === "-1" ? t.older : t.newer));
       if (window.lucide && lucide.createIcons) try { lucide.createIcons(); } catch (e) {}
@@ -964,6 +988,11 @@
     }
     if (!stage.dataset.wired) {
       stage.dataset.wired = "1";
+      if (search) search.addEventListener("input", () => {
+        searchQuery = normalizeSearch(search.value);
+        if (openIdx >= 0 && !matchesSearch(items[openIdx])) close();
+        render();
+      });
       axis.addEventListener("click", e => {
         const b = e.target.closest(".pub-step"); if (!b) return;
         const i = +b.dataset.i;
@@ -1426,8 +1455,8 @@
     nav_highlights:{en:"Highlights",pt:"Destaques"}, nav_awards:{en:"Awards",pt:"Prémios"},
     nav_experience:{en:"Experience",pt:"Experiência"}, nav_presentations:{en:"Presentations",pt:"Apresentações"},
     nav_funding:{en:"Funding",pt:"Financiamento"}, nav_publications:{en:"Publications",pt:"Publicações"},
-    nav_tree:{en:"Tree",pt:"Árvore"}, nav_map:{en:"Map",pt:"Mapa"}, nav_blog:{en:"Blog",pt:"Blog"}, nav_tutoring:{en:"Tutoring",pt:"Explicações"}, nav_courses:{en:"Courses",pt:"Cursos"},
-    nav_ask:{en:"Ask",pt:"Perguntar"}, nav_projects:{en:"Projects",pt:"Projetos"}, nav_network:{en:"Collaborations",pt:"Colaborações"},
+    nav_tree:{en:"Academic lineage",pt:"Linagem académica"}, nav_map:{en:"Career Map",pt:"Mapa de percurso"}, nav_blog:{en:"Blog",pt:"Blog"}, nav_tutoring:{en:"Tutoring",pt:"Explicações"}, nav_courses:{en:"Courses",pt:"Cursos"},
+    nav_ask:{en:"Ask my research",pt:"Pergunte sobre a minha investigação"}, nav_projects:{en:"Projects",pt:"Projetos"}, nav_network:{en:"Collaborations",pt:"Colaborações"},
     nav_datacode:{en:"Data & code",pt:"Dados e código"}, nav_missions:{en:"Missions",pt:"Missões"},
     nav_research:{en:"Research",pt:"Investigação"}, nav_skills:{en:"Skills",pt:"Competências"}, nav_more:{en:"More",pt:"Mais"},
     role:{en:"PhD Researcher in Chemistry · Astrobiology",pt:"Investigador de Doutoramento em Química · Astrobiologia"},
@@ -1435,15 +1464,16 @@
          pt:"A minha investigação explora as origens e a evolução da vida no universo, usando a química para desvendar os processos que poderão ter conduzido ao surgimento da vida. Um foco central é a mecanoquímica: reações químicas impulsionadas por forças mecânicas. Investigo como a energia mecânica, da formação de corpos progenitores, do asteroid gardening ou de impactos de meteoritos, poderá ter promovido a síntese e a transformação de moléculas orgânicas na Terra primitiva e noutros corpos planetários, revelando vias alternativas para a química prebiótica em ambientes extremos e extraterrestres."},
     tag1:{en:"Mechanochemistry",pt:"Mecanoquímica"}, tag2:{en:"Prebiotic Chemistry",pt:"Química Prebiótica"},
     tag3:{en:"Astrobiology",pt:"Astrobiologia"}, tag4:{en:"Origin of Life",pt:"Origem da Vida"},
-    m_pubs:{en:"Publications",pt:"Publicações"}, m_talks:{en:"Talks & posters",pt:"Comunicações"},
+    m_pubs:{en:"Peer-reviewed articles",pt:"Artigos com revisão por pares"}, m_talks:{en:"Talks & posters",pt:"Comunicações"},
     m_areas:{en:"Research areas",pt:"Áreas de investigação"}, m_hindex:{en:"h-index",pt:"índice h"}, cv:{en:"Download CV",pt:"Descarregar CV"},
+    cta_research:{en:"View research",pt:"Ver investigação"}, cta_publications:{en:"Publications",pt:"Publicações"},
     affiliated:{en:"Affiliated with",pt:"Afiliações"},
     opento:{en:"Open to postdoctoral positions from 2027",pt:"Disponível para posições de pós-doutoramento a partir de 2027"}
   };
   const HEADINGS = {
     "Education":"Educação", "Experience":"Experiência", "Presentations":"Apresentações",
     "Funding":"Financiamento", "Publications":"Publicações", "Academic Tree":"Árvore Académica", "Academic Tree & Collaborations":"Árvore Académica e Colaborações",
-    "News":"Novidades", "Where I have been":"Por onde andei",
+    "News":"Novidades", "Where I have been":"Mapa do percurso",
     "Current Work Interests":"Interesses de Trabalho Atuais", "Awards":"Prémios", "Courses & Formations":"Cursos e Formações",
     "Ask my research":"Pergunte à minha investigação", "Research projects":"Projetos de investigação", "Collaborations":"Colaborações",
     "Data & code":"Dados e código", "Space missions":"Missões espaciais", "Blog":"Blog"
