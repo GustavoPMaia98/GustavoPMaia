@@ -1437,7 +1437,6 @@
     tag3:{en:"Astrobiology",pt:"Astrobiologia"}, tag4:{en:"Origin of Life",pt:"Origem da Vida"},
     m_pubs:{en:"Peer-reviewed articles",pt:"Artigos com revisão por pares"}, m_talks:{en:"Talks & posters",pt:"Comunicações"},
     m_areas:{en:"Research areas",pt:"Áreas de investigação"}, m_hindex:{en:"h-index",pt:"índice h"}, cv:{en:"Download CV",pt:"Descarregar CV"},
-    cta_research:{en:"View research",pt:"Ver investigação"}, cta_publications:{en:"Publications",pt:"Publicações"},
     affiliated:{en:"Affiliated with",pt:"Afiliações"},
     opento:{en:"Open to postdoctoral positions from 2027",pt:"Disponível para posições de pós-doutoramento a partir de 2027"}
   };

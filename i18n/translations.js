@@ -1024,7 +1024,6 @@ window.TR.ja = {
 
 /* ---- Added Sept 2026: content added in English after the first FR/JA pass ---- */
 Object.assign(window.TR.fr, {
-  "View research": "Découvrir mes recherches",
   "Oral presentation at <em>Origins 2026</em>, the ISSOL (International Society for the Study of the Origin of Life) conference at Sorbonne Université (Paris), on how <em>asteroid gardening</em> both transforms and preserves extraterrestrial organic matter.": "Communication orale à <em>Origins 2026</em>, la conférence de l'ISSOL (International Society for the Study of the Origin of Life) à Sorbonne Université (Paris), sur la manière dont le remaniement de la surface des astéroïdes (<em>asteroid gardening</em>) transforme et préserve à la fois la matière organique extraterrestre.",
   "Software": "Logiciels",
   "Building the Hard Rocky Planets — From Mercury to the Asteroid Belt": "Construire les planètes rocheuses — de Mercure à la ceinture d'astéroïdes",
@@ -1148,7 +1147,6 @@ Object.assign(window.TR.fr, {
   "RoboCup 2016 · Leipzig, Germany": "RoboCup 2016 · Leipzig, Allemagne",
 });
 Object.assign(window.TR.ja, {
-  "View research": "研究内容を見る",
   "Oral presentation at <em>Origins 2026</em>, the ISSOL (International Society for the Study of the Origin of Life) conference at Sorbonne Université (Paris), on how <em>asteroid gardening</em> both transforms and preserves extraterrestrial organic matter.": "Sorbonne Université（パリ）で開催されたISSOL（International Society for the Study of the Origin of Life）の国際会議<em>Origins 2026</em>にて、小惑星表面の撹拌（<em>asteroid gardening</em>）が地球外有機物をいかに変化させ、同時に保存するかについて口頭発表を行いました。",
   "Software": "ソフトウェア",
   "Building the Hard Rocky Planets — From Mercury to the Asteroid Belt": "硬い岩石惑星の形成——水星から小惑星帯まで",

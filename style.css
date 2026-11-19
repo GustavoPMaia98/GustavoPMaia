@@ -146,8 +146,6 @@ section[id]{scroll-margin-top:calc(var(--nav-h) + 16px)}
 .hero-intro{flex:1 1 auto;min-width:0}
 .hero-intro h1{font-size:clamp(1.9rem, 1.2rem + 3vw, 3rem);margin:0 0 6px}
 .role{color:var(--accent);font-weight:600;margin-bottom:12px}
-.hero-primary-actions{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 4px}
-.hero-primary-actions .btn{min-height:42px}
 
 /* Name on the left; affiliation logos sit to the RIGHT, filling the row */
 .hero-name-row{display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:24px;margin:0 0 14px;flex-wrap:wrap}
@@ -465,7 +463,6 @@ a:focus-visible,button:focus-visible,.timeline-card[role="button"]:focus-visible
   .hero-intro{display:flex;flex-direction:column;align-items:center}
   .hero-intro h1{text-align:center}
   .role{text-align:center}
-  .hero-primary-actions{justify-content:center}
   .hero-actions{align-items:center}
   .hero-actions .affiliations-block{align-items:center;width:100%}
   /* long bio reads better left-aligned even though the photo + title are centred */
