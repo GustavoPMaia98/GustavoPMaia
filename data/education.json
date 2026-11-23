@@ -2,6 +2,20 @@
   "_help": "Degrees, newest first. \"title\", \"meta\" and \"summary\" take \"en\" and \"pt\"; \"details\" is the text shown when the card is opened (HTML allowed). Set \"hidden\": true to hide an item.",
   "items": [
     {
+      "title": {
+        "en": "Test",
+        "pt": "Test"
+      },
+      "meta": {
+        "en": "Test",
+        "pt": "Test"
+      },
+      "summary": {
+        "en": "Test",
+        "pt": "Test"
+      }
+    },
+    {
       "logo": {
         "src": "images/logos/ist.png",
         "alt": ""
