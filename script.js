@@ -2651,11 +2651,13 @@
       const sum = txt(".timeline-card > p em");
       // entries shown only through a path (hidden cards): the whole text and photos
       // here; any other entry: a summary and a link to its card
-      const full = it.closest(".path-source") ? it.querySelector(".expand-body") : null;
+      const inSource = !!it.closest(".path-source");
+      const full = inSource ? it.querySelector(".expand-body") : null;
       panel.innerHTML =
         '<span class="path-detail-text"><span class="path-detail-title"></span><span class="path-detail-meta"></span>' +
         (sum ? '<span class="path-detail-sum"></span>' : "") + "</span>" +
         (full ? '<div class="path-detail-body expand-body"></div>'
+              : inSource ? ""     // its card is hidden: nothing to go to
               : '<button type="button" class="path-detail-go"><i data-lucide="arrow-down-right"></i><span></span></button>');
       panel.querySelector(".path-detail-title").textContent = txt(".timeline-header strong");
       panel.querySelector(".path-detail-meta").textContent = txt(".timeline-header .meta");
@@ -2666,6 +2668,7 @@
         panel.querySelectorAll("img").forEach(i => { i.loading = "lazy"; i.decoding = "async"; });
         return;
       }
+      if (inSource) return;
       const l = LABEL[btn.dataset.section] || LABEL.education;
       panel.querySelector(".path-detail-go span").textContent = l[currentLang] || l.en;
       panel.querySelector(".path-detail-go").addEventListener("click", () => {

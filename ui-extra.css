@@ -666,6 +666,7 @@ html[data-theme="light"] .path-wrap{ box-shadow:0 14px 34px rgba(15,23,42,.10); 
   transform:scaleX(0); transform-origin:left center; transition:transform 1.2s cubic-bezier(.22,.61,.36,1);
 }
 .path.is-drawn::before{ transform:scaleX(1); }
+.path[data-auto]{ grid-template-columns:none; grid-auto-flow:column; grid-auto-columns:minmax(0,1fr); }  /* one column per step (render.js may add steps) */
 .path-step{ position:relative; min-width:0; }
 .path-btn{
   position:relative; z-index:1;
@@ -769,7 +770,7 @@ html[data-theme="light"] .path-year{ color:var(--accent-strong); border-color:rg
 
 @media (max-width:760px){                    /* phones: steps as rows, line on the left */
   .path-wrap{ padding:14px 12px; }
-  .path{ grid-template-columns:1fr; gap:4px; }
+  .path, .path[data-auto]{ grid-template-columns:1fr; grid-auto-flow:row; gap:4px; }
   .path::before{ top:26px; bottom:26px; left:35px; right:auto; width:2px; height:auto;
     background:color-mix(in srgb, var(--accent) 40%, transparent); transform:scaleY(0); transform-origin:center top; }
   .path.is-drawn::before{ transform:scaleY(1); }

@@ -164,11 +164,17 @@
   const PATH_KIND = {
     experience: it => ({ kind: it.kind }),
     presentations: it => ({ kind: BADGE[it.type] ? { en: BADGE[it.type][0], pt: BADGE[it.type][1] } : null }),
-    courses: (it, parts) => ({ kind: { en: parts.en[0], pt: parts.pt[0] }, drop: 0 })   // "Summer School", "Course", ...
+    courses: (it, parts) => ({ kind: { en: parts.en[0], pt: parts.pt[0] }, drop: 0 }),  // "Summer School", "Course", ...
+    education: () => ({ kind: { en: "Education", pt: "Formação" } })
   };
+  const PATH_ICON = { education: "graduation-cap" };
   function pathSteps(data, section) {
-    if (!data || !Array.isArray(data.items)) return "";
-    const items = data.items.filter(it => it && !it.hidden && it.meta && it.meta.en).map(it => {
+    return pathEntries(data && data.items, section).map(e => e.html).join("\n");
+  }
+  // one step per entry, oldest first: [{ y, html }]
+  function pathEntries(list, section) {
+    if (!Array.isArray(list)) return [];
+    const items = list.filter(it => it && !it.hidden && it.meta && it.meta.en).map(it => {
       const parts = it.meta.en.split(/\s+·\s+/);
       const ptParts = String(it.meta.pt || "").split(/\s+·\s+/);
       // the date: a part with a month or day and a year ("Aug 2026", "22–26 June 2026"), else any part with a year
@@ -187,15 +193,48 @@
     return items.map(({ it, y, kind, org }) => {
       const t = it.title || {}, k = kind || {};
       const now = /present|ongoing/i.test(it.meta.en);
-      return '<li class="path-step' + (now ? " path-now" : "") + '">' +
+      return { y, html: '<li class="path-step' + (now ? " path-now" : "") + '">' +
         '<button type="button" class="path-btn" data-section="' + section + '" data-match="' + attr(it.meta.en) + '" aria-pressed="false">' +
-        '<span class="path-logo" aria-hidden="true"><i data-lucide="briefcase"></i></span>' +
+        '<span class="path-logo" aria-hidden="true"><i data-lucide="' + (PATH_ICON[section] || "briefcase") + '"></i></span>' +
         '<span class="path-year">' + (y || "") + "</span>" +
         (k.en ? '<span class="path-kind"' + ptAttr(k) + ">" + k.en + "</span>" : "") +
         '<span class="path-place"' + ptAttr(t) + ">" + (t.en || "") + "</span>" +
         (org.en ? '<span class="path-what"' + (org.pt ? ' data-pt="' + attr(org.pt) + '"' : "") + ">" + org.en + "</span>" : "") +
-        "</button></li>";
-    }).join("\n");
+        "</button></li>" };
+    });
+  }
+
+  // <ol class="path" data-auto="education">: a hand-written path. Its steps stay as they are;
+  // each shown entry of that section that no step opens gets a step made from its data,
+  // placed by year (inside the PhD frame when it falls within it).
+  const unattr = s => s.replace(/&quot;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
+  function autoSteps(html, data) {
+    return html.replace(/(<ol\b[^>]*\bdata-auto="([a-z-]+)"[^>]*>)([\s\S]*?)(<\/ol>)/g, (all, open, section, body, close) => {
+      const d = data[section];
+      if (!d || !Array.isArray(d.items)) return all;
+      const shown = d.items.filter(it => it && !it.hidden && it.meta && it.meta.en);
+      // the entry each step opens: the first card whose details line contains its data-match
+      const claimed = new Set();
+      (body.match(/<button\b[^>]*>/g) || []).forEach(tag => {
+        const sec = (tag.match(/\bdata-section="([^"]*)"/) || [])[1];
+        const match = unattr((tag.match(/\bdata-match="([^"]*)"/) || [])[1] || "");
+        const hit = sec === section && match && shown.find(it => it.meta.en.indexOf(match) !== -1);
+        if (hit) claimed.add(hit);
+      });
+      const extra = pathEntries(shown.filter(it => !claimed.has(it)), section);
+      if (!extra.length) return all;
+      const steps = (body.match(/<li\b[\s\S]*?<\/li>/g) || [])
+        .map(h => ({ y: +((h.match(/class="path-year">\s*((?:19|20)\d{2})/) || [])[1] || 0), html: h }));
+      extra.forEach(e => {
+        let i = steps.findIndex(s => s.y > e.y);
+        if (i < 0) i = steps.length;
+        const prev = steps[i - 1];
+        if (prev && /\bpath-phd\b/.test(prev.html) && !/\bpath-phd-last\b/.test(prev.html))
+          e = { y: e.y, html: e.html.replace('class="path-step', 'class="path-step path-phd') };
+        steps.splice(i, 0, e);
+      });
+      return open + "\n" + steps.map(s => s.html).join("\n") + "\n" + close;
+    });
   }
 
   // ---------------------------------------------------------------- blog
@@ -232,7 +271,7 @@
     ["experience", "presentations", "courses"].forEach(name => {
       html = html.replace("<!--@path:" + name + "-->", () => pathSteps(data[name], name));
     });
-    return updatedLabels(html, data.updated);
+    return updatedLabels(autoSteps(html, data), data.updated);
   }
 
   // "Updated dd/mm/yyyy" under each section heading (dates from data/updated.json,

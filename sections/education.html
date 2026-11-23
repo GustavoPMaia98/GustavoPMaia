@@ -6,7 +6,7 @@
        The steps marked path-phd (the PhD and the research stays done during it) share
        a light frame labelled "PhD". -->
   <div class="path-wrap reveal">
-  <ol class="path" aria-label="Career path">
+  <ol class="path" aria-label="Career path" data-auto="education">
     <li class="path-step">
       <button type="button" class="path-btn" data-section="education" data-match="Escola Profissional de Espinho" aria-pressed="false">
         <span class="path-logo" aria-hidden="true"><i data-lucide="cpu"></i></span>
@@ -60,7 +60,8 @@
   <div class="path-detail" id="pathDetail" aria-live="polite" hidden></div>
   </div>
   <!-- The items come from data/education.json. They are not shown as cards: each
-       Education step of the path above shows its entry's text and photos. -->
+       Education step of the path above shows its entry's text and photos. An entry
+       that no step opens gets a step made from its data (render.js, data-auto). -->
   <div class="timeline path-source" hidden>
   <!--@timeline:education-->
 </div>
